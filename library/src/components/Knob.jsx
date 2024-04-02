@@ -1,5 +1,34 @@
-import React from "react";
+import React, {useMemo} from 'react';
 import "../styles.css";
+import classNames from "classnames";
+
+const MAX_START_ANGLE = 220;
+const MAX_END_ANGLE = 500;
+const MAX_ARC_ANGLE = MAX_END_ANGLE - MAX_START_ANGLE;
+const CENTER_ANGLE = 360;
+
+// Calculate SVG arc path
+const calculateArcPath = (startAngle, endAngle, radius) => {
+    if (startAngle > endAngle) {
+        [startAngle, endAngle] = [endAngle, startAngle]
+    }
+    const start = polarToCartesian(50, 50, radius, endAngle);
+    const end = polarToCartesian(50, 50, radius, startAngle);
+    const largeArcFlag = (endAngle - startAngle) <= 180 ? '0' : '1';
+    return [
+        'M', start.x, start.y,
+        'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y
+    ].join(' ');
+};
+
+// Convert polar coordinates to Cartesian
+const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
+    const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+    return {
+        x: centerX + (radius * Math.cos(angleInRadians)),
+        y: centerY + (radius * Math.sin(angleInRadians))
+    };
+};
 
 export default function Knob(
     {
@@ -8,74 +37,69 @@ export default function Knob(
         center,
         value,
         label,
-        gridX,
-        gridY,
-        gridSpanX = 2,
-        gridSpanY = 1,
         children,
-        style
+        stretch,
+        className,
+        style,
+        onChange,
+        onClick
     }) {
+
     // Convert value to angle within the range 210° to 510° (150° wrapped around)
-    const valueToAngle = (val) => {
-        // Convert value range (0 to 100) to angle range (210° to 510°, equivalent to 150° wrapped around)
-        const angle = ((val - min) / (max - min)) * 300 + 210;
-        return angle > 360 ? angle - 360 : angle; // Normalize angle to 0-360 range if necessary
-    };
+    const valueToAngle = useMemo(() => {
+        return ((value - min) / (max - min)) * MAX_ARC_ANGLE + MAX_START_ANGLE;
+    }, [value, min, max]);
 
-    // Calculate SVG arc path
-    const calculateArcPath = (startAngle, endAngle, radius) => {
-        const start = polarToCartesian(50, 50, radius, endAngle);
-        const end = polarToCartesian(50, 50, radius, startAngle);
-        const largeArcFlag = endAngle > startAngle ? '0' : '1'; // Use large arc flag for wrapping
-        return [
-            'M', start.x, start.y,
-            'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y
-        ].join(' ');
-    };
-
-    // Convert polar coordinates to Cartesian
-    const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
-        const normalizedAngle = angleInDegrees % 360; // Normalize angle to be within 0-360 degrees
-        const angleInRadians = (normalizedAngle - 90) * Math.PI / 180.0;
-        return {
-            x: centerX + (radius * Math.cos(angleInRadians)),
-            y: centerY + (radius * Math.sin(angleInRadians))
-        };
-    };
-
-    const myStyle = {
-        // backgroundColor: "#f6f6f650",
-        minHeight: 0,
-        minWidth: 0,
-        width: "min(100%, 100vh)",
-        height: "min(100%, 100vh)",
-        maxHeight: "100%",
+    const myStyle = useMemo(() => ({
+        minWidth: "50px",
+        width: stretch ? "100%" : "min(100%, 75px)",
+        height: "auto",
         maxWidth: "100%",
-        gridColumnStart: gridX,
-        gridRowStart: gridY,
-        gridColumnEnd: "span " + gridSpanX,
-        gridRowEnd: "span " + gridSpanY,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-end",
-        ...style
+        maxHeight: "100%",
+        ...style,
+    }), [style]);
+
+    function updateDeltaValue(delta) {
+        const newValue = value + delta;
+        onChange(Math.max(min, Math.min(newValue, max)));
     }
 
+    const handleScroll = (e) => {
+        const delta = e.deltaY;
+        updateDeltaValue(delta);
+        e.preventDefault();
+    };
+
     return (
-        <div className="rx-audio" style={myStyle}>
-            <svg viewBox="0 0 100 115">
+        <div className={classNames(
+            className,
+            "cutoffAudioKit",
+            onChange || onClick ? "highlight" :  ""
+        )}
+             style={myStyle}
+             onWheel={handleScroll}
+             onClick={onClick}
+        >
+            <svg viewBox="0 0 100 108">
                 {/* Background Donut */}
-                <path className="rx-audio stroke-primary-50" fill="none" strokeWidth="12"
-                      d={calculateArcPath(210, 150, 40)}
+                <path className="stroke-primary-50"
+                      fill="none"
+                      strokeWidth="12"
+                      strokeLinecap="round"
+                      d={calculateArcPath(MAX_START_ANGLE, MAX_END_ANGLE, 40)}
                 />
 
                 {/* Foreground Donut */}
-                <path className="rx-audio stroke-primary" fill="none" strokeWidth="12"
-                      d={calculateArcPath(210, valueToAngle(value), 40)}
+                <path className="stroke-primary"
+                      fill="none"
+                      strokeWidth="12"
+                      strokeLinecap="round"
+                      d={calculateArcPath(center ? CENTER_ANGLE : MAX_START_ANGLE, valueToAngle, 40)}
                 />
 
                 {/* Value Text */}
-                <foreignObject x="20" y="20" width="60" height="60">
+                <foreignObject style={{cursor: "inherit"}}
+                    x="20" y="22" width="60" height="60">
                     <div xmlns="http://www.w3.org/1999/xhtml" style={{
                         width: "100%",
                         height: "100%",
@@ -86,6 +110,7 @@ export default function Knob(
                         maxWidth: '100%',
                         maxHeight: '100%',
                         fontWeight: "500",
+                        cursor: "inherit"
                     }}>
                         {/* Wrap images in a div and apply CSS to control their size */}
                         {React.isValidElement(children) && children.type === 'img' ? (
@@ -95,12 +120,14 @@ export default function Knob(
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                padding: '10px'
+                                padding: '10px',
+                                cursor: "inherit"
                             }}>
                                 {React.cloneElement(children, {
                                     style: {
                                         maxWidth: '100%',
-                                        maxHeight: '100%'
+                                        maxHeight: '100%',
+                                        cursor: "inherit"
                                     }
                                 })} {/* Ensure the image is scaled to fit */}
                             </div>
@@ -111,7 +138,13 @@ export default function Knob(
                 </foreignObject>
 
                 {/* Label Text */}
-                <text className="fill-text" x="50" y="110" fontSize="18" fontWeight="500" textAnchor="middle">
+                <text style={{cursor: "inherit"}}
+                      className="fill-text"
+                      x="50"
+                      y="108"
+                      fontSize="18"
+                      fontWeight="500"
+                      textAnchor="middle">
                     {label}
                 </text>
             </svg>

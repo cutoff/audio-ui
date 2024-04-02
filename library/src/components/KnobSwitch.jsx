@@ -10,7 +10,9 @@ export default function KnobSwitch(
         gridSpanX,
         gridSpanY,
         children,
-        style
+        style,
+        onChange,
+        onClick
     }) {
     const options = React.Children.toArray(children);
 
@@ -39,6 +41,8 @@ export default function KnobSwitch(
               gridSpanY={gridSpanY}
               label={label}
               style={style}
+              onClick={onClick}
+              onChange={onChange}
         >
             {selectedLabel}
         </Knob>

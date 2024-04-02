@@ -3,17 +3,20 @@
 
 :root {
     --text-color: hsl(0, 0%, 96%);
-    --bg-color: hsl(0, 0%, 9%);
+    --bg-color: hsl(0, 0%, 7%);
 
-    --primary-color: var(--theme-orange-primary);
-    --primary-color-50: var(--theme-orange-primary-50);
-    --primary-color-20: var(--theme-orange-primary-20);
+    --primary-color: var(--theme-blue-primary);
+    --primary-color-50: var(--theme-blue-primary-50);
+    --primary-color-20: var(--theme-blue-primary-20);
+
+    --default-font-family: "Oxanium", sans-serif;
+    --default-font-size: 14px;
 
     color: var(--text-color);
     background-color: var(--bg-color);
 
-    font-family: "Oxanium", sans-serif;
-    font-size: 16px;
+    font-family: var(--default-font-family);
+    font-size: var(--default-font-size);
     line-height: 24px;
     font-weight: 400;
 
@@ -22,6 +25,34 @@
     -webkit-font-smoothing: subpixel-antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
+}
+
+textarea input {
+    color: var(--text-color);
+    background-color: transparent;
+    font-size: var(--default-font-size);
+}
+
+svg text, svg foreignObject div {
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: default;
+}
+
+.cutoffAudioKit {
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: default;
+}
+
+.highlight {
+    will-change: filter;
+    transition: filter 300ms;
+    /*cursor: url(assets/cursor-vscroll.png), ns-resize;*/
+}
+
+.highlight:hover {
+    filter: brightness(125%) hue-rotate(10deg) drop-shadow(0 0 1ex var(--primary-color-50));
 }
 
 .stroke-primary {

@@ -13,10 +13,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "cutoff-audiokit": "*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "reset-css": "^5.0.2",
-    "cutoff-audiokit": "*"
+    "react-syntax-highlighter": "^15.5.0",
+    "reset-css": "^5.0.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

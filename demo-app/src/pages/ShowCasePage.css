@@ -1,0 +1,141 @@
+.maxWidth {
+    width: 100%;
+}
+
+.flexRowWrap {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.flexColumnNoWrap {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.gapLarge {
+    gap: 20px;
+}
+
+.mainLayout {
+    height: 100dvh;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 2%;
+}
+
+.sidePart {
+    background-color: hsla(0, 0%, 100%, 1%);
+    height: 100%;
+    padding: 25px 4% 25px 4%;
+    flex-basis: 640px;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2em;
+}
+
+.centralPart {
+    /*background-color: #00ff003s0;*/
+    padding: 25px 4% 25px 4%;
+    height: 100%;
+    flex-basis: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.centralColumn {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 2em;
+}
+
+.mainTitle {
+    font-size: 1.5rem;
+    font-weight: 500;
+    align-self: flex-start;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.subTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    align-self: flex-start;
+    padding-top: 1em;
+    padding-bottom: 1ex;
+}
+
+.mainComponentZone {
+    flex-basis: 40%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.mainComponent {
+    flex-basis: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.codeSnippetZone {
+    /*background-color: #00ff0030;*/
+    flex-basis: 20%;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 1ex;
+}
+
+.codeSnippet {
+    width: 100%;
+    flex-basis: 100%;
+    align-self: center;
+    justify-self: center;
+    flex-grow: 0;
+    overflow: auto;
+}
+
+.propertiesZone {
+    /*background-color: #00ff0020;*/
+    flex-basis: 40%;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 1ex;
+}
+
+.propertiesLabel {
+    margin-top: 1ex;
+    margin-bottom: 1ex;
+}
+
+.propertiesInputText {
+    background-color: transparent;
+    color: var(--text-color);
+    border: solid 1px var(--text-color);
+    display: block;
+    width: 100%;
+}
+
+.gridLayout {
+    width: 520px; /* 37.25px per cell */
+    min-width: 520px;
+    height: 238px; /* 74px per cell */
+    min-height: 238px;
+
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(9, 1fr);
+    grid-gap: 8px;
+}
+
+.gridItem {
+    width: 100%;
+    height: 100%;
+    border: dashed #555555 1px;
+}

@@ -2,3 +2,13 @@
 
 :root {
 }
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+p {
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: default;
+}
