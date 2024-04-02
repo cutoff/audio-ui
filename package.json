@@ -1,0 +1,23 @@
+{
+  "name": "cutoff-audiokit-root",
+  "description": "React Components for Audio and MIDI apps!",
+  "private": true,
+  "version": "1.0.0",
+  "author": "Renaud Denis <mail@renauddenis.com>",
+  "license": "UNLICENSED",
+  "scripts": {},
+  "keywords": [
+    "react",
+    "audio",
+    "midi",
+    "components"
+  ],
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "workspaces": [
+    "library",
+    "demo-app"
+  ]
+}

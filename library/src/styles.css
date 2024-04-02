@@ -1,0 +1,57 @@
+@import url("themes.css");
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap');
+
+:root {
+    --text-color: hsl(0, 0%, 96%);
+    --bg-color: hsl(0, 0%, 9%);
+
+    --primary-color: var(--theme-orange-primary);
+    --primary-color-50: var(--theme-orange-primary-50);
+    --primary-color-20: var(--theme-orange-primary-20);
+
+    color: var(--text-color);
+    background-color: var(--bg-color);
+
+    font-family: "Oxanium", sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+}
+
+.stroke-primary {
+    stroke: var(--primary-color);
+}
+
+.stroke-primary-50 {
+    stroke: var(--primary-color-50);
+}
+
+.stroke-primary-20 {
+    stroke: var(--primary-color-20);
+}
+
+.fill-text {
+    fill: var(--text-color);
+}
+
+.fill-primary {
+    fill: var(--primary-color);
+}
+
+.fill-primary-50 {
+    fill: var(--primary-color-50);
+}
+
+.fill-primary-20 {
+    fill: var(--primary-color-20);
+}
+
+.fill-transparent {
+    fill: transparent;
+}

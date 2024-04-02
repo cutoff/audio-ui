@@ -1,0 +1,13 @@
+:root {
+    --theme-orange-primary: hsl(30, 100%, 50%);
+    --theme-orange-primary-50: hsl(30, 100%, 23%);
+    --theme-orange-primary-20: hsl(30, 100%, 10%);
+
+    --theme-blue-primary: hsl(199, 100%, 50%);
+    --theme-blue-primary-50: hsl(199, 100%, 23%);
+    --theme-blue-primary-20: hsl(199, 100%, 10%);
+
+    --theme-pink-primary: hsl(330, 100%, 50%);
+    --theme-pink-primary-50: hsl(330, 100%, 23%);
+    --theme-pink-primary-20: hsl(330, 100%, 10%);
+}
