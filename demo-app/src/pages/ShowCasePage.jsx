@@ -12,12 +12,21 @@ import {useMemo, useState} from "react";
 import KnobSwitch from "cutoff-audiokit/src/components/KnobSwitch.jsx";
 import Option from "cutoff-audiokit/src/components/Option.jsx";
 
+const exampleOptions = [
+    <Option value={0}><img src={iconSineWave} alt="Sine"/></Option>,
+    <Option value={1}><img src={iconTriangleWave} alt="Triangle"/></Option>,
+    <Option value={2}><img src={iconSawWave} alt="Saw"/></Option>,
+    <Option value={3}><img src={iconSquareWave} alt="Square"/></Option>,
+    <Option value={4}>Oth</Option>
+];
+
 export default function ShowcasePage() {
     const [value, setValue] = useState(42);
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(100);
     const [label, setLabel] = useState("Min-Max");
     const [center, setCenter] = useState(0);
+    const [enableOptions, setEnableOptions] = useState(false);
 
     const codeString = `<Knob min={${min}} max={${max}} value={${value}} label='${label}' center={${center}} />`;
 
@@ -29,6 +38,7 @@ export default function ShowcasePage() {
                 setMax(100);
                 setLabel("Min-Max");
                 setCenter(0);
+                setEnableOptions(false);
                 break;
             case 1:
                 setValue(64);
@@ -36,6 +46,7 @@ export default function ShowcasePage() {
                 setMax(127);
                 setLabel("Center");
                 setCenter(64);
+                setEnableOptions(false);
                 break;
             case 2:
                 setValue(0);
@@ -43,7 +54,7 @@ export default function ShowcasePage() {
                 setMax(4);
                 setLabel("Enum");
                 setCenter(0);
-                // TODO options
+                setEnableOptions(true);
                 break;
         }
     };
@@ -129,11 +140,7 @@ export default function ShowcasePage() {
                                         value={0} label="Enum"
                                         onClick={() => handleExampleClick(2)}
                             >
-                                <Option value={0}><img src={iconSineWave} alt="Sine"/></Option>
-                                <Option value={1}><img src={iconTriangleWave} alt="Triangle"/></Option>
-                                <Option value={2}><img src={iconSawWave} alt="Saw"/></Option>
-                                <Option value={3}><img src={iconSquareWave} alt="Square"/></Option>
-                                <Option value={4}>Oth</Option>
+                                {exampleOptions}
                             </KnobSwitch>
                         </div>
                     </div>
@@ -141,7 +148,7 @@ export default function ShowcasePage() {
                     <div className="flexRowWrap gapLarge maxWidth">
                         <div>
                             <p className="mainTitle">Size</p>
-                            <Knob min={min} max={max} value={value} label={label}/>
+                            <Knob min={min} center={center} max={max} value={value} label={label}/>
                             <p className="subTitle">Default</p>
                         </div>
                     </div>
@@ -165,7 +172,7 @@ export default function ShowcasePage() {
                                 alignSelf: "start"
                             }}
                                   stretch={true}
-                                  min={min} max={max} value={value} label={label}
+                                  min={min} center={center} max={max} value={value} label={label}
                             />
                             <p style={{
                                 gridArea: "1 / 2 / span 1 / span 1",
@@ -177,7 +184,7 @@ export default function ShowcasePage() {
                                 alignSelf: "end"
                             }}
                                   stretch={true}
-                                  min={min} max={max} value={value} label={label}
+                                  min={min} center={center} max={max} value={value} label={label}
                             />
                             <p style={{
                                 gridArea: "1 / 3 / span 1 / span 1",
@@ -189,14 +196,14 @@ export default function ShowcasePage() {
                                 alignSelf: "center"
                             }}
                                   stretch={true}
-                                  min={min} max={max} value={value} label={label}
+                                  min={min} center={center} max={max} value={value} label={label}
                             />
                             <Knob style={{
                                 gridArea: "1 / 5 / span 2 / span 2",
                                 alignSelf: "start"
                             }}
                                   stretch={true}
-                                  min={min} max={max} value={value} label={label}
+                                  min={min} center={center} max={max} value={value} label={label}
                             />
                             <p style={{
                                 gridArea: "3 / 5 / span 1 / span 2",
@@ -208,7 +215,7 @@ export default function ShowcasePage() {
                                 alignSelf: "end"
                             }}
                                   stretch={true}
-                                  min={min} max={max} value={value} label={label}
+                                  min={min} center={center} max={max} value={value} label={label}
                             />
                             <p style={{
                                 gridArea: "1 / 7 / span 1 / span 3",

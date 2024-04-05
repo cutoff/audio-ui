@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo, useRef} from 'react';
 import "../styles.css";
 import classNames from "classnames";
 
@@ -59,25 +59,43 @@ export default function Knob(
         ...style,
     }), [style]);
 
-    function updateDeltaValue(delta) {
-        const newValue = value + delta;
-        onChange(Math.max(min, Math.min(newValue, max)));
-    }
+    const rootRef = useRef(null);
 
-    const handleScroll = (e) => {
-        const delta = e.deltaY;
-        updateDeltaValue(delta);
-        e.preventDefault();
-    };
+    useEffect(() => {
+        if (!onChange) return;
+
+        const handleWheel = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const delta = e.deltaY;
+            // Use a functional update to ensure we're always working with the most current value
+            onChange((currentValue) => {
+                // Calculate the new value based on the current value and ensure it stays within bounds
+                return Math.max(min, Math.min(currentValue + delta, max));
+            });
+        };
+
+        const element = rootRef.current;
+        if (element) {
+            element.addEventListener("wheel", handleWheel, { passive: false });
+        }
+
+        return () => {
+            if (element) {
+                element.removeEventListener("wheel", handleWheel);
+            }
+        }
+    }, [min, max, onChange]);
 
     return (
-        <div className={classNames(
+        <div ref={rootRef}
+            className={classNames(
             className,
             "cutoffAudioKit",
             onChange || onClick ? "highlight" :  ""
         )}
              style={myStyle}
-             onWheel={handleScroll}
              onClick={onClick}
         >
             <svg viewBox="0 0 100 108">
