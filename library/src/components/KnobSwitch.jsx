@@ -5,12 +5,9 @@ export default function KnobSwitch(
     {
         label,
         value,
-        gridX,
-        gridY,
-        gridSpanX,
-        gridSpanY,
         children,
         style,
+        stretch,
         onChange,
         onClick
     }) {
@@ -35,12 +32,9 @@ export default function KnobSwitch(
         <Knob min={0}
               max={options.length - 1}
               value={selectedIndex}
-              gridX={gridX}
-              gridY={gridY}
-              gridSpanX={gridSpanX}
-              gridSpanY={gridSpanY}
               label={label}
               style={style}
+              stretch={stretch}
               onClick={onClick}
               onChange={onChange}
         >

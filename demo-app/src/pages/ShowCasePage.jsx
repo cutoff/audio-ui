@@ -13,12 +13,38 @@ import KnobSwitch from "cutoff-audiokit/src/components/KnobSwitch.jsx";
 import Option from "cutoff-audiokit/src/components/Option.jsx";
 
 const exampleOptions = [
-    <Option value={0}><img src={iconSineWave} alt="Sine"/></Option>,
-    <Option value={1}><img src={iconTriangleWave} alt="Triangle"/></Option>,
-    <Option value={2}><img src={iconSawWave} alt="Saw"/></Option>,
-    <Option value={3}><img src={iconSquareWave} alt="Square"/></Option>,
-    <Option value={4}>Oth</Option>
+    <Option key={0} value={0}><img src={iconSineWave} alt="Sine"/></Option>,
+    <Option key={0} value={1}><img src={iconTriangleWave} alt="Triangle"/></Option>,
+    <Option key={0} value={2}><img src={iconSawWave} alt="Saw"/></Option>,
+    <Option key={0} value={3}><img src={iconSquareWave} alt="Square"/></Option>,
+    <Option key={0} value={4}>Oth</Option>
 ];
+
+function PageComponent({value, min, max, label, center, enableOptions, stretch, onChange, onClick, style, className}) {
+    if (enableOptions) {
+        // Switch Know
+        return (
+            <KnobSwitch style={style} className={className}
+                        value={value}
+                        stretch={stretch}
+                        label={label}
+                        onClick={onClick}
+                        onChange={onChange}
+                >
+                {exampleOptions}
+            </KnobSwitch>
+        );
+    } else {
+        // Regular Know
+        return (
+            <Knob style={style} className={className}
+                min={min} center={center} max={max} value={value} label={label} stretch={stretch}
+                onClick={onClick}
+                onChange={onChange}
+            />
+        );
+    }
+}
 
 export default function ShowcasePage() {
     const [value, setValue] = useState(42);
@@ -78,9 +104,9 @@ export default function ShowcasePage() {
                 <div className="maxWidth mainComponentZone">
                     <p className="mainTitle">Knob</p>
                     <div className="mainComponent">
-                        <Knob
+                        <PageComponent
                             style={{width: "128px"}}
-                            min={min} center={center} max={max} value={value} label={label}
+                            min={min} center={center} max={max} value={value} label={label} enableOptions={enableOptions}
                             onChange={(newValue) => setValue(newValue)}
                         />
                     </div>
@@ -148,7 +174,7 @@ export default function ShowcasePage() {
                     <div className="flexRowWrap gapLarge maxWidth">
                         <div>
                             <p className="mainTitle">Size</p>
-                            <Knob min={min} center={center} max={max} value={value} label={label}/>
+                            <PageComponent min={min} center={center} max={max} value={value} label={label} enableOptions={enableOptions} />
                             <p className="subTitle">Default</p>
                         </div>
                     </div>
@@ -167,55 +193,55 @@ export default function ShowcasePage() {
                                 justifySelf: "center",
                                 alignSelf: "end"
                             }} className="subTitle">start</p>
-                            <Knob style={{
+                            <PageComponent style={{
                                 gridArea: "2 / 1 / span 1 / span 1",
                                 alignSelf: "start"
                             }}
                                   stretch={true}
-                                  min={min} center={center} max={max} value={value} label={label}
+                                  min={min} center={center} max={max} value={value} label={label} enableOptions={enableOptions}
                             />
                             <p style={{
                                 gridArea: "1 / 2 / span 1 / span 1",
                                 justifySelf: "center",
                                 alignSelf: "end"
                             }} className="subTitle">end</p>
-                            <Knob style={{
+                            <PageComponent style={{
                                 gridArea: "2 / 2 / span 1 / span 1",
                                 alignSelf: "end"
                             }}
                                   stretch={true}
-                                  min={min} center={center} max={max} value={value} label={label}
+                                  min={min} center={center} max={max} value={value} label={label} enableOptions={enableOptions}
                             />
                             <p style={{
                                 gridArea: "1 / 3 / span 1 / span 1",
                                 justifySelf: "center",
                                 alignSelf: "end"
                             }} className="subTitle">center</p>
-                            <Knob style={{
+                            <PageComponent style={{
                                 gridArea: "2 / 3 / span 1 / span 1",
                                 alignSelf: "center"
                             }}
                                   stretch={true}
-                                  min={min} center={center} max={max} value={value} label={label}
+                                  min={min} center={center} max={max} value={value} label={label} enableOptions={enableOptions}
                             />
-                            <Knob style={{
+                            <PageComponent style={{
                                 gridArea: "1 / 5 / span 2 / span 2",
                                 alignSelf: "start"
                             }}
                                   stretch={true}
-                                  min={min} center={center} max={max} value={value} label={label}
+                                  min={min} center={center} max={max} value={value} label={label} enableOptions={enableOptions}
                             />
                             <p style={{
                                 gridArea: "3 / 5 / span 1 / span 2",
                                 justifySelf: "center",
                                 alignSelf: "end"
                             }} className="subTitle">2x2</p>
-                            <Knob style={{
+                            <PageComponent style={{
                                 gridArea: "2 / 7 / span 2 / span 3",
                                 alignSelf: "end"
                             }}
                                   stretch={true}
-                                  min={min} center={center} max={max} value={value} label={label}
+                                  min={min} center={center} max={max} value={value} label={label} enableOptions={enableOptions}
                             />
                             <p style={{
                                 gridArea: "1 / 7 / span 1 / span 3",
