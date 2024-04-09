@@ -5,6 +5,14 @@
   "version": "1.0.0",
   "author": "Renaud Denis <mail@renauddenis.com>",
   "license": "UNLICENSED",
+  "main": "src/index.js",
+  "files": [
+    "src/index.js",
+    "src/components/",
+    "src/assets/",
+    "src/styles.css",
+    "src/themes.css"
+  ],
   "scripts": {},
   "keywords": [
     "react",
