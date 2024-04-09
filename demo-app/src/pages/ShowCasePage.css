@@ -90,6 +90,8 @@
     display: flex;
     flex-flow: column nowrap;
     gap: 1ex;
+    height: 5em;
+    overflow: visible;
 }
 
 .codeSnippet {
@@ -98,7 +100,7 @@
     align-self: center;
     justify-self: center;
     flex-grow: 0;
-    overflow: auto;
+    font-size: 0.9rem;
 }
 
 .propertiesZone {

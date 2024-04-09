@@ -1,9 +1,9 @@
-import ShowcasePage from "./pages/ShowCasePage.jsx";
+import KnobComponentPage from "./pages/KnobComponentPage.jsx";
 
 export default function App() {
     return (
         <>
-            <ShowcasePage />
+            <KnobComponentPage />
             {/*<Knob style={{width: "75px", height: "auto"}}*/}
             {/*    min={0} max={100} value={42} label="Coarse" />*/}
 
