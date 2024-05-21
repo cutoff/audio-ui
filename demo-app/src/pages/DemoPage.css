@@ -82,6 +82,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 40%;
+    /*background-color: #ffffff20;*/
 }
 
 .codeSnippetZone {

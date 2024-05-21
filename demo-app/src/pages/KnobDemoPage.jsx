@@ -6,14 +6,30 @@ import iconSawWave from "../assets/saw-wave.svg";
 import iconSquareWave from "../assets/square-wave.svg";
 import KnobSwitch from "cutoff-audiokit/src/components/KnobSwitch.jsx";
 import Knob from "cutoff-audiokit/src/components/Knob.jsx";
-import ShowCaseSkeletonPage from "./ShowCaseSkeletonPage.jsx";
+import DemoSkeletonPage from "./DemoSkeletonPage.jsx";
 
 const sampleOptions = [
     <Option key={0} value={0}><img src={iconSineWave} alt="Sine"/></Option>,
     <Option key={1} value={1}><img src={iconTriangleWave} alt="Triangle"/></Option>,
-    <Option key={2} value={2}><img src={iconSawWave} alt="Saw"/></Option>,
-    <Option key={3} value={3}>Oth</Option>
+    <Option key={2} value={2}><img src={iconSquareWave} alt="Saw"/></Option>,
+    <Option key={3} value={3}><img src={iconSawWave} alt="Saw"/></Option>,
+    <Option key={4} value={4}>Oth</Option>
 ];
+
+function generateCodeSnippet(enableOptions, value, label, min, max, center) {
+    if (enableOptions) {
+        return `<Knob value={${value}} label='${label}'>
+    <Option value={0}><img src={iconSineWave} /></Option>
+    <Option value={1}><img src={iconTriangleWave} /></Option>
+    <Option value={2}><img src={iconSquareWave} /></Option>
+    <Option value={3}><img src={iconSawWave} /></Option>
+    <Option value={4}>Oth</Option>
+</Knob>
+`;
+    } else {
+        return `<Knob min={${min}} max={${max}} value={${value}} label='${label}' center={${center}} />`;
+    }
+}
 
 function KnobComponent({value, min, max, label, center, enableOptions, stretch, onChange, onClick, style, className}) {
     if (enableOptions) {
@@ -41,40 +57,22 @@ function KnobComponent({value, min, max, label, center, enableOptions, stretch, 
     }
 }
 
-export default function KnobComponentPage() {
+export default function KnobDemoPage() {
     const [value, setValue] = useState(42);
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(100);
-    const [label, setLabel] = useState("Min-Max");
+    const [label, setLabel] = useState("Default");
     const [center, setCenter] = useState(0);
     const [enableOptions, setEnableOptions] = useState(false);
 
-    let codeString;
-    if (enableOptions) {
-        codeString = `<Knob value={${value}} label='${label}'>
-    <Option value={0}>
-        <img src={iconSineWave} />
-    </Option>
-    <Option value={1}>
-        <img src={iconTriangleWave} />
-    </Option>
-    <Option value={2}>
-        <img src={iconSawWave} alt="Saw"/>
-    </Option>
-    <Option value={3}>Oth</Option>
-</Knob>
-`;
-    } else {
-        codeString = `<Knob min={${min}} max={${max}} value={${value}} label='${label}' center={${center}} />`;
-    }
-
     const handleExampleClick = (num) => {
+
         switch (num) {
             case 0:
                 setValue(42);
                 setMin(0);
                 setMax(100);
-                setLabel("Min-Max");
+                setLabel("Default");
                 setCenter(0);
                 setEnableOptions(false);
                 break;
@@ -96,9 +94,6 @@ export default function KnobComponentPage() {
                 break;
         }
     };
-
-    const componentProps = { min, center, max, value, label, enableOptions };
-
     const properties = [
         <label key="label" className="propertiesLabel">
             Label:
@@ -123,12 +118,19 @@ export default function KnobComponentPage() {
             <input name="centerProp" className="propertiesInputText"
                    value={center} onChange={(e) => setCenter(Number(e.target.value))}
             />
+        </label>,
+        <label key="enableOptions" className="propertiesLabel">
+            Options:
+            <input name="enableOptionsProp" className="propertiesInputText"
+                   type="checkbox"
+                   checked={enableOptions} onChange={(e) => setEnableOptions(e.target.checked)}
+            />
         </label>
     ]
 
     const examples = [
         <Knob key="0" style={{cursor: "pointer"}}
-              min={0} max={100} value={42} label="Min-Max"
+              min={0} max={100} value={42} label="Default"
               onClick={() => handleExampleClick(0)}
         />,
         <Knob key="1" style={{cursor: "pointer"}}
@@ -143,8 +145,11 @@ export default function KnobComponentPage() {
         </KnobSwitch>
     ];
 
+    const codeString = generateCodeSnippet(enableOptions, value, label, min, max, center);
+    const componentProps = { min, center, max, value, label, enableOptions };
+
     return (
-        <ShowCaseSkeletonPage
+        <DemoSkeletonPage
             codeSnippet={codeString}
             PageComponent={KnobComponent}
             componentProps={componentProps}

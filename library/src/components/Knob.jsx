@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import "../styles.css";
 import classNames from "classnames";
 
@@ -50,15 +50,6 @@ export default function Knob(
         return ((value - min) / (max - min)) * MAX_ARC_ANGLE + MAX_START_ANGLE;
     }, [value, min, max]);
 
-    const myStyle = useMemo(() => ({
-        minWidth: "50px",
-        width: stretch ? "100%" : "min(100%, 75px)",
-        height: "auto",
-        maxWidth: "100%",
-        maxHeight: "100%",
-        ...style,
-    }), [style]);
-
     const rootRef = useRef(null);
 
     useEffect(() => {
@@ -88,17 +79,24 @@ export default function Knob(
         }
     }, [min, max, onChange]);
 
+    const myStyle = useMemo(() => ({
+        minWidth: "50px",
+        width: stretch ? "100%" : "min(100%, 75px)",
+        ...style,
+    }), [style]);
+
     return (
         <div ref={rootRef}
             className={classNames(
             className,
             "cutoffAudioKit",
+            "componentContainer",
             onChange || onClick ? "highlight" :  ""
         )}
              style={myStyle}
              onClick={onClick}
         >
-            <svg viewBox="0 0 100 108">
+            <svg viewBox="0 0 100 115">
                 {/* Background Donut */}
                 <path className="stroke-primary-50"
                       fill="none"
@@ -159,7 +157,7 @@ export default function Knob(
                 <text style={{cursor: "inherit"}}
                       className="fill-text"
                       x="50"
-                      y="108"
+                      y="110"
                       fontSize="18"
                       fontWeight="500"
                       textAnchor="middle">

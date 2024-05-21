@@ -1,10 +1,10 @@
-import "./ShowCasePage.css";
+import "./DemoPage.css";
 
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import {oneDark} from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {useMemo} from "react";
 
-export default function ShowCaseSkeletonPage({codeSnippet, PageComponent, componentProps, properties, examples, onChange}) {
+export default function DemoSkeletonPage({codeSnippet, PageComponent, componentProps, properties, examples, onChange}) {
     /**
      * Fake grid items created to highlight the borders of the grid
      */
@@ -25,7 +25,7 @@ export default function ShowCaseSkeletonPage({codeSnippet, PageComponent, compon
                     <p className="mainTitle">Knob</p>
                     <div className="mainComponent">
                         <PageComponent
-                            style={{width: "128px"}}
+                            stretch={true}
                             onChange={onChange}
                             {...componentProps}
                         />

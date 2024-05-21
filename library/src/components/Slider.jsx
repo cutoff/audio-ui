@@ -1,4 +1,6 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useRef, useEffect} from 'react';
+import "../styles.css";
+import classNames from "classnames";
 
 /**
  * Computes the filled zone dimensions based on a given value.
@@ -69,7 +71,11 @@ export default function Slider(
         value,
         label,
         size = "normal",
-        style
+        stretch,
+        className,
+        style,
+        onChange,
+        onClick
     }) {
 
     const mainZone = useMemo(() => (
@@ -94,22 +100,55 @@ export default function Slider(
     }, [min, max, value, size]);
 
     const myStyle = useMemo(() => ({
-        minHeight: 0,
-        minWidth: 0,
-        width: "min(100%, 100vh)",
-        height: "min(100%, 100vh)",
-        maxHeight: "100%",
+        minWidth: "25px",
+        width: stretch ? "100%" : "min(100%, 50px)",
+        height: "auto",
         maxWidth: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-end",
+        maxHeight: "100%",
         ...style,
     }), [style]);
 
+    const rootRef = useRef(null);
+
+    useEffect(() => {
+        if (!onChange) return;
+
+        const handleWheel = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const delta = e.deltaY;
+            // Use a functional update to ensure we're always working with the most current value
+            onChange((currentValue) => {
+                // Calculate the new value based on the current value and ensure it stays within bounds
+                return Math.max(min, Math.min(currentValue + delta, max));
+            });
+        };
+
+        const element = rootRef.current;
+        if (element) {
+            element.addEventListener("wheel", handleWheel, { passive: false });
+        }
+
+        return () => {
+            if (element) {
+                element.removeEventListener("wheel", handleWheel);
+            }
+        }
+    }, [min, max, onChange]);
+
     return (
-        <div style={myStyle}>
+        <div ref={rootRef}
+             className={classNames(
+                 className,
+                 "cutoffAudioKit",
+                 onChange || onClick ? "highlight" : ""
+             )}
+             style={myStyle}
+             onClick={onClick}
+        >
             <svg viewBox="0 0 100 400"
-                 preserveAspectRatio="0.25"
+                 // preserveAspectRatio="0.25"
                 // style={{backgroundColor: "#f6f6f610"}}
             >
                 {/* Background Rectangle */}
