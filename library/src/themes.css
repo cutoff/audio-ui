@@ -10,4 +10,8 @@
     --theme-pink-primary: hsl(330, 100%, 50%);
     --theme-pink-primary-50: hsl(330, 100%, 23%);
     --theme-pink-primary-20: hsl(330, 100%, 10%);
+
+    --theme-slate-primary: hsl(0, 0%, 50%);
+    --theme-slate-primary-50: hsl(0, 0%, 23%);
+    --theme-slate-primary-20: hsl(0, 0%, 10%);
 }
