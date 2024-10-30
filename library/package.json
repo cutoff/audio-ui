@@ -5,15 +5,21 @@
   "version": "1.0.0",
   "author": "Renaud Denis <mail@renauddenis.com>",
   "license": "UNLICENSED",
-  "main": "src/index.js",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./styles.css": "./dist/style.css"
+  },
   "files": [
-    "src/index.js",
-    "src/components/",
-    "src/assets/",
-    "src/styles.css",
-    "src/themes.css"
+    "dist"
   ],
   "scripts": {
+    "build": "vite build",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
@@ -34,6 +40,9 @@
     "@types/lodash": "^4.17.13",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "vite": "^5.2.0",
+    "vite-plugin-dts": "^3.0.0"
   }
 }
