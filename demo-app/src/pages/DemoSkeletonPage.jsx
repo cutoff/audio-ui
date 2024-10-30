@@ -51,7 +51,11 @@ export default function DemoSkeletonPage({codeSnippet, PageComponent, componentP
                     <div className="flexColumnNoWrap">
                         <p className="mainTitle">Examples</p>
                         <div className="flexRowWrap gapLarge">
-                            {examples}
+                            {examples.map((item, i) => (
+                                <div key={i} className="exampleItem">
+                                    {item}
+                                </div>
+                            ))}
                         </div>
                     </div>
 
@@ -79,6 +83,7 @@ export default function DemoSkeletonPage({codeSnippet, PageComponent, componentP
                             }} className="subTitle">start</p>
                             <PageComponent style={{
                                 gridArea: "2 / 1 / span 1 / span 1",
+                                justifySelf: "center",
                                 alignSelf: "start"
                             }}
                                            stretch={true}
@@ -91,6 +96,7 @@ export default function DemoSkeletonPage({codeSnippet, PageComponent, componentP
                             }} className="subTitle">end</p>
                             <PageComponent style={{
                                 gridArea: "2 / 2 / span 1 / span 1",
+                                justifySelf: "center",
                                 alignSelf: "end"
                             }}
                                            stretch={true}
@@ -103,6 +109,7 @@ export default function DemoSkeletonPage({codeSnippet, PageComponent, componentP
                             }} className="subTitle">center</p>
                             <PageComponent style={{
                                 gridArea: "2 / 3 / span 1 / span 1",
+                                justifySelf: "center",
                                 alignSelf: "center"
                             }}
                                            stretch={true}
@@ -110,6 +117,7 @@ export default function DemoSkeletonPage({codeSnippet, PageComponent, componentP
                             />
                             <PageComponent style={{
                                 gridArea: "1 / 5 / span 2 / span 2",
+                                justifySelf: "center",
                                 alignSelf: "start"
                             }}
                                            stretch={true}
@@ -122,6 +130,7 @@ export default function DemoSkeletonPage({codeSnippet, PageComponent, componentP
                             }} className="subTitle">2x2</p>
                             <PageComponent style={{
                                 gridArea: "2 / 7 / span 2 / span 3",
+                                justifySelf: "center",
                                 alignSelf: "end"
                             }}
                                            stretch={true}

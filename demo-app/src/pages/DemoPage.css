@@ -5,6 +5,7 @@
 .flexRowWrap {
     display: flex;
     flex-flow: row wrap;
+    align-items: flex-start;  /* Align items to the top */
 }
 
 .flexColumnNoWrap {
@@ -124,6 +125,15 @@
     border: solid 1px var(--text-color);
     display: block;
     width: 100%;
+}
+
+/* Add a new class for example containers */
+.exampleItem {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;     /* or whatever width makes sense */
+    height: 200px;    /* or whatever height makes sense */
 }
 
 .gridLayout {
