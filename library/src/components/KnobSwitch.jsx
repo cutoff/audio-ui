@@ -1,5 +1,5 @@
 import React from 'react';
-import Knob from "./Knob.jsx";
+import Knob from "./Knob";
 
 export default function KnobSwitch(
     {

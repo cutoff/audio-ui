@@ -1,12 +1,12 @@
 import {useState} from "react";
-import Option from "cutoff-audiokit/src/components/Option.jsx";
+import Option from "cutoff-audiokit/src/components/Option";
 import iconSineWave from "../assets/sine-wave.svg";
 import iconTriangleWave from "../assets/triangle-wave.svg";
 import iconSawWave from "../assets/saw-wave.svg";
 import iconSquareWave from "../assets/square-wave.svg";
-import KnobSwitch from "cutoff-audiokit/src/components/KnobSwitch.jsx";
-import Knob from "cutoff-audiokit/src/components/Knob.jsx";
-import DemoSkeletonPage from "./DemoSkeletonPage.jsx";
+import KnobSwitch from "cutoff-audiokit/src/components/KnobSwitch";
+import Knob from "cutoff-audiokit/src/components/Knob";
+import DemoSkeletonPage from "./DemoSkeletonPage";
 
 const sampleOptions = [
     <Option key={0} value={0}><img src={iconSineWave} alt="Sine"/></Option>,

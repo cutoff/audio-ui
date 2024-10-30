@@ -1,5 +1,5 @@
-import KnobDemoPage from "./pages/KnobDemoPage.jsx";
-import SliderDemoPage from "./pages/SliderDemoPage.jsx";
+import KnobDemoPage from "./pages/KnobDemoPage";
+import SliderDemoPage from "./pages/SliderDemoPage";
 
 export default function App() {
     return (

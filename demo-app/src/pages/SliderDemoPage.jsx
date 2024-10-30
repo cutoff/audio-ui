@@ -1,5 +1,5 @@
 import {useState} from "react";
-import DemoSkeletonPage from "./DemoSkeletonPage.jsx";
+import DemoSkeletonPage from "./DemoSkeletonPage";
 import Slider from "cutoff-audiokit/src/components/Slider";
 
 function Component({value, min, max, label, center, size, stretch, onChange, onClick, style, className}) {
