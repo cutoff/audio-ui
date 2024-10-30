@@ -5,7 +5,12 @@
   "version": "1.0.0",
   "author": "Renaud Denis <mail@renauddenis.com>",
   "license": "UNLICENSED",
-  "scripts": {},
+  "scripts": {
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present"
+  },
   "keywords": [
     "react",
     "audio",
@@ -15,6 +20,12 @@
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
   },
   "workspaces": [
     "library",

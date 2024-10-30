@@ -2,6 +2,11 @@
 .idea/
 *.iml
 
+# TypeScript
+*.tsbuildinfo
+dist/
+build/
+
 # dependencies
 node_modules
 .pnp
@@ -9,9 +14,6 @@ node_modules
 
 # testing
 coverage/
-
-# production
-build/
 
 # misc
 .DS_Store

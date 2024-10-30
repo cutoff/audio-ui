@@ -13,7 +13,9 @@
     "src/styles.css",
     "src/themes.css"
   ],
-  "scripts": {},
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
   "keywords": [
     "react",
     "audio",
@@ -26,5 +28,11 @@
   },
   "dependencies": {
     "classnames": "^2.5.1"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.13",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "typescript": "^5.6.3"
   }
 }
