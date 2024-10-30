@@ -1,5 +1,5 @@
 import React from 'react';
-import BaseComponent from './BaseComponent';
+import AdaptiveSvgComponent from './AdaptiveSvgComponent';
 
 /**
  * Note names in order from C to B
@@ -46,7 +46,7 @@ const positiveModulo = (number: number, modulus: number): number => {
  * - Customizable starting position (note and octave)
  * - Highlights active notes
  * - Maintains proper piano key layout and proportions
- * - Responsive sizing through BaseComponent integration
+ * - Responsive sizing through AdaptiveSvgComponent integration
  *
  * @example
  * ```tsx
@@ -147,7 +147,7 @@ export default function Keyboard({
     }).filter(Boolean);
 
     return (
-        <BaseComponent
+        <AdaptiveSvgComponent
             className={className}
             style={{
                 backgroundColor: "#f6f6f605",
@@ -170,6 +170,6 @@ export default function Keyboard({
             />
             {renderWhiteKeys}
             {renderBlackKeys}
-        </BaseComponent>
+        </AdaptiveSvgComponent>
     );
 }

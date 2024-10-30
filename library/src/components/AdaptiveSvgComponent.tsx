@@ -2,9 +2,9 @@ import React, { useRef, useEffect, useState } from 'react';
 import { debounce } from 'lodash';
 
 /**
- * Props for the BaseComponent
+ * Props for the AdaptiveSvgComponent
  */
-type BaseComponentProps = {
+type AdaptiveSvgComponentProps = {
     /** Whether the component should stretch to fill its container while maintaining aspect ratio
      * @default false */
     stretch?: boolean;
@@ -41,7 +41,7 @@ type BaseComponentProps = {
 };
 
 /**
- * BaseComponent serves as the foundation for audio control components, providing consistent
+ * AdaptiveSvgComponent serves as the foundation for audio control components, providing consistent
  * sizing, aspect ratio maintenance, and event handling.
  *
  * Features:
@@ -56,27 +56,27 @@ type BaseComponentProps = {
  * @example
  * ```tsx
  * // Fixed size usage
- * <BaseComponent
+ * <AdaptiveSvgComponent
  *   preferredWidth={100}
  *   preferredHeight={200}
  *   viewBoxWidth={100}
  *   viewBoxHeight={200}
  * >
  *   <circle cx="50" cy="100" r="40" />
- * </BaseComponent>
+ * </AdaptiveSvgComponent>
  *
  * // Stretching usage in grid
- * <BaseComponent
+ * <AdaptiveSvgComponent
  *   stretch={true}
  *   style={{ justifySelf: 'center', alignSelf: 'center' }}
  *   viewBoxWidth={100}
  *   viewBoxHeight={200}
  * >
  *   <rect x="25" y="50" width="50" height="100" />
- * </BaseComponent>
+ * </AdaptiveSvgComponent>
  * ```
  */
-export default function BaseComponent({
+export default function AdaptiveSvgComponent({
                                           stretch = false,
                                           className = '',
                                           style = {},
@@ -89,7 +89,7 @@ export default function BaseComponent({
                                           viewBoxHeight = 100,
                                           onWheel,
                                           onClick,
-                                      }: BaseComponentProps) {
+                                      }: AdaptiveSvgComponentProps) {
     const svgRef = useRef<SVGSVGElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const [dimensions, setDimensions] = useState({

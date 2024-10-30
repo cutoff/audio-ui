@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import classNames from 'classnames';
-import BaseComponent from './BaseComponent';
+import AdaptiveSvgComponent from './AdaptiveSvgComponent';
 
 /**
  * Props for the Slider component
@@ -187,7 +187,7 @@ const Slider = ({
     };
 
     return (
-        <BaseComponent
+        <AdaptiveSvgComponent
             viewBoxWidth={100}
             viewBoxHeight={400}
             preferredWidth={40}
@@ -233,7 +233,7 @@ const Slider = ({
             >
                 {label}
             </text>
-        </BaseComponent>
+        </AdaptiveSvgComponent>
     );
 };
 

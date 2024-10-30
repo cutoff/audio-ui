@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import BaseComponent from './BaseComponent';
+import AdaptiveSvgComponent from './AdaptiveSvgComponent';
 import classNames from 'classnames';
 import "../styles.css";
 
@@ -123,7 +123,7 @@ export default function Knob({
     };
 
     return (
-        <BaseComponent
+        <AdaptiveSvgComponent
             stretch={stretch}
             className={classNames(
                 className,
@@ -210,6 +210,6 @@ export default function Knob({
                     {label}
                 </text>
             )}
-        </BaseComponent>
+        </AdaptiveSvgComponent>
     );
 }
