@@ -24,6 +24,7 @@ type KeyboardProps = {
     /** Array of notes that should be highlighted (e.g., ['C4', 'E4', 'G4'])
      * Notes should be in the format: NoteName + Octave (+ optional '#' for sharp) */
     notesOn?: string[];
+    stretch?: boolean;
     /** Additional styles to apply to the container */
     style?: React.CSSProperties;
     /** Additional CSS classes to apply to the container */
@@ -72,6 +73,7 @@ export default function Keyboard({
                                      nbKeys = 61,
                                      startKey = (nbKeys === 88) ? 'A' : 'C',
                                      startOctave = 2,
+                                     stretch = false,
                                      notesOn = [],
                                      style = {},
                                      className = ''
@@ -158,7 +160,7 @@ export default function Keyboard({
             viewBoxHeight={whiteHeight}
             preferredWidth={width}
             preferredHeight={whiteHeight}
-            stretch={true}
+            stretch={stretch}
         >
             <rect
                 className="stroke-primary-50 fill-transparent"
