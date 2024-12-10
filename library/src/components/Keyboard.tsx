@@ -18,9 +18,9 @@ type KeyboardProps = {
     /** Starting note name (A-G)
      * @default 'C' for 61 keys, 'A' for 88 keys */
     startKey?: NoteName;
-    /** Starting octave number
-     * @default 2 */
-    startOctave?: number;
+    /** Octave transpose index (default: 0)
+     * @default 0 */
+    octaveShift?: number;
     /** Array of notes that should be highlighted (e.g., ['C4', 'E4', 'G4'])
      * Notes should be in the format: NoteName + Octave (+ optional '#' for sharp) */
     notesOn?: string[];
@@ -58,7 +58,7 @@ const positiveModulo = (number: number, modulus: number): number => {
  * <Keyboard
  *   nbKeys={88}
  *   startKey="A"
- *   startOctave={0}
+ *   octaveShift={0}
  *   notesOn={['C4', 'E4', 'G4']}
  * />
  *
@@ -72,18 +72,43 @@ const positiveModulo = (number: number, modulus: number): number => {
 export default function Keyboard({
                                      nbKeys = 61,
                                      startKey = (nbKeys === 88) ? 'A' : 'C',
-                                     startOctave = 2,
+                                     octaveShift = 0,
                                      stretch = false,
                                      notesOn = [],
                                      style = {},
-                                     className = ''
+                                     className = ""
                                  }: KeyboardProps) {
-    // Calculate keyboard dimensions
+    // Initial computations
+    // TODO memoize that
+
     const nbOctaves = Math.floor(nbKeys / 12);
     const keyRemainder = nbKeys % 12;
-    const nbWhite = nbOctaves * 7 + keyRemainder;
 
-    // Key dimensions
+    // Calculate white keys mathematically
+    const whiteKeysInRemainder = Math.ceil(keyRemainder * 7 / 12);
+    const nbWhite = (nbOctaves * 7) + whiteKeysInRemainder;
+
+    const startKeyIndex = noteNames.indexOf(startKey);
+
+    // For a keyboard starting at C:
+    // - 25 keys → 2 octaves = 14 white keys + 1 = 15 white keys
+    // - 49 keys → 4 octaves = 28 white keys + 1 = 29 white keys
+    // - 61 keys → 5 octaves = 35 white keys + 1 = 36 white keys
+
+    const middleC4Index = Math.floor((nbWhite - 1) / 2);  // Index of where C4 should be
+
+    // Find the offset of the start key relative to C
+    let relativePosition = startKeyIndex;
+    if (startKeyIndex >= 5) { // For A and B
+        relativePosition -= notesCount;
+    }
+
+    // If we start at C and want C4 at middleC4Index,
+    // how many octaves must we start before C4?
+    const octavesBeforeC4 = Math.floor(middleC4Index / 7);
+    const startOctave = 4 - octavesBeforeC4;
+
+    // Key dimensions (in SVG units)
     const whiteWidth = 25;
     const whiteHeight = 150;
     const blackWidth = 13;
@@ -102,13 +127,12 @@ export default function Keyboard({
         positiveModulo(6 + blackKeyShift, 7)
     ];
 
-    const startKeyIndex = noteNames.indexOf(startKey);
 
     // Generate white keys
     const renderWhiteKeys = Array.from({ length: nbWhite }, (_, index) => {
         const currentNoteIndex = (startKeyIndex + index) % notesCount;
         const currentNoteName = noteNames[currentNoteIndex];
-        const currentOctave = startOctave + Math.floor((startKeyIndex + index) / notesCount);
+        const currentOctave = (startOctave + octaveShift) + Math.floor((startKeyIndex + index) / notesCount);
         const currentWhiteNote = currentNoteName + currentOctave.toString();
 
         return (
@@ -131,7 +155,7 @@ export default function Keyboard({
 
         const currentNoteIndex = (startKeyIndex + index) % notesCount;
         const currentNoteName = noteNames[currentNoteIndex];
-        const currentOctave = startOctave + Math.floor((startKeyIndex + index) / notesCount);
+        const currentOctave = (startOctave + octaveShift) + Math.floor((startKeyIndex + index) / notesCount);
         const currentBlackNote = currentNoteName + "#" + currentOctave.toString();
 
         return (
