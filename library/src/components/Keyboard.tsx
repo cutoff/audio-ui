@@ -90,23 +90,13 @@ export default function Keyboard({
 
     const startKeyIndex = noteNames.indexOf(startKey);
 
-    // For a keyboard starting at C:
-    // - 25 keys → 2 octaves = 14 white keys + 1 = 15 white keys
-    // - 49 keys → 4 octaves = 28 white keys + 1 = 29 white keys
-    // - 61 keys → 5 octaves = 35 white keys + 1 = 36 white keys
+    const middleKeyIndex = Math.floor((nbWhite - 1) / 2);
+    const octavesFromMiddle = Math.floor(middleKeyIndex / 7);
 
-    const middleC4Index = Math.floor((nbWhite - 1) / 2);  // Index of where C4 should be
-
-    // Find the offset of the start key relative to C
-    let relativePosition = startKeyIndex;
-    if (startKeyIndex >= 5) { // For A and B
-        relativePosition -= notesCount;
-    }
-
-    // If we start at C and want C4 at middleC4Index,
-    // how many octaves must we start before C4?
-    const octavesBeforeC4 = Math.floor(middleC4Index / 7);
-    const startOctave = 4 - octavesBeforeC4;
+    // If we start with A or B, we need to subtract one more octave
+    // because these notes belong to the octave of the next C
+    const octaveAdjustment = startKeyIndex >= 5 ? 1 : 0;
+    const startOctave = 4  - octavesFromMiddle - octaveAdjustment;
 
     // Key dimensions (in SVG units)
     const whiteWidth = 25;
