@@ -12,19 +12,19 @@
     --default-font-family: "Oxanium", sans-serif;
     --default-font-size: 14px;
 
-    color: var(--text-color);
-    background-color: var(--bg-color);
+    /*color: var(--text-color);*/
+    /*background-color: var(--bg-color);*/
 
-    font-family: var(--default-font-family);
-    font-size: var(--default-font-size);
-    line-height: 24px;
-    font-weight: 400;
+    /*font-family: var(--default-font-family);*/
+    /*font-size: var(--default-font-size);*/
+    /*line-height: 24px;*/
+    /*font-weight: 400;*/
 
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: subpixel-antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-text-size-adjust: 100%;
+    /*font-synthesis: none;*/
+    /*text-rendering: optimizeLegibility;*/
+    /*-webkit-font-smoothing: subpixel-antialiased;*/
+    /*-moz-osx-font-smoothing: grayscale;*/
+    /*-webkit-text-size-adjust: 100%;*/
 }
 
 textarea input {

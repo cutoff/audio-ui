@@ -1,6 +1,19 @@
 @import url("reset-css/reset.css");
 
 :root {
+    color: var(--text-color);
+    background-color: var(--bg-color);
+
+    font-family: "Oxanium", sans-serif;
+    font-size: 16pt;
+    line-height: 24px;
+    font-weight: 400;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
 }
 
 *, *::before, *::after {
