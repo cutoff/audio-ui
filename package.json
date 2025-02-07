@@ -1,8 +1,7 @@
 {
-  "name": "@cutoff/audio-ui-react-root",
-  "description": "React Components for Audio and MIDI apps!",
-  "private": true,
+  "name": "@cutoff/audio-ui",
   "version": "1.0.0",
+  "private": true,
   "author": "Renaud Denis <mail@renauddenis.com>",
   "license": "UNLICENSED",
   "scripts": {
@@ -17,18 +16,7 @@
     "midi",
     "components"
   ],
-  "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "devDependencies": {
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "@types/node": "^20.0.0",
-    "typescript": "^5.0.0"
-  },
   "workspaces": [
-    "library",
-    "demo-app"
+    "react"
   ]
 }

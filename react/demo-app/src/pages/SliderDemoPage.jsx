@@ -1,6 +1,6 @@
 import {useState} from "react";
 import DemoSkeletonPage from "./DemoSkeletonPage";
-import { Slider } from "cutoff-audiokit";
+import { Slider } from "@cutoff/audio-ui-react";
 
 function Component({value, min, max, label, center, size, stretch, onChange, onClick, style, className}) {
     return (

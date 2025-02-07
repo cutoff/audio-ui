@@ -4,7 +4,7 @@ import iconTriangleWave from "../assets/triangle-wave.svg";
 import iconSawWave from "../assets/saw-wave.svg";
 import iconSquareWave from "../assets/square-wave.svg";
 import DemoSkeletonPage from "./DemoSkeletonPage";
-import {Knob, KnobSwitch, Option} from "cutoff-audiokit";
+import {Knob, KnobSwitch, Option} from "@cutoff/audio-ui-react";
 
 const sampleOptions = [
     <Option key={0} value={0}><img src={iconSineWave} alt="Sine"/></Option>,

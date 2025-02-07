@@ -8,7 +8,7 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, './src'),
       // Ensure local development works with the library
-      'cutoff-audiokit': resolve(__dirname, '../library/src')
+      '@cutoff/audio-ui-react': resolve(__dirname, '../library/src')
     }
   }
 });

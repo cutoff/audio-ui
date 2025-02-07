@@ -1,5 +1,5 @@
 {
-  "name": "cutoff-audiokit-demo-app",
+  "name": "@cutoff/audio-ui-react-demo-app",
   "description": "Demo Application",
   "private": true,
   "version": "1.0.0",
@@ -23,7 +23,7 @@
     "@radix-ui/react-tooltip": "^1.1.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "cutoff-audiokit": "*",
+    "@cutoff/audio-ui-react": "*",
     "lucide-react": "^0.474.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

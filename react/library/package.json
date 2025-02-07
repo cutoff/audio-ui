@@ -1,5 +1,5 @@
 {
-  "name": "cutoff-audiokit",
+  "name": "@cutoff/audio-ui-react",
   "description": "React Components for Audio and MIDI apps!",
   "private": true,
   "version": "1.0.0",
