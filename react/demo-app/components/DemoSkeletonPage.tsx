@@ -6,7 +6,7 @@ import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import {oneDark} from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {useMemo} from "react";
 
-export default function DemoSkeletonPage({codeSnippet, PageComponent, componentProps, properties, examples, onChange}) {
+export default function DemoSkeletonPage({componentName, codeSnippet, PageComponent, componentProps, properties, examples, onChange}) {
     /**
      * Fake grid items created to highlight the borders of the grid
      */
@@ -24,7 +24,7 @@ export default function DemoSkeletonPage({codeSnippet, PageComponent, componentP
         <div className="mainLayout">
             <div className="sidePart">
                 <div className="maxWidth mainComponentZone">
-                    <p className="mainTitle">Knob</p>
+                    <p className="mainTitle">{componentName}</p>
                     <div className="mainComponent">
                         <PageComponent
                             stretch={true}

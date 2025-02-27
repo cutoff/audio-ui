@@ -151,6 +151,7 @@ export default function KnobDemoPage() {
 
     return (
         <DemoSkeletonPage
+            componentName="Knob"
             codeSnippet={codeString}
             PageComponent={KnobComponent}
             componentProps={componentProps}

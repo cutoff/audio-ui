@@ -100,6 +100,7 @@ export default function Page() {
 
     return (
         <DemoSkeletonPage
+            componentName="Slider"
             codeSnippet={codeString}
             PageComponent={Component}
             componentProps={componentProps}
