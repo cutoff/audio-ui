@@ -1,8 +1,11 @@
 "use client"
 
-import {useState} from "react";
-import {Slider} from "@cutoff/audio-ui-react";
+import { useState } from "react";
+import { Slider } from "@cutoff/audio-ui-react";
 import DemoSkeletonPage from "@/components/DemoSkeletonPage";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function Page() {
     const [value, setValue] = useState(42);
@@ -46,42 +49,53 @@ export default function Page() {
     const componentProps = {min, center, max, value, label, size};
 
     const properties = [
-        <label key="label" className="propertiesLabel">
-            Label:
-            <input
-                name="labelProp"
-                className="propertiesInputText"
+        <div key="label" className="grid gap-2">
+            <Label htmlFor="labelProp">Label</Label>
+            <Input
+                id="labelProp"
                 value={label}
                 onChange={(e) => setLabel(e.target.value)}
             />
-        </label>,
-        <label key="min" className="propertiesLabel">
-            Min:
-            <input
-                name="minProp"
-                className="propertiesInputText"
+        </div>,
+        <div key="min" className="grid gap-2">
+            <Label htmlFor="minProp">Min</Label>
+            <Input
+                id="minProp"
+                type="number"
                 value={min}
                 onChange={(e) => setMin(Number(e.target.value))}
             />
-        </label>,
-        <label key="max" className="propertiesLabel">
-            Max:
-            <input
-                name="maxProp"
-                className="propertiesInputText"
+        </div>,
+        <div key="max" className="grid gap-2">
+            <Label htmlFor="maxProp">Max</Label>
+            <Input
+                id="maxProp"
+                type="number"
                 value={max}
                 onChange={(e) => setMax(Number(e.target.value))}
             />
-        </label>,
-        <label key="center" className="propertiesLabel">
-            Center:
-            <input
-                name="centerProp"
-                className="propertiesInputText"
+        </div>,
+        <div key="center" className="grid gap-2">
+            <Label htmlFor="centerProp">Center</Label>
+            <Input
+                id="centerProp"
+                type="number"
                 value={center}
                 onChange={(e) => setCenter(Number(e.target.value))}
             />
-        </label>,
+        </div>,
+        <div key="size" className="grid gap-2">
+            <Label htmlFor="sizeProp">Size</Label>
+            <Select value={size} onValueChange={(value) => setSize(value)}>
+                <SelectTrigger id="sizeProp">
+                    <SelectValue placeholder="Select size" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="normal">Normal</SelectItem>
+                    <SelectItem value="large">Large</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>
     ];
 
     const examples = [

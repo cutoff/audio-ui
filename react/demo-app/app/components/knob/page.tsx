@@ -1,8 +1,11 @@
 "use client"
 
-import {useState} from "react";
-import {Knob, KnobProps, KnobSwitch, KnobSwitchProps, Option} from "@cutoff/audio-ui-react";
+import { useState } from "react";
+import { Knob, KnobProps, KnobSwitch, KnobSwitchProps, Option } from "@cutoff/audio-ui-react";
 import DemoSkeletonPage from "@/components/DemoSkeletonPage";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const iconSineWave = "/sine-wave.svg";
 const iconTriangleWave = "/triangle-wave.svg";
@@ -106,7 +109,6 @@ export default function KnobDemoPage() {
     const [enableOptions, setEnableOptions] = useState(false);
 
     const handleExampleClick = (num: 0 | 1 | 2): void => {
-
         switch (num) {
             case 0:
                 setValue(42);
@@ -134,39 +136,52 @@ export default function KnobDemoPage() {
                 break;
         }
     };
+
     const properties = [
-        <label key="label" className="propertiesLabel">
-            Label:
-            <input name="labelProp" className="propertiesInputText"
-                   value={label} onChange={(e) => setLabel(e.target.value)}
+        <div key="label" className="grid gap-2">
+            <Label htmlFor="labelProp">Label</Label>
+            <Input
+                id="labelProp"
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
             />
-        </label>,
-        <label key="min" className="propertiesLabel">
-            Min:
-            <input name="minProp" className="propertiesInputText"
-                   value={min} onChange={(e) => setMin(Number(e.target.value))}
+        </div>,
+        <div key="min" className="grid gap-2">
+            <Label htmlFor="minProp">Min</Label>
+            <Input
+                id="minProp"
+                type="number"
+                value={min}
+                onChange={(e) => setMin(Number(e.target.value))}
             />
-        </label>,
-        <label key="max" className="propertiesLabel">
-            Max:
-            <input name="maxProp" className="propertiesInputText"
-                   value={max} onChange={(e) => setMax(Number(e.target.value))}
+        </div>,
+        <div key="max" className="grid gap-2">
+            <Label htmlFor="maxProp">Max</Label>
+            <Input
+                id="maxProp"
+                type="number"
+                value={max}
+                onChange={(e) => setMax(Number(e.target.value))}
             />
-        </label>,
-        <label key="center" className="propertiesLabel">
-            Center:
-            <input name="centerProp" className="propertiesInputText"
-                   value={center} onChange={(e) => setCenter(Number(e.target.value))}
+        </div>,
+        <div key="center" className="grid gap-2">
+            <Label htmlFor="centerProp">Center</Label>
+            <Input
+                id="centerProp"
+                type="number"
+                value={center}
+                onChange={(e) => setCenter(Number(e.target.value))}
             />
-        </label>,
-        <label key="enableOptions" className="propertiesLabel">
-            Options:
-            <input name="enableOptionsProp" className="propertiesInputText"
-                   type="checkbox"
-                   checked={enableOptions} onChange={(e) => setEnableOptions(e.target.checked)}
+        </div>,
+        <div key="options" className="flex items-center gap-2 pt-2">
+            <Checkbox
+                id="enableOptionsProp"
+                checked={enableOptions}
+                onCheckedChange={(checked) => setEnableOptions(checked === true)}
             />
-        </label>
-    ]
+            <Label htmlFor="enableOptionsProp" className="cursor-pointer">Options</Label>
+        </div>
+    ];
 
     const examples = [
         <Knob key="0" style={{cursor: "pointer"}}

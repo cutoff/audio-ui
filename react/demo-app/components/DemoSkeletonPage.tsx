@@ -1,9 +1,9 @@
 "use client"
 
-import "./DemoPage.css";
-import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
-import {oneDark} from 'react-syntax-highlighter/dist/esm/styles/prism';
-import {useMemo} from "react";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useMemo } from "react";
+import Link from "next/link";
 
 export type DemoSkeletonPageProps = {
     /** Name of the component being demonstrated */
@@ -31,147 +31,184 @@ export default function DemoSkeletonPage({
                                              examples,
                                              onChange
                                          }: DemoSkeletonPageProps) {
-    /**
-     * Fake grid items created to highlight the borders of the grid
-     */
     const fillItems = useMemo(() => {
         const items = [];
         for (let i = 0; i < 27; i++) {
-            items.push(<div className="gridItem" style={{
-                gridArea: `${(i % 3) + 1} / ${Math.floor(i / 3) + 1} / span 1 / span 1`
-            }}/>)
+            items.push(
+                <div
+                    key={i}
+                    className="w-full h-full border border-dashed border-zinc-600"
+                    style={{
+                        gridArea: `${(i % 3) + 1} / ${Math.floor(i / 3) + 1} / span 1 / span 1`
+                    }}
+                />
+            )
         }
         return items;
     }, []);
 
+    // Mock theme color buttons
+    const themeColors = [
+        { color: "bg-green-400", name: "Green" },
+        { color: "bg-pink-500", name: "Pink" },
+        { color: "bg-red-500", name: "Red" },
+        { color: "bg-orange-500", name: "Orange" }
+    ];
+
     return (
-        <div className="mainLayout">
-            <div className="sidePart">
-                <div className="maxWidth mainComponentZone">
-                    <p className="mainTitle">{componentName}</p>
-                    <div className="mainComponent">
-                        <PageComponent
-                            stretch={true}
-                            onChange={onChange}
-                            {...componentProps}
-                        />
+        <div className="h-screen flex">
+            {/* Left Column */}
+            <div className="w-1/3 p-8 flex flex-col justify-between bg-zinc-900/30 overflow-auto">
+                <div className="flex flex-col gap-8">
+                    <div className="flex flex-col gap-6">
+                        <Link href="/">
+                            <h1 className="text-2xl font-medium">{componentName}</h1>
+                        </Link>
+
+                        {/* Main Component Preview */}
+                        <div className="flex justify-center items-center h-60">
+                            <PageComponent
+                                stretch={true}
+                                onChange={onChange}
+                                {...componentProps}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Code Snippet */}
+                    <div className="flex flex-col gap-2">
+                        <h2 className="text-base font-semibold pt-4 pb-2">Code Snippet</h2>
+                        <SyntaxHighlighter
+                            className="w-full text-sm rounded-md overflow-hidden"
+                            language="jsx"
+                            style={oneDark}
+                            customStyle={{backgroundColor: "transparent"}}
+                            wrapLongLines={true}>
+                            {codeSnippet}
+                        </SyntaxHighlighter>
                     </div>
                 </div>
-                <div className="maxWidth codeSnippetZone">
-                    <p className="subTitle">Code Snippet</p>
-                    <SyntaxHighlighter className="codeSnippet"
-                                       customStyle={{backgroundColor: "transparent"}}
-                                       language="jsx"
-                                       style={oneDark}
-                                       wrapLongLines={true}>
-                        {codeSnippet}
-                    </SyntaxHighlighter>
-                </div>
-                <div className="maxWidth propertiesZone">
-                    <p className="subTitle">Properties</p>
-                    {properties}
-                </div>
-            </div>
-            <div className="centralPart">
-                <div className="centralColumn">
-                    <div className="flexColumnNoWrap">
-                        <p className="mainTitle">Examples</p>
-                        <div className="flexRowWrap gapLarge">
-                            {examples.map((item, i) => (
-                                <div key={i} className="exampleItem">
-                                    {item}
-                                </div>
+
+                {/* Properties - Now at bottom */}
+                <div className="flex flex-col gap-4 mt-8">
+                    <h2 className="text-base font-semibold pt-2">Properties</h2>
+                    <div className="space-y-4 w-full">
+                        {properties}
+                    </div>
+
+                    {/* Theme Color Selection */}
+                    <div className="flex justify-end items-center gap-2 mt-4">
+                        <span className="text-sm">Theme</span>
+                        <div className="flex gap-2">
+                            {themeColors.map((theme, index) => (
+                                <button
+                                    key={index}
+                                    className={`w-6 h-6 rounded ${theme.color}`}
+                                    aria-label={`Select ${theme.name} theme`}
+                                />
                             ))}
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div className="flexRowWrap gapLarge maxWidth">
+            {/* Right Column */}
+            <div className="w-2/3 flex justify-center">
+                <div className="w-full max-w-2xl p-8">
+                    <div className="flex flex-col gap-10">
+                        {/* Examples */}
                         <div>
-                            <p className="mainTitle">Size</p>
-                            <PageComponent {...componentProps} />
-                            <p className="subTitle">Default</p>
+                            <h2 className="text-2xl font-medium mb-6">Examples</h2>
+                            <div className="flex flex-wrap gap-8">
+                                {examples.map((example, i) => (
+                                    <div key={i} className="flex flex-col items-center w-20">
+                                        {example}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                    </div>
 
-                    <div>
-                        <p className="mainTitle">Grid Layout</p>
-                        <div className="gridLayout">
-                            {fillItems}
-                            <p style={{
-                                gridArea: "1 / 1 / span 1 / span 3",
-                                justifySelf: "center",
-                                alignSelf: "start"
-                            }} className="subTitle">align-self</p>
-                            <p style={{
-                                gridArea: "1 / 1 / span 1 / span 1",
-                                justifySelf: "center",
-                                alignSelf: "end"
-                            }} className="subTitle">start</p>
-                            <PageComponent style={{
-                                gridArea: "2 / 1 / span 1 / span 1",
-                                justifySelf: "center",
-                                alignSelf: "start"
-                            }}
-                                           stretch={true}
-                                           {...componentProps}
-                            />
-                            <p style={{
-                                gridArea: "1 / 2 / span 1 / span 1",
-                                justifySelf: "center",
-                                alignSelf: "end"
-                            }} className="subTitle">end</p>
-                            <PageComponent style={{
-                                gridArea: "2 / 2 / span 1 / span 1",
-                                justifySelf: "center",
-                                alignSelf: "end"
-                            }}
-                                           stretch={true}
-                                           {...componentProps}
-                            />
-                            <p style={{
-                                gridArea: "1 / 3 / span 1 / span 1",
-                                justifySelf: "center",
-                                alignSelf: "end"
-                            }} className="subTitle">center</p>
-                            <PageComponent style={{
-                                gridArea: "2 / 3 / span 1 / span 1",
-                                justifySelf: "center",
-                                alignSelf: "center"
-                            }}
-                                           stretch={true}
-                                           {...componentProps}
-                            />
-                            <PageComponent style={{
-                                gridArea: "1 / 5 / span 2 / span 2",
-                                justifySelf: "center",
-                                alignSelf: "start"
-                            }}
-                                           stretch={true}
-                                           {...componentProps}
-                            />
-                            <p style={{
-                                gridArea: "3 / 5 / span 1 / span 2",
-                                justifySelf: "center",
-                                alignSelf: "end"
-                            }} className="subTitle">2x2</p>
-                            <PageComponent style={{
-                                gridArea: "2 / 7 / span 2 / span 3",
-                                justifySelf: "center",
-                                alignSelf: "end"
-                            }}
-                                           stretch={true}
-                                           {...componentProps}
-                            />
-                            <p style={{
-                                gridArea: "1 / 7 / span 1 / span 3",
-                                justifySelf: "center",
-                                alignSelf: "center"
-                            }} className="subTitle">2x3</p>
-                            <p style={{
-                                gridArea: "3 / 1 / span 1 / span 2",
-                                justifySelf: "start",
-                                alignSelf: "end"
-                            }} className="subTitle">stretch=true</p>
+                        {/* Size Section */}
+                        <div>
+                            <h2 className="text-2xl font-medium mb-4">Size</h2>
+                            <div className="flex flex-col">
+                                <PageComponent {...componentProps} />
+                                <p className="text-base font-medium mt-2">Default</p>
+                            </div>
+                        </div>
+
+                        {/* Grid Layout */}
+                        <div>
+                            <h2 className="text-2xl font-medium mb-4">Grid Layout</h2>
+                            <div className="w-full h-60 grid grid-rows-3 grid-cols-9 gap-2 relative">
+                                {fillItems}
+
+                                {/* Grid title */}
+                                <div className="col-span-3 absolute -top-8 left-1/2 transform -translate-x-1/2 text-base font-medium">
+                                    align-self
+                                </div>
+
+                                {/* Grid labels */}
+                                <p className="absolute -top-6 left-0 text-sm">start</p>
+                                <p className="absolute -top-6 left-[11%] text-sm">end</p>
+                                <p className="absolute -top-6 left-[22%] text-sm">center</p>
+
+                                {/* Positioned components */}
+                                <PageComponent
+                                    style={{
+                                        gridArea: "2 / 1 / span 1 / span 1",
+                                        justifySelf: "center",
+                                        alignSelf: "start"
+                                    }}
+                                    stretch={true}
+                                    {...componentProps}
+                                />
+                                <PageComponent
+                                    style={{
+                                        gridArea: "2 / 2 / span 1 / span 1",
+                                        justifySelf: "center",
+                                        alignSelf: "end"
+                                    }}
+                                    stretch={true}
+                                    {...componentProps}
+                                />
+                                <PageComponent
+                                    style={{
+                                        gridArea: "2 / 3 / span 1 / span 1",
+                                        justifySelf: "center",
+                                        alignSelf: "center"
+                                    }}
+                                    stretch={true}
+                                    {...componentProps}
+                                />
+
+                                {/* 2x2 grid example */}
+                                <PageComponent
+                                    style={{
+                                        gridArea: "1 / 5 / span 2 / span 2",
+                                        justifySelf: "center",
+                                        alignSelf: "center"
+                                    }}
+                                    stretch={true}
+                                    {...componentProps}
+                                />
+                                <p className="absolute bottom-0 left-[44%] text-sm">2x2</p>
+
+                                {/* 2x3 grid example */}
+                                <PageComponent
+                                    style={{
+                                        gridArea: "2 / 7 / span 2 / span 3",
+                                        justifySelf: "center",
+                                        alignSelf: "center"
+                                    }}
+                                    stretch={true}
+                                    {...componentProps}
+                                />
+                                <p className="absolute top-8 left-[72%] text-sm">2x3</p>
+
+                                {/* stretching label */}
+                                <p className="absolute bottom-0 left-0 text-sm">stretch=true</p>
+                            </div>
                         </div>
                     </div>
                 </div>
