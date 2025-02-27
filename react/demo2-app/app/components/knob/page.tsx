@@ -1,10 +1,13 @@
+"use client"
+
 import {useState} from "react";
-import iconSineWave from "../assets/sine-wave.svg";
-import iconTriangleWave from "../assets/triangle-wave.svg";
-import iconSawWave from "../assets/saw-wave.svg";
-import iconSquareWave from "../assets/square-wave.svg";
-import DemoSkeletonPage from "./DemoSkeletonPage";
 import {Knob, KnobSwitch, Option} from "@cutoff/audio-ui-react";
+import DemoSkeletonPage from "@/components/DemoSkeletonPage";
+
+const iconSineWave = "/sine-wave.svg";
+const iconTriangleWave = "/triangle-wave.svg";
+const iconSawWave = "/saw-wave.svg";
+const iconSquareWave = "/square-wave.svg";
 
 const sampleOptions = [
     <Option key={0} value={0}><img src={iconSineWave} alt="Sine"/></Option>,

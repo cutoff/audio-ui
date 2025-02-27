@@ -1,3 +1,5 @@
+"use client"
+
 import "./DemoPage.css";
 
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';

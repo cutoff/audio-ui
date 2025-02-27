@@ -29,6 +29,6 @@
   },
   "workspaces": [
     "library",
-    "demo-app"
+    "demo2-app"
   ]
 }

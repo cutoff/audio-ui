@@ -1,6 +1,8 @@
+"use client"
+
 import {useState} from "react";
-import DemoSkeletonPage from "./DemoSkeletonPage";
 import { Slider } from "@cutoff/audio-ui-react";
+import DemoSkeletonPage from "@/components/DemoSkeletonPage";
 
 function Component({value, min, max, label, center, size, stretch, onChange, onClick, style, className}) {
     return (
@@ -13,7 +15,7 @@ function Component({value, min, max, label, center, size, stretch, onChange, onC
     );
 }
 
-export default function SliderDemoPage() {
+export default function Page() {
     const [value, setValue] = useState(42);
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(100);
