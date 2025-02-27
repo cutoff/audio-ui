@@ -11,7 +11,7 @@ const notesCount = noteNames.length;
 /**
  * Props for the Keyboard component
  */
-type KeyboardProps = {
+export type KeyboardProps = {
     /** Number of keys on the keyboard
      * @default 61 */
     nbKeys?: number;

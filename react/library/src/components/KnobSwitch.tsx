@@ -4,7 +4,7 @@ import Knob from './Knob';
 /**
  * Props for the option elements within KnobSwitch
  */
-type KnobSwitchOptionProps = {
+export type KnobSwitchOptionProps = {
     /** Value associated with this option */
     value?: any;
     /** Whether this option is selected by default when no value prop is provided */
@@ -16,7 +16,7 @@ type KnobSwitchOptionProps = {
 /**
  * Props for the KnobSwitch component
  */
-type KnobSwitchProps = {
+export type KnobSwitchProps = {
     /** Text label displayed below the knob */
     label?: string;
     /** Currently selected value */

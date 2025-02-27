@@ -14,7 +14,7 @@ const CENTER_ANGLE = 360;
 /**
  * Props for the Knob component
  */
-type KnobProps = {
+export type KnobProps = {
     /** Minimum value of the knob */
     min: number;
     /** Maximum value of the knob */

@@ -4,7 +4,7 @@ import { debounce } from 'lodash';
 /**
  * Props for the AdaptiveSvgComponent
  */
-type AdaptiveSvgComponentProps = {
+export type AdaptiveSvgComponentProps = {
     /** Whether the component should stretch to fill its container while maintaining aspect ratio
      * @default false */
     stretch?: boolean;

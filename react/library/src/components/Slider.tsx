@@ -5,7 +5,7 @@ import AdaptiveSvgComponent from './AdaptiveSvgComponent';
 /**
  * Props for the Slider component
  */
-type SliderProps = {
+export type SliderProps = {
     /** Minimum value of the slider's range */
     min: number;
     /** Maximum value of the slider's range */

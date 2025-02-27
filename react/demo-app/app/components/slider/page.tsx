@@ -1,19 +1,8 @@
 "use client"
 
 import {useState} from "react";
-import { Slider } from "@cutoff/audio-ui-react";
+import {Slider} from "@cutoff/audio-ui-react";
 import DemoSkeletonPage from "@/components/DemoSkeletonPage";
-
-function Component({value, min, max, label, center, size, stretch, onChange, onClick, style, className}) {
-    return (
-        <Slider style={style} className={className}
-                min={min} center={center} max={max} value={value} label={label} stretch={stretch}
-                size={size}
-                onClick={onClick}
-                onChange={onChange}
-        />
-    );
-}
 
 export default function Page() {
     const [value, setValue] = useState(42);
@@ -25,7 +14,7 @@ export default function Page() {
 
     const codeString = `<Slider min={${min}} max={${max}} value={${value}} label='${label}' size='${size}' center={${center}} />`;
 
-    const handleExampleClick = (num) => {
+    const handleExampleClick = (num: 0 | 1 | 2): void => {
         switch (num) {
             case 0:
                 setValue(42);
@@ -59,42 +48,72 @@ export default function Page() {
     const properties = [
         <label key="label" className="propertiesLabel">
             Label:
-            <input name="labelProp" className="propertiesInputText"
-                   value={label} onChange={(e) => setLabel(e.target.value)}
+            <input
+                name="labelProp"
+                className="propertiesInputText"
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
             />
         </label>,
         <label key="min" className="propertiesLabel">
             Min:
-            <input name="minProp" className="propertiesInputText"
-                   value={min} onChange={(e) => setMin(Number(e.target.value))}
+            <input
+                name="minProp"
+                className="propertiesInputText"
+                value={min}
+                onChange={(e) => setMin(Number(e.target.value))}
             />
         </label>,
         <label key="max" className="propertiesLabel">
             Max:
-            <input name="maxProp" className="propertiesInputText"
-                   value={max} onChange={(e) => setMax(Number(e.target.value))}
+            <input
+                name="maxProp"
+                className="propertiesInputText"
+                value={max}
+                onChange={(e) => setMax(Number(e.target.value))}
             />
         </label>,
         <label key="center" className="propertiesLabel">
             Center:
-            <input name="centerProp" className="propertiesInputText"
-                   value={center} onChange={(e) => setCenter(Number(e.target.value))}
+            <input
+                name="centerProp"
+                className="propertiesInputText"
+                value={center}
+                onChange={(e) => setCenter(Number(e.target.value))}
             />
-        </label>
-    ]
+        </label>,
+    ];
 
     const examples = [
-        <Slider key="0" style={{cursor: "pointer"}}
-              min={0} max={100} value={42} label="Default"
-              onClick={() => handleExampleClick(0)}
+        <Slider
+            key="0"
+            style={{cursor: "pointer"}}
+            min={0}
+            max={100}
+            value={42}
+            label="Default"
+            onClick={() => handleExampleClick(0)}
         />,
-        <Slider key="1" style={{cursor: "pointer"}}
-              min={0} center={64} max={127} value={64} label="Center"
-              onClick={() => handleExampleClick(1)}
+        <Slider
+            key="1"
+            style={{cursor: "pointer"}}
+            min={0}
+            center={64}
+            max={127}
+            value={64}
+            label="Center"
+            onClick={() => handleExampleClick(1)}
         />,
-        <Slider key="2" style={{cursor: "pointer"}}
-              min={0} center={0} max={127} value={22} size="large" label="Large"
-              onClick={() => handleExampleClick(2)}
+        <Slider
+            key="2"
+            style={{cursor: "pointer"}}
+            min={0}
+            center={0}
+            max={127}
+            value={22}
+            size="large"
+            label="Large"
+            onClick={() => handleExampleClick(2)}
         />,
     ];
 
@@ -102,7 +121,7 @@ export default function Page() {
         <DemoSkeletonPage
             componentName="Slider"
             codeSnippet={codeString}
-            PageComponent={Component}
+            PageComponent={Slider}
             componentProps={componentProps}
             properties={properties}
             examples={examples}

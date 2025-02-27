@@ -1,7 +1,7 @@
 "use client"
 
 import {useState} from "react";
-import {Knob, KnobSwitch, Option} from "@cutoff/audio-ui-react";
+import {Knob, KnobProps, KnobSwitch, KnobSwitchProps, Option} from "@cutoff/audio-ui-react";
 import DemoSkeletonPage from "@/components/DemoSkeletonPage";
 
 const iconSineWave = "/sine-wave.svg";
@@ -17,7 +17,14 @@ const sampleOptions = [
     <Option key={4} value={4}>Oth</Option>
 ];
 
-function generateCodeSnippet(enableOptions, value, label, min, max, center) {
+function generateCodeSnippet(
+    enableOptions: boolean,
+    value: number,
+    label: string,
+    min: number,
+    max: number,
+    center: number
+): string {
     if (enableOptions) {
         return `<Knob value={${value}} label='${label}'>
     <Option value={0}><img src={iconSineWave} /></Option>
@@ -32,27 +39,59 @@ function generateCodeSnippet(enableOptions, value, label, min, max, center) {
     }
 }
 
-function KnobComponent({value, min, max, label, center, enableOptions, stretch, onChange, onClick, style, className}) {
+type KnobComponentProps = {
+    value: number;
+    min: number;
+    max: number;
+    label?: string;
+    center?: number;
+    enableOptions: boolean;
+    stretch?: boolean;
+    style?: React.CSSProperties;
+    className?: string;
+    onChange?: KnobProps['onChange'] | KnobSwitchProps['onChange'];
+    onClick?: KnobProps['onClick'] | KnobSwitchProps['onClick'];
+};
+
+function KnobComponent({
+                           value,
+                           min,
+                           max,
+                           label,
+                           center,
+                           enableOptions,
+                           stretch,
+                           onChange,
+                           onClick,
+                           style,
+                           className
+                       }: KnobComponentProps) {
     if (enableOptions) {
-        // Switch Know
         return (
-            <KnobSwitch style={style} className={className}
-                        value={value}
-                        stretch={stretch}
-                        label={label}
-                        onClick={onClick}
-                        onChange={onChange}
+            <KnobSwitch
+                value={value}
+                stretch={stretch}
+                label={label}
+                style={style}
+                onClick={onClick}
+                onChange={onChange}
             >
                 {sampleOptions}
             </KnobSwitch>
         );
     } else {
-        // Regular Know
         return (
-            <Knob style={style} className={className}
-                  min={min} center={center} max={max} value={value} label={label} stretch={stretch}
-                  onClick={onClick}
-                  onChange={onChange}
+            <Knob
+                min={min}
+                max={max}
+                value={value}
+                label={label}
+                center={center === undefined}
+                stretch={stretch}
+                style={style}
+                className={className}
+                onClick={onClick}
+                onChange={onChange}
             />
         );
     }
@@ -66,7 +105,7 @@ export default function KnobDemoPage() {
     const [center, setCenter] = useState(0);
     const [enableOptions, setEnableOptions] = useState(false);
 
-    const handleExampleClick = (num) => {
+    const handleExampleClick = (num: 0 | 1 | 2): void => {
 
         switch (num) {
             case 0:
@@ -135,7 +174,7 @@ export default function KnobDemoPage() {
               onClick={() => handleExampleClick(0)}
         />,
         <Knob key="1" style={{cursor: "pointer"}}
-              min={0} center={64} max={127} value={64} label="Center"
+              min={0} center={true} max={127} value={64} label="Center"
               onClick={() => handleExampleClick(1)}
         />,
         <KnobSwitch key="2" style={{cursor: "pointer"}}
@@ -147,7 +186,7 @@ export default function KnobDemoPage() {
     ];
 
     const codeString = generateCodeSnippet(enableOptions, value, label, min, max, center);
-    const componentProps = { min, center, max, value, label, enableOptions };
+    const componentProps = {min, center, max, value, label, enableOptions};
 
     return (
         <DemoSkeletonPage

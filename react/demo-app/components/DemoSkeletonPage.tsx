@@ -1,21 +1,45 @@
 "use client"
 
 import "./DemoPage.css";
-
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import {oneDark} from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {useMemo} from "react";
 
-export default function DemoSkeletonPage({componentName, codeSnippet, PageComponent, componentProps, properties, examples, onChange}) {
+export type DemoSkeletonPageProps = {
+    /** Name of the component being demonstrated */
+    componentName: string;
+    /** Code example to display */
+    codeSnippet: string;
+    /** The component to render */
+    PageComponent: React.ComponentType<any>;
+    /** Props to pass to the component */
+    componentProps: Record<string, unknown>;
+    /** Property controls to display */
+    properties: React.ReactNode[];
+    /** Example instances to display */
+    examples: React.ReactNode[];
+    /** Handler for value changes */
+    onChange?: (value: number) => void;
+};
+
+export default function DemoSkeletonPage({
+                                             componentName,
+                                             codeSnippet,
+                                             PageComponent,
+                                             componentProps,
+                                             properties,
+                                             examples,
+                                             onChange
+                                         }: DemoSkeletonPageProps) {
     /**
      * Fake grid items created to highlight the borders of the grid
      */
     const fillItems = useMemo(() => {
-        let items = [];
+        const items = [];
         for (let i = 0; i < 27; i++) {
             items.push(<div className="gridItem" style={{
                 gridArea: `${(i % 3) + 1} / ${Math.floor(i / 3) + 1} / span 1 / span 1`
-            }} />)
+            }}/>)
         }
         return items;
     }, []);
