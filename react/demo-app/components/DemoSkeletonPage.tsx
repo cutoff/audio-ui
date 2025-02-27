@@ -4,6 +4,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useMemo } from "react";
 import Link from "next/link";
+import {CodeBlock} from "@/components/code-block";
 
 export type DemoSkeletonPageProps = {
     /** Name of the component being demonstrated */
@@ -78,14 +79,7 @@ export default function DemoSkeletonPage({
                     {/* Code Snippet */}
                     <div className="flex flex-col gap-2">
                         <h2 className="text-base font-semibold pt-4 pb-2">Code Snippet</h2>
-                        <SyntaxHighlighter
-                            className="w-full text-sm rounded-md overflow-hidden"
-                            language="jsx"
-                            style={oneDark}
-                            customStyle={{backgroundColor: "transparent"}}
-                            wrapLongLines={true}>
-                            {codeSnippet}
-                        </SyntaxHighlighter>
+                        <CodeBlock code={codeSnippet} language="jsx" />
                     </div>
                 </div>
 
