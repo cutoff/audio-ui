@@ -26,7 +26,7 @@ function generateCodeSnippet(
     label: string,
     min: number,
     max: number,
-    center: number
+    center: boolean
 ): string {
     if (enableOptions) {
         return `<Knob value={${value}} label='${label}'>
@@ -47,7 +47,7 @@ type KnobComponentProps = {
     min: number;
     max: number;
     label?: string;
-    center?: number;
+    center?: boolean;
     enableOptions: boolean;
     stretch?: boolean;
     style?: React.CSSProperties;
@@ -89,7 +89,7 @@ function KnobComponent({
                 max={max}
                 value={value}
                 label={label}
-                center={center === undefined}
+                center={center}
                 stretch={stretch}
                 style={style}
                 className={className}
@@ -105,7 +105,7 @@ export default function KnobDemoPage() {
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(100);
     const [label, setLabel] = useState("Default");
-    const [center, setCenter] = useState(0);
+    const [center, setCenter] = useState(false);
     const [enableOptions, setEnableOptions] = useState(false);
 
     const handleExampleClick = (num: 0 | 1 | 2): void => {
@@ -115,7 +115,7 @@ export default function KnobDemoPage() {
                 setMin(0);
                 setMax(100);
                 setLabel("Default");
-                setCenter(0);
+                setCenter(false);
                 setEnableOptions(false);
                 break;
             case 1:
@@ -123,7 +123,7 @@ export default function KnobDemoPage() {
                 setMin(0);
                 setMax(127);
                 setLabel("Center");
-                setCenter(64);
+                setCenter(true);
                 setEnableOptions(false);
                 break;
             case 2:
@@ -131,7 +131,7 @@ export default function KnobDemoPage() {
                 setMin(0);
                 setMax(4);
                 setLabel("Enum");
-                setCenter(0);
+                setCenter(false);
                 setEnableOptions(true);
                 break;
         }
@@ -164,14 +164,13 @@ export default function KnobDemoPage() {
                 onChange={(e) => setMax(Number(e.target.value))}
             />
         </div>,
-        <div key="center" className="grid gap-2">
-            <Label htmlFor="centerProp">Center</Label>
-            <Input
+        <div key="center" className="flex items-center gap-2 pt-2">
+            <Checkbox
                 id="centerProp"
-                type="number"
-                value={center}
-                onChange={(e) => setCenter(Number(e.target.value))}
+                checked={center}
+                onCheckedChange={(checked) => setCenter(checked === true)}
             />
+            <Label htmlFor="centerProp" className="cursor-pointer">Center</Label>
         </div>,
         <div key="options" className="flex items-center gap-2 pt-2">
             <Checkbox
