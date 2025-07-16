@@ -32,11 +32,10 @@ const themeColors: ThemeColor[] = [
   { color: "bg-blue-500", name: "Blue", cssVar: "--theme-blue-primary" },
   { color: "bg-orange-500", name: "Orange", cssVar: "--theme-orange-primary" },
   { color: "bg-pink-500", name: "Pink", cssVar: "--theme-pink-primary" },
-  { color: "bg-zinc-500", name: "Slate", cssVar: "--theme-slate-primary" },
+  { color: "bg-zinc-500", name: "White", cssVar: "--theme-white-primary" },
   { color: "bg-green-500", name: "Green", cssVar: "--theme-green-primary" },
   { color: "bg-purple-500", name: "Purple", cssVar: "--theme-purple-primary" },
-  { color: "bg-teal-500", name: "Teal", cssVar: "--theme-teal-primary" },
-  { color: "bg-red-500", name: "Red", cssVar: "--theme-red-primary" }
+  { color: "bg-yellow-500", name: "Yellow", cssVar: "--theme-yellow-primary" }
 ];
 
 export default function SideBar() {

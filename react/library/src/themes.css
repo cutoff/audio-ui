@@ -1,33 +1,29 @@
 :root {
-    --theme-orange-primary: hsl(30, 100%, 50%);
-    --theme-orange-primary-50: hsl(30, 100%, 23%);
-    --theme-orange-primary-20: hsl(30, 100%, 10%);
+    --theme-orange-primary: hsl(29, 100%, 50%);
+    --theme-orange-primary-50: hsl(29, 100%, 23%);
+    --theme-orange-primary-20: hsl(29, 100%, 10%);
 
-    --theme-blue-primary: hsl(199, 100%, 50%);
-    --theme-blue-primary-50: hsl(199, 100%, 23%);
-    --theme-blue-primary-20: hsl(199, 100%, 10%);
+    --theme-blue-primary: hsl(204, 88%, 53%);
+    --theme-blue-primary-50: hsl(204, 88%, 25%);
+    --theme-blue-primary-20: hsl(204, 88%, 10%);
 
-    --theme-pink-primary: hsl(330, 100%, 50%);
-    --theme-pink-primary-50: hsl(330, 100%, 23%);
-    --theme-pink-primary-20: hsl(330, 100%, 10%);
+    --theme-pink-primary: hsl(332, 95%, 54%);
+    --theme-pink-primary-50: hsl(332, 95%, 25%);
+    --theme-pink-primary-20: hsl(332, 95%, 10%);
 
-    --theme-slate-primary: hsl(0, 0%, 50%);
-    --theme-slate-primary-50: hsl(0, 0%, 23%);
-    --theme-slate-primary-20: hsl(0, 0%, 10%);
+    --theme-white-primary: hsl(0, 0%, 100%);
+    --theme-white-primary-50: hsl(0, 0%, 50%);
+    --theme-white-primary-20: hsl(0, 0%, 25%);
 
-    --theme-green-primary: hsl(120, 100%, 50%);
-    --theme-green-primary-50: hsl(120, 100%, 23%);
-    --theme-green-primary-20: hsl(120, 100%, 10%);
+    --theme-green-primary: hsl(160, 98%, 37%);
+    --theme-green-primary-50: hsl(160, 98%, 20%);
+    --theme-green-primary-20: hsl(160, 98%, 10%);
 
-    --theme-purple-primary: hsl(270, 100%, 50%);
-    --theme-purple-primary-50: hsl(270, 100%, 23%);
-    --theme-purple-primary-20: hsl(270, 100%, 10%);
+    --theme-purple-primary: hsl(252, 100%, 67%);
+    --theme-purple-primary-50: hsl(252, 100%, 30%);
+    --theme-purple-primary-20: hsl(252, 100%, 10%);
 
-    --theme-teal-primary: hsl(180, 100%, 50%);
-    --theme-teal-primary-50: hsl(180, 100%, 23%);
-    --theme-teal-primary-20: hsl(180, 100%, 10%);
-
-    --theme-red-primary: hsl(0, 100%, 50%);
-    --theme-red-primary-50: hsl(0, 100%, 23%);
-    --theme-red-primary-20: hsl(0, 100%, 10%);
+    --theme-yellow-primary: hsl(50, 100%, 50%);
+    --theme-yellow-primary-50: hsl(50, 100%, 23%);
+    --theme-yellow-primary-20: hsl(50, 100%, 10%);
 }
