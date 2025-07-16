@@ -33,7 +33,7 @@ export default function DemoSkeletonPage({
                                              onChange
                                          }: DemoSkeletonPageProps) {
     const fillItems = useMemo(() => {
-        const items = [];
+        const items: React.ReactNode[] = [];
         for (let i = 0; i < 27; i++) {
             items.push(
                 <div
@@ -50,15 +50,15 @@ export default function DemoSkeletonPage({
 
 
     return (
-        <div className="h-screen flex">
+        <div className="min-h-screen flex flex-col md:flex-row">
             {/* Left Column */}
-            <div className="w-1/3 p-8 flex flex-col justify-between bg-zinc-900/30 overflow-auto">
-                <div className="flex flex-col gap-8">
-                    <div className="flex flex-col gap-6">
-                        <h1 className="text-2xl font-medium">{componentName}</h1>
+            <div className="w-full md:w-1/3 p-4 md:p-8 flex flex-col justify-between bg-zinc-900/30 overflow-auto">
+                <div className="flex flex-col gap-6 md:gap-8">
+                    <div className="flex flex-col gap-4 md:gap-6">
+                        <h1 className="text-xl md:text-2xl font-medium">{componentName}</h1>
 
                         {/* Main Component Preview */}
-                        <div className="flex justify-center items-center h-60">
+                        <div className="flex justify-center items-center h-40 md:h-60">
                             <PageComponent
                                 stretch={true}
                                 onChange={onChange}
@@ -69,31 +69,30 @@ export default function DemoSkeletonPage({
 
                     {/* Code Snippet */}
                     <div className="flex flex-col gap-2">
-                        <h2 className="text-base font-semibold pt-4 pb-2">Code Snippet</h2>
+                        <h2 className="text-base font-semibold pt-2 md:pt-4 pb-2">Code Snippet</h2>
                         <CodeBlock code={codeSnippet} language="jsx" />
                     </div>
                 </div>
 
                 {/* Properties - Now at bottom */}
-                <div className="flex flex-col gap-4 mt-8">
+                <div className="flex flex-col gap-4 mt-6 md:mt-8">
                     <h2 className="text-base font-semibold pt-2">Properties</h2>
                     <div className="space-y-4 w-full">
                         {properties}
                     </div>
-
                 </div>
             </div>
 
             {/* Right Column */}
-            <div className="w-2/3 flex justify-center">
-                <div className="w-full max-w-2xl p-8">
-                    <div className="flex flex-col gap-10">
+            <div className="w-full md:w-2/3 flex justify-center p-4 md:p-0">
+                <div className="w-full max-w-2xl p-4 md:p-8">
+                    <div className="flex flex-col gap-6 md:gap-10">
                         {/* Examples */}
                         <div>
-                            <h2 className="text-2xl font-medium mb-6">Examples</h2>
-                            <div className="flex flex-wrap gap-8">
+                            <h2 className="text-xl md:text-2xl font-medium mb-4 md:mb-6">Examples</h2>
+                            <div className="flex flex-wrap gap-4 md:gap-8 justify-center md:justify-start">
                                 {examples.map((example, i) => (
-                                    <div key={i} className="flex flex-col items-center w-20">
+                                    <div key={i} className="flex flex-col items-center w-16 md:w-20">
                                         {example}
                                     </div>
                                 ))}
@@ -102,16 +101,15 @@ export default function DemoSkeletonPage({
 
                         {/* Size Section */}
                         <div>
-                            <h2 className="text-2xl font-medium mb-4">Size</h2>
+                            <h2 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Size</h2>
                             <div className="flex flex-col">
                                 <PageComponent {...componentProps} />
-                                <p className="text-base font-medium mt-2">Default</p>
                             </div>
                         </div>
 
-                        {/* Grid Layout */}
-                        <div>
-                            <h2 className="text-2xl font-medium mb-4">Grid Layout</h2>
+                        {/* Grid Layout - Hidden on small screens, visible on medium and up */}
+                        <div className="hidden md:block">
+                            <h2 className="text-xl md:text-2xl font-medium mb-4">Grid Layout</h2>
                             <div className="w-full h-60 grid grid-rows-3 grid-cols-9 gap-2 relative">
                                 {fillItems}
 
@@ -180,6 +178,17 @@ export default function DemoSkeletonPage({
 
                                 {/* stretching label */}
                                 <p className="absolute bottom-0 left-0 text-sm">stretch=true</p>
+                            </div>
+                        </div>
+
+                        {/* Message for small screens */}
+                        <div className="md:hidden">
+                            <div className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-6 text-center">
+                                <h2 className="text-lg font-medium mb-3 text-primary-color">Screen Size Notice</h2>
+                                <p className="text-zinc-300">
+                                    Control surface examples are not suitable for small screens.
+                                    Please use a wider screen to view the grid layout examples.
+                                </p>
                             </div>
                         </div>
                     </div>
