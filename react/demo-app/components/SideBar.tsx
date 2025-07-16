@@ -122,8 +122,8 @@ export default function SideBar() {
 
         {/* Theme Selector at the bottom of sidebar */}
         <div className="mt-auto pt-4 border-t border-zinc-800">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-zinc-400">Theme</span>
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-sm text-zinc-400 flex items-center h-9 px-3 leading-none">Theme</span>
             <Select 
               value={currentTheme} 
               onValueChange={(value) => changeTheme(value)}
@@ -136,10 +136,10 @@ export default function SideBar() {
                   <SelectItem 
                     key={theme.cssVar} 
                     value={theme.cssVar}
-                    className="flex items-center gap-2"
+                    className="inline-flex items-center"
                   >
-                    <div className={`w-4 h-4 rounded-full ${theme.color} inline-block mr-2`}></div>
-                    {theme.name}
+                    <div className={`w-4 h-4 rounded-full ${theme.color} inline-block align-middle mr-2`}></div>
+                    <span className="align-middle">{theme.name}</span>
                   </SelectItem>
                 ))}
               </SelectContent>
