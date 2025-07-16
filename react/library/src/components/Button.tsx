@@ -23,6 +23,8 @@ export type ButtonProps = {
     align?: 'top' | 'center' | 'bottom';
     /** Additional styles */
     style?: React.CSSProperties;
+    /** Click event handler */
+    onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
 };
 
 export default function Button({
@@ -36,7 +38,8 @@ export default function Button({
     gridSpanX = 1,
     gridSpanY = 2,
     align = "bottom",
-    style
+    style,
+    onClick
 }: ButtonProps) {
     const [actualCenter, setActualCenter] = useState<number>(50);
 
@@ -77,7 +80,7 @@ export default function Button({
     const buttonFill = isOn ? "fill-primary" : "fill-primary-50";
 
     return (
-        <div style={myStyle}>
+        <div style={myStyle} onClick={onClick}>
             <svg viewBox="0 0 100 200">
                 <rect 
                     className={`${buttonStroke} ${buttonFill}`}

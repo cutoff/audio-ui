@@ -23,6 +23,7 @@ type ThemeColor = {
 const components: Component[] = [
   { name: "Knob", path: "/components/knob" },
   { name: "Slider", path: "/components/slider" },
+  { name: "Button", path: "/components/button" },
   // More components can be added here in the future
 ];
 
@@ -101,7 +102,7 @@ export default function SideBar() {
             Audio UI
           </Link>
 
-          <h2 className="text-xl font-medium mb-4">Components</h2>
+          <h2 className="text-xl font-medium mb-4">Controls</h2>
           <nav className="space-y-2">
             {components.map((component) => (
               <Link
