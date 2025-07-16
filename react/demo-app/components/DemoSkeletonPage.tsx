@@ -2,7 +2,7 @@
 
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import Link from "next/link";
 import {CodeBlock} from "@/components/code-block";
 
@@ -48,13 +48,26 @@ export default function DemoSkeletonPage({
         return items;
     }, []);
 
-    // Mock theme color buttons
+    // Theme color buttons
     const themeColors = [
-        { color: "bg-green-400", name: "Green" },
-        { color: "bg-pink-500", name: "Pink" },
-        { color: "bg-red-500", name: "Red" },
-        { color: "bg-orange-500", name: "Orange" }
+        { color: "bg-blue-500", name: "Blue", cssVar: "--theme-blue-primary" },
+        { color: "bg-orange-500", name: "Orange", cssVar: "--theme-orange-primary" },
+        { color: "bg-pink-500", name: "Pink", cssVar: "--theme-pink-primary" },
+        { color: "bg-zinc-500", name: "Slate", cssVar: "--theme-slate-primary" }
     ];
+
+    // Function to change theme
+    const changeTheme = (themeCssVar: string) => {
+        document.documentElement.style.setProperty('--primary-color', `var(${themeCssVar})`);
+        document.documentElement.style.setProperty('--primary-color-50', `var(${themeCssVar}-50)`);
+        document.documentElement.style.setProperty('--primary-color-20', `var(${themeCssVar}-20)`);
+    };
+
+    // Set initial theme when component mounts
+    useEffect(() => {
+        // Blue is the default theme in styles.css, but we set it explicitly to ensure consistency
+        changeTheme('--theme-blue-primary');
+    }, []);
 
     return (
         <div className="h-screen flex">
@@ -99,6 +112,7 @@ export default function DemoSkeletonPage({
                                     key={index}
                                     className={`w-6 h-6 rounded ${theme.color}`}
                                     aria-label={`Select ${theme.name} theme`}
+                                    onClick={() => changeTheme(theme.cssVar)}
                                 />
                             ))}
                         </div>
