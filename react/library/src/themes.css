@@ -14,4 +14,20 @@
     --theme-slate-primary: hsl(0, 0%, 50%);
     --theme-slate-primary-50: hsl(0, 0%, 23%);
     --theme-slate-primary-20: hsl(0, 0%, 10%);
+
+    --theme-green-primary: hsl(120, 100%, 50%);
+    --theme-green-primary-50: hsl(120, 100%, 23%);
+    --theme-green-primary-20: hsl(120, 100%, 10%);
+
+    --theme-purple-primary: hsl(270, 100%, 50%);
+    --theme-purple-primary-50: hsl(270, 100%, 23%);
+    --theme-purple-primary-20: hsl(270, 100%, 10%);
+
+    --theme-teal-primary: hsl(180, 100%, 50%);
+    --theme-teal-primary-50: hsl(180, 100%, 23%);
+    --theme-teal-primary-20: hsl(180, 100%, 10%);
+
+    --theme-red-primary: hsl(0, 100%, 50%);
+    --theme-red-primary-50: hsl(0, 100%, 23%);
+    --theme-red-primary-20: hsl(0, 100%, 10%);
 }
