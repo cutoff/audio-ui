@@ -48,30 +48,6 @@ export default function DemoSkeletonPage({
         return items;
     }, []);
 
-    // Theme color buttons
-    const themeColors = [
-        { color: "bg-blue-500", name: "Blue", cssVar: "--theme-blue-primary" },
-        { color: "bg-orange-500", name: "Orange", cssVar: "--theme-orange-primary" },
-        { color: "bg-pink-500", name: "Pink", cssVar: "--theme-pink-primary" },
-        { color: "bg-zinc-500", name: "Slate", cssVar: "--theme-slate-primary" },
-        { color: "bg-green-500", name: "Green", cssVar: "--theme-green-primary" },
-        { color: "bg-purple-500", name: "Purple", cssVar: "--theme-purple-primary" },
-        { color: "bg-teal-500", name: "Teal", cssVar: "--theme-teal-primary" },
-        { color: "bg-red-500", name: "Red", cssVar: "--theme-red-primary" }
-    ];
-
-    // Function to change theme
-    const changeTheme = (themeCssVar: string) => {
-        document.documentElement.style.setProperty('--primary-color', `var(${themeCssVar})`);
-        document.documentElement.style.setProperty('--primary-color-50', `var(${themeCssVar}-50)`);
-        document.documentElement.style.setProperty('--primary-color-20', `var(${themeCssVar}-20)`);
-    };
-
-    // Set initial theme when component mounts
-    useEffect(() => {
-        // Blue is the default theme in styles.css, but we set it explicitly to ensure consistency
-        changeTheme('--theme-blue-primary');
-    }, []);
 
     return (
         <div className="h-screen flex">
@@ -105,20 +81,6 @@ export default function DemoSkeletonPage({
                         {properties}
                     </div>
 
-                    {/* Theme Color Selection */}
-                    <div className="flex justify-end items-center gap-2 mt-4">
-                        <span className="text-sm">Theme</span>
-                        <div className="flex gap-2">
-                            {themeColors.map((theme, index) => (
-                                <button
-                                    key={index}
-                                    className={`w-6 h-6 rounded ${theme.color}`}
-                                    aria-label={`Select ${theme.name} theme`}
-                                    onClick={() => changeTheme(theme.cssVar)}
-                                />
-                            ))}
-                        </div>
-                    </div>
                 </div>
             </div>
 
