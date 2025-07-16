@@ -95,17 +95,20 @@ export const CodeBlock = ({
                     className
                 )}
             >
-                <div className="overflow-auto">
+                <div className="overflow-y-auto max-h-[400px]">
                     <SyntaxHighlighter
                         language={language}
                         style={modifiedTheme}
                         showLineNumbers={showLineNumbers}
                         wrapLines={true}
+                        wrapLongLines={true}
                         customStyle={{
                             margin: 0,
                             background: 'transparent',
                             backgroundColor: 'transparent',
                             fontSize: '0.875rem',
+                            whiteSpace: 'pre-wrap',
+                            wordBreak: 'break-word',
                         }}
                         codeTagProps={{
                             style: {
