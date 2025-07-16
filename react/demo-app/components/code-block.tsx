@@ -53,15 +53,16 @@ export const CodeBlock = ({
 
     // Fix for oneDark line background issues
     if (theme === 'oneDark') {
-        modifiedTheme[':not(pre) > code[class*="language-"]'] = {
-            ...modifiedTheme[':not(pre) > code[class*="language-"]'],
+        const themeAny = modifiedTheme as any;
+        themeAny[':not(pre) > code[class*="language-"]'] = {
+            ...themeAny[':not(pre) > code[class*="language-"]'],
             background: 'transparent',
             backgroundColor: 'transparent',
         }
 
         // Override line highlighting
-        modifiedTheme['.token.operator'] = {
-            ...modifiedTheme['.token.operator'],
+        themeAny['.token.operator'] = {
+            ...themeAny['.token.operator'],
             background: 'transparent',
             backgroundColor: 'transparent',
         }

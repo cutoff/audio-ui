@@ -7,6 +7,6 @@ export type OptionProps = {
     children?: React.ReactNode;
 };
 
-export default function Option() {
+export default function Option(_props: OptionProps) {
     return null; // This component is never rendered directly
 }

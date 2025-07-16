@@ -1,16 +1,32 @@
-# Audio UI Development Guide
+# Audio UI Development Guide for LLMs
 
-This document provides essential information for developers working on the Audio UI project, a React component library for audio and MIDI applications.
+This document provides essential information for LLMs working on the Audio UI project, a React component library for audio and MIDI applications.
+
+## CRITICAL: React Version Policy
+
+**This project MUST maintain React 18 compatibility.**
+
+- **Library**: Uses React 18 as peer dependency (`react: ^18.2.0`, `react-dom: ^18.2.0`)
+- **Demo App**: Uses React 18 as direct dependency (`react: ^18.3.1`, `react-dom: ^18.3.1`)
+- **TypeScript Types**: Uses `@types/react: ^18.3.23` and `@types/react-dom: ^18.3.7`
+
+**NEVER upgrade to React 19 or higher without explicit approval.**
+
+If you encounter React version conflicts:
+1. Check `npm ls react @types/react` to identify version mismatches
+2. Downgrade to React 18 compatible versions
+3. Run `npm run typecheck` to verify TypeScript compatibility
+4. Ensure all dependencies are compatible with React 18
 
 ## Project Structure
 
 The project is organized as a monorepo with the following structure:
 
 - `react/` - Contains the React implementation
-  - `library/` - The component library
+  - `library/` - The component library (React 18 peer dependencies)
     - `src/` - Source code for the components
     - `dist/` - Built output (generated)
-  - `demo-app/` - Next.js application for demonstrating the components
+  - `demo-app/` - Next.js application for demonstrating the components (React 18 direct dependencies)
 
 ## Build/Configuration Instructions
 
@@ -183,3 +199,59 @@ Run the demo application with:
 cd react/demo-app
 npm run dev
 ```
+
+## LLM-Specific Development Guidelines
+
+### Version Compatibility Troubleshooting
+
+When encountering TypeScript errors, follow this debugging sequence:
+
+1. **Check React versions**: Run `npm ls react @types/react` to identify version mismatches
+2. **Verify package.json**: Ensure all React dependencies specify React 18 versions
+3. **Fix version conflicts**: Use `npm install react@^18.3.1 react-dom@^18.3.1 @types/react@^18.3.23 @types/react-dom@^18.3.7`
+4. **Run type checks**: Execute `npm run typecheck` in both library and demo app
+5. **Build verification**: Run `npm run build` to ensure no compilation errors
+
+### Component Development Patterns
+
+Components in this library follow these conventions:
+
+- **Props interfaces**: Define with JSDoc comments for documentation
+- **Default values**: Use parameter defaults, not `defaultProps`
+- **Functional components**: Use hooks, avoid class components
+- **TypeScript**: Strict mode enabled, handle all type errors
+- **Unused parameters**: Prefix with underscore (e.g., `_props`) to avoid TS errors
+
+### Common Issues and Solutions
+
+1. **"ReactNode" type conflicts**: Usually caused by React 19 types mixed with React 18 runtime
+2. **"ForwardRefExoticComponent" errors**: Indicates version mismatch between React types and runtime
+3. **"Property 'children' is missing"**: React 19 type definitions have different ReactPortal requirements
+
+### Testing Requirements
+
+- Use Jest and React Testing Library
+- Test files: `*.test.tsx` alongside components
+- Mock external dependencies appropriately
+- Ensure tests pass with React 18 compatibility
+
+### Build Process
+
+1. **Library build**: Uses Vite with TypeScript declaration generation
+2. **Demo app build**: Uses Next.js 15 with React 18 compatibility
+3. **Type checking**: Run `npm run typecheck` before commits
+4. **Linting**: Address ESLint warnings, especially TypeScript-related ones
+
+### File Structure Guidelines
+
+- Components in `react/library/src/components/`
+- Export all components from `react/library/src/index.ts`
+- Demo pages in `react/demo-app/app/components/[component-name]/page.tsx`
+- Shared UI components in `react/demo-app/components/ui/`
+
+### Performance Considerations
+
+- Library is built as ES modules for tree-shaking
+- Components use SVG for scalable graphics
+- CSS is minimal and uses CSS custom properties for theming
+- Demo app uses Next.js optimization features
