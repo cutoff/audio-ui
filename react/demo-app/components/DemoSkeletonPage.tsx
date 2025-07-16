@@ -79,9 +79,7 @@ export default function DemoSkeletonPage({
             <div className="w-1/3 p-8 flex flex-col justify-between bg-zinc-900/30 overflow-auto">
                 <div className="flex flex-col gap-8">
                     <div className="flex flex-col gap-6">
-                        <Link href="/">
-                            <h1 className="text-2xl font-medium">{componentName}</h1>
-                        </Link>
+                        <h1 className="text-2xl font-medium">{componentName}</h1>
 
                         {/* Main Component Preview */}
                         <div className="flex justify-center items-center h-60">

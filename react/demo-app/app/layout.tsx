@@ -3,6 +3,7 @@ import {Geist, Geist_Mono} from "next/font/google";
 import "@cutoff/audio-ui-react/style.css";
 import "./globals.css";
 import {Providers} from "@/app/providers";
+import SideBar from "@/components/SideBar";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -29,7 +30,17 @@ export default function RootLayout({
         <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-        <Providers>{children}</Providers>
+        <Providers>
+            <div className="flex h-screen">
+                {/* SideBar will be client-side rendered */}
+                <div className="h-screen">
+                    <SideBar />
+                </div>
+                <div className="flex-1">
+                    {children}
+                </div>
+            </div>
+        </Providers>
         </body>
         </html>
     );
