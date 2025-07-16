@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { debounce } from 'lodash';
 
 /**
@@ -76,7 +76,7 @@ export type AdaptiveSvgComponentProps = {
  * </AdaptiveSvgComponent>
  * ```
  */
-export default function AdaptiveSvgComponent({
+function AdaptiveSvgComponent({
                                           stretch = false,
                                           className = '',
                                           style = {},
@@ -103,7 +103,7 @@ export default function AdaptiveSvgComponent({
      * Calculates dimensions based on container size and constraints while
      * maintaining the aspect ratio defined by viewBox dimensions
      */
-    const calculateDimensions = () => {
+    const calculateDimensions = useCallback(() => {
         if (!containerRef.current) return;
 
         const parent = containerRef.current;
@@ -112,10 +112,15 @@ export default function AdaptiveSvgComponent({
 
         if (!stretch) {
             // When not stretching, use preferred size but don't exceed container
-            setDimensions({
+            const newDimensions = {
                 width: Math.min(Math.max(preferredWidth, minWidth), availableWidth),
                 height: Math.min(Math.max(preferredHeight, minHeight), availableHeight),
-            });
+            };
+
+            // Only update state if dimensions have changed
+            if (dimensions.width !== newDimensions.width || dimensions.height !== newDimensions.height) {
+                setDimensions(newDimensions);
+            }
             return;
         }
 
@@ -155,8 +160,11 @@ export default function AdaptiveSvgComponent({
             height: Math.min(newDimensions.height, availableHeight),
         };
 
-        setDimensions(newDimensions);
-    };
+        // Only update state if dimensions have changed
+        if (dimensions.width !== newDimensions.width || dimensions.height !== newDimensions.height) {
+            setDimensions(newDimensions);
+        }
+    }, [stretch, preferredWidth, preferredHeight, minWidth, minHeight, aspectRatio, dimensions]);
 
     // Set up resize observation
     useEffect(() => {
@@ -171,7 +179,7 @@ export default function AdaptiveSvgComponent({
             resizeObserver.disconnect();
             debouncedCalculate.cancel();
         };
-    }, [stretch, preferredWidth, preferredHeight, minWidth, minHeight]);
+    }, [calculateDimensions]);
 
     // Handle wheel events
     useEffect(() => {
@@ -189,7 +197,7 @@ export default function AdaptiveSvgComponent({
     }, [onWheel]);
 
     // Styles to ensure proper grid cell containment
-    const containerStyle: React.CSSProperties = {
+    const containerStyle = useMemo<React.CSSProperties>(() => ({
         position: 'relative',
         width: '100%',
         height: '100%',
@@ -198,15 +206,15 @@ export default function AdaptiveSvgComponent({
         justifyContent: 'center',
         overflow: 'hidden',  // Prevent overflow
         ...style,
-    };
+    }), [style]);
 
-    const svgStyle: React.CSSProperties = {
+    const svgStyle = useMemo<React.CSSProperties>(() => ({
         width: stretch ? '100%' : dimensions.width,
         height: stretch ? '100%' : dimensions.height,
         maxWidth: stretch ? '100%' : dimensions.width,
         maxHeight: stretch ? '100%' : dimensions.height,
         flexShrink: 0,  // Prevent unwanted shrinking
-    };
+    }), [stretch, dimensions.width, dimensions.height]);
 
     return (
         <div ref={containerRef} style={containerStyle} className={className}>
@@ -223,3 +231,5 @@ export default function AdaptiveSvgComponent({
         </div>
     );
 }
+
+export default React.memo(AdaptiveSvgComponent);
