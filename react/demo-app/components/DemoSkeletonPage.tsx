@@ -125,8 +125,8 @@ export default function DemoSkeletonPage({
 
                                 {/* Positioned components */}
                                 <PageComponent
+                                    className="emphasized-bg"
                                     style={{
-                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
                                         gridArea: "2 / 1 / span 2 / span 1",
                                         justifySelf: "center",
                                         alignSelf: "start"
@@ -135,8 +135,8 @@ export default function DemoSkeletonPage({
                                     {...componentProps}
                                 />
                                 <PageComponent
+                                    className="emphasized-bg"
                                     style={{
-                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
                                         gridArea: "2 / 2 / span 2 / span 1",
                                         justifySelf: "center",
                                         alignSelf: "end"
@@ -145,8 +145,8 @@ export default function DemoSkeletonPage({
                                     {...componentProps}
                                 />
                                 <PageComponent
+                                    className="emphasized-bg"
                                     style={{
-                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
                                         gridArea: "2 / 3 / span 2 / span 1",
                                         justifySelf: "center",
                                         alignSelf: "center"
@@ -157,8 +157,8 @@ export default function DemoSkeletonPage({
 
                                 {/* 2x2 grid example */}
                                 <PageComponent
+                                    className="emphasized-bg"
                                     style={{
-                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
                                         gridArea: "1 / 5 / span 2 / span 2",
                                         justifySelf: "center",
                                         alignSelf: "center"
@@ -170,8 +170,8 @@ export default function DemoSkeletonPage({
 
                                 {/* 2x3 grid example */}
                                 <PageComponent
+                                    className="emphasized-bg"
                                     style={{
-                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
                                         gridArea: "2 / 7 / span 3 / span 3",
                                         justifySelf: "center",
                                         alignSelf: "center"

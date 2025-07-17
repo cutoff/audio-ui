@@ -11,7 +11,11 @@ export type AdaptiveSvgComponentProps = {
     /** Additional CSS classes to apply to the container element */
     className?: string;
     /** Additional inline styles to apply to the container element.
-     * Supports grid layout properties (justifySelf, alignSelf) */
+     * Supports grid layout properties (justifySelf, alignSelf) which control
+     * the alignment of the SVG within its container:
+     * - alignSelf: 'start' | 'end' | 'center' - Controls vertical alignment
+     * - justifySelf: 'start' | 'end' | 'center' - Controls horizontal alignment
+     * Default alignment is center for both axes when not specified. */
     style?: React.CSSProperties;
     /** SVG content to render within the component */
     children: React.ReactNode;
@@ -52,6 +56,7 @@ export type AdaptiveSvgComponentProps = {
  * - Compatible with CSS Grid and Flexbox layouts
  * - Supports responsive resizing
  * - Properly contains content within grid cells
+ * - Supports alignment control via alignSelf and justifySelf properties
  *
  * @example
  * ```tsx
@@ -197,21 +202,40 @@ function AdaptiveSvgComponent({
     }, [onWheel]);
 
     // Styles to ensure proper grid cell containment
-    const containerStyle = useMemo<React.CSSProperties>(() => ({
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        // backgroundColor: 'hsla(332, 95%, 54%, 15%)',
-        overflow: 'hidden',  // Prevent overflow
-        ...style,
-    }), [style]);
+    const containerStyle = useMemo<React.CSSProperties>(() => {
+        // Extract alignment properties from style
+        const { alignSelf, justifySelf, ...restStyle } = style;
+
+        // Map grid alignment properties to flex alignment properties
+        let alignItems = 'center';
+        let justifyContent = 'center';
+
+        // Map alignSelf to alignItems
+        if (alignSelf === 'start') alignItems = 'flex-start';
+        else if (alignSelf === 'end') alignItems = 'flex-end';
+        else if (alignSelf === 'center') alignItems = 'center';
+
+        // Map justifySelf to justifyContent
+        if (justifySelf === 'start') justifyContent = 'flex-start';
+        else if (justifySelf === 'end') justifyContent = 'flex-end';
+        else if (justifySelf === 'center') justifyContent = 'center';
+
+        return {
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems,
+            justifyContent,
+            // backgroundColor: 'hsla(332, 95%, 54%, 15%)',
+            overflow: 'hidden',  // Prevent overflow
+            ...restStyle,
+        };
+    }, [style]);
 
     const svgStyle = useMemo<React.CSSProperties>(() => ({
-        width: stretch ? '100%' : dimensions.width,
-        height: stretch ? '100%' : dimensions.height,
+        width: stretch ? 'auto' : dimensions.width,
+        height: stretch ? 'auto' : dimensions.height,
         maxWidth: stretch ? '100%' : dimensions.width,
         maxHeight: stretch ? '100%' : dimensions.height,
         flexShrink: 0,  // Prevent unwanted shrinking
