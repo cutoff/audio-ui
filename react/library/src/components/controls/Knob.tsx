@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
-import AdaptiveSvgComponent from './AdaptiveSvgComponent';
+import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import classNames from 'classnames';
-import "../styles.css";
+import "../../styles.css";
 
 /**
  * Angular constants for the knob's arc

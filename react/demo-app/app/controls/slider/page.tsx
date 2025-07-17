@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Slider } from "@cutoff/audio-ui-react";
-import DemoSkeletonPage from "@/components/DemoSkeletonPage";
+import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -132,7 +132,7 @@ export default function Page() {
     ];
 
     return (
-        <DemoSkeletonPage
+        <ControlSkeletonPage
             componentName="Slider"
             codeSnippet={codeString}
             PageComponent={Slider}

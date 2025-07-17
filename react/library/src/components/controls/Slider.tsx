@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import classNames from 'classnames';
-import AdaptiveSvgComponent from './AdaptiveSvgComponent';
+import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 
 /**
  * Props for the Slider component

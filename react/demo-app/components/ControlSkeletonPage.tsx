@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { CodeBlock } from "@/components/code-block";
 
-export type DemoSkeletonPageProps = {
+export type ControlSkeletonPageProps = {
     /** Name of the component being demonstrated */
     componentName: string;
     /** Code example to display */
@@ -20,7 +20,7 @@ export type DemoSkeletonPageProps = {
     onChange?: (value: number) => void;
 };
 
-export default function DemoSkeletonPage({
+export default function ControlSkeletonPage({
                                              componentName,
                                              codeSnippet,
                                              PageComponent,
@@ -28,7 +28,7 @@ export default function DemoSkeletonPage({
                                              properties,
                                              examples,
                                              onChange
-                                         }: DemoSkeletonPageProps) {
+                                         }: ControlSkeletonPageProps) {
     const fillItems = useMemo(() => {
         const items: React.ReactNode[] = [];
         for (let i = 0; i < 36; i++) {

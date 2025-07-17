@@ -2,7 +2,7 @@
 
 import {useState} from "react";
 import {Button} from "@cutoff/audio-ui-react";
-import DemoSkeletonPage from "@/components/DemoSkeletonPage";
+import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 
@@ -118,7 +118,7 @@ export default function Page() {
     ];
 
     return (
-        <DemoSkeletonPage
+        <ControlSkeletonPage
             componentName="Button"
             codeSnippet={codeString}
             PageComponent={Button}

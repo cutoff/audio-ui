@@ -8,7 +8,7 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 // Define types for components and theme colors
-type Component = {
+type Page = {
   name: string;
   path: string;
 };
@@ -20,10 +20,10 @@ type ThemeColor = {
 };
 
 // List of components to display in the sidebar
-const components: Component[] = [
-  { name: "Knob", path: "/components/knob" },
-  { name: "Slider", path: "/components/slider" },
-  { name: "Button", path: "/components/button" },
+const controls: Page[] = [
+  { name: "Knob", path: "/controls/knob" },
+  { name: "Slider", path: "/controls/slider" },
+  { name: "Button", path: "/controls/button" },
   // More components can be added here in the future
 ];
 
@@ -103,17 +103,17 @@ export default function SideBar() {
 
           <h2 className="text-xl font-medium mb-4">Controls</h2>
           <nav className="space-y-2">
-            {components.map((component) => (
+            {controls.map((page) => (
               <Link
-                key={component.name}
-                href={component.path}
+                key={page.name}
+                href={page.path}
                 className={`block px-3 py-2 rounded-md transition-colors ${
-                  pathname === component.path
+                  pathname === page.path
                     ? "bg-primary-color/20 text-white"
                     : "hover:bg-zinc-800 text-zinc-400 hover:text-white"
                 }`}
               >
-                {component.name}
+                {page.name}
               </Link>
             ))}
           </nav>

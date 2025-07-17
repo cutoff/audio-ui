@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Knob, KnobProps, KnobSwitch, KnobSwitchProps, Option } from "@cutoff/audio-ui-react";
-import DemoSkeletonPage from "@/components/DemoSkeletonPage";
+import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -203,7 +203,7 @@ export default function KnobDemoPage() {
     const componentProps = {min, center, max, value, label, enableOptions};
 
     return (
-        <DemoSkeletonPage
+        <ControlSkeletonPage
             componentName="Knob"
             codeSnippet={codeString}
             PageComponent={KnobComponent}

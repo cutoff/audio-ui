@@ -1,5 +1,5 @@
 import React from 'react';
-import AdaptiveSvgComponent from './AdaptiveSvgComponent';
+import AdaptiveSvgComponent from './support/AdaptiveSvgComponent';
 
 /**
  * Note names in order from C to B

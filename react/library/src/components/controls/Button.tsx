@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import AdaptiveSvgComponent from './AdaptiveSvgComponent';
+import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import classNames from 'classnames';
-import "../styles.css";
+import "../../styles.css";
 
 /**
  * Props for the Button component
