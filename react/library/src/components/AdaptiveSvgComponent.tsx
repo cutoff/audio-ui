@@ -1,5 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
-import { debounce } from 'lodash';
+// Import only the debounce function instead of the entire lodash library
+// This significantly reduces bundle size through tree-shaking
+import debounce from 'lodash/debounce';
 
 /**
  * Props for the AdaptiveSvgComponent
@@ -58,6 +60,13 @@ export type AdaptiveSvgComponentProps = {
  * - Properly contains content within grid cells
  * - Supports alignment control via alignSelf and justifySelf properties
  *
+ * Performance optimizations:
+ * - Uses React.memo with custom comparison function to prevent unnecessary re-renders
+ * - Optimized dependency arrays in hooks to avoid render loops
+ * - Efficient resize handling with debounced ResizeObserver
+ * - Targeted lodash import to reduce bundle size
+ * - Memoized style objects to prevent unnecessary recalculations
+ *
  * @example
  * ```tsx
  * // Fixed size usage
@@ -82,54 +91,45 @@ export type AdaptiveSvgComponentProps = {
  * ```
  */
 function AdaptiveSvgComponent({
-                                          stretch = false,
-                                          className = '',
-                                          style = {},
-                                          children,
-                                          preferredWidth = 100,
-                                          preferredHeight = 100,
-                                          minWidth = 40,
-                                          minHeight = 40,
-                                          viewBoxWidth = 100,
-                                          viewBoxHeight = 100,
-                                          onWheel,
-                                          onClick,
-                                      }: AdaptiveSvgComponentProps) {
+                                  stretch = false,
+                                  className = '',
+                                  style = {},
+                                  children,
+                                  preferredWidth = 100,
+                                  preferredHeight = 100,
+                                  minWidth = 40,
+                                  minHeight = 40,
+                                  viewBoxWidth = 100,
+                                  viewBoxHeight = 100,
+                                  onWheel,
+                                  onClick,
+                              }: AdaptiveSvgComponentProps) {
     const svgRef = useRef<SVGSVGElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    // Use useRef for the previous dimensions to avoid unnecessary re-renders
+    const prevDimensionsRef = useRef({ width: preferredWidth, height: preferredHeight });
     const [dimensions, setDimensions] = useState({
         width: preferredWidth,
         height: preferredHeight
     });
 
-    const aspectRatio = viewBoxHeight / viewBoxWidth;
+    // Calculate aspect ratio once and store in a ref since it's derived from props and doesn't change
+    const aspectRatioRef = useRef(viewBoxHeight / viewBoxWidth);
+    
+    // Update aspect ratio ref if viewBox dimensions change
+    useEffect(() => {
+        aspectRatioRef.current = viewBoxHeight / viewBoxWidth;
+    }, [viewBoxHeight, viewBoxWidth]);
 
-    /**
-     * Calculates dimensions based on container size and constraints while
-     * maintaining the aspect ratio defined by viewBox dimensions
-     */
-    const calculateDimensions = useCallback(() => {
-        if (!containerRef.current) return;
+    const calculateFixedDimensions = (availableWidth: number, availableHeight: number) => {
+        const newWidth = Math.min(Math.max(preferredWidth, minWidth), availableWidth);
+        const newHeight = Math.min(Math.max(preferredHeight, minHeight), availableHeight);
+        return { width: newWidth, height: newHeight };
+    };
 
-        const parent = containerRef.current;
-        const availableWidth = Math.max(0, parent.clientWidth);
-        const availableHeight = Math.max(0, parent.clientHeight);
+    const calculateStretchedDimensions = (availableWidth: number, availableHeight: number) => {
+        const aspectRatio = aspectRatioRef.current;
 
-        if (!stretch) {
-            // When not stretching, use preferred size but don't exceed container
-            const newDimensions = {
-                width: Math.min(Math.max(preferredWidth, minWidth), availableWidth),
-                height: Math.min(Math.max(preferredHeight, minHeight), availableHeight),
-            };
-
-            // Only update state if dimensions have changed
-            if (dimensions.width !== newDimensions.width || dimensions.height !== newDimensions.height) {
-                setDimensions(newDimensions);
-            }
-            return;
-        }
-
-        // Calculate dimensions both ways
         const byWidth = {
             width: availableWidth,
             height: availableWidth * aspectRatio,
@@ -140,11 +140,8 @@ function AdaptiveSvgComponent({
             height: availableHeight,
         };
 
-        // Choose the smaller option that maintains aspect ratio
-        const fitByWidth = byWidth.height <= availableHeight;
-        let newDimensions = fitByWidth ? byWidth : byHeight;
+        let newDimensions = byWidth.height <= availableHeight ? byWidth : byHeight;
 
-        // Ensure we don't go below minimum size
         if (newDimensions.width < minWidth || newDimensions.height < minHeight) {
             if (newDimensions.width / minWidth > newDimensions.height / minHeight) {
                 newDimensions = {
@@ -159,32 +156,57 @@ function AdaptiveSvgComponent({
             }
         }
 
-        // Make sure we never exceed available space
-        newDimensions = {
+        return {
             width: Math.min(newDimensions.width, availableWidth),
             height: Math.min(newDimensions.height, availableHeight),
         };
+    };
+
+    /**
+     * Calculates dimensions based on container size and constraints while
+     * maintaining the aspect ratio defined by viewBox dimensions
+     * 
+     * Optimized to avoid unnecessary recalculations by removing dimensions from dependency array
+     */
+    const calculateDimensions = useCallback(() => {
+        if (!containerRef.current) return;
+
+        const parent = containerRef.current;
+        const availableWidth = Math.max(0, parent.clientWidth);
+        const availableHeight = Math.max(0, parent.clientHeight);
+
+        const newDimensions = stretch
+            ? calculateStretchedDimensions(availableWidth, availableHeight)
+            : calculateFixedDimensions(availableWidth, availableHeight);
 
         // Only update state if dimensions have changed
-        if (dimensions.width !== newDimensions.width || dimensions.height !== newDimensions.height) {
+        if (prevDimensionsRef.current.width !== newDimensions.width ||
+            prevDimensionsRef.current.height !== newDimensions.height) {
+            prevDimensionsRef.current = newDimensions;
             setDimensions(newDimensions);
         }
-    }, [stretch, preferredWidth, preferredHeight, minWidth, minHeight, aspectRatio, dimensions]);
+    }, [stretch, preferredWidth, preferredHeight, minWidth, minHeight]); // Removed dimensions from dependency array
+
+    // Create debounced calculate function with useCallback to avoid recreation on each render
+    const debouncedCalculate = useMemo(() => 
+        debounce(calculateDimensions, 100), 
+    [calculateDimensions]);
 
     // Set up resize observation
     useEffect(() => {
-        const debouncedCalculate = debounce(calculateDimensions, 100);
-
         const resizeObserver = new ResizeObserver(debouncedCalculate);
         if (containerRef.current) {
             resizeObserver.observe(containerRef.current);
         }
 
+        // Initial calculation
+        calculateDimensions();
+
         return () => {
             resizeObserver.disconnect();
             debouncedCalculate.cancel();
         };
-    }, [calculateDimensions]);
+    }, [calculateDimensions, debouncedCalculate]);
 
     // Handle wheel events
     useEffect(() => {
@@ -257,4 +279,25 @@ function AdaptiveSvgComponent({
     );
 }
 
-export default React.memo(AdaptiveSvgComponent);
+// Custom comparison function for React.memo to prevent unnecessary re-renders
+function arePropsEqual(prevProps: AdaptiveSvgComponentProps, nextProps: AdaptiveSvgComponentProps) {
+    const { style: prevStyle, children: prevChildren, ...prevRest } = prevProps;
+    const { style: nextStyle, children: nextChildren, ...nextRest } = nextProps;
+
+    // Compare primitive props
+    for (const key in prevRest) {
+        if (prevRest[key as keyof typeof prevRest] !== nextRest[key as keyof typeof nextRest]) {
+            return false;
+        }
+    }
+
+    // Compare style objects
+    if (JSON.stringify(prevStyle) !== JSON.stringify(nextStyle)) {
+        return false;
+    }
+
+    // Always check for changes in children to ensure re-renders when content changes
+    return prevChildren === nextChildren;
+}
+
+export default React.memo(AdaptiveSvgComponent, arePropsEqual);
