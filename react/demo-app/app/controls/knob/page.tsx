@@ -108,7 +108,7 @@ export default function KnobDemoPage() {
     const [center, setCenter] = useState(false);
     const [enableOptions, setEnableOptions] = useState(false);
 
-    const handleExampleClick = (num: 0 | 1 | 2): void => {
+    const handleExampleClick = (num: 0 | 1 | 2 | 3): void => {
         switch (num) {
             case 0:
                 setValue(42);
@@ -127,6 +127,14 @@ export default function KnobDemoPage() {
                 setEnableOptions(false);
                 break;
             case 2:
+                setValue(0);
+                setMin(-1024);
+                setMax(1024);
+                setLabel("Center0");
+                setCenter(true);
+                setEnableOptions(false);
+                break;
+            case 3:
                 setValue(0);
                 setMin(0);
                 setMax(4);
@@ -191,9 +199,13 @@ export default function KnobDemoPage() {
               min={0} center={true} max={127} value={64} label="Center"
               onClick={() => handleExampleClick(1)}
         />,
-        <KnobSwitch key="2" style={{cursor: "pointer"}}
+        <Knob key="2" style={{cursor: "pointer"}}
+              min={-1024} center={true} max={1024} value={0} label="Center0"
+              onClick={() => handleExampleClick(2)}
+        />,
+        <KnobSwitch key="3" style={{cursor: "pointer"}}
                     value={0} label="Enum"
-                    onClick={() => handleExampleClick(2)}
+                    onClick={() => handleExampleClick(3)}
         >
             {sampleOptions}
         </KnobSwitch>
