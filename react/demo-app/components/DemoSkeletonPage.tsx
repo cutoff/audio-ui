@@ -34,13 +34,13 @@ export default function DemoSkeletonPage({
                                          }: DemoSkeletonPageProps) {
     const fillItems = useMemo(() => {
         const items: React.ReactNode[] = [];
-        for (let i = 0; i < 27; i++) {
+        for (let i = 0; i < 36; i++) {
             items.push(
                 <div
                     key={i}
                     className="w-full h-full border border-dashed border-zinc-600"
                     style={{
-                        gridArea: `${(i % 3) + 1} / ${Math.floor(i / 3) + 1} / span 1 / span 1`
+                        gridArea: `${(i % 4) + 1} / ${Math.floor(i / 4) + 1} / span 1 / span 1`
                     }}
                 />
             )
@@ -110,7 +110,7 @@ export default function DemoSkeletonPage({
                         {/* Grid Layout - Hidden on small screens, visible on medium and up */}
                         <div className="hidden md:block">
                             <h2 className="text-xl md:text-2xl font-medium mb-4">Grid Layout</h2>
-                            <div className="w-full h-60 grid grid-rows-3 grid-cols-9 gap-2 relative">
+                            <div className="w-full h-80 grid grid-rows-4 grid-cols-9 gap-2 relative">
                                 {fillItems}
 
                                 {/* Grid title */}
@@ -126,7 +126,8 @@ export default function DemoSkeletonPage({
                                 {/* Positioned components */}
                                 <PageComponent
                                     style={{
-                                        gridArea: "2 / 1 / span 1 / span 1",
+                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                        gridArea: "2 / 1 / span 2 / span 1",
                                         justifySelf: "center",
                                         alignSelf: "start"
                                     }}
@@ -135,7 +136,8 @@ export default function DemoSkeletonPage({
                                 />
                                 <PageComponent
                                     style={{
-                                        gridArea: "2 / 2 / span 1 / span 1",
+                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                        gridArea: "2 / 2 / span 2 / span 1",
                                         justifySelf: "center",
                                         alignSelf: "end"
                                     }}
@@ -144,7 +146,8 @@ export default function DemoSkeletonPage({
                                 />
                                 <PageComponent
                                     style={{
-                                        gridArea: "2 / 3 / span 1 / span 1",
+                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                        gridArea: "2 / 3 / span 2 / span 1",
                                         justifySelf: "center",
                                         alignSelf: "center"
                                     }}
@@ -155,6 +158,7 @@ export default function DemoSkeletonPage({
                                 {/* 2x2 grid example */}
                                 <PageComponent
                                     style={{
+                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
                                         gridArea: "1 / 5 / span 2 / span 2",
                                         justifySelf: "center",
                                         alignSelf: "center"
@@ -167,14 +171,15 @@ export default function DemoSkeletonPage({
                                 {/* 2x3 grid example */}
                                 <PageComponent
                                     style={{
-                                        gridArea: "2 / 7 / span 2 / span 3",
+                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                        gridArea: "2 / 7 / span 3 / span 3",
                                         justifySelf: "center",
                                         alignSelf: "center"
                                     }}
                                     stretch={true}
                                     {...componentProps}
                                 />
-                                <p className="absolute top-8 left-[72%] text-sm">2x3</p>
+                                <p className="absolute top-8 left-[72%] text-sm">3x3</p>
 
                                 {/* stretching label */}
                                 <p className="absolute bottom-0 left-0 text-sm">stretch=true</p>

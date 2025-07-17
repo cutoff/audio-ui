@@ -204,6 +204,7 @@ function AdaptiveSvgComponent({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        // backgroundColor: 'hsla(332, 95%, 54%, 15%)',
         overflow: 'hidden',  // Prevent overflow
         ...style,
     }), [style]);
