@@ -63,7 +63,9 @@ export type AdaptiveSvgComponentProps = {
  * Performance optimizations:
  * - Uses React.memo with custom comparison function to prevent unnecessary re-renders
  * - Optimized dependency arrays in hooks to avoid render loops
- * - Efficient resize handling with debounced ResizeObserver
+ * - Efficient resize handling with asymmetric resize strategy:
+ *   - Immediate response when container grows for responsive UI
+ *   - Debounced response when container shrinks to prevent flickering
  * - Targeted lodash import to reduce bundle size
  * - Memoized style objects to prevent unnecessary recalculations
  *
@@ -187,15 +189,64 @@ function AdaptiveSvgComponent({
         }
     }, [stretch, preferredWidth, preferredHeight, minWidth, minHeight]); // Removed dimensions from dependency array
 
-    // Create debounced calculate function with useCallback to avoid recreation on each render
-    const debouncedCalculate = useMemo(() => 
+    /**
+     * Create a debounced version of calculateDimensions specifically for shrinking events.
+     * We use a 100ms delay to prevent flickering during rapid shrinking.
+     * This is only used when the container is getting smaller.
+     */
+    const debouncedShrinkCalculate = useMemo(() => 
         debounce(calculateDimensions, 100), 
     [calculateDimensions]);
 
+    /**
+     * Reference to track the container's previous dimensions.
+     * This allows us to determine if the container is growing or shrinking.
+     */
+    const containerSizeRef = useRef({ width: 0, height: 0 });
+
+    /**
+     * Asymmetric resize handler that responds differently to growth vs. shrinking:
+     * - For growth: Calculate dimensions immediately for responsive UI
+     * - For shrinking: Use debounced calculation to prevent flickering
+     * 
+     * This approach eliminates lag when the container grows while maintaining
+     * smooth behavior when it shrinks.
+     */
+    const handleResize = useCallback((entries: ResizeObserverEntry[]) => {
+        if (!containerRef.current || entries.length === 0) return;
+    
+        const entry = entries[0];
+        const newWidth = entry.contentRect.width;
+        const newHeight = entry.contentRect.height;
+        const prevWidth = containerSizeRef.current.width;
+        const prevHeight = containerSizeRef.current.height;
+    
+        // Update the stored size
+        containerSizeRef.current = { width: newWidth, height: newHeight };
+    
+        // If container is growing in either dimension, calculate immediately
+        if (newWidth > prevWidth || newHeight > prevHeight) {
+            // Cancel any pending debounced calculations
+            debouncedShrinkCalculate.cancel();
+            // Calculate immediately
+            calculateDimensions();
+        } else {
+            // For shrinking or no change, use the debounced function
+            debouncedShrinkCalculate();
+        }
+    }, [calculateDimensions, debouncedShrinkCalculate]);
+
     // Set up resize observation
     useEffect(() => {
-        const resizeObserver = new ResizeObserver(debouncedCalculate);
+        const resizeObserver = new ResizeObserver(handleResize);
         if (containerRef.current) {
+            // Initialize the container size reference with current dimensions
+            if (containerRef.current.clientWidth && containerRef.current.clientHeight) {
+                containerSizeRef.current = {
+                    width: containerRef.current.clientWidth,
+                    height: containerRef.current.clientHeight
+                };
+            }
             resizeObserver.observe(containerRef.current);
         }
 
@@ -204,9 +255,9 @@ function AdaptiveSvgComponent({
 
         return () => {
             resizeObserver.disconnect();
-            debouncedCalculate.cancel();
+            debouncedShrinkCalculate.cancel();
         };
-    }, [calculateDimensions, debouncedCalculate]);
+    }, [calculateDimensions, handleResize, debouncedShrinkCalculate]);
 
     // Handle wheel events
     useEffect(() => {
