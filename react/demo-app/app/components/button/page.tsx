@@ -1,11 +1,10 @@
 "use client"
 
-import { useState } from "react";
-import { Button } from "@cutoff/audio-ui-react";
+import {useState} from "react";
+import {Button} from "@cutoff/audio-ui-react";
 import DemoSkeletonPage from "@/components/DemoSkeletonPage";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
 
 export default function Page() {
     const [value, setValue] = useState(75);
@@ -13,9 +12,8 @@ export default function Page() {
     const [max, setMax] = useState(100);
     const [center, setCenter] = useState(50);
     const [label, setLabel] = useState("Button");
-    const [align, setAlign] = useState("bottom");
 
-    const codeString = `<Button min={${min}} max={${max}} value={${value}} center={${center}} label='${label}' align='${align}' />`;
+    const codeString = `<Button min={${min}} max={${max}} value={${value}} center={${center}} label="${label}" />`;
 
     const handleExampleClick = (num: 0 | 1 | 2): void => {
         switch (num) {
@@ -25,7 +23,6 @@ export default function Page() {
                 setMax(100);
                 setCenter(50);
                 setLabel("Button");
-                setAlign("bottom");
                 break;
             case 1:
                 setValue(25);
@@ -33,7 +30,6 @@ export default function Page() {
                 setMax(100);
                 setCenter(50);
                 setLabel("Off");
-                setAlign("bottom");
                 break;
             case 2:
                 setValue(75);
@@ -41,12 +37,17 @@ export default function Page() {
                 setMax(100);
                 setCenter(50);
                 setLabel("Center");
-                setAlign("center");
                 break;
         }
     };
 
-    const componentProps = { min, max, center, value, label, align };
+    const componentProps = {
+        min,
+        max,
+        center,
+        value,
+        label,
+    };
 
     const properties = [
         <div key="label" className="grid gap-2">
@@ -84,25 +85,11 @@ export default function Page() {
                 onChange={(e) => setCenter(Number(e.target.value))}
             />
         </div>,
-        <div key="align" className="grid gap-2">
-            <Label htmlFor="alignProp">Align</Label>
-            <Select value={align} onValueChange={(value) => setAlign(value)}>
-                <SelectTrigger id="alignProp">
-                    <SelectValue placeholder="Select alignment" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="top">Top</SelectItem>
-                    <SelectItem value="center">Center</SelectItem>
-                    <SelectItem value="bottom">Bottom</SelectItem>
-                </SelectContent>
-            </Select>
-        </div>
     ];
 
     const examples = [
         <Button
             key="0"
-            style={{ cursor: "pointer" }}
             min={0}
             max={100}
             center={50}
@@ -112,7 +99,6 @@ export default function Page() {
         />,
         <Button
             key="1"
-            style={{ cursor: "pointer" }}
             min={0}
             max={100}
             center={50}
@@ -122,13 +108,11 @@ export default function Page() {
         />,
         <Button
             key="2"
-            style={{ cursor: "pointer" }}
             min={0}
             max={100}
             center={50}
             value={75}
             label="Center"
-            align="center"
             onClick={() => handleExampleClick(2)}
         />,
     ];

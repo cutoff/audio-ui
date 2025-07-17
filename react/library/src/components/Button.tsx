@@ -1,43 +1,69 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import AdaptiveSvgComponent from './AdaptiveSvgComponent';
+import classNames from 'classnames';
+import "../styles.css";
 
+/**
+ * Props for the Button component
+ */
 export type ButtonProps = {
-    /** Minimum value */
+    /** Minimum value of the button's range */
     min?: number;
-    /** Maximum value */
+    /** Maximum value of the button's range */
     max?: number;
     /** Center point for value comparison */
     center?: number;
-    /** Current value */
+    /** Current value of the button */
     value?: number;
-    /** Button label */
+    /** Text label displayed below the button */
     label?: string;
-    /** Grid column start position */
-    gridX?: number;
-    /** Grid row start position */
-    gridY?: number;
-    /** Number of grid columns to span */
-    gridSpanX?: number;
-    /** Number of grid rows to span */
-    gridSpanY?: number;
-    /** Vertical alignment within grid cell */
-    align?: 'top' | 'center' | 'bottom';
-    /** Additional styles */
+    /** Whether the button should stretch to fill its container
+     * @default false */
+    stretch?: boolean;
+    /** Additional CSS class names */
+    className?: string;
+    /** Additional inline styles. Supports grid layout properties */
     style?: React.CSSProperties;
     /** Click event handler */
-    onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
+    onClick?: React.MouseEventHandler<SVGSVGElement>;
 };
 
+/**
+ * A button component for audio applications.
+ * 
+ * Features:
+ * - Supports value-based appearance changes
+ * - Responsive sizing with stretch option
+ * - Grid layout compatible
+ * - Visual feedback for interactive state
+ * 
+ * @example
+ * ```tsx
+ * // Basic usage
+ * <Button
+ *   value={75}
+ *   label="Power"
+ *   onClick={handleClick}
+ * />
+ * 
+ * // Grid-aligned stretched button
+ * <Button
+ *   value={50}
+ *   label="Mode"
+ *   stretch={true}
+ *   style={{ justifySelf: 'center' }}
+ *   onClick={handleClick}
+ * />
+ * ```
+ */
 export default function Button({
     min = 0,
     max = 100,
     center = 50,
     value = 0,
     label,
-    gridX,
-    gridY,
-    gridSpanX = 1,
-    gridSpanY = 2,
-    align = "bottom",
+    stretch = false,
+    className,
     style,
     onClick
 }: ButtonProps) {
@@ -47,49 +73,42 @@ export default function Button({
         setActualCenter(center ?? (max - min) / 2);
     }, [min, max, center]);
 
-    const getJustifyContentFromAlign = (align: 'top' | 'center' | 'bottom'): string => {
-        switch (align) {
-            case "top":
-                return "flex-start";
-            case "center":
-                return "center";
-            default:
-                return "flex-end";
-        }
-    };
+    // Determine if the button is in the "on" state
+    const isOn = useMemo(() => {
+        return value > actualCenter;
+    }, [value, actualCenter]);
 
-    const myStyle: React.CSSProperties = {
-        minHeight: 0,
-        minWidth: 0,
-        width: "min(100%, 100vh)",
-        height: "min(100%, 100vh)",
-        maxHeight: "100%",
-        maxWidth: "100%",
-        gridColumnStart: gridX,
-        gridRowStart: gridY,
-        gridColumnEnd: `span ${gridSpanX}`,
-        gridRowEnd: `span ${gridSpanY}`,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: getJustifyContentFromAlign(align),
-        ...style
-    };
-
-    const isOn = value > actualCenter;
+    // Determine the button's appearance classes based on state
     const buttonStroke = isOn ? "stroke-primary-50" : "stroke-primary-20";
     const buttonFill = isOn ? "fill-primary" : "fill-primary-50";
 
     return (
-        <div style={myStyle} onClick={onClick}>
-            <svg viewBox="0 0 100 200">
-                <rect 
-                    className={`${buttonStroke} ${buttonFill}`}
-                    strokeWidth="5"
-                    x={10}
-                    y={110}
-                    width={80}
-                    height={40}
-                />
+        <AdaptiveSvgComponent
+            viewBoxWidth={100}
+            viewBoxHeight={200}
+            preferredWidth={75}
+            preferredHeight={150}
+            stretch={stretch}
+            className={classNames(
+                className,
+                "cutoffAudioKit",
+                onClick ? "highlight" : ""
+            )}
+            style={style}
+            onClick={onClick}
+        >
+            {/* Button Rectangle */}
+            <rect 
+                className={`${buttonStroke} ${buttonFill}`}
+                strokeWidth="5"
+                x={10}
+                y={110}
+                width={80}
+                height={40}
+            />
+            
+            {/* Label Text */}
+            {label && (
                 <text 
                     className="fill-text" 
                     x="50" 
@@ -100,7 +119,7 @@ export default function Button({
                 >
                     {label}
                 </text>
-            </svg>
-        </div>
+            )}
+        </AdaptiveSvgComponent>
     );
 }
