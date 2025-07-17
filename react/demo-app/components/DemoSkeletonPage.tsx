@@ -1,10 +1,7 @@
 "use client"
 
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { useMemo, useEffect } from "react";
-import Link from "next/link";
-import {CodeBlock} from "@/components/code-block";
+import { useMemo } from "react";
+import { CodeBlock } from "@/components/code-block";
 
 export type DemoSkeletonPageProps = {
     /** Name of the component being demonstrated */
@@ -102,7 +99,7 @@ export default function DemoSkeletonPage({
                         {/* Size Section */}
                         <div>
                             <h2 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Size</h2>
-                            <div className="flex flex-col">
+                            <div className="flex flex-wrap gap-4 justify-start items-start">
                                 <PageComponent {...componentProps} />
                             </div>
                         </div>

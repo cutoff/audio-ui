@@ -242,18 +242,32 @@ function AdaptiveSvgComponent({
         else if (justifySelf === 'end') justifyContent = 'flex-end';
         else if (justifySelf === 'center') justifyContent = 'center';
 
-        return {
+        // Base styles that apply to both stretch and non-stretch modes
+        const baseStyles: React.CSSProperties = {
             position: 'relative',
-            width: '100%',
-            height: '100%',
-            display: 'flex',
             alignItems,
             justifyContent,
-            // backgroundColor: 'hsla(332, 95%, 54%, 15%)',
             overflow: 'hidden',  // Prevent overflow
             ...restStyle,
         };
-    }, [style]);
+
+        // Apply different styles based on stretch mode
+        if (stretch) {
+            // When stretched, behave as a block element that takes full container space
+            return {
+                ...baseStyles,
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+            };
+        } else {
+            // When not stretched, behave as an inline element
+            return {
+                ...baseStyles,
+                display: 'inline-flex',
+            };
+        }
+    }, [style, stretch]);
 
     const svgStyle = useMemo<React.CSSProperties>(() => ({
         width: stretch ? 'auto' : dimensions.width,
