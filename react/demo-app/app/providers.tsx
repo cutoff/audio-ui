@@ -7,7 +7,6 @@ export function Providers({children}: { children: React.ReactNode }) {
         <ThemeProvider
             attribute="class"
             defaultTheme="dark"
-            forcedTheme="dark" // This forces dark mode
             enableSystem={false}
         >
             {children}

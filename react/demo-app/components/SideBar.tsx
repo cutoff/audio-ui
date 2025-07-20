@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
 // Define types for components and theme colors
 type Page = {
@@ -40,8 +42,10 @@ const themeColors: ThemeColor[] = [
 
 export default function SideBar() {
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
   const [currentTheme, setCurrentTheme] = useState('--theme-blue-primary');
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // Function to change theme
   const changeTheme = (themeCssVar: string) => {
@@ -50,11 +54,18 @@ export default function SideBar() {
     document.documentElement.style.setProperty('--primary-color-20', `var(${themeCssVar}-20)`);
     setCurrentTheme(themeCssVar);
   };
+  
+  // Toggle between light and dark mode
+  const toggleDarkMode = (checked: boolean) => {
+    setTheme(checked ? 'dark' : 'light');
+  };
 
   // Set initial theme when component mounts
   useEffect(() => {
     // Blue is the default theme in styles.css, but we set it explicitly to ensure consistency
     changeTheme('--theme-blue-primary');
+    // Set mounted to true after component mounts to avoid hydration issues
+    setMounted(true);
   }, []);
 
   // Close sidebar when route changes on mobile
@@ -70,7 +81,7 @@ export default function SideBar() {
           variant="outline" 
           size="icon" 
           onClick={() => setIsOpen(!isOpen)}
-          className="bg-zinc-800 border-zinc-700 hover:bg-zinc-700"
+          className="dark:bg-zinc-800 dark:border-zinc-700 dark:hover:bg-zinc-700 bg-zinc-200 border-zinc-300 hover:bg-zinc-300"
         >
           {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </Button>
@@ -88,7 +99,7 @@ export default function SideBar() {
       <div 
         className={`
           fixed md:sticky top-0 z-40
-          h-screen md:h-screen bg-zinc-900/50 border-r border-zinc-800 p-4 flex flex-col
+          h-screen md:h-screen bg-sidebar-background border-r border-sidebar-border p-4 flex flex-col
           w-64 transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}
@@ -96,12 +107,12 @@ export default function SideBar() {
         <div className="flex-grow">
           <Link 
             href="/"
-            className="block text-2xl font-bold mb-6 hover:text-primary-color transition-colors"
+            className="block text-2xl font-bold mb-6 text-sidebar-primary hover:text-primary-color transition-colors"
           >
             Audio UI
           </Link>
 
-          <h2 className="text-xl font-medium mb-4">Controls</h2>
+          <h2 className="text-xl font-medium mb-4 text-sidebar-primary">Controls</h2>
           <nav className="space-y-2">
             {controls.map((page) => (
               <Link
@@ -109,8 +120,8 @@ export default function SideBar() {
                 href={page.path}
                 className={`block px-3 py-2 rounded-md transition-colors ${
                   pathname === page.path
-                    ? "bg-primary-color/20 text-white"
-                    : "hover:bg-zinc-800 text-zinc-400 hover:text-white"
+                    ? "bg-sidebar-selected-bg text-sidebar-selected-text border-l-4 border-primary-color"
+                    : "hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-primary-foreground"
                 }`}
               >
                 {page.name}
@@ -120,30 +131,46 @@ export default function SideBar() {
         </div>
 
         {/* Theme Selector at the bottom of sidebar */}
-        <div className="mt-auto pt-4 border-t border-zinc-800">
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-sm text-zinc-400 flex items-center h-9 px-3 leading-none">Theme</span>
+        <div className="mt-auto pt-4 border-t border-sidebar-border">
+          {/* Color Theme Selector */}
+          <div className="flex items-center justify-between gap-2 mb-4">
+            <span className="text-sm text-sidebar-foreground flex items-center h-9 px-3 leading-none">Color</span>
             <Select 
               value={currentTheme} 
               onValueChange={(value) => changeTheme(value)}
             >
-              <SelectTrigger className="w-[120px] bg-zinc-800 border-zinc-700">
+              <SelectTrigger className="w-[120px] bg-sidebar-accent border-sidebar-border">
                 <SelectValue placeholder="Select theme" />
               </SelectTrigger>
               <SelectContent>
-                {themeColors.map((theme) => (
+                {themeColors.map((themeColor) => (
                   <SelectItem 
-                    key={theme.cssVar} 
-                    value={theme.cssVar}
+                    key={themeColor.cssVar} 
+                    value={themeColor.cssVar}
                     className="inline-flex items-center"
                   >
-                    <div className={`w-4 h-4 rounded-full ${theme.color} inline-block align-middle mr-2`}></div>
-                    <span className="align-middle">{theme.name}</span>
+                    <div className={`w-4 h-4 rounded-full ${themeColor.color} inline-block align-middle mr-2`}></div>
+                    <span className="align-middle">{themeColor.name}</span>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
+          
+          {/* Dark/Light Mode Switch */}
+          {mounted && (
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-sm text-sidebar-foreground flex items-center h-9 px-3 leading-none">Mode</span>
+              <div className="flex items-center gap-2">
+                <Sun className="h-4 w-4 text-sidebar-foreground" />
+                <Switch 
+                  checked={theme === 'dark'}
+                  onCheckedChange={toggleDarkMode}
+                />
+                <Moon className="h-4 w-4 text-sidebar-foreground" />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>

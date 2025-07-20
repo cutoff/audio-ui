@@ -35,7 +35,7 @@ export default function ControlSkeletonPage({
             items.push(
                 <div
                     key={i}
-                    className="w-full h-full border border-dashed border-zinc-600"
+                    className="w-full h-full border border-dashed dark:border-zinc-600 border-zinc-400"
                     style={{
                         gridArea: `${(i % 4) + 1} / ${Math.floor(i / 4) + 1} / span 1 / span 1`
                     }}
@@ -49,7 +49,7 @@ export default function ControlSkeletonPage({
     return (
         <div className="min-h-screen flex flex-col md:flex-row">
             {/* Left Column */}
-            <div className="w-full md:w-1/3 p-4 md:p-8 flex flex-col justify-between bg-zinc-900/30 overflow-auto">
+            <div className="w-full md:w-1/3 p-4 md:p-8 flex flex-col justify-between dark:bg-zinc-900/30 bg-zinc-100/70 overflow-auto">
                 <div className="flex flex-col gap-6 md:gap-8">
                     <div className="flex flex-col gap-4 md:gap-6">
                         <h1 className="text-xl md:text-2xl font-medium">{componentName}</h1>
@@ -107,7 +107,7 @@ export default function ControlSkeletonPage({
                         {/* Grid Layout - Hidden on small screens, visible on medium and up */}
                         <div className="hidden md:block">
                             <h2 className="text-xl md:text-2xl font-medium mb-4">Grid Layout</h2>
-                            <div className="w-full h-80 grid grid-rows-4 grid-cols-9 gap-2 relative">
+                            <div className="w-full h-80 grid grid-rows-4 grid-cols-9 gap-2 relative dark:bg-zinc-900/10 bg-zinc-100/50 p-2 rounded-md">
                                 {fillItems}
 
                                 {/* Grid title */}
@@ -185,9 +185,9 @@ export default function ControlSkeletonPage({
 
                         {/* Message for small screens */}
                         <div className="md:hidden">
-                            <div className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-6 text-center">
+                            <div className="dark:bg-zinc-800/50 bg-zinc-200/50 dark:border-zinc-700 border-zinc-300 rounded-lg p-6 text-center">
                                 <h2 className="text-lg font-medium mb-3 text-primary-color">Screen Size Notice</h2>
-                                <p className="text-zinc-300">
+                                <p className="dark:text-zinc-300 text-zinc-700">
                                     Control surface examples are not suitable for small screens.
                                     Please use a wider screen to view the grid layout examples.
                                 </p>

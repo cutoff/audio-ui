@@ -75,7 +75,7 @@ export const CodeBlock = ({
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 rounded-full bg-zinc-800/80 hover:bg-zinc-800/90 shadow-md focus:ring-0"
+                    className="h-8 w-8 rounded-full dark:bg-zinc-800/80 dark:hover:bg-zinc-800/90 bg-zinc-200/80 hover:bg-zinc-200/90 shadow-md focus:ring-0"
                     onClick={onCopy}
                 >
                     {copied ? (
@@ -90,8 +90,9 @@ export const CodeBlock = ({
             {/* Code container */}
             <div
                 className={cn(
-                    "w-full rounded-md overflow-hidden border border-zinc-700/50",
-                    theme === 'oneDark' ? 'bg-zinc-900/90' : 'bg-zinc-900/70',
+                    "w-full rounded-md overflow-hidden border",
+                    "dark:border-zinc-700/50 dark:bg-zinc-900/90",
+                    "border-zinc-300/70 bg-zinc-100/90",
                     className
                 )}
             >

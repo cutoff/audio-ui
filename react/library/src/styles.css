@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap');
 
 :root {
-    --text-color: hsl(0, 0%, 96%);
+    --text-color: hsl(0, 0%, 10%);
     --bg-color: hsl(0, 0%, 7%);
 
     --primary-color: var(--theme-blue-primary);
@@ -11,6 +11,11 @@
 
     --default-font-family: "Oxanium", sans-serif;
     --default-font-size: 14px;
+}
+
+/* Dark mode text color */
+.dark {
+    --text-color: hsl(0, 0%, 96%);
 
     /*color: var(--text-color);*/
     /*background-color: var(--bg-color);*/
@@ -63,6 +68,16 @@ svg text, svg foreignObject div {
 }
 
 .highlight:hover {
+    filter: brightness(125%) hue-rotate(10deg) drop-shadow(0 0 1ex var(--primary-color-50));
+}
+
+/* Prevent blur effect from affecting text elements */
+.highlight:hover text {
+    filter: none;
+}
+
+/* Ensure consistent blur effect between light and dark modes */
+.dark .highlight:hover {
     filter: brightness(125%) hue-rotate(10deg) drop-shadow(0 0 1ex var(--primary-color-50));
 }
 

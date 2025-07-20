@@ -19,12 +19,12 @@ body {
         --secondary: 240 4.8% 95.9%;
         --secondary-foreground: 240 5.9% 10%;
         --muted: 240 4.8% 95.9%;
-        --muted-foreground: 240 3.8% 46.1%;
+        --muted-foreground: 240 5% 26%;
         --accent: 240 4.8% 95.9%;
         --accent-foreground: 240 5.9% 10%;
         --destructive: 0 84.2% 60.2%;
         --destructive-foreground: 0 0% 98%;
-        --border: 240 5.9% 90%;
+        --border: 240 5.9% 80%;
         --input: 240 5.9% 90%;
         --ring: 240 10% 3.9%;
         --chart-1: 12 76% 61%;
@@ -33,13 +33,15 @@ body {
         --chart-4: 43 74% 66%;
         --chart-5: 27 87% 67%;
         --radius: 0.5rem;
-        --sidebar-background: 0 0% 98%;
-        --sidebar-foreground: 240 5.3% 26.1%;
+        --sidebar-background: 0 0% 95%;
+        --sidebar-foreground: 240 5% 20%;
         --sidebar-primary: 240 5.9% 10%;
         --sidebar-primary-foreground: 0 0% 98%;
-        --sidebar-accent: 240 4.8% 95.9%;
+        --sidebar-selected-bg: 240 5.9% 85%;
+        --sidebar-selected-text: 240 5.9% 10%;
+        --sidebar-accent: 240 4.8% 90%;
         --sidebar-accent-foreground: 240 5.9% 10%;
-        --sidebar-border: 220 13% 91%;
+        --sidebar-border: 220 13% 80%;
         --sidebar-ring: 217.2 91.2% 59.8%;
     }
 
@@ -70,8 +72,10 @@ body {
         --chart-5: 340 75% 55%;
         --sidebar-background: 240 5.9% 10%;
         --sidebar-foreground: 240 4.8% 95.9%;
-        --sidebar-primary: 224.3 76.3% 48%;
+        --sidebar-primary: 0 0% 90%;
         --sidebar-primary-foreground: 0 0% 100%;
+        --sidebar-selected-bg: 240 5.9% 20%;
+        --sidebar-selected-text: 0 0% 100%;
         --sidebar-accent: 240 3.7% 15.9%;
         --sidebar-accent-foreground: 240 4.8% 95.9%;
         --sidebar-border: 240 3.7% 15.9%;
@@ -101,5 +105,18 @@ body {
 }
 
 .emphasized-bg {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark .emphasized-bg {
     background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Custom classes for sidebar selected state */
+.bg-sidebar-selected-bg {
+    background-color: hsl(var(--sidebar-selected-bg));
+}
+
+.text-sidebar-selected-text {
+    color: hsl(var(--sidebar-selected-text));
 }
