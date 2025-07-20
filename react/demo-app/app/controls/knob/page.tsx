@@ -212,7 +212,7 @@ export default function KnobDemoPage() {
     ];
 
     const codeString = generateCodeSnippet(enableOptions, value, label, min, max, bipolar);
-    const componentProps = {min, center: bipolar, max, value, label, enableOptions};
+    const componentProps = {min, bipolar, max, value, label, enableOptions};
 
     return (
         <ControlSkeletonPage

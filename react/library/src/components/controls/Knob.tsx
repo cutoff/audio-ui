@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import classNames from 'classnames';
 import "../../styles.css";
@@ -15,7 +15,7 @@ const CENTER_ANGLE = 360;
 /**
  * Props for the Knob component
  */
-export type KnobProps = ControlProps & BipolarControlProps &  StretchableProps & {
+export type KnobProps = ControlProps & BipolarControlProps & StretchableProps & {
     /** Content to display inside the knob (replaces the value display) */
     children?: React.ReactNode;
     /** Additional CSS classes */
@@ -54,6 +54,7 @@ const polarToCartesian = (centerX: number, centerY: number, radius: number, angl
         y: centerY + (radius * Math.sin(angleInRadians))
     };
 };
+
 
 /**
  * Knob component provides a circular control for value adjustment.
@@ -99,9 +100,19 @@ export default function Knob({
                                  onChange,
                                  onClick
                              }: KnobProps) {
+
     const valueToAngle = useMemo(() => {
         return ((value - min) / (max - min)) * MAX_ARC_ANGLE + MAX_START_ANGLE;
     }, [value, min, max]);
+
+    /**
+     * Memoized function to format value based on bipolar mode
+     * If bipolar is true, returns the value prefixed by its sign (+ or -)
+     * Otherwise, returns the number as a string
+     */
+    const formatValueFn = useCallback((val: number): string => {
+        return bipolar && val > 0 ? `+${val}` : val.toString();
+    }, [bipolar]);
 
     const handleWheel = (e: WheelEvent) => {
         if (!onChange) return;
@@ -179,7 +190,7 @@ export default function Knob({
                                 } as React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>)}
                             </div>
                         ) : (
-                            children ?? value
+                            formatValueFn(value)
                         )}
                     </div>
                 </React.Fragment>
