@@ -92,7 +92,6 @@ export default function Page() {
             key="0"
             min={0}
             max={100}
-            center={50}
             value={75}
             label="Button"
             onClick={() => handleExampleClick(0)}
@@ -101,7 +100,6 @@ export default function Page() {
             key="1"
             min={0}
             max={100}
-            center={50}
             value={25}
             label="Off"
             onClick={() => handleExampleClick(1)}
@@ -110,7 +108,6 @@ export default function Page() {
             key="2"
             min={0}
             max={100}
-            center={50}
             value={75}
             label="Center"
             onClick={() => handleExampleClick(2)}

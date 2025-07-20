@@ -2,24 +2,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import classNames from 'classnames';
 import "../../styles.css";
+import {ControlProps, StretchableProps} from "../types";
 
 /**
  * Props for the Button component
  */
-export type ButtonProps = {
-    /** Minimum value of the button's range */
-    min?: number;
-    /** Maximum value of the button's range */
-    max?: number;
-    /** Center point for value comparison */
-    center?: number;
-    /** Current value of the button */
-    value?: number;
-    /** Text label displayed below the button */
-    label?: string;
-    /** Whether the button should stretch to fill its container
-     * @default false */
-    stretch?: boolean;
+export type ButtonProps = ControlProps & StretchableProps & {
     /** Additional CSS class names */
     className?: string;
     /** Additional inline styles. Supports grid layout properties */
@@ -59,7 +47,6 @@ export type ButtonProps = {
 export default function Button({
     min = 0,
     max = 100,
-    center = 50,
     value = 0,
     label,
     stretch = false,
@@ -70,8 +57,8 @@ export default function Button({
     const [actualCenter, setActualCenter] = useState<number>(50);
 
     useEffect(() => {
-        setActualCenter(center ?? (max - min) / 2);
-    }, [min, max, center]);
+        setActualCenter((max - min + 1) / 2);
+    }, [min, max]);
 
     // Determine if the button is in the "on" state
     const isOn = useMemo(() => {

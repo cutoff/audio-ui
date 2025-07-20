@@ -1,5 +1,6 @@
 import React from 'react';
 import Knob from './Knob';
+import {StretchableProps} from "../types";
 
 /**
  * Props for the option elements within KnobSwitch
@@ -16,7 +17,7 @@ export type KnobSwitchOptionProps = {
 /**
  * Props for the KnobSwitch component
  */
-export type KnobSwitchProps = {
+export type KnobSwitchProps = StretchableProps & {
     /** Text label displayed below the knob */
     label?: string;
     /** Currently selected value */
@@ -25,9 +26,6 @@ export type KnobSwitchProps = {
     children: React.ReactNode;
     /** Additional inline styles */
     style?: React.CSSProperties;
-    /** Whether the component should stretch to fill its container
-     * @default false */
-    stretch?: boolean;
     /** Handler for value changes. Can accept either a new value or a function to update the previous value */
     onChange?: (value: number | ((prev: number) => number)) => void;
     /** Handler for click events */

@@ -1,28 +1,15 @@
 import React, { useMemo } from 'react';
 import classNames from 'classnames';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
+import {BipolarControlProps, ControlProps, StretchableProps} from "../types";
 
 /**
  * Props for the Slider component
  */
-export type SliderProps = {
-    /** Minimum value of the slider's range */
-    min: number;
-    /** Maximum value of the slider's range */
-    max: number;
-    /** Optional center point for bidirectional sliders.
-     * When provided, the slider fills from the center point in both directions */
-    center?: number;
-    /** Current value of the slider */
-    value: number;
-    /** Text label displayed below the slider */
-    label: string;
+export type SliderProps = ControlProps & BipolarControlProps & StretchableProps & {
     /** Size variant of the slider
      * @default 'normal' */
     size?: 'normal' | 'large';
-    /** Whether the slider should stretch to fill its container
-     * @default false */
-    stretch?: boolean;
     /** Additional CSS class names */
     className?: string;
     /** Additional inline styles. Supports grid layout properties */
@@ -149,7 +136,7 @@ const computeFilledZoneFromCenter = (
 const Slider = ({
                     min,
                     max,
-                    center,
+                    bipolar = false,
                     value,
                     label,
                     size = 'normal',
@@ -169,12 +156,12 @@ const Slider = ({
     // Calculate the dimensions of the filled portion based on current value
     const filledZone = useMemo<FilledZone>(() => {
         const normalizedValue = Math.min(Math.max(value, min), max);
-        const normalizedCenter = center ?? min;
+        const normalizedCenter = bipolar ? ((max - min + 1) / 2) : min;
 
-        return center
+        return bipolar
             ? computeFilledZoneFromCenter(normalizedValue, min, max, normalizedCenter, mainZone)
             : computeFilledZoneFromMin(mainZone, normalizedValue, min, max);
-    }, [min, max, value, center, mainZone]);
+    }, [min, max, value, bipolar, mainZone]);
 
     // Handle mouse wheel events to change the value
     const handleWheel = (e: WheelEvent) => {

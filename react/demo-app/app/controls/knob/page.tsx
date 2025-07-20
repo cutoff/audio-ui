@@ -26,7 +26,7 @@ function generateCodeSnippet(
     label: string,
     min: number,
     max: number,
-    center: boolean
+    bipolar: boolean
 ): string {
     if (enableOptions) {
         return `<Knob value={${value}} label='${label}'>
@@ -38,7 +38,7 @@ function generateCodeSnippet(
 </Knob>
 `;
     } else {
-        return `<Knob min={${min}} max={${max}} value={${value}} label='${label}' center={${center}} />`;
+        return `<Knob min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}} />`;
     }
 }
 
@@ -47,7 +47,7 @@ type KnobComponentProps = {
     min: number;
     max: number;
     label?: string;
-    center?: boolean;
+    bipolar?: boolean;
     enableOptions: boolean;
     stretch?: boolean;
     style?: React.CSSProperties;
@@ -61,7 +61,7 @@ function KnobComponent({
                            min,
                            max,
                            label,
-                           center,
+                           bipolar,
                            enableOptions,
                            stretch,
                            onChange,
@@ -89,7 +89,7 @@ function KnobComponent({
                 max={max}
                 value={value}
                 label={label}
-                center={center}
+                bipolar={bipolar}
                 stretch={stretch}
                 style={style}
                 className={className}
@@ -105,7 +105,7 @@ export default function KnobDemoPage() {
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(100);
     const [label, setLabel] = useState("Default");
-    const [center, setCenter] = useState(false);
+    const [bipolar, setBipolar] = useState(false);
     const [enableOptions, setEnableOptions] = useState(false);
 
     const handleExampleClick = (num: 0 | 1 | 2 | 3): void => {
@@ -115,23 +115,23 @@ export default function KnobDemoPage() {
                 setMin(0);
                 setMax(100);
                 setLabel("Default");
-                setCenter(false);
+                setBipolar(false);
                 setEnableOptions(false);
                 break;
             case 1:
                 setValue(64);
                 setMin(0);
                 setMax(127);
-                setLabel("Center");
-                setCenter(true);
+                setLabel("Bipolar");
+                setBipolar(true);
                 setEnableOptions(false);
                 break;
             case 2:
                 setValue(0);
                 setMin(-1024);
                 setMax(1024);
-                setLabel("Center0");
-                setCenter(true);
+                setLabel("Bipolar0");
+                setBipolar(true);
                 setEnableOptions(false);
                 break;
             case 3:
@@ -139,7 +139,7 @@ export default function KnobDemoPage() {
                 setMin(0);
                 setMax(4);
                 setLabel("Enum");
-                setCenter(false);
+                setBipolar(false);
                 setEnableOptions(true);
                 break;
         }
@@ -172,13 +172,13 @@ export default function KnobDemoPage() {
                 onChange={(e) => setMax(Number(e.target.value))}
             />
         </div>,
-        <div key="center" className="flex items-center gap-2 pt-2">
+        <div key="bipolar" className="flex items-center gap-2 pt-2">
             <Checkbox
-                id="centerProp"
-                checked={center}
-                onCheckedChange={(checked) => setCenter(checked === true)}
+                id="bipolarProp"
+                checked={bipolar}
+                onCheckedChange={(checked) => setBipolar(checked === true)}
             />
-            <Label htmlFor="centerProp" className="cursor-pointer">Center</Label>
+            <Label htmlFor="bipolarProp" className="cursor-pointer">Bipolar</Label>
         </div>,
         <div key="options" className="flex items-center gap-2 pt-2">
             <Checkbox
@@ -196,11 +196,11 @@ export default function KnobDemoPage() {
               onClick={() => handleExampleClick(0)}
         />,
         <Knob key="1" style={{cursor: "pointer"}}
-              min={0} center={true} max={127} value={64} label="Center"
+              min={0} bipolar={true} max={127} value={64} label="Bipolar"
               onClick={() => handleExampleClick(1)}
         />,
         <Knob key="2" style={{cursor: "pointer"}}
-              min={-1024} center={true} max={1024} value={0} label="Center0"
+              min={-1024} bipolar={true} max={1024} value={0} label="Bipolar0"
               onClick={() => handleExampleClick(2)}
         />,
         <KnobSwitch key="3" style={{cursor: "pointer"}}
@@ -211,8 +211,8 @@ export default function KnobDemoPage() {
         </KnobSwitch>
     ];
 
-    const codeString = generateCodeSnippet(enableOptions, value, label, min, max, center);
-    const componentProps = {min, center, max, value, label, enableOptions};
+    const codeString = generateCodeSnippet(enableOptions, value, label, min, max, bipolar);
+    const componentProps = {min, center: bipolar, max, value, label, enableOptions};
 
     return (
         <ControlSkeletonPage

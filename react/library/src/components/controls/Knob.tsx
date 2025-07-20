@@ -2,6 +2,7 @@ import React, {useMemo} from 'react';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import classNames from 'classnames';
 import "../../styles.css";
+import {BipolarControlProps, ControlProps, StretchableProps} from "../types";
 
 /**
  * Angular constants for the knob's arc
@@ -14,21 +15,9 @@ const CENTER_ANGLE = 360;
 /**
  * Props for the Knob component
  */
-export type KnobProps = {
-    /** Minimum value of the knob */
-    min: number;
-    /** Maximum value of the knob */
-    max: number;
-    /** Whether to start the arc from the center (360°) instead of MAX_START_ANGLE */
-    center?: boolean;
-    /** Current value of the knob */
-    value: number;
-    /** Label displayed below the knob */
-    label?: string;
+export type KnobProps = ControlProps & BipolarControlProps &  StretchableProps & {
     /** Content to display inside the knob (replaces the value display) */
     children?: React.ReactNode;
-    /** Whether the knob should stretch to fill its container */
-    stretch?: boolean;
     /** Additional CSS classes */
     className?: string;
     /** Additional inline styles */
@@ -100,7 +89,7 @@ const polarToCartesian = (centerX: number, centerY: number, radius: number, angl
 export default function Knob({
                                  min,
                                  max,
-                                 center = false,
+                                 bipolar = false,
                                  value,
                                  label,
                                  children,
@@ -153,7 +142,7 @@ export default function Knob({
                 fill="none"
                 strokeWidth="12"
                 strokeLinecap="round"
-                d={calculateArcPath(center ? CENTER_ANGLE : MAX_START_ANGLE, valueToAngle, 40)}
+                d={calculateArcPath(bipolar ? CENTER_ANGLE : MAX_START_ANGLE, valueToAngle, 40)}
             />
 
             {/* Value Display */}

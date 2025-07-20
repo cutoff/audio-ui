@@ -6,16 +6,17 @@ import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {Checkbox} from "@/components/ui/checkbox";
 
 export default function Page() {
     const [value, setValue] = useState(42);
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(100);
     const [label, setLabel] = useState("Default");
-    const [center, setCenter] = useState(0);
+    const [bipolar, setBipolar] = useState(false);
     const [size, setSize] = useState("normal");
 
-    const codeString = `<Slider min={${min}} max={${max}} value={${value}} label='${label}' size='${size}' center={${center}} />`;
+    const codeString = `<Slider min={${min}} max={${max}} value={${value}} label='${label}' size='${size}' bipolar={${bipolar}} />`;
 
     const handleExampleClick = (num: 0 | 1 | 2): void => {
         switch (num) {
@@ -24,15 +25,15 @@ export default function Page() {
                 setMin(0);
                 setMax(100);
                 setLabel("Default");
-                setCenter(0);
+                setBipolar(false);
                 setSize("normal");
                 break;
             case 1:
                 setValue(64);
                 setMin(0);
                 setMax(127);
-                setLabel("Center");
-                setCenter(64);
+                setLabel("Bipolar");
+                setBipolar(true);
                 setSize("normal");
                 break;
             case 2:
@@ -40,13 +41,13 @@ export default function Page() {
                 setMin(0);
                 setMax(127);
                 setLabel("Large");
-                setCenter(0);
+                setBipolar(false);
                 setSize("large");
                 break;
         }
     };
 
-    const componentProps = {min, center, max, value, label, size};
+    const componentProps = {min, bipolar, max, value, label, size};
 
     const properties = [
         <div key="label" className="grid gap-2">
@@ -75,14 +76,13 @@ export default function Page() {
                 onChange={(e) => setMax(Number(e.target.value))}
             />
         </div>,
-        <div key="center" className="grid gap-2">
-            <Label htmlFor="centerProp">Center</Label>
-            <Input
-                id="centerProp"
-                type="number"
-                value={center}
-                onChange={(e) => setCenter(Number(e.target.value))}
+        <div key="bipolar" className="grid gap-2">
+            <Checkbox
+                id="bipolarProp"
+                checked={bipolar}
+                onCheckedChange={(checked) => setBipolar(checked === true)}
             />
+            <Label htmlFor="bipolarProp" className="cursor-pointer">Bipolar</Label>
         </div>,
         <div key="size" className="grid gap-2">
             <Label htmlFor="sizeProp">Size</Label>
@@ -112,17 +112,17 @@ export default function Page() {
             key="1"
             style={{cursor: "pointer"}}
             min={0}
-            center={64}
+            bipolar={true}
             max={127}
             value={64}
-            label="Center"
+            label="Bipolar"
             onClick={() => handleExampleClick(1)}
         />,
         <Slider
             key="2"
             style={{cursor: "pointer"}}
             min={0}
-            center={0}
+            bipolar={false}
             max={127}
             value={22}
             size="large"
