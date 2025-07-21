@@ -14,11 +14,11 @@ export default function Page() {
     const [max, setMax] = useState(100);
     const [label, setLabel] = useState("Default");
     const [bipolar, setBipolar] = useState(false);
-    const [size, setSize] = useState("normal");
+    const [thickness, setThickness] = useState("medium");
 
-    const codeString = `<Slider min={${min}} max={${max}} value={${value}} label='${label}' size='${size}' bipolar={${bipolar}} />`;
+    const codeString = `<Slider min={${min}} max={${max}} value={${value}} label='${label}' thickness='${thickness}' bipolar={${bipolar}} />`;
 
-    const handleExampleClick = (num: 0 | 1 | 2): void => {
+    const handleExampleClick = (num: 0 | 1 | 2 | 3): void => {
         switch (num) {
             case 0:
                 setValue(42);
@@ -26,7 +26,7 @@ export default function Page() {
                 setMax(100);
                 setLabel("Default");
                 setBipolar(false);
-                setSize("normal");
+                setThickness("medium");
                 break;
             case 1:
                 setValue(64);
@@ -34,7 +34,7 @@ export default function Page() {
                 setMax(127);
                 setLabel("Bipolar");
                 setBipolar(true);
-                setSize("normal");
+                setThickness("medium");
                 break;
             case 2:
                 setValue(22);
@@ -42,12 +42,12 @@ export default function Page() {
                 setMax(127);
                 setLabel("Large");
                 setBipolar(false);
-                setSize("large");
+                setThickness("large");
                 break;
         }
     };
 
-    const componentProps = {min, bipolar, max, value, label, size};
+    const componentProps = {min, bipolar, max, value, label, thickness};
 
     const properties = [
         <div key="label" className="grid gap-2">
@@ -85,13 +85,13 @@ export default function Page() {
             <Label htmlFor="bipolarProp" className="cursor-pointer">Bipolar</Label>
         </div>,
         <div key="size" className="grid gap-2">
-            <Label htmlFor="sizeProp">Size</Label>
-            <Select value={size} onValueChange={(value) => setSize(value)}>
-                <SelectTrigger id="sizeProp">
-                    <SelectValue placeholder="Select size" />
+            <Label htmlFor="thicknessProp">Thickness</Label>
+            <Select value={thickness} onValueChange={(value) => setThickness(value)}>
+                <SelectTrigger id="thicknessProp">
+                    <SelectValue placeholder="Select thickness" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="normal">Normal</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
                     <SelectItem value="large">Large</SelectItem>
                 </SelectContent>
             </Select>
@@ -125,7 +125,7 @@ export default function Page() {
             bipolar={false}
             max={127}
             value={22}
-            size="large"
+            thickness="large"
             label="Large"
             onClick={() => handleExampleClick(2)}
         />,

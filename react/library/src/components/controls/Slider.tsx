@@ -3,13 +3,15 @@ import classNames from 'classnames';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import {BipolarControlProps, ControlProps, StretchableProps} from "../types";
 
+export type Thickness = 'medium' | 'large';
+
 /**
  * Props for the Slider component
  */
 export type SliderProps = ControlProps & BipolarControlProps & StretchableProps & {
-    /** Size variant of the slider
+    /** Thickness variant of the slider
      * @default 'normal' */
-    size?: 'normal' | 'large';
+    thickness?: Thickness;
     /** Additional CSS class names */
     className?: string;
     /** Additional inline styles. Supports grid layout properties */
@@ -139,7 +141,7 @@ const Slider = ({
                     bipolar = false,
                     value,
                     label,
-                    size = 'normal',
+                    thickness = 'medium',
                     stretch = false,
                     className,
                     style,
@@ -148,10 +150,10 @@ const Slider = ({
                 }: SliderProps) => {
     // Calculate the dimensions of the slider's main zone based on size variant
     const mainZone = useMemo<Zone>(() => (
-        size === 'large'
+        thickness === 'large'
             ? { x: 30, y: 20, w: 40, h: 330 }
             : { x: 40, y: 20, w: 20, h: 330 }
-    ), [size]);
+    ), [thickness]);
 
     // Calculate the dimensions of the filled portion based on current value
     const filledZone = useMemo<FilledZone>(() => {
