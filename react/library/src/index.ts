@@ -11,7 +11,7 @@ export { default as Keyboard } from './components/Keyboard';
 // Also export types for consuming applications
 export type { KnobSwitchProps, KnobSwitchOptionProps } from './components/controls/KnobSwitch';
 export type { KnobProps } from './components/controls/Knob';
-export type { Thickness, SliderProps } from './components/controls/Slider';
+export type { SliderProps } from './components/controls/Slider';
 export type { ButtonProps } from './components/controls/Button';
 export type { KeyboardProps } from './components/Keyboard';
 

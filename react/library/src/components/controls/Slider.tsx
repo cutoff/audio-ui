@@ -3,15 +3,13 @@ import classNames from 'classnames';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import {BipolarControl} from "../types";
 
-export type Thickness = 'medium' | 'large';
-
 /**
  * Props for the Slider component
  */
 export type SliderProps = BipolarControl & {
-    /** Thickness variant of the slider
-     * @default 'normal' */
-    thickness?: Thickness;
+    /** Thickness of the slider in pixels
+     * @default 20 */
+    thickness?: number;
     /** Additional CSS class names */
     className?: string;
     /** Additional inline styles. Supports grid layout properties */
@@ -115,7 +113,7 @@ const computeFilledZone = (
  * Features:
  * - Supports both unidirectional (min to max) and bidirectional (center-based) modes
  * - Mouse wheel interaction for value adjustment
- * - Two size variants: normal and large
+ * - Customizable thickness
  * - Optional stretch behavior to fill container
  * - Grid layout compatible
  * - Visual feedback for interactive state
@@ -137,7 +135,7 @@ const computeFilledZone = (
  * @property {number} value - Current value of the slider (from `Control`)
  * @property {boolean} bipolar - Whether to start the fill from the center instead of minimum (from `BipolarControl`)
  * @property {number} roundness - Controls the corner style: 0 for square corners, > 0 for rounded corners (from `Control`, defaults to half the slider width)
- * @property {Thickness} thickness - Thickness variant of the slider
+ * @property {number} thickness - Thickness of the slider in pixels (defaults to 20)
  * @property {string} className - Additional CSS class names
  * @property {React.CSSProperties} style - Additional inline styles
  * @property {Function} onChange - Handler for value changes
@@ -181,7 +179,7 @@ const Slider = ({
                     bipolar = false,
                     value,
                     label,
-                    thickness = 'medium',
+                    thickness = 20,
                     stretch = false,
                     className,
                     style,
@@ -189,12 +187,20 @@ const Slider = ({
                     onClick,
                     roundness
                 }: SliderProps) => {
-    // Calculate the dimensions of the slider's main zone based on size variant
-    const mainZone = useMemo<Zone>(() => (
-        thickness === 'large'
-            ? { x: 30, y: 20, w: 40, h: 330 }
-            : { x: 40, y: 20, w: 20, h: 330 }
-    ), [thickness]);
+    // Ensure thickness is non-negative
+    const nonNegativeThickness = Math.max(0, thickness);
+    
+    // Calculate the dimensions of the slider's main zone based on thickness
+    const mainZone = useMemo<Zone>(() => {
+        // Center the slider based on its thickness
+        const x = 50 - (nonNegativeThickness / 2);
+        return { 
+            x, 
+            y: 20, 
+            w: nonNegativeThickness, 
+            h: 330 
+        };
+    }, [nonNegativeThickness]);
 
     // Calculate the dimensions of the filled portion based on current value
     const filledZone = useMemo<FilledZone>(() => {

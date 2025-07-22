@@ -109,7 +109,7 @@ export default function SideBar() {
             href="/"
             className="block text-2xl font-bold mb-6 text-sidebar-primary hover:text-primary-color transition-colors"
           >
-            Audio UI
+            AudioUI
           </Link>
 
           <h2 className="text-xl font-medium mb-4 text-sidebar-primary">Controls</h2>
