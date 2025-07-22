@@ -47,45 +47,51 @@ type FilledZone = {
 };
 
 /**
- * Calculates the filled zone dimensions for a slider that fills from minimum value
+ * Helper function to calculate a bounded ratio between 0 and 1
  */
-const computeFilledZoneFromMin = (mainZone: Zone, value: number, min: number, max: number): FilledZone => {
+const calculateBoundedRatio = (value: number, min: number, max: number): number => {
     // Ensure value is within bounds
     const boundedValue = Math.max(min, Math.min(value, max));
+    // Calculate ratio and ensure it's between 0 and 1
     const ratio = (boundedValue - min) / (max - min);
-    // Ensure ratio is between 0 and 1 to prevent rendering issues
-    const boundedRatio = Math.max(0, Math.min(ratio, 1));
-    const height = mainZone.h * boundedRatio;
-    
-    // Calculate y position ensuring it stays within the slider boundaries
-    const y = mainZone.y + (mainZone.h - height);
-    
-    return {
-        y: y,
-        h: height
-    };
+    return Math.max(0, Math.min(ratio, 1));
 };
 
 /**
- * Calculates the filled zone dimensions for a slider that fills from a center point
+ * Calculates the filled zone dimensions for a slider
+ * @param mainZone The dimensions of the slider
+ * @param value The current value
+ * @param min The minimum value
+ * @param max The maximum value
+ * @param center Optional center point (for bipolar sliders)
+ * @returns The dimensions of the filled portion
  */
-const computeFilledZoneFromCenter = (
-    value: number,
-    min: number,
-    max: number,
-    center: number,
-    mainZone: Zone
+const computeFilledZone = (
+    mainZone: Zone, 
+    value: number, 
+    min: number, 
+    max: number, 
+    center?: number
 ): FilledZone => {
-    // Ensure value is within bounds
+    // If no center is provided, fill from min
+    if (center === undefined) {
+        const boundedRatio = calculateBoundedRatio(value, min, max);
+        const height = mainZone.h * boundedRatio;
+        
+        return {
+            y: mainZone.y + (mainZone.h - height),
+            h: height
+        };
+    }
+    
+    // Fill from center (bipolar mode)
     const boundedValue = Math.max(min, Math.min(value, max));
     const halfHeight = mainZone.h / 2;
     const centerY = mainZone.y + halfHeight;
 
     if (boundedValue >= center) {
         // Upper half (value >= center)
-        const ratio = (boundedValue - center) / (max - center);
-        // Ensure ratio is between 0 and 1
-        const boundedRatio = Math.max(0, Math.min(ratio, 1));
+        const boundedRatio = calculateBoundedRatio(boundedValue, center, max);
         const height = halfHeight * boundedRatio;
         return {
             y: mainZone.y + (halfHeight - height),
@@ -93,9 +99,7 @@ const computeFilledZoneFromCenter = (
         };
     } else {
         // Lower half (value < center)
-        const ratio = (boundedValue - min) / (center - min);
-        // Ensure ratio is between 0 and 1
-        const boundedRatio = Math.max(0, Math.min(ratio, 1));
+        const boundedRatio = calculateBoundedRatio(boundedValue, min, center);
         const height = halfHeight * boundedRatio;
         return {
             y: centerY,
@@ -103,6 +107,7 @@ const computeFilledZoneFromCenter = (
         };
     }
 };
+
 
 /**
  * A vertical slider component for audio applications.
@@ -191,11 +196,9 @@ const Slider = ({
     // Calculate the dimensions of the filled portion based on current value
     const filledZone = useMemo<FilledZone>(() => {
         const normalizedValue = Math.min(Math.max(value, min), max);
-        const normalizedCenter = bipolar ? (Math.floor((max - min + 1) / 2) + min) : min;
+        const normalizedCenter = bipolar ? (Math.floor((max - min + 1) / 2) + min) : undefined;
 
-        return bipolar
-            ? computeFilledZoneFromCenter(normalizedValue, min, max, normalizedCenter, mainZone)
-            : computeFilledZoneFromMin(mainZone, normalizedValue, min, max);
+        return computeFilledZone(mainZone, normalizedValue, min, max, normalizedCenter);
     }, [min, max, value, bipolar, mainZone]);
 
     // Handle mouse wheel events to change the value
