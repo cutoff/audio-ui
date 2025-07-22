@@ -16,4 +16,4 @@ export type { ButtonProps } from './components/controls/Button';
 export type { KeyboardProps } from './components/Keyboard';
 
 // Export common types
-export type { StretchableProps, ControlProps, BipolarControlProps } from './components/types';
+export type { Stretchable, Control, BipolarControl } from './components/types';

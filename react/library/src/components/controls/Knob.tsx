@@ -2,7 +2,7 @@ import React, {useCallback, useMemo} from 'react';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import classNames from 'classnames';
 import "../../styles.css";
-import {BipolarControlProps, ControlProps, StretchableProps} from "../types";
+import {BipolarControl} from "../types";
 
 /**
  * Angular constants for the knob's arc
@@ -15,7 +15,7 @@ const CENTER_ANGLE = 360;
 /**
  * Props for the Knob component
  */
-export type KnobProps = ControlProps & BipolarControlProps & StretchableProps & {
+export type KnobProps = BipolarControl & {
     /** Content to display inside the knob (replaces the value display) */
     children?: React.ReactNode;
     /** Additional CSS classes */

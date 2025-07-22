@@ -1,6 +1,6 @@
 import React from 'react';
 import Knob from './Knob';
-import {StretchableProps} from "../types";
+import {Stretchable} from "../types";
 
 /**
  * Props for the option elements within KnobSwitch
@@ -17,7 +17,7 @@ export type KnobSwitchOptionProps = {
 /**
  * Props for the KnobSwitch component
  */
-export type KnobSwitchProps = StretchableProps & {
+export type KnobSwitchProps = Stretchable & {
     /** Text label displayed below the knob */
     label?: string;
     /** Currently selected value */

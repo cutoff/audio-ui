@@ -1,14 +1,14 @@
-import React, { useMemo } from 'react';
+import React, {useMemo} from 'react';
 import classNames from 'classnames';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
-import {BipolarControlProps, ControlProps, StretchableProps} from "../types";
+import {BipolarControl} from "../types";
 
 export type Thickness = 'medium' | 'large';
 
 /**
  * Props for the Slider component
  */
-export type SliderProps = ControlProps & BipolarControlProps & StretchableProps & {
+export type SliderProps = BipolarControl & {
     /** Thickness variant of the slider
      * @default 'normal' */
     thickness?: Thickness;
@@ -158,7 +158,7 @@ const Slider = ({
     // Calculate the dimensions of the filled portion based on current value
     const filledZone = useMemo<FilledZone>(() => {
         const normalizedValue = Math.min(Math.max(value, min), max);
-        const normalizedCenter = bipolar ? ((max - min + 1) / 2) : min;
+        const normalizedCenter = bipolar ? (Math.floor((max - min + 1) / 2) + min) : min;
 
         return bipolar
             ? computeFilledZoneFromCenter(normalizedValue, min, max, normalizedCenter, mainZone)

@@ -1,13 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import classNames from 'classnames';
 import "../../styles.css";
-import {ControlProps, StretchableProps} from "../types";
+import {Control} from "../types";
 
 /**
  * Props for the Button component
  */
-export type ButtonProps = ControlProps & StretchableProps & {
+export type ButtonProps = Control & {
     /** Additional CSS class names */
     className?: string;
     /** Additional inline styles. Supports grid layout properties */
@@ -57,7 +57,7 @@ export default function Button({
     const [actualCenter, setActualCenter] = useState<number>(50);
 
     useEffect(() => {
-        setActualCenter((max - min + 1) / 2);
+        setActualCenter(Math.floor((max - min + 1) / 2) + min);
     }, [min, max]);
 
     // Determine if the button is in the "on" state
