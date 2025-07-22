@@ -105,9 +105,11 @@ function Button({
     return (
         <AdaptiveSvgComponent
             viewBoxWidth={100}
-            viewBoxHeight={200}
-            preferredWidth={75}
-            preferredHeight={150}
+            viewBoxHeight={100}
+            preferredWidth={50}
+            preferredHeight={50}
+            minWidth={20}
+            minHeight={40}
             stretch={stretch}
             className={componentClassNames}
             style={style}
@@ -118,7 +120,7 @@ function Button({
                 className={`${buttonClasses.stroke} ${buttonClasses.fill}`}
                 strokeWidth="5"
                 x={10}
-                y={110}
+                y={10}
                 width={80}
                 height={40}
                 rx={cornerRadius}
@@ -130,8 +132,8 @@ function Button({
                 <text 
                     className="fill-text" 
                     x="50" 
-                    y="192" 
-                    fontSize="30" 
+                    y="88"
+                    fontSize="30"
                     fontWeight="500" 
                     textAnchor="middle"
                 >

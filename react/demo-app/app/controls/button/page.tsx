@@ -33,13 +33,6 @@ export default function Page() {
                 setCenter(50);
                 setLabel("Off");
                 break;
-            case 2:
-                setValue(75);
-                setMin(0);
-                setMax(100);
-                setCenter(50);
-                setLabel("Center");
-                break;
         }
     };
 
@@ -116,14 +109,6 @@ export default function Page() {
             value={25}
             label="Off"
             onClick={() => handleExampleClick(1)}
-        />,
-        <Button
-            key="2"
-            min={0}
-            max={100}
-            value={75}
-            label="Center"
-            onClick={() => handleExampleClick(2)}
         />,
     ];
 
