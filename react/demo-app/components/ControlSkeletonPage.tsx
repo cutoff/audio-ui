@@ -1,7 +1,7 @@
 "use client"
 
-import { useMemo } from "react";
-import { CodeBlock } from "@/components/code-block";
+import {useMemo} from "react";
+import {CodeBlock} from "@/components/code-block";
 
 export type ControlSkeletonPageProps = {
     /** Name of the component being demonstrated */
@@ -99,8 +99,10 @@ export default function ControlSkeletonPage({
                         {/* Size Section */}
                         <div>
                             <h2 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Size</h2>
-                            <div className="flex flex-wrap gap-4 justify-start items-start">
-                                <PageComponent {...componentProps} />
+                            <div className="flex flex-wrap gap-4 md:gap-8 justify-center md:justify-start">
+                                <div className="flex flex-col items-center w-16 md:w-20">
+                                    <PageComponent {...componentProps} />
+                                </div>
                             </div>
                         </div>
 
@@ -111,14 +113,18 @@ export default function ControlSkeletonPage({
                                 {fillItems}
 
                                 {/* Grid title */}
-                                <div className="col-span-3 absolute -top-8 left-1/2 transform -translate-x-1/2 text-base font-medium">
+                                <div className="row-start-2 col-start-1 col-span-3 absolute -top-14 left-2 text-base font-medium text-muted-foreground">
                                     align-self
                                 </div>
 
                                 {/* Grid labels */}
-                                <p className="absolute -top-6 left-0 text-sm">start</p>
-                                <p className="absolute -top-6 left-[11%] text-sm">end</p>
-                                <p className="absolute -top-6 left-[22%] text-sm">center</p>
+                                <p className="row-start-2 col-start-1 absolute -top-8 left-2 text-sm text-muted-foreground">start</p>
+                                <p className="row-start-2 col-start-2 absolute -top-8 left-2 text-sm text-muted-foreground">end</p>
+                                <p className="row-start-2 col-start-3 absolute -top-8 left-2 text-sm text-muted-foreground">center</p>
+
+                                <p className="row-start-3 col-start-5 absolute left-2 text-sm text-muted-foreground">2x2</p>
+                                <p className="row-start-2 col-start-8 absolute -top-8 left-2 text-sm text-muted-foreground">3x3</p>
+                                <p className="row-start-4 col-start-1 absolute bottom-3 left-2 text-sm text-muted-foreground">stretch=true</p>
 
                                 {/* Positioned components */}
                                 <PageComponent
@@ -163,7 +169,6 @@ export default function ControlSkeletonPage({
                                     stretch={true}
                                     {...componentProps}
                                 />
-                                <p className="absolute bottom-0 left-[44%] text-sm">2x2</p>
 
                                 {/* 2x3 grid example */}
                                 <PageComponent
@@ -176,10 +181,6 @@ export default function ControlSkeletonPage({
                                     stretch={true}
                                     {...componentProps}
                                 />
-                                <p className="absolute top-8 left-[72%] text-sm">3x3</p>
-
-                                {/* stretching label */}
-                                <p className="absolute bottom-0 left-0 text-sm">stretch=true</p>
                             </div>
                         </div>
 
