@@ -50,10 +50,18 @@ type FilledZone = {
  * Calculates the filled zone dimensions for a slider that fills from minimum value
  */
 const computeFilledZoneFromMin = (mainZone: Zone, value: number, min: number, max: number): FilledZone => {
-    const ratio = (value - min) / (max - min);
-    const height = mainZone.h * ratio;
+    // Ensure value is within bounds
+    const boundedValue = Math.max(min, Math.min(value, max));
+    const ratio = (boundedValue - min) / (max - min);
+    // Ensure ratio is between 0 and 1 to prevent rendering issues
+    const boundedRatio = Math.max(0, Math.min(ratio, 1));
+    const height = mainZone.h * boundedRatio;
+    
+    // Calculate y position ensuring it stays within the slider boundaries
+    const y = mainZone.y + (mainZone.h - height);
+    
     return {
-        y: mainZone.y + (mainZone.h - height),
+        y: y,
         h: height
     };
 };
@@ -68,19 +76,27 @@ const computeFilledZoneFromCenter = (
     center: number,
     mainZone: Zone
 ): FilledZone => {
+    // Ensure value is within bounds
+    const boundedValue = Math.max(min, Math.min(value, max));
     const halfHeight = mainZone.h / 2;
     const centerY = mainZone.y + halfHeight;
 
-    if (value >= center) {
-        const ratio = (value - center) / (max - center);
-        const height = halfHeight * ratio;
+    if (boundedValue >= center) {
+        // Upper half (value >= center)
+        const ratio = (boundedValue - center) / (max - center);
+        // Ensure ratio is between 0 and 1
+        const boundedRatio = Math.max(0, Math.min(ratio, 1));
+        const height = halfHeight * boundedRatio;
         return {
             y: mainZone.y + (halfHeight - height),
             h: height
         };
     } else {
-        const ratio = value / (center - min);
-        const height = halfHeight * ratio;
+        // Lower half (value < center)
+        const ratio = (boundedValue - min) / (center - min);
+        // Ensure ratio is between 0 and 1
+        const boundedRatio = Math.max(0, Math.min(ratio, 1));
+        const height = halfHeight * boundedRatio;
         return {
             y: centerY,
             h: halfHeight - height
