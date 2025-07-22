@@ -46,6 +46,17 @@ export type KnobSwitchProps = Stretchable & {
  * a continuous range that the knob can interact with. The selected option's content
  * is displayed as the knob's label.
  *
+ * This component inherits properties from:
+ * - `Stretchable`: For responsive sizing
+ *
+ * @property {boolean} stretch - Whether the component should stretch to fill its container (from `Stretchable`)
+ * @property {string} label - Text label displayed below the knob
+ * @property {any} value - Currently selected value
+ * @property {React.ReactNode} children - Child elements (KnobSwitch.Option components)
+ * @property {React.CSSProperties} style - Additional inline styles
+ * @property {Function} onChange - Handler for value changes
+ * @property {React.MouseEventHandler} onClick - Handler for click events
+ *
  * @example
  * ```tsx
  * // Basic usage with controlled value

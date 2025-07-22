@@ -119,6 +119,23 @@ const computeFilledZoneFromCenter = (
  * When a center point is specified, the fill originates from the center point rather than
  * the minimum value.
  *
+ * This component inherits properties from:
+ * - `Stretchable`: For responsive sizing
+ * - `Control`: For basic control properties
+ * - `BipolarControl`: For bipolar mode support
+ *
+ * @property {boolean} stretch - Whether the slider should stretch to fill its container (from `Stretchable`)
+ * @property {string} label - Label displayed below the slider (from `Control`)
+ * @property {number} min - Minimum value of the slider (from `Control`)
+ * @property {number} max - Maximum value of the slider (from `Control`)
+ * @property {number} value - Current value of the slider (from `Control`)
+ * @property {boolean} bipolar - Whether to start the fill from the center instead of minimum (from `BipolarControl`)
+ * @property {Thickness} thickness - Thickness variant of the slider
+ * @property {string} className - Additional CSS class names
+ * @property {React.CSSProperties} style - Additional inline styles
+ * @property {Function} onChange - Handler for value changes
+ * @property {React.MouseEventHandler} onClick - Handler for click events
+ *
  * @example
  * ```tsx
  * // Basic usage

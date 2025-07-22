@@ -65,6 +65,23 @@ const polarToCartesian = (centerX: number, centerY: number, radius: number, angl
  * - Customizable content display
  * - Responsive sizing with stretch option
  *
+ * This component inherits properties from:
+ * - `Stretchable`: For responsive sizing
+ * - `Control`: For basic control properties
+ * - `BipolarControl`: For bipolar mode support
+ *
+ * @property {boolean} stretch - Whether the knob should stretch to fill its container (from `Stretchable`)
+ * @property {string} label - Label displayed below the knob (from `Control`)
+ * @property {number} min - Minimum value of the knob (from `Control`)
+ * @property {number} max - Maximum value of the knob (from `Control`)
+ * @property {number} value - Current value of the knob (from `Control`)
+ * @property {boolean} bipolar - Whether to start the arc from the center (360°) instead of MAX_START_ANGLE (from `BipolarControl`)
+ * @property {React.ReactNode} children - Content to display inside the knob (replaces the value display)
+ * @property {string} className - Additional CSS classes
+ * @property {React.CSSProperties} style - Additional inline styles
+ * @property {Function} onChange - Handler for value changes via wheel input
+ * @property {React.MouseEventHandler} onClick - Handler for click events
+ *
  * @example
  * ```tsx
  * // Basic usage

@@ -25,6 +25,19 @@ export type ButtonProps = Control & {
  * - Grid layout compatible
  * - Visual feedback for interactive state
  * 
+ * This component inherits properties from:
+ * - `Stretchable`: For responsive sizing
+ * - `Control`: For basic control properties
+ * 
+ * @property {boolean} stretch - Whether the button should stretch to fill its container (from `Stretchable`)
+ * @property {string} label - Label displayed below the button (from `Control`)
+ * @property {number} min - Minimum value of the button (from `Control`)
+ * @property {number} max - Maximum value of the button (from `Control`)
+ * @property {number} value - Current value of the button (from `Control`)
+ * @property {string} className - Additional CSS class names
+ * @property {React.CSSProperties} style - Additional inline styles
+ * @property {React.MouseEventHandler} onClick - Click event handler
+ * 
  * @example
  * ```tsx
  * // Basic usage
