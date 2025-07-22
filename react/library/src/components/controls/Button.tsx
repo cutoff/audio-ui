@@ -24,6 +24,7 @@ export type ButtonProps = Control & {
  * - Responsive sizing with stretch option
  * - Grid layout compatible
  * - Visual feedback for interactive state
+ * - Configurable corner/cap style (square or round)
  * 
  * This component inherits properties from:
  * - `Stretchable`: For responsive sizing
@@ -34,6 +35,7 @@ export type ButtonProps = Control & {
  * @property {number} min - Minimum value of the button (from `Control`)
  * @property {number} max - Maximum value of the button (from `Control`)
  * @property {number} value - Current value of the button (from `Control`)
+ * @property {number} roundness - Controls the corner style: 0 for square corners, > 0 for rounded corners (from `Control`, defaults to 10)
  * @property {string} className - Additional CSS class names
  * @property {React.CSSProperties} style - Additional inline styles
  * @property {React.MouseEventHandler} onClick - Click event handler
@@ -65,7 +67,8 @@ export default function Button({
     stretch = false,
     className,
     style,
-    onClick
+    onClick,
+    roundness = 10
 }: ButtonProps) {
     const [actualCenter, setActualCenter] = useState<number>(50);
 
@@ -81,6 +84,12 @@ export default function Button({
     // Determine the button's appearance classes based on state
     const buttonStroke = isOn ? "stroke-primary-50" : "stroke-primary-20";
     const buttonFill = isOn ? "fill-primary" : "fill-primary-50";
+    
+    // Calculate corner radius based on roundness (ensure non-negative)
+    const cornerRadius = useMemo(() => {
+        const nonNegativeRoundness = Math.max(0, roundness); // Clamp to non-negative values
+        return nonNegativeRoundness === 0 ? 0 : nonNegativeRoundness; // Use 0 for square corners, roundness for rounded corners
+    }, [roundness]);
 
     return (
         <AdaptiveSvgComponent
@@ -105,6 +114,8 @@ export default function Button({
                 y={110}
                 width={80}
                 height={40}
+                rx={cornerRadius}
+                ry={cornerRadius}
             />
             
             {/* Label Text */}

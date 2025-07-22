@@ -15,8 +15,10 @@ export default function Page() {
     const [label, setLabel] = useState("Default");
     const [bipolar, setBipolar] = useState(false);
     const [thickness, setThickness] = useState("medium");
+    const [roundness, setRoundness] = useState(10);
 
-    const codeString = `<Slider min={${min}} max={${max}} value={${value}} label='${label}' thickness='${thickness}' bipolar={${bipolar}} />`;
+    // Generate code snippet with roundness
+    const codeString = `<Slider min={${min}} max={${max}} value={${value}} label='${label}' thickness='${thickness}' bipolar={${bipolar}} roundness={${roundness}} />`;
 
     const handleExampleClick = (num: 0 | 1 | 2 | 3): void => {
         switch (num) {
@@ -47,7 +49,7 @@ export default function Page() {
         }
     };
 
-    const componentProps = {min, bipolar, max, value, label, thickness};
+    const componentProps = {min, bipolar, max, value, label, thickness, roundness};
 
     const properties = [
         <div key="label" className="grid gap-2">
@@ -95,6 +97,16 @@ export default function Page() {
                     <SelectItem value="large">Large</SelectItem>
                 </SelectContent>
             </Select>
+        </div>,
+        <div key="roundness" className="grid gap-2">
+            <Label htmlFor="roundnessProp">Roundness</Label>
+            <Input
+                id="roundnessProp"
+                type="number"
+                min="0"
+                value={roundness}
+                onChange={(e) => setRoundness(Math.max(0, Number(e.target.value)))}
+            />
         </div>
     ];
 

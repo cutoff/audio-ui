@@ -119,6 +119,7 @@ const computeFilledZone = (
  * - Optional stretch behavior to fill container
  * - Grid layout compatible
  * - Visual feedback for interactive state
+ * - Configurable corner/cap style (square or round)
  *
  * The slider consists of a background track with a filled portion indicating the current value.
  * When a center point is specified, the fill originates from the center point rather than
@@ -135,6 +136,7 @@ const computeFilledZone = (
  * @property {number} max - Maximum value of the slider (from `Control`)
  * @property {number} value - Current value of the slider (from `Control`)
  * @property {boolean} bipolar - Whether to start the fill from the center instead of minimum (from `BipolarControl`)
+ * @property {number} roundness - Controls the corner style: 0 for square corners, > 0 for rounded corners (from `Control`, defaults to half the slider width)
  * @property {Thickness} thickness - Thickness variant of the slider
  * @property {string} className - Additional CSS class names
  * @property {React.CSSProperties} style - Additional inline styles
@@ -184,7 +186,8 @@ const Slider = ({
                     className,
                     style,
                     onChange,
-                    onClick
+                    onClick,
+                    roundness
                 }: SliderProps) => {
     // Calculate the dimensions of the slider's main zone based on size variant
     const mainZone = useMemo<Zone>(() => (
@@ -200,6 +203,19 @@ const Slider = ({
 
         return computeFilledZone(mainZone, normalizedValue, min, max, normalizedCenter);
     }, [min, max, value, bipolar, mainZone]);
+    
+    // Calculate corner radius based on roundness
+    const cornerRadius = useMemo(() => {
+        // Ensure roundness is non-negative
+        const nonNegativeRoundness = roundness !== undefined ? Math.max(0, roundness) : undefined;
+        
+        // If roundness is 0, use square caps (cornerRadius = 0)
+        if (nonNegativeRoundness === 0) {
+            return 0; // No rounding for square caps
+        }
+        // Use provided roundness or fall back to half the width for fully rounded corners
+        return nonNegativeRoundness !== undefined ? nonNegativeRoundness : mainZone.w / 2;
+    }, [mainZone.w, roundness]);
 
     // Handle mouse wheel events to change the value
     const handleWheel = (e: WheelEvent) => {
@@ -236,6 +252,8 @@ const Slider = ({
                 y={mainZone.y}
                 width={mainZone.w}
                 height={mainZone.h}
+                rx={cornerRadius}
+                ry={cornerRadius}
             />
 
             {/* Foreground Rectangle */}
@@ -245,6 +263,8 @@ const Slider = ({
                 y={filledZone.y}
                 width={mainZone.w}
                 height={filledZone.h}
+                rx={cornerRadius}
+                ry={cornerRadius}
             />
 
             {/* Label Text */}

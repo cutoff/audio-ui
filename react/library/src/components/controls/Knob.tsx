@@ -64,6 +64,7 @@ const polarToCartesian = (centerX: number, centerY: number, radius: number, angl
  * - Optional centering of the progress arc
  * - Customizable content display
  * - Responsive sizing with stretch option
+ * - Configurable corner/cap style (square or round)
  *
  * This component inherits properties from:
  * - `Stretchable`: For responsive sizing
@@ -76,6 +77,7 @@ const polarToCartesian = (centerX: number, centerY: number, radius: number, angl
  * @property {number} max - Maximum value of the knob (from `Control`)
  * @property {number} value - Current value of the knob (from `Control`)
  * @property {boolean} bipolar - Whether to start the arc from the center (360°) instead of MAX_START_ANGLE (from `BipolarControl`)
+ * @property {number} roundness - Controls the linecap style: 0 for 'square', > 0 for 'round' (from `Control`, defaults to 12)
  * @property {React.ReactNode} children - Content to display inside the knob (replaces the value display)
  * @property {string} className - Additional CSS classes
  * @property {React.CSSProperties} style - Additional inline styles
@@ -115,12 +117,21 @@ export default function Knob({
                                  className,
                                  style,
                                  onChange,
-                                 onClick
+                                 onClick,
+                                 roundness = 12
                              }: KnobProps) {
 
     const valueToAngle = useMemo(() => {
         return ((value - min) / (max - min)) * MAX_ARC_ANGLE + MAX_START_ANGLE;
     }, [value, min, max]);
+    
+    // Fixed stroke width of 12
+    const strokeWidth = 12;
+    
+    // Determine stroke linecap based on roundness (square if 0, round if > 0)
+    // Ensure roundness is non-negative
+    const nonNegativeRoundness = Math.max(0, roundness);
+    const strokeLinecap = nonNegativeRoundness === 0 ? 'square' : 'round';
 
     /**
      * Memoized function to format value based on bipolar mode
@@ -159,8 +170,8 @@ export default function Knob({
             <path
                 className="stroke-primary-50"
                 fill="none"
-                strokeWidth="12"
-                strokeLinecap="round"
+                strokeWidth={strokeWidth}
+                strokeLinecap={strokeLinecap}
                 d={calculateArcPath(MAX_START_ANGLE, MAX_END_ANGLE, 40)}
             />
 
@@ -168,8 +179,8 @@ export default function Knob({
             <path
                 className="stroke-primary"
                 fill="none"
-                strokeWidth="12"
-                strokeLinecap="round"
+                strokeWidth={strokeWidth}
+                strokeLinecap={strokeLinecap}
                 d={calculateArcPath(bipolar ? CENTER_ANGLE : MAX_START_ANGLE, valueToAngle, 40)}
             />
 

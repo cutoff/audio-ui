@@ -21,6 +21,12 @@ export type Control = Stretchable & {
     max: number;
     /** Current value of the component */
     value: number;
+    
+    /** Roundness for component corners/caps
+     * @default Component-specific: Knob uses 12, Slider uses half width, Button uses 10px
+     * A value of 0 means square corners/caps, while values > 0 create rounded corners/caps
+     */
+    roundness?: number;
 };
 
 /**

@@ -12,8 +12,10 @@ export default function Page() {
     const [max, setMax] = useState(100);
     const [center, setCenter] = useState(50);
     const [label, setLabel] = useState("Button");
+    const [roundness, setRoundness] = useState(10);
 
-    const codeString = `<Button min={${min}} max={${max}} value={${value}} center={${center}} label="${label}" />`;
+    // Generate code snippet with roundness
+    const codeString = `<Button min={${min}} max={${max}} value={${value}} center={${center}} label="${label}" roundness={${roundness}} />`;
 
     const handleExampleClick = (num: 0 | 1 | 2): void => {
         switch (num) {
@@ -47,6 +49,7 @@ export default function Page() {
         center,
         value,
         label,
+        roundness,
     };
 
     const properties = [
@@ -83,6 +86,16 @@ export default function Page() {
                 type="number"
                 value={center}
                 onChange={(e) => setCenter(Number(e.target.value))}
+            />
+        </div>,
+        <div key="roundness" className="grid gap-2">
+            <Label htmlFor="roundnessProp">Roundness</Label>
+            <Input
+                id="roundnessProp"
+                type="number"
+                min="0"
+                value={roundness}
+                onChange={(e) => setRoundness(Math.max(0, Number(e.target.value)))}
             />
         </div>,
     ];

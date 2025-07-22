@@ -26,7 +26,8 @@ function generateCodeSnippet(
     label: string,
     min: number,
     max: number,
-    bipolar: boolean
+    bipolar: boolean,
+    roundness: number
 ): string {
     if (enableOptions) {
         return `<Knob value={${value}} label='${label}'>
@@ -38,7 +39,9 @@ function generateCodeSnippet(
 </Knob>
 `;
     } else {
-        return `<Knob min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}} />`;
+        const props = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}} roundness={${roundness}}`;
+        
+        return `<Knob ${props} />`;
     }
 }
 
@@ -49,6 +52,7 @@ type KnobComponentProps = {
     label?: string;
     bipolar?: boolean;
     enableOptions: boolean;
+    roundness?: number;
     stretch?: boolean;
     style?: React.CSSProperties;
     className?: string;
@@ -63,6 +67,7 @@ function KnobComponent({
                            label,
                            bipolar,
                            enableOptions,
+                           roundness,
                            stretch,
                            onChange,
                            onClick,
@@ -90,6 +95,7 @@ function KnobComponent({
                 value={value}
                 label={label}
                 bipolar={bipolar}
+                roundness={roundness}
                 stretch={stretch}
                 style={style}
                 className={className}
@@ -107,6 +113,7 @@ export default function KnobDemoPage() {
     const [label, setLabel] = useState("Default");
     const [bipolar, setBipolar] = useState(false);
     const [enableOptions, setEnableOptions] = useState(false);
+    const [roundness, setRoundness] = useState(12);
 
     const handleExampleClick = (num: 0 | 1 | 2 | 3): void => {
         switch (num) {
@@ -172,6 +179,16 @@ export default function KnobDemoPage() {
                 onChange={(e) => setMax(Number(e.target.value))}
             />
         </div>,
+        <div key="roundness" className="grid gap-2">
+            <Label htmlFor="roundnessProp">Roundness</Label>
+            <Input
+                id="roundnessProp"
+                type="number"
+                min="0"
+                value={roundness}
+                onChange={(e) => setRoundness(Math.max(0, Number(e.target.value)))}
+            />
+        </div>,
         <div key="bipolar" className="flex items-center gap-2 pt-2">
             <Checkbox
                 id="bipolarProp"
@@ -211,8 +228,8 @@ export default function KnobDemoPage() {
         </KnobSwitch>
     ];
 
-    const codeString = generateCodeSnippet(enableOptions, value, label, min, max, bipolar);
-    const componentProps = {min, bipolar, max, value, label, enableOptions};
+    const codeString = generateCodeSnippet(enableOptions, value, label, min, max, bipolar, roundness);
+    const componentProps = {min, bipolar, max, value, label, enableOptions, roundness};
 
     return (
         <ControlSkeletonPage
