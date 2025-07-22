@@ -27,7 +27,8 @@ function generateCodeSnippet(
     min: number,
     max: number,
     bipolar: boolean,
-    roundness: number
+    roundness: number,
+    thickness: number
 ): string {
     if (enableOptions) {
         return `<Knob value={${value}} label='${label}'>
@@ -39,7 +40,7 @@ function generateCodeSnippet(
 </Knob>
 `;
     } else {
-        const props = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}} roundness={${roundness}}`;
+        const props = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}} roundness={${roundness}} thickness={${thickness}}`;
         
         return `<Knob ${props} />`;
     }
@@ -53,6 +54,7 @@ type KnobComponentProps = {
     bipolar?: boolean;
     enableOptions: boolean;
     roundness?: number;
+    thickness?: number;
     stretch?: boolean;
     style?: React.CSSProperties;
     className?: string;
@@ -68,6 +70,7 @@ function KnobComponent({
                            bipolar,
                            enableOptions,
                            roundness,
+                           thickness,
                            stretch,
                            onChange,
                            onClick,
@@ -96,6 +99,7 @@ function KnobComponent({
                 label={label}
                 bipolar={bipolar}
                 roundness={roundness}
+                thickness={thickness}
                 stretch={stretch}
                 style={style}
                 className={className}
@@ -114,6 +118,7 @@ export default function KnobDemoPage() {
     const [bipolar, setBipolar] = useState(false);
     const [enableOptions, setEnableOptions] = useState(false);
     const [roundness, setRoundness] = useState(12);
+    const [thickness, setThickness] = useState(12);
 
     const handleExampleClick = (num: 0 | 1 | 2 | 3): void => {
         switch (num) {
@@ -124,6 +129,7 @@ export default function KnobDemoPage() {
                 setLabel("Default");
                 setBipolar(false);
                 setEnableOptions(false);
+                setThickness(12);
                 break;
             case 1:
                 setValue(64);
@@ -132,6 +138,7 @@ export default function KnobDemoPage() {
                 setLabel("Bipolar");
                 setBipolar(true);
                 setEnableOptions(false);
+                setThickness(12);
                 break;
             case 2:
                 setValue(0);
@@ -140,6 +147,7 @@ export default function KnobDemoPage() {
                 setLabel("Bipolar0");
                 setBipolar(true);
                 setEnableOptions(false);
+                setThickness(12);
                 break;
             case 3:
                 setValue(0);
@@ -148,6 +156,7 @@ export default function KnobDemoPage() {
                 setLabel("Enum");
                 setBipolar(false);
                 setEnableOptions(true);
+                setThickness(16);
                 break;
         }
     };
@@ -189,6 +198,16 @@ export default function KnobDemoPage() {
                 onChange={(e) => setRoundness(Math.max(0, Number(e.target.value)))}
             />
         </div>,
+        <div key="thickness" className="grid gap-2">
+            <Label htmlFor="thicknessProp">Thickness</Label>
+            <Input
+                id="thicknessProp"
+                type="number"
+                min="0"
+                value={thickness}
+                onChange={(e) => setThickness(Math.max(0, Number(e.target.value)))}
+            />
+        </div>,
         <div key="bipolar" className="flex items-center gap-2 pt-2">
             <Checkbox
                 id="bipolarProp"
@@ -228,8 +247,8 @@ export default function KnobDemoPage() {
         </KnobSwitch>
     ];
 
-    const codeString = generateCodeSnippet(enableOptions, value, label, min, max, bipolar, roundness);
-    const componentProps = {min, bipolar, max, value, label, enableOptions, roundness};
+    const codeString = generateCodeSnippet(enableOptions, value, label, min, max, bipolar, roundness, thickness);
+    const componentProps = {min, bipolar, max, value, label, enableOptions, roundness, thickness};
 
     return (
         <ControlSkeletonPage

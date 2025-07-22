@@ -26,6 +26,10 @@ export type KnobProps = BipolarControl & {
     onChange?: (value: number | ((prev: number) => number)) => void;
     /** Handler for click events */
     onClick?: React.MouseEventHandler;
+    /** Thickness of the knob's stroke
+     * @default 12
+     */
+    thickness?: number;
 };
 
 /**
@@ -78,6 +82,7 @@ const polarToCartesian = (centerX: number, centerY: number, radius: number, angl
  * @property {number} value - Current value of the knob (from `Control`)
  * @property {boolean} bipolar - Whether to start the arc from the center (360°) instead of MAX_START_ANGLE (from `BipolarControl`)
  * @property {number} roundness - Controls the linecap style: 0 for 'square', > 0 for 'round' (from `Control`, defaults to 12)
+ * @property {number} thickness - Thickness of the knob's stroke (defaults to 12)
  * @property {React.ReactNode} children - Content to display inside the knob (replaces the value display)
  * @property {string} className - Additional CSS classes
  * @property {React.CSSProperties} style - Additional inline styles
@@ -118,15 +123,16 @@ export default function Knob({
                                  style,
                                  onChange,
                                  onClick,
-                                 roundness = 12
+                                 roundness = 12,
+                                 thickness = 12
                              }: KnobProps) {
 
     const valueToAngle = useMemo(() => {
         return ((value - min) / (max - min)) * MAX_ARC_ANGLE + MAX_START_ANGLE;
     }, [value, min, max]);
     
-    // Fixed stroke width of 12
-    const strokeWidth = 12;
+    // Use the thickness prop for stroke width (ensure non-negative)
+    const strokeWidth = Math.max(0, thickness);
     
     // Determine stroke linecap based on roundness (square if 0, round if > 0)
     // Ensure roundness is non-negative
