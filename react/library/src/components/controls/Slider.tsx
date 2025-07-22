@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useCallback} from 'react';
 import classNames from 'classnames';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import {BipolarControl} from "../types";
@@ -224,14 +224,23 @@ const Slider = ({
     }, [mainZone.w, roundness]);
 
     // Handle mouse wheel events to change the value
-    const handleWheel = (e: WheelEvent) => {
+    const handleWheel = useCallback((e: WheelEvent) => {
         if (!onChange) return;
 
         const delta = e.deltaY;
         onChange((currentValue: number) => {
             return Math.max(min, Math.min(currentValue + delta, max));
         });
-    };
+    }, [onChange, min, max]);
+
+    // Memoize the classNames calculation
+    const componentClassNames = useMemo(() => {
+        return classNames(
+            className,
+            'cutoffAudioKit',
+            (onChange || onClick) ? 'highlight' : ''
+        );
+    }, [className, onChange, onClick]);
 
     return (
         <AdaptiveSvgComponent
@@ -242,11 +251,7 @@ const Slider = ({
             minWidth={20}
             minHeight={60}
             stretch={stretch}
-            className={classNames(
-                className,
-                'cutoffAudioKit',
-                (onChange || onClick) ? 'highlight' : ''
-            )}
+            className={componentClassNames}
             style={style}
             onWheel={onChange ? handleWheel : undefined}
             onClick={onClick}
@@ -288,4 +293,5 @@ const Slider = ({
     );
 };
 
-export default Slider;
+// Wrap the component in React.memo to prevent unnecessary re-renders
+export default React.memo(Slider);

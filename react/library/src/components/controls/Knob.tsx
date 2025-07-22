@@ -111,7 +111,7 @@ const polarToCartesian = (centerX: number, centerY: number, radius: number, angl
  * </Knob>
  * ```
  */
-export default function Knob({
+function Knob({
                                  min,
                                  max,
                                  bipolar = false,
@@ -148,23 +148,28 @@ export default function Knob({
         return bipolar && val > 0 ? `+${val}` : val.toString();
     }, [bipolar]);
 
-    const handleWheel = (e: WheelEvent) => {
+    const handleWheel = useCallback((e: WheelEvent) => {
         if (!onChange) return;
         const delta = e.deltaY;
         onChange((currentValue: number) => {
             return Math.max(min, Math.min(currentValue + delta, max));
         });
-    };
+    }, [onChange, min, max]);
+
+    // Memoize the classNames calculation
+    const componentClassNames = useMemo(() => {
+        return classNames(
+            className,
+            "cutoffAudioKit",
+            "componentContainer",
+            onChange || onClick ? "highlight" : ""
+        );
+    }, [className, onChange, onClick]);
 
     return (
         <AdaptiveSvgComponent
             stretch={stretch}
-            className={classNames(
-                className,
-                "cutoffAudioKit",
-                "componentContainer",
-                onChange || onClick ? "highlight" : ""
-            )}
+            className={componentClassNames}
             style={style}
             viewBoxWidth={100}
             viewBoxHeight={115}
@@ -247,3 +252,6 @@ export default function Knob({
         </AdaptiveSvgComponent>
     );
 }
+
+// Wrap the component in React.memo to prevent unnecessary re-renders
+export default React.memo(Knob);

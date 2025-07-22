@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import classNames from 'classnames';
 import "../../styles.css";
@@ -59,7 +59,7 @@ export type ButtonProps = Control & {
  * />
  * ```
  */
-export default function Button({
+function Button({
     min = 0,
     max = 100,
     value = 0,
@@ -70,10 +70,9 @@ export default function Button({
     onClick,
     roundness = 10
 }: ButtonProps) {
-    const [actualCenter, setActualCenter] = useState<number>(50);
-
-    useEffect(() => {
-        setActualCenter(Math.floor((max - min + 1) / 2) + min);
+    // Calculate the center value based on min and max
+    const actualCenter = useMemo(() => {
+        return Math.floor((max - min + 1) / 2) + min;
     }, [min, max]);
 
     // Determine if the button is in the "on" state
@@ -82,14 +81,26 @@ export default function Button({
     }, [value, actualCenter]);
 
     // Determine the button's appearance classes based on state
-    const buttonStroke = isOn ? "stroke-primary-50" : "stroke-primary-20";
-    const buttonFill = isOn ? "fill-primary" : "fill-primary-50";
+    const buttonClasses = useMemo(() => {
+        const stroke = isOn ? "stroke-primary-50" : "stroke-primary-20";
+        const fill = isOn ? "fill-primary" : "fill-primary-50";
+        return { stroke, fill };
+    }, [isOn]);
     
     // Calculate corner radius based on roundness (ensure non-negative)
     const cornerRadius = useMemo(() => {
         const nonNegativeRoundness = Math.max(0, roundness); // Clamp to non-negative values
         return nonNegativeRoundness === 0 ? 0 : nonNegativeRoundness; // Use 0 for square corners, roundness for rounded corners
     }, [roundness]);
+
+    // Memoize the classNames calculation
+    const componentClassNames = useMemo(() => {
+        return classNames(
+            className,
+            "cutoffAudioKit",
+            onClick ? "highlight" : ""
+        );
+    }, [className, onClick]);
 
     return (
         <AdaptiveSvgComponent
@@ -98,17 +109,13 @@ export default function Button({
             preferredWidth={75}
             preferredHeight={150}
             stretch={stretch}
-            className={classNames(
-                className,
-                "cutoffAudioKit",
-                onClick ? "highlight" : ""
-            )}
+            className={componentClassNames}
             style={style}
             onClick={onClick}
         >
             {/* Button Rectangle */}
             <rect 
-                className={`${buttonStroke} ${buttonFill}`}
+                className={`${buttonClasses.stroke} ${buttonClasses.fill}`}
                 strokeWidth="5"
                 x={10}
                 y={110}
@@ -134,3 +141,6 @@ export default function Button({
         </AdaptiveSvgComponent>
     );
 }
+
+// Wrap the component in React.memo to prevent unnecessary re-renders
+export default React.memo(Button);

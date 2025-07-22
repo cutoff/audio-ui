@@ -151,4 +151,5 @@ const Option: React.FC<KnobSwitchOptionProps> = () => {
 
 KnobSwitch.Option = Option;
 
-export default KnobSwitch;
+// Wrap the component in React.memo to prevent unnecessary re-renders
+export default React.memo(KnobSwitch);
