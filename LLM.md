@@ -30,6 +30,21 @@ The project is organized as a monorepo with the following structure:
 
 ## Build/Configuration Instructions
 
+### IMPORTANT: Runtime Testing Limitations
+
+**Note: Running the app, test HTML pages, or unit tests may fail and require manual cancellation.**
+
+Due to known issues, avoid running the following commands:
+- `npm run dev` (demo application)
+- `npm test` (unit tests)
+- Any commands that start a development server or run tests
+
+Instead, rely on:
+- Static code analysis
+- TypeScript type checking (`npm run typecheck`)
+- Linting (ESLint)
+- Code review
+
 ### Setting Up the Project
 
 1. Install dependencies:
@@ -37,15 +52,19 @@ The project is organized as a monorepo with the following structure:
    npm install
    ```
 
-2. Build the library:
+2. Build the library (for type checking only, not for running):
    ```bash
    npm run build
    ```
 
-3. Run the demo application:
+3. ~~Run the demo application~~ Use static analysis instead:
    ```bash
-   cd react/demo-app
-   npm run dev
+   # Instead of running the app with:
+   # cd react/demo-app
+   # npm run dev
+   
+   # Use type checking:
+   npm run typecheck
    ```
 
 ### Library Development
@@ -110,17 +129,30 @@ The project uses Jest and React Testing Library for testing React components.
 
 4. Add a test script to package.json:
    ```json
-   "scripts": {
-     "test": "jest --config jest.config.cjs"
+   {
+     "scripts": {
+       "test": "jest --config jest.config.cjs"
+     }
    }
    ```
 
 ### Running Tests
 
-Run tests with:
+**IMPORTANT: As noted above, running tests may fail and require manual cancellation.**
+
+Instead of running tests with:
+```bash
+# DON'T RUN THIS - it may fail and require manual cancellation
+# cd react/library
+# npm test
+```
+
+Rely on static analysis:
 ```bash
 cd react/library
-npm test
+npm run typecheck
+# Use ESLint for code quality checks
+npm run lint
 ```
 
 ### Writing Tests
@@ -194,10 +226,21 @@ The demo application is built with Next.js and showcases the components in the l
 2. Import and use the component from the library
 3. Add examples and documentation
 
-Run the demo application with:
+**IMPORTANT: As noted above, running the demo application may fail and require manual cancellation.**
+
+Instead of running the demo application with:
+```bash
+# DON'T RUN THIS - it may fail and require manual cancellation
+# cd react/demo-app
+# npm run dev
+```
+
+Rely on static analysis:
 ```bash
 cd react/demo-app
-npm run dev
+npm run typecheck
+# Use ESLint for code quality checks
+npm run lint
 ```
 
 ## LLM-Specific Development Guidelines
