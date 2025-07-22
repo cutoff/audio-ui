@@ -100,8 +100,20 @@ export default function ControlSkeletonPage({
                         <div>
                             <h2 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Size</h2>
                             <div className="flex flex-wrap gap-4 md:gap-8 justify-center md:justify-start">
-                                <div className="flex flex-col items-center w-16 md:w-20">
-                                    <PageComponent {...componentProps} />
+                                <div className="flex flex-col items-center justify-center w-16 md:w-20">
+                                    <PageComponent {...componentProps} size="xsmall" label="xsmall" />
+                                </div>
+                                <div className="flex flex-col items-center justify-center w-16 md:w-20">
+                                    <PageComponent {...componentProps} size="small" label="small" />
+                                </div>
+                                <div className="flex flex-col items-center justify-center w-16 md:w-20">
+                                    <PageComponent {...componentProps} size="normal" label="normal" />
+                                </div>
+                                <div className="flex flex-col items-center justify-center w-16 md:w-20">
+                                    <PageComponent {...componentProps} size="large" label="large" />
+                                </div>
+                                <div className="flex flex-col items-center justify-center w-16 md:w-20">
+                                    <PageComponent {...componentProps} size="xlarge" label="xlarge" />
                                 </div>
                             </div>
                         </div>

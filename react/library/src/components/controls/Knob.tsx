@@ -3,6 +3,7 @@ import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import classNames from 'classnames';
 import "../../styles.css";
 import {BipolarControl} from "../types";
+import {knobSizeMap} from "../utils/sizeMappings";
 
 /**
  * Angular constants for the knob's arc
@@ -124,7 +125,8 @@ function Knob({
                                  onChange,
                                  onClick,
                                  roundness = 12,
-                                 thickness = 12
+                                 thickness = 12,
+                                 size = 'normal'
                              }: KnobProps) {
 
     const valueToAngle = useMemo(() => {
@@ -166,6 +168,9 @@ function Knob({
         );
     }, [className, onChange, onClick]);
 
+    // Get the preferred width based on the size prop
+    const { width: preferredWidth, height: preferredHeight } = knobSizeMap[size];
+
     return (
         <AdaptiveSvgComponent
             stretch={stretch}
@@ -173,7 +178,8 @@ function Knob({
             style={style}
             viewBoxWidth={100}
             viewBoxHeight={115}
-            preferredWidth={75}
+            preferredWidth={preferredWidth}
+            preferredHeight={preferredHeight}
             onWheel={onChange ? handleWheel : undefined}
             onClick={onClick}
         >

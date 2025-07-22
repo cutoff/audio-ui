@@ -58,6 +58,7 @@ type KnobComponentProps = {
     stretch?: boolean;
     style?: React.CSSProperties;
     className?: string;
+    size?: 'xsmall' | 'small' | 'normal' | 'large' | 'xlarge';
     onChange?: KnobProps['onChange'] | KnobSwitchProps['onChange'];
     onClick?: KnobProps['onClick'] | KnobSwitchProps['onClick'];
 };
@@ -75,7 +76,8 @@ function KnobComponent({
                            onChange,
                            onClick,
                            style,
-                           className
+                           className,
+                           size
                        }: KnobComponentProps) {
     if (enableOptions) {
         return (
@@ -86,6 +88,7 @@ function KnobComponent({
                 style={style}
                 onClick={onClick}
                 onChange={onChange}
+                size={size}
             >
                 {sampleOptions}
             </KnobSwitch>
@@ -105,6 +108,7 @@ function KnobComponent({
                 className={className}
                 onClick={onClick}
                 onChange={onChange}
+                size={size}
             />
         );
     }

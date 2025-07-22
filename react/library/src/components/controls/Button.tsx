@@ -3,6 +3,7 @@ import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import classNames from 'classnames';
 import "../../styles.css";
 import {Control} from "../types";
+import {buttonSizeMap} from "../utils/sizeMappings";
 
 /**
  * Props for the Button component
@@ -68,7 +69,8 @@ function Button({
     className,
     style,
     onClick,
-    roundness = 10
+    roundness = 10,
+    size = 'normal'
 }: ButtonProps) {
     // Calculate the center value based on min and max
     const actualCenter = useMemo(() => {
@@ -102,12 +104,15 @@ function Button({
         );
     }, [className, onClick]);
 
+    // Get the preferred dimensions based on the size prop
+    const { width: preferredWidth, height: preferredHeight } = buttonSizeMap[size];
+
     return (
         <AdaptiveSvgComponent
             viewBoxWidth={100}
             viewBoxHeight={100}
-            preferredWidth={50}
-            preferredHeight={50}
+            preferredWidth={preferredWidth}
+            preferredHeight={preferredHeight}
             minWidth={20}
             minHeight={40}
             stretch={stretch}

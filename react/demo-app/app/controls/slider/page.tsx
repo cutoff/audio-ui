@@ -41,7 +41,7 @@ export default function Page() {
                 setValue(22);
                 setMin(0);
                 setMax(127);
-                setLabel("Large");
+                setLabel("Thick");
                 setBipolar(false);
                 setThickness(40);
                 break;
@@ -137,7 +137,7 @@ export default function Page() {
             max={127}
             value={22}
             thickness={40}
-            label="Large"
+            label="Thick"
             onClick={() => handleExampleClick(2)}
         />,
     ];

@@ -1,6 +1,6 @@
 import React from 'react';
 import Knob from './Knob';
-import {Stretchable} from "../types";
+import {SizeType, Stretchable} from "../types";
 
 /**
  * Props for the option elements within KnobSwitch
@@ -30,6 +30,10 @@ export type KnobSwitchProps = Stretchable & {
     onChange?: (value: number | ((prev: number) => number)) => void;
     /** Handler for click events */
     onClick?: React.MouseEventHandler<SVGSVGElement>;
+    /** Size of the component
+     * @default 'normal'
+     */
+    size?: SizeType;
 };
 
 /**
@@ -100,7 +104,8 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
          style,
          stretch = false,
          onChange,
-         onClick
+         onClick,
+         size = 'normal'
      }) => {
     const options = React.Children.toArray(children);
 
@@ -135,6 +140,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             stretch={stretch}
             onClick={onClick}
             onChange={onChange}
+            size={size}
         >
             {selectedLabel}
         </Knob>

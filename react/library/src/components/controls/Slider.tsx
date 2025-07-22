@@ -1,7 +1,8 @@
-import React, {useMemo, useCallback} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import classNames from 'classnames';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import {BipolarControl} from "../types";
+import {sliderSizeMap} from "../utils/sizeMappings";
 
 /**
  * Props for the Slider component
@@ -185,7 +186,8 @@ const Slider = ({
                     style,
                     onChange,
                     onClick,
-                    roundness
+                    roundness,
+                    size = 'normal'
                 }: SliderProps) => {
     // Ensure thickness is non-negative
     const nonNegativeThickness = Math.max(0, thickness);
@@ -242,12 +244,15 @@ const Slider = ({
         );
     }, [className, onChange, onClick]);
 
+    // Get the preferred dimensions based on the size prop
+    const { width: preferredWidth, height: preferredHeight } = sliderSizeMap[size];
+
     return (
         <AdaptiveSvgComponent
             viewBoxWidth={100}
             viewBoxHeight={400}
-            preferredWidth={40}
-            preferredHeight={160}
+            preferredWidth={preferredWidth}
+            preferredHeight={preferredHeight}
             minWidth={20}
             minHeight={60}
             stretch={stretch}

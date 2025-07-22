@@ -1,4 +1,9 @@
 /**
+ * Size options for control components
+ */
+export type SizeType = 'xsmall' | 'small' | 'normal' | 'large' | 'xlarge';
+
+/**
  * Interface for components that can stretch to fill their container
  */
 export type Stretchable = {
@@ -27,6 +32,11 @@ export type Control = Stretchable & {
      * A value of 0 means square corners/caps, while values > 0 create rounded corners/caps
      */
     roundness?: number;
+    
+    /** Size of the component
+     * @default 'normal'
+     */
+    size?: SizeType;
 };
 
 /**
