@@ -77,14 +77,6 @@ export default function Page() {
                 onChange={(e) => setMax(Number(e.target.value))}
             />
         </div>,
-        <div key="bipolar" className="grid gap-2">
-            <Checkbox
-                id="bipolarProp"
-                checked={bipolar}
-                onCheckedChange={(checked) => setBipolar(checked === true)}
-            />
-            <Label htmlFor="bipolarProp" className="cursor-pointer">Bipolar</Label>
-        </div>,
         <div key="thickness" className="grid gap-2">
             <Label htmlFor="thicknessProp">Thickness</Label>
             <Input
@@ -104,7 +96,15 @@ export default function Page() {
                 value={roundness}
                 onChange={(e) => setRoundness(Math.max(0, Number(e.target.value)))}
             />
-        </div>
+        </div>,
+        <div key="bipolar" className="grid gap-2">
+            <Checkbox
+                id="bipolarProp"
+                checked={bipolar}
+                onCheckedChange={(checked) => setBipolar(checked === true)}
+            />
+            <Label htmlFor="bipolarProp" className="cursor-pointer">Bipolar</Label>
+        </div>,
     ];
 
     const examples = [

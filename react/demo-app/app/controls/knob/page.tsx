@@ -188,16 +188,6 @@ export default function KnobDemoPage() {
                 onChange={(e) => setMax(Number(e.target.value))}
             />
         </div>,
-        <div key="roundness" className="grid gap-2">
-            <Label htmlFor="roundnessProp">Roundness</Label>
-            <Input
-                id="roundnessProp"
-                type="number"
-                min="0"
-                value={roundness}
-                onChange={(e) => setRoundness(Math.max(0, Number(e.target.value)))}
-            />
-        </div>,
         <div key="thickness" className="grid gap-2">
             <Label htmlFor="thicknessProp">Thickness</Label>
             <Input
@@ -206,6 +196,16 @@ export default function KnobDemoPage() {
                 min="0"
                 value={thickness}
                 onChange={(e) => setThickness(Math.max(0, Number(e.target.value)))}
+            />
+        </div>,
+        <div key="roundness" className="grid gap-2">
+            <Label htmlFor="roundnessProp">Roundness</Label>
+            <Input
+                id="roundnessProp"
+                type="number"
+                min="0"
+                value={roundness}
+                onChange={(e) => setRoundness(Math.max(0, Number(e.target.value)))}
             />
         </div>,
         <div key="bipolar" className="flex items-center gap-2 pt-2">
