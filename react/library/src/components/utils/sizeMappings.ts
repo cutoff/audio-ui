@@ -25,23 +25,43 @@ export const buttonSizeMap: Record<SizeType, { width: number, height: number }> 
 /**
  * Maps size values to dimensions for the Slider component
  */
-export const sliderSizeMap: Record<SizeType, { width: number, height: number }> = {
-  'xsmall': { width: 25, height: 100 },
-  'small': { width: 30, height: 130 },
-  'normal': { width: 40, height: 160 },
-  'large': { width: 50, height: 200 },
-  'xlarge': { width: 60, height: 240 }
+export const sliderSizeMap: Record<SizeType, { 
+  vertical: { width: number, height: number },
+  horizontal: { width: number, height: number }
+}> = {
+  'xsmall': { 
+    vertical: { width: 25, height: 100 },
+    horizontal: { width: 100, height: 25 }
+  },
+  'small': { 
+    vertical: { width: 30, height: 130 },
+    horizontal: { width: 130, height: 30 }
+  },
+  'normal': { 
+    vertical: { width: 40, height: 160 },
+    horizontal: { width: 160, height: 40 }
+  },
+  'large': { 
+    vertical: { width: 50, height: 200 },
+    horizontal: { width: 200, height: 50 }
+  },
+  'xlarge': { 
+    vertical: { width: 60, height: 240 },
+    horizontal: { width: 240, height: 60 }
+  }
 };
 
 /**
  * Gets the appropriate size dimensions for a component
  * @param componentType The type of component ('knob', 'button', or 'slider')
  * @param size The size value
+ * @param orientation The orientation for slider components ('vertical' or 'horizontal')
  * @returns The dimensions for the component
  */
 export function getSizeForComponent(
   componentType: 'knob' | 'button' | 'slider',
-  size: SizeType = 'normal'
+  size: SizeType = 'normal',
+  orientation: 'vertical' | 'horizontal' = 'vertical'
 ): number | { width: number, height: number } {
   switch (componentType) {
     case 'knob':
@@ -49,7 +69,7 @@ export function getSizeForComponent(
     case 'button':
       return buttonSizeMap[size];
     case 'slider':
-      return sliderSizeMap[size];
+      return sliderSizeMap[size][orientation];
     default:
       throw new Error(`Unknown component type: ${componentType}`);
   }

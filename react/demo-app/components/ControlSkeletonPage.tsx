@@ -2,6 +2,7 @@
 
 import {useMemo} from "react";
 import {CodeBlock} from "@/components/code-block";
+import {SizeType} from "@cutoff/audio-ui-react";
 
 export type ControlSkeletonPageProps = {
     /** Name of the component being demonstrated */
@@ -29,6 +30,9 @@ export default function ControlSkeletonPage({
                                              examples,
                                              onChange
                                          }: ControlSkeletonPageProps) {
+    // Array of all size types for dynamic generation
+    const sizeTypes: SizeType[] = ['xsmall', 'small', 'normal', 'large', 'xlarge'];
+    
     const fillItems = useMemo(() => {
         const items: React.ReactNode[] = [];
         for (let i = 0; i < 36; i++) {
@@ -57,6 +61,7 @@ export default function ControlSkeletonPage({
                         {/* Main Component Preview */}
                         <div className="flex justify-center items-center h-40 md:h-60">
                             <PageComponent
+                                key={`main-preview-${componentProps.orientation || 'default'}`}
                                 stretch={true}
                                 onChange={onChange}
                                 {...componentProps}
@@ -100,21 +105,19 @@ export default function ControlSkeletonPage({
                         <div>
                             <h2 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Size</h2>
                             <div className="flex flex-wrap gap-4 md:gap-8 justify-center md:justify-start">
-                                <div className="flex flex-col items-center justify-center w-16 md:w-20">
-                                    <PageComponent {...componentProps} size="xsmall" label="xsmall" />
-                                </div>
-                                <div className="flex flex-col items-center justify-center w-16 md:w-20">
-                                    <PageComponent {...componentProps} size="small" label="small" />
-                                </div>
-                                <div className="flex flex-col items-center justify-center w-16 md:w-20">
-                                    <PageComponent {...componentProps} size="normal" label="normal" />
-                                </div>
-                                <div className="flex flex-col items-center justify-center w-16 md:w-20">
-                                    <PageComponent {...componentProps} size="large" label="large" />
-                                </div>
-                                <div className="flex flex-col items-center justify-center w-16 md:w-20">
-                                    <PageComponent {...componentProps} size="xlarge" label="xlarge" />
-                                </div>
+                                {sizeTypes.map((size) => (
+                                    <div 
+                                        key={`container-${size}-${componentProps.orientation || 'default'}`} 
+                                        className="flex flex-col items-center justify-center"
+                                    >
+                                        <PageComponent 
+                                            key={`${size}-${componentProps.orientation || 'default'}`} 
+                                            {...componentProps} 
+                                            size={size} 
+                                            label={size} 
+                                        />
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
@@ -140,6 +143,7 @@ export default function ControlSkeletonPage({
 
                                 {/* Positioned components */}
                                 <PageComponent
+                                    key={`grid-start-${componentProps.orientation || 'default'}`}
                                     className="emphasized-bg"
                                     style={{
                                         gridArea: "2 / 1 / span 2 / span 1",
@@ -150,6 +154,7 @@ export default function ControlSkeletonPage({
                                     {...componentProps}
                                 />
                                 <PageComponent
+                                    key={`grid-end-${componentProps.orientation || 'default'}`}
                                     className="emphasized-bg"
                                     style={{
                                         gridArea: "2 / 2 / span 2 / span 1",
@@ -160,6 +165,7 @@ export default function ControlSkeletonPage({
                                     {...componentProps}
                                 />
                                 <PageComponent
+                                    key={`grid-center-${componentProps.orientation || 'default'}`}
                                     className="emphasized-bg"
                                     style={{
                                         gridArea: "2 / 3 / span 2 / span 1",
@@ -172,6 +178,7 @@ export default function ControlSkeletonPage({
 
                                 {/* 2x2 grid example */}
                                 <PageComponent
+                                    key={`grid-2x2-${componentProps.orientation || 'default'}`}
                                     className="emphasized-bg"
                                     style={{
                                         gridArea: "1 / 5 / span 2 / span 2",
@@ -184,6 +191,7 @@ export default function ControlSkeletonPage({
 
                                 {/* 2x3 grid example */}
                                 <PageComponent
+                                    key={`grid-2x3-${componentProps.orientation || 'default'}`}
                                     className="emphasized-bg"
                                     style={{
                                         gridArea: "2 / 7 / span 3 / span 3",

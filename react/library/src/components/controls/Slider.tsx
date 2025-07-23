@@ -8,6 +8,9 @@ import {sliderSizeMap} from "../utils/sizeMappings";
  * Props for the Slider component
  */
 export type SliderProps = BipolarControl & {
+    /** Orientation of the slider
+     * @default 'vertical' */
+    orientation?: 'horizontal' | 'vertical';
     /** Thickness of the slider in pixels
      * @default 20 */
     thickness?: number;
@@ -36,17 +39,26 @@ type Zone = {
 };
 
 /**
- * Represents the vertical dimensions of the filled portion of the slider
+ * Represents the dimensions of the filled portion of the slider
  */
 type FilledZone = {
-    /** Y coordinate where the fill starts */
-    y: number;
-    /** Height of the filled area */
-    h: number;
+    /** X coordinate where the fill starts (for horizontal) */
+    x?: number;
+    /** Y coordinate where the fill starts (for vertical) */
+    y?: number;
+    /** Width of the filled area (for horizontal) */
+    w?: number;
+    /** Height of the filled area (for vertical) */
+    h?: number;
 };
 
 /**
  * Helper function to calculate a bounded ratio between 0 and 1
+ * 
+ * @param value The value to convert to a ratio
+ * @param min The minimum value (corresponds to ratio = 0)
+ * @param max The maximum value (corresponds to ratio = 1)
+ * @returns A ratio between 0 and 1 representing where value falls in the min-max range
  */
 const calculateBoundedRatio = (value: number, min: number, max: number): number => {
     // Ensure value is within bounds
@@ -58,52 +70,112 @@ const calculateBoundedRatio = (value: number, min: number, max: number): number 
 
 /**
  * Calculates the filled zone dimensions for a slider
- * @param mainZone The dimensions of the slider
- * @param value The current value
+ * 
+ * This function determines how to draw the filled portion of a slider based on:
+ * - The slider's orientation (horizontal or vertical)
+ * - Whether it's in bipolar mode (has a center point)
+ * - The current value relative to min, max, and center
+ * 
+ * @param mainZone The dimensions of the slider's background
+ * @param value The current value (will be bounded to min-max range)
  * @param min The minimum value
  * @param max The maximum value
- * @param center Optional center point (for bipolar sliders)
- * @returns The dimensions of the filled portion
+ * @param center Optional center point for bipolar mode
+ * @param isHorizontal Whether the slider is horizontal (false = vertical)
+ * @returns Dimensions of the filled portion (x,w for horizontal; y,h for vertical)
+ * 
+ * For horizontal sliders:
+ * - Normal mode: Fills from left edge, growing rightward as value increases
+ * - Bipolar mode: 
+ *   - When value > center: Fills from center, growing rightward
+ *   - When value < center: Fills from center, growing leftward (DJ crossfader style)
+ *
+ * For vertical sliders:
+ * - Normal mode: Fills from bottom edge, growing upward as value increases
+ * - Bipolar mode:
+ *   - When value > center: Fills from center, growing upward
+ *   - When value < center: Fills from center, growing downward
  */
 const computeFilledZone = (
     mainZone: Zone, 
     value: number, 
     min: number, 
     max: number, 
-    center?: number
+    center?: number,
+    isHorizontal: boolean = false
 ): FilledZone => {
-    // If no center is provided, fill from min
+    // Ensure value is within bounds (min-max range)
+    const boundedValue = Math.max(min, Math.min(value, max));
+    
+    // Select the dimension and position properties based on orientation
+    const dimension = isHorizontal ? mainZone.w : mainZone.h;
+    const position = isHorizontal ? mainZone.x : mainZone.y;
+    
+    // Normal mode (no center point)
     if (center === undefined) {
-        const boundedRatio = calculateBoundedRatio(value, min, max);
-        const height = mainZone.h * boundedRatio;
-        
-        return {
-            y: mainZone.y + (mainZone.h - height),
-            h: height
-        };
+        // Calculate the ratio and size
+        const ratio = calculateBoundedRatio(boundedValue, min, max);
+        const size = dimension * ratio;
+
+        if (isHorizontal) {
+            // Horizontal: Fill from left to right
+            return {
+                x: position,
+                w: size
+            };
+        } else {
+            // Vertical: Fill from bottom to top (inverted position)
+            return {
+                y: position + (dimension - size),
+                h: size
+            };
+        }
     }
     
-    // Fill from center (bipolar mode)
-    const boundedValue = Math.max(min, Math.min(value, max));
-    const halfHeight = mainZone.h / 2;
-    const centerY = mainZone.y + halfHeight;
-
+    // Bipolar mode calculations
+    const halfSize = dimension / 2;
+    const centerPoint = position + halfSize;
+    
     if (boundedValue >= center) {
-        // Upper half (value >= center)
-        const boundedRatio = calculateBoundedRatio(boundedValue, center, max);
-        const height = halfHeight * boundedRatio;
-        return {
-            y: mainZone.y + (halfHeight - height),
-            h: height
-        };
+        // Value >= center (right/upper half)
+        const bipolarRatio = calculateBoundedRatio(boundedValue, center, max);
+        const bipolarSize = halfSize * bipolarRatio;
+        
+        if (isHorizontal) {
+            // Horizontal: Fill from center to right
+            return {
+                x: centerPoint,
+                w: bipolarSize
+            };
+        } else {
+            // Vertical: Fill from center to top (inverted position)
+            return {
+                y: position + (halfSize - bipolarSize),
+                h: bipolarSize
+            };
+        }
     } else {
-        // Lower half (value < center)
-        const boundedRatio = calculateBoundedRatio(boundedValue, min, center);
-        const height = halfHeight * boundedRatio;
-        return {
-            y: centerY,
-            h: halfHeight - height
-        };
+        // Value < center (left/lower half)
+        // For this case, we need to invert the ratio because:
+        // - When value = min: We want bipolarRatio = 1 (maximum fill)
+        // - When value = center: We want bipolarRatio = 0 (minimum fill)
+        // The inversion (1 - ratio) achieves this transformation efficiently
+        const bipolarRatio = 1 - calculateBoundedRatio(boundedValue, min, center);
+        const bipolarSize = halfSize * bipolarRatio;
+        
+        if (isHorizontal) {
+            // Horizontal: Fill from center to left (DJ crossfader style)
+            return {
+                x: centerPoint - bipolarSize,
+                w: bipolarSize
+            };
+        } else {
+            // Vertical: Fill from center to bottom
+            return {
+                y: centerPoint,
+                h: bipolarSize
+            };
+        }
     }
 };
 
@@ -175,6 +247,7 @@ const computeFilledZone = (
  * ```
  */
 const Slider = ({
+                    orientation = 'vertical',
                     min,
                     max,
                     bipolar = false,
@@ -192,26 +265,44 @@ const Slider = ({
     // Ensure thickness is non-negative
     const nonNegativeThickness = Math.max(0, thickness);
     
-    // Calculate the dimensions of the slider's main zone based on thickness
+    // Calculate the dimensions of the slider's main zone based on orientation and thickness
     const mainZone = useMemo<Zone>(() => {
-        // Center the slider based on its thickness
-        const x = 50 - (nonNegativeThickness / 2);
-        return { 
-            x, 
-            y: 20, 
-            w: nonNegativeThickness, 
-            h: 330 
-        };
-    }, [nonNegativeThickness]);
+        if (orientation === 'vertical') {
+            // Center the slider based on its thickness
+            const x = 50 - (nonNegativeThickness / 2);
+            return { 
+                x, 
+                y: 20, 
+                w: nonNegativeThickness, 
+                h: 330 
+            };
+        } else {
+            // For horizontal orientation
+            const y = 50 - (nonNegativeThickness / 2);
+            return { 
+                x: 20, 
+                y, 
+                w: 330, 
+                h: nonNegativeThickness 
+            };
+        }
+    }, [nonNegativeThickness, orientation]);
 
-    // Calculate the dimensions of the filled portion based on current value
+    // Calculate the dimensions of the filled portion based on current value and orientation
     const filledZone = useMemo<FilledZone>(() => {
         const normalizedValue = Math.min(Math.max(value, min), max);
         const normalizedCenter = bipolar ? (Math.floor((max - min + 1) / 2) + min) : undefined;
 
-        return computeFilledZone(mainZone, normalizedValue, min, max, normalizedCenter);
-    }, [min, max, value, bipolar, mainZone]);
-    
+        return computeFilledZone(
+            mainZone, 
+            normalizedValue, 
+            min, 
+            max, 
+            normalizedCenter, 
+            orientation === 'horizontal'
+        );
+    }, [min, max, value, bipolar, mainZone, orientation]);
+
     // Calculate corner radius based on roundness
     const cornerRadius = useMemo(() => {
         // Ensure roundness is non-negative
@@ -221,9 +312,11 @@ const Slider = ({
         if (nonNegativeRoundness === 0) {
             return 0; // No rounding for square caps
         }
-        // Use provided roundness or fall back to half the width for fully rounded corners
-        return nonNegativeRoundness !== undefined ? nonNegativeRoundness : mainZone.w / 2;
-    }, [mainZone.w, roundness]);
+        
+        // Use provided roundness or fall back to half the thickness for fully rounded corners
+        const dimension = orientation === 'vertical' ? mainZone.w : mainZone.h;
+        return nonNegativeRoundness !== undefined ? nonNegativeRoundness : dimension / 2;
+    }, [mainZone, roundness, orientation]);
 
     // Handle mouse wheel events to change the value
     const handleWheel = useCallback((e: WheelEvent) => {
@@ -244,17 +337,29 @@ const Slider = ({
         );
     }, [className, onChange, onClick]);
 
-    // Get the preferred dimensions based on the size prop
-    const { width: preferredWidth, height: preferredHeight } = sliderSizeMap[size];
+    // Get the preferred dimensions based on the size prop and orientation
+    const { width: preferredWidth, height: preferredHeight } = sliderSizeMap[size][orientation];
+
+    // Determine viewBox dimensions based on orientation
+    const viewBoxWidth = orientation === 'vertical' ? 100 : 400;
+    const viewBoxHeight = orientation === 'vertical' ? 400 : 100;
+
+    // Determine minimum dimensions based on orientation
+    const minWidth = orientation === 'vertical' ? 20 : 60;
+    const minHeight = orientation === 'vertical' ? 60 : 20;
+
+    // Determine label position based on orientation
+    const labelX = orientation === 'vertical' ? "50" : "200";
+    const labelY = orientation === 'vertical' ? "393" : "93";
 
     return (
         <AdaptiveSvgComponent
-            viewBoxWidth={100}
-            viewBoxHeight={400}
+            viewBoxWidth={viewBoxWidth}
+            viewBoxHeight={viewBoxHeight}
             preferredWidth={preferredWidth}
             preferredHeight={preferredHeight}
-            minWidth={20}
-            minHeight={60}
+            minWidth={minWidth}
+            minHeight={minHeight}
             stretch={stretch}
             className={componentClassNames}
             style={style}
@@ -275,10 +380,10 @@ const Slider = ({
             {/* Foreground Rectangle */}
             <rect
                 className="fill-primary"
-                x={mainZone.x}
-                y={filledZone.y}
-                width={mainZone.w}
-                height={filledZone.h}
+                x={orientation === 'horizontal' ? filledZone.x : mainZone.x}
+                y={orientation === 'vertical' ? filledZone.y : mainZone.y}
+                width={orientation === 'horizontal' ? filledZone.w : mainZone.w}
+                height={orientation === 'vertical' ? filledZone.h : mainZone.h}
                 rx={cornerRadius}
                 ry={cornerRadius}
             />
@@ -287,8 +392,8 @@ const Slider = ({
             <text
                 className="fill-text"
                 textAnchor="middle"
-                x="50"
-                y="393"
+                x={labelX}
+                y={labelY}
                 fontSize="30"
                 fontWeight="500"
             >
