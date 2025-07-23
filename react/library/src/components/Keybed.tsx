@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import classNames from 'classnames';
 import AdaptiveSvgComponent from './support/AdaptiveSvgComponent';
 import { Stretchable, SizeType } from "./types";
-import { keyboardSizeMap } from "./utils/sizeMappings";
+import { keybedSizeMap } from "./utils/sizeMappings";
 import "../styles.css";
 
 /**
@@ -13,10 +13,10 @@ type NoteName = typeof noteNames[number];
 const notesCount = noteNames.length;
 
 /**
- * Props for the Keyboard component
+ * Props for the Keybed component
  */
-export type KeyboardProps = Stretchable & {
-    /** Number of keys on the keyboard
+export type KeybedProps = Stretchable & {
+    /** Number of keys on the keybed
      * @default 61 */
     nbKeys?: number;
     /** Starting note name (A-G)
@@ -45,7 +45,7 @@ const positiveModulo = (number: number, modulus: number): number => {
 };
 
 /**
- * Piano Keyboard component that renders a piano keyboard visualization.
+ * Piano Keybed component that renders a piano keyboard visualization.
  * Supports variable number of keys, different starting positions, and note highlighting.
  *
  * Features:
@@ -59,8 +59,8 @@ const positiveModulo = (number: number, modulus: number): number => {
  * This component inherits properties from:
  * - `Stretchable`: For responsive sizing
  *
- * @property {boolean} stretch - Whether the keyboard should stretch to fill its container (from `Stretchable`)
- * @property {number} nbKeys - Number of keys on the keyboard (default 61)
+ * @property {boolean} stretch - Whether the keybed should stretch to fill its container (from `Stretchable`)
+ * @property {number} nbKeys - Number of keys on the keybed (default 61)
  * @property {NoteName} startKey - Starting note name (A-G) (default 'C' for 61 keys, 'A' for 88 keys)
  * @property {number} octaveShift - Octave transpose index (default 0)
  * @property {string[]} notesOn - Array of notes that should be highlighted (e.g., ['C4', 'E4', 'G4'])
@@ -71,10 +71,10 @@ const positiveModulo = (number: number, modulus: number): number => {
  * @example
  * ```tsx
  * // Basic usage
- * <Keyboard />
+ * <Keybed />
  *
  * // Full piano configuration
- * <Keyboard
+ * <Keybed
  *   nbKeys={88}
  *   startKey="A"
  *   octaveShift={0}
@@ -82,14 +82,14 @@ const positiveModulo = (number: number, modulus: number): number => {
  * />
  *
  * // Custom styling with size
- * <Keyboard
+ * <Keybed
  *   className="my-keyboard"
  *   style={{ marginTop: '20px' }}
  *   size="large"
  * />
  * ```
  */
-function Keyboard({
+function Keybed({
     nbKeys = 61,
     startKey = (nbKeys === 88) ? 'A' : 'C',
     octaveShift = 0,
@@ -98,9 +98,9 @@ function Keyboard({
     style = {},
     className = "",
     size = 'normal'
-}: KeyboardProps) {
+}: KeybedProps) {
     // Memoize initial computations
-    const keyboardDimensions = useMemo(() => {
+    const keybedDimensions = useMemo(() => {
         const nbOctaves = Math.floor(nbKeys / 12);
         const keyRemainder = nbKeys % 12;
 
@@ -162,7 +162,7 @@ function Keyboard({
             whiteWidth,
             whiteHeight,
             innerStrokeWidth
-        } = keyboardDimensions;
+        } = keybedDimensions;
 
         return Array.from({ length: nbWhite }, (_, index) => {
             const currentNoteIndex = (startKeyIndex + index) % notesCount;
@@ -182,7 +182,7 @@ function Keyboard({
                 />
             );
         });
-    }, [keyboardDimensions, octaveShift, notesOn]);
+    }, [keybedDimensions, octaveShift, notesOn]);
 
     // Memoize black keys rendering
     const renderBlackKeys = useMemo(() => {
@@ -196,7 +196,7 @@ function Keyboard({
             blackHeight,
             innerStrokeWidth,
             blackPass
-        } = keyboardDimensions;
+        } = keybedDimensions;
 
         return Array.from({ length: nbWhite - 1 }, (_, index) => {
             const octaveIndex = index % 7;
@@ -220,7 +220,7 @@ function Keyboard({
                 />
             );
         }).filter(Boolean);
-    }, [keyboardDimensions, octaveShift, notesOn]);
+    }, [keybedDimensions, octaveShift, notesOn]);
 
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {
@@ -231,7 +231,7 @@ function Keyboard({
     }, [className]);
 
     // Get the preferred dimensions based on the size prop
-    const { width: preferredWidth, height: preferredHeight } = keyboardSizeMap[size];
+    const { width: preferredWidth, height: preferredHeight } = keybedSizeMap[size];
 
     return (
         <AdaptiveSvgComponent
@@ -241,19 +241,19 @@ function Keyboard({
                 border: "0 0 0 0",
                 ...style
             }}
-            viewBoxWidth={keyboardDimensions.width}
-            viewBoxHeight={keyboardDimensions.whiteHeight}
+            viewBoxWidth={keybedDimensions.width}
+            viewBoxHeight={keybedDimensions.whiteHeight}
             preferredWidth={preferredWidth}
             preferredHeight={preferredHeight}
             stretch={stretch}
         >
             <rect
                 className="stroke-primary-50 fill-transparent"
-                strokeWidth={keyboardDimensions.outerStrokeWidth}
-                x={keyboardDimensions.outerStrokeWidth / 2}
-                y={keyboardDimensions.outerStrokeWidth / 2}
-                width={keyboardDimensions.width - keyboardDimensions.outerStrokeWidth}
-                height={keyboardDimensions.whiteHeight - keyboardDimensions.outerStrokeWidth}
+                strokeWidth={keybedDimensions.outerStrokeWidth}
+                x={keybedDimensions.outerStrokeWidth / 2}
+                y={keybedDimensions.outerStrokeWidth / 2}
+                width={keybedDimensions.width - keybedDimensions.outerStrokeWidth}
+                height={keybedDimensions.whiteHeight - keybedDimensions.outerStrokeWidth}
             />
             {renderWhiteKeys}
             {renderBlackKeys}
@@ -262,4 +262,4 @@ function Keyboard({
 }
 
 // Wrap the component in React.memo to prevent unnecessary re-renders
-export default React.memo(Keyboard);
+export default React.memo(Keybed);

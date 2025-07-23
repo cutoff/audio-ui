@@ -5,7 +5,7 @@ A modern React component library for audio and MIDI applications, providing intu
 ## Features
 
 - 🎛️ **Audio-focused Components**: Knobs, sliders, buttons designed for audio interfaces
-- 🎹 **Virtual Keyboard**: Interactive piano keyboard component
+- 🎹 **Virtual Keybed**: Interactive piano keyboard component
 - 🎨 **Customizable Styling**: CSS custom properties for easy theming
 - 📱 **Responsive Design**: Works seamlessly across different screen sizes
 - 🔧 **TypeScript Support**: Full type safety and IntelliSense support
@@ -19,7 +19,7 @@ The library provides the following audio-focused UI components:
 - **Knob** - Rotary knob control for parameter adjustment
 - **KnobSwitch** - Multi-position rotary switch
 - **Slider** - Linear slider control
-- **Keyboard** - Virtual keyboard interface
+- **Keybed** - Virtual keyboard interface
 - **Option** - Option selector for component configuration
 
 ## Quick Start

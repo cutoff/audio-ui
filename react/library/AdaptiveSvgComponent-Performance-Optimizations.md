@@ -407,4 +407,4 @@ This balance is especially important for components like Knob, Slider, and other
 
 The explicit check for children changes in the custom comparison function ensures that components will re-render when their content changes, while still preventing unnecessary re-renders when other props remain the same.
 
-Since `AdaptiveSvgComponent` serves as a foundation for other components like Knob, Slider, and Keyboard, these balanced optimizations will have a positive impact on both the performance and reactivity of the Audio UI library.
+Since `AdaptiveSvgComponent` serves as a foundation for other components like Knob, Slider, and Keybed, these balanced optimizations will have a positive impact on both the performance and reactivity of the Audio UI library.

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
-import { Keyboard } from "@cutoff/audio-ui-react";
+import { Keybed } from "@cutoff/audio-ui-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
@@ -156,7 +156,7 @@ export default function KeybedPage() {
       )}
       
       <div className="mt-8">
-        <Keyboard
+        <Keybed
           nbKeys={88}
           startKey="A"
           notesOn={notesOn}
