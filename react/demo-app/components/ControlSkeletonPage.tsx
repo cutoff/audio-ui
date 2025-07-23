@@ -19,6 +19,8 @@ export type ControlSkeletonPageProps = {
     examples: React.ReactNode[];
     /** Handler for value changes */
     onChange?: (value: number) => void;
+    /** Layout orientation - horizontal for wide components, vertical for tall/square components */
+    orientation?: "horizontal" | "vertical";
 };
 
 export default function ControlSkeletonPage({
@@ -28,7 +30,8 @@ export default function ControlSkeletonPage({
                                              componentProps,
                                              properties,
                                              examples,
-                                             onChange
+                                             onChange,
+                                             orientation = "vertical"
                                          }: ControlSkeletonPageProps) {
     // Array of all size types for dynamic generation
     const sizeTypes: SizeType[] = ['xsmall', 'small', 'normal', 'large', 'xlarge'];
@@ -89,37 +92,77 @@ export default function ControlSkeletonPage({
             <div className="w-full md:w-2/3 flex justify-center p-4 md:p-0">
                 <div className="w-full max-w-2xl p-4 md:p-8">
                     <div className="flex flex-col gap-6 md:gap-10">
-                        {/* Examples */}
-                        <div>
-                            <h2 className="text-xl md:text-2xl font-medium mb-4 md:mb-6">Examples</h2>
-                            <div className="flex flex-wrap gap-4 md:gap-8 justify-center md:justify-start">
-                                {examples.map((example, i) => (
-                                    <div key={i} className="flex flex-col items-center w-16 md:w-20">
-                                        {example}
+                        {orientation === "horizontal" ? (
+                            // Horizontal orientation layout - Examples and Size side by side
+                            <div className="flex flex-col md:flex-row gap-6 md:gap-10">
+                                {/* Examples - Vertical layout for horizontal orientation */}
+                                <div className="w-full md:w-1/2">
+                                    <h2 className="text-xl md:text-2xl font-medium mb-4 md:mb-6">Examples</h2>
+                                    <div className="flex flex-col gap-6 md:gap-8 items-center md:items-start">
+                                        {examples.map((example, i) => (
+                                            <div key={i} className="flex flex-col items-center">
+                                                {example}
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
-                        </div>
+                                </div>
 
-                        {/* Size Section */}
-                        <div>
-                            <h2 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Size</h2>
-                            <div className="flex flex-wrap gap-4 md:gap-8 justify-center md:justify-start">
-                                {sizeTypes.map((size) => (
-                                    <div 
-                                        key={`container-${size}-${componentProps.orientation || 'default'}`} 
-                                        className="flex flex-col items-center justify-center"
-                                    >
-                                        <PageComponent 
-                                            key={`${size}-${componentProps.orientation || 'default'}`} 
-                                            {...componentProps} 
-                                            size={size} 
-                                            label={size} 
-                                        />
+                                {/* Size Section - Vertical layout for horizontal orientation */}
+                                <div className="w-full md:w-1/2">
+                                    <h2 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Size</h2>
+                                    <div className="flex flex-col gap-6 md:gap-8 items-center md:items-start">
+                                        {sizeTypes.map((size) => (
+                                            <div 
+                                                key={`container-${size}-${componentProps.orientation || 'default'}`} 
+                                                className="flex flex-col items-center justify-center"
+                                            >
+                                                <PageComponent 
+                                                    key={`${size}-${componentProps.orientation || 'default'}`} 
+                                                    {...componentProps} 
+                                                    size={size} 
+                                                    label={size} 
+                                                />
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
+                                </div>
                             </div>
-                        </div>
+                        ) : (
+                            // Vertical orientation layout (original)
+                            <>
+                                {/* Examples */}
+                                <div>
+                                    <h2 className="text-xl md:text-2xl font-medium mb-4 md:mb-6">Examples</h2>
+                                    <div className="flex flex-wrap gap-4 md:gap-8 justify-center md:justify-start">
+                                        {examples.map((example, i) => (
+                                            <div key={i} className="flex flex-col items-center w-16 md:w-20">
+                                                {example}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Size Section */}
+                                <div>
+                                    <h2 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Size</h2>
+                                    <div className="flex flex-wrap gap-4 md:gap-8 justify-center md:justify-start">
+                                        {sizeTypes.map((size) => (
+                                            <div 
+                                                key={`container-${size}-${componentProps.orientation || 'default'}`} 
+                                                className="flex flex-col items-center justify-center"
+                                            >
+                                                <PageComponent 
+                                                    key={`${size}-${componentProps.orientation || 'default'}`} 
+                                                    {...componentProps} 
+                                                    size={size} 
+                                                    label={size} 
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </>
+                        )}
 
                         {/* Grid Layout - Hidden on small screens, visible on medium and up */}
                         <div className="hidden md:block">

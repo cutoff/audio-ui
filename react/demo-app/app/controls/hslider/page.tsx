@@ -163,6 +163,7 @@ export default function Page() {
             properties={properties}
             examples={examples}
             onChange={(newValue) => setValue(newValue)}
+            orientation="horizontal"
         />
     );
 }
