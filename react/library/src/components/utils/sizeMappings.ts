@@ -23,6 +23,17 @@ export const buttonSizeMap: Record<SizeType, { width: number, height: number }> 
 };
 
 /**
+ * Maps size values to dimensions for the Keyboard component
+ */
+export const keyboardSizeMap: Record<SizeType, { width: number, height: number }> = {
+  'xsmall': { width: 300, height: 75 },
+  'small': { width: 400, height: 100 },
+  'normal': { width: 500, height: 125 },
+  'large': { width: 600, height: 150 },
+  'xlarge': { width: 700, height: 175 }
+};
+
+/**
  * Maps size values to dimensions for the Slider component
  */
 export const sliderSizeMap: Record<SizeType, { 
@@ -53,13 +64,13 @@ export const sliderSizeMap: Record<SizeType, {
 
 /**
  * Gets the appropriate size dimensions for a component
- * @param componentType The type of component ('knob', 'button', or 'slider')
+ * @param componentType The type of component ('knob', 'button', 'keyboard', or 'slider')
  * @param size The size value
  * @param orientation The orientation for slider components ('vertical' or 'horizontal')
  * @returns The dimensions for the component
  */
 export function getSizeForComponent(
-  componentType: 'knob' | 'button' | 'slider',
+  componentType: 'knob' | 'button' | 'keyboard' | 'slider',
   size: SizeType = 'normal',
   orientation: 'vertical' | 'horizontal' = 'vertical'
 ): number | { width: number, height: number } {
@@ -68,6 +79,8 @@ export function getSizeForComponent(
       return knobSizeMap[size];
     case 'button':
       return buttonSizeMap[size];
+    case 'keyboard':
+      return keyboardSizeMap[size];
     case 'slider':
       return sliderSizeMap[size][orientation];
     default:
