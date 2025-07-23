@@ -26,11 +26,11 @@ export const buttonSizeMap: Record<SizeType, { width: number, height: number }> 
  * Maps size values to dimensions for the Keybed component
  */
 export const keybedSizeMap: Record<SizeType, { width: number, height: number }> = {
-  'xsmall': { width: 300, height: 75 },
-  'small': { width: 400, height: 100 },
-  'normal': { width: 500, height: 125 },
-  'large': { width: 600, height: 150 },
-  'xlarge': { width: 700, height: 175 }
+  'xsmall': { width: 320, height: 80 },
+  'small': { width: 460, height: 115 },
+  'normal': { width: 640, height: 160 },
+  'large': { width: 800, height: 200 },
+  'xlarge': { width: 900, height: 225 }
 };
 
 /**

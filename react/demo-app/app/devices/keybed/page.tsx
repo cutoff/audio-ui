@@ -22,15 +22,15 @@ export default function KeybedPage() {
     const initWebMidi = async () => {
       try {
         const midiAccess = await navigator.requestMIDIAccess();
-        
+
         // Get all MIDI inputs
         const inputs: WebMidi.MIDIInput[] = [];
         midiAccess.inputs.forEach(input => {
           inputs.push(input);
         });
-        
+
         setMidiInputs(inputs);
-        
+
         // Listen for state changes (device connect/disconnect)
         midiAccess.addEventListener('statechange', (event) => {
           const midiConnectionEvent = event as WebMidi.MIDIConnectionEvent;
@@ -41,9 +41,9 @@ export default function KeybedPage() {
               updatedInputs.push(input);
             });
             setMidiInputs(updatedInputs);
-            
+
             // If the currently selected input was disconnected, clear the selection
-            if (midiConnectionEvent.port.state === 'disconnected' && 
+            if (midiConnectionEvent.port.state === 'disconnected' &&
                 midiConnectionEvent.port.id === selectedInputId) {
               setSelectedInputId("");
               setNotesOn([]);
@@ -86,12 +86,12 @@ export default function KeybedPage() {
   // Handle MIDI messages
   const handleMidiMessage = (event: WebMidi.MIDIMessageEvent) => {
     const data = event.data;
-    
+
     // Note on message (status byte: 0x90)
     if ((data[0] & 0xF0) === 0x90 && data[2] > 0) {
       const midiNote = data[1];
       const noteName = midiNoteToNoteName(midiNote);
-      
+
       setNotesOn(prev => {
         if (!prev.includes(noteName)) {
           return [...prev, noteName];
@@ -99,12 +99,12 @@ export default function KeybedPage() {
         return prev;
       });
     }
-    
+
     // Note off message (status byte: 0x80 or 0x90 with velocity 0)
     if ((data[0] & 0xF0) === 0x80 || ((data[0] & 0xF0) === 0x90 && data[2] === 0)) {
       const midiNote = data[1];
       const noteName = midiNoteToNoteName(midiNote);
-      
+
       setNotesOn(prev => prev.filter(note => note !== noteName));
     }
   };
@@ -120,7 +120,7 @@ export default function KeybedPage() {
   return (
     <div className="min-h-screen p-4 md:p-8">
       <h1 className="text-2xl font-medium mb-6">Keybed</h1>
-      
+
       {!webMidiSupported ? (
         <Alert variant="destructive" className="mb-6">
           <AlertTriangle className="h-4 w-4" />
@@ -154,16 +154,40 @@ export default function KeybedPage() {
           </Select>
         </div>
       )}
-      
-      <div className="mt-8">
+
+      <div className="flex flex-col flex-wrap gap-4 mb-6">
+        <Keybed
+          nbKeys={88}
+          startKey="A"
+          notesOn={notesOn}
+          size="xsmall"
+        />
+        <Keybed
+          nbKeys={88}
+          startKey="A"
+          notesOn={notesOn}
+          size="small"
+        />
+        <Keybed
+          nbKeys={88}
+          startKey="A"
+          notesOn={notesOn}
+          size="normal"
+        />
         <Keybed
           nbKeys={88}
           startKey="A"
           notesOn={notesOn}
           size="large"
         />
+        <Keybed
+          nbKeys={88}
+          startKey="A"
+          notesOn={notesOn}
+          size="xlarge"
+        />
       </div>
-      
+
       <div className="mt-6 text-sm text-muted-foreground">
         <p>Connect a MIDI keyboard and select it from the dropdown to play notes.</p>
         <p className="mt-2">Active notes: {notesOn.join(', ') || 'None'}</p>
