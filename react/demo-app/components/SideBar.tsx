@@ -24,7 +24,8 @@ type ThemeColor = {
 // List of components to display in the sidebar
 const controls: Page[] = [
   { name: "Knob", path: "/controls/knob" },
-  { name: "Slider", path: "/controls/slider" },
+  { name: "Slider (vertical)", path: "/controls/vslider" },
+  { name: "Slider (horizontal)", path: "/controls/hslider" },
   { name: "Button", path: "/controls/button" },
   // More components can be added here in the future
 ];
