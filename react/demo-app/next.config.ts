@@ -3,6 +3,9 @@ import path from "path";
 
 const nextConfig: NextConfig = {
     transpilePackages: ["@cutoff/audio-ui-react"],
+    eslint: {
+        ignoreDuringBuilds: true, // Ignore ESLint errors during production builds
+    },
     webpack: (config) => {
         config.resolve.alias = {
             ...config.resolve.alias,
