@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import "../../styles.css";
 import {BipolarControl} from "../types";
 import {knobSizeMap} from "../utils/sizeMappings";
+import {bipolarFormatter} from "../utils/valueFormatters";
 
 /**
  * Angular constants for the knob's arc
@@ -126,7 +127,8 @@ function Knob({
                                  onClick,
                                  roundness = 12,
                                  thickness = 12,
-                                 size = 'normal'
+                                 size = 'normal',
+                                 renderValue
                              }: KnobProps) {
 
     const valueToAngle = useMemo(() => {
@@ -147,7 +149,7 @@ function Knob({
      * Otherwise, returns the number as a string
      */
     const formatValueFn = useCallback((val: number): string => {
-        return bipolar && val > 0 ? `+${val}` : val.toString();
+        return bipolar ? bipolarFormatter(val) : val.toString();
     }, [bipolar]);
 
     const handleWheel = useCallback((e: WheelEvent) => {
@@ -234,6 +236,8 @@ function Knob({
                                     }
                                 } as React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>)}
                             </div>
+                        ) : renderValue ? (
+                            renderValue(value, min, max)
                         ) : (
                             formatValueFn(value)
                         )}

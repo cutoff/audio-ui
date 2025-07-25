@@ -17,3 +17,15 @@ export type { KeybedProps } from './components/Keybed';
 
 // Export common types
 export type { SizeType, Stretchable, Control, BipolarControl } from './components/types';
+
+// Export value formatters
+export {
+  bipolarFormatter,
+  midiBipolarFormatter,
+  withUnit,
+  withPrecision,
+  combineFormatters,
+  percentageFormatter,
+  frequencyFormatter,
+  calculateCenterValue
+} from './components/utils/valueFormatters';

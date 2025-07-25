@@ -1,11 +1,26 @@
 "use client"
 
 import { useState } from "react";
-import { Knob, KnobProps, KnobSwitch, KnobSwitchProps, Option } from "@cutoff/audio-ui-react";
+import { 
+  Knob, 
+  KnobProps, 
+  KnobSwitch, 
+  KnobSwitchProps, 
+  Option
+} from "@cutoff/audio-ui-react";
+
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+
+// Define a simple MIDI bipolar formatter function for the demo
+// This will be replaced by the library's midiBipolarFormatter when it's available
+const midiBipolarFormatter = (value: number, min: number, max: number): string => {
+  const centerValue = Math.floor((max - min + 1) / 2) + min;
+  const shiftedValue = value - centerValue;
+  return shiftedValue > 0 ? `+${shiftedValue}` : shiftedValue.toString();
+};
 
 const iconSineWave = "/sine-wave.svg";
 const iconTriangleWave = "/triangle-wave.svg";
@@ -27,6 +42,7 @@ function generateCodeSnippet(
     min: number,
     max: number,
     bipolar: boolean,
+    useMidiBipolar: boolean,
     roundness: number,
     thickness: number
 ): string {
@@ -40,7 +56,12 @@ function generateCodeSnippet(
 </Knob>
 `;
     } else {
-        const props = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}} roundness={${roundness}} thickness={${thickness}}`;
+        let props = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}} roundness={${roundness}} thickness={${thickness}}`;
+        
+        // Add renderValue prop if using MIDI bipolar formatter
+        if (bipolar && useMidiBipolar) {
+            props += `\n  renderValue={midiBipolarFormatter}`;
+        }
         
         return `<Knob ${props} />`;
     }
@@ -53,6 +74,7 @@ type KnobComponentProps = {
     label?: string;
     bipolar?: boolean;
     enableOptions: boolean;
+    useMidiBipolar?: boolean;
     roundness?: number;
     thickness?: number;
     stretch?: boolean;
@@ -69,6 +91,7 @@ function KnobComponent({
                            max,
                            label,
                            bipolar,
+                           useMidiBipolar,
                            enableOptions,
                            roundness,
                            thickness,
@@ -94,6 +117,7 @@ function KnobComponent({
             </KnobSwitch>
         );
     } else {
+        // Directly pass all props to Knob component, including conditional renderValue
         return (
             <Knob
                 min={min}
@@ -109,6 +133,7 @@ function KnobComponent({
                 onClick={onClick}
                 onChange={onChange}
                 size={size}
+                renderValue={bipolar && useMidiBipolar ? midiBipolarFormatter : undefined}
             />
         );
     }
@@ -120,11 +145,12 @@ export default function KnobDemoPage() {
     const [max, setMax] = useState(100);
     const [label, setLabel] = useState("Default");
     const [bipolar, setBipolar] = useState(false);
+    const [useMidiBipolar, setUseMidiBipolar] = useState(false);
     const [enableOptions, setEnableOptions] = useState(false);
     const [roundness, setRoundness] = useState(12);
     const [thickness, setThickness] = useState(12);
 
-    const handleExampleClick = (num: 0 | 1 | 2 | 3): void => {
+    const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4): void => {
         switch (num) {
             case 0:
                 setValue(42);
@@ -132,6 +158,7 @@ export default function KnobDemoPage() {
                 setMax(100);
                 setLabel("Default");
                 setBipolar(false);
+                setUseMidiBipolar(false);
                 setEnableOptions(false);
                 setThickness(12);
                 break;
@@ -141,6 +168,7 @@ export default function KnobDemoPage() {
                 setMax(127);
                 setLabel("Bipolar");
                 setBipolar(true);
+                setUseMidiBipolar(false);
                 setEnableOptions(false);
                 setThickness(12);
                 break;
@@ -150,6 +178,7 @@ export default function KnobDemoPage() {
                 setMax(1024);
                 setLabel("Bipolar0");
                 setBipolar(true);
+                setUseMidiBipolar(false);
                 setEnableOptions(false);
                 setThickness(12);
                 break;
@@ -159,8 +188,19 @@ export default function KnobDemoPage() {
                 setMax(4);
                 setLabel("Enum");
                 setBipolar(false);
+                setUseMidiBipolar(false);
                 setEnableOptions(true);
                 setThickness(16);
+                break;
+            case 4:
+                setValue(64);
+                setMin(0);
+                setMax(127);
+                setLabel("MIDI Bipolar");
+                setBipolar(true);
+                setUseMidiBipolar(true);
+                setEnableOptions(false);
+                setThickness(12);
                 break;
         }
     };
@@ -220,6 +260,15 @@ export default function KnobDemoPage() {
             />
             <Label htmlFor="bipolarProp" className="cursor-pointer">Bipolar</Label>
         </div>,
+        <div key="midiBipolar" className="flex items-center gap-2 pt-2">
+            <Checkbox
+                id="midiBipolarProp"
+                checked={useMidiBipolar}
+                disabled={!bipolar}
+                onCheckedChange={(checked) => setUseMidiBipolar(checked === true)}
+            />
+            <Label htmlFor="midiBipolarProp" className="cursor-pointer">MIDI Bipolar Format</Label>
+        </div>,
         <div key="options" className="flex items-center gap-2 pt-2">
             <Checkbox
                 id="enableOptionsProp"
@@ -248,11 +297,22 @@ export default function KnobDemoPage() {
                     onClick={() => handleExampleClick(3)}
         >
             {sampleOptions}
-        </KnobSwitch>
+        </KnobSwitch>,
+        <Knob 
+            key="4"
+            style={{cursor: "pointer"}}
+            min={0}
+            max={127}
+            value={64}
+            label="MIDI Bipolar"
+            bipolar={true}
+            renderValue={midiBipolarFormatter}
+            onClick={() => handleExampleClick(4)}
+        />
     ];
 
-    const codeString = generateCodeSnippet(enableOptions, value, label, min, max, bipolar, roundness, thickness);
-    const componentProps = {min, bipolar, max, value, label, enableOptions, roundness, thickness};
+    const codeString = generateCodeSnippet(enableOptions, value, label, min, max, bipolar, useMidiBipolar, roundness, thickness);
+    const componentProps = {min, bipolar, useMidiBipolar, max, value, label, enableOptions, roundness, thickness};
 
     return (
         <ControlSkeletonPage

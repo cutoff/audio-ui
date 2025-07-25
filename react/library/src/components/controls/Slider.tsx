@@ -180,6 +180,7 @@ const computeFilledZone = (
 };
 
 
+// @ts-ignore
 /**
  * A vertical slider component for audio applications.
  *
@@ -260,7 +261,7 @@ const Slider = ({
                     onChange,
                     onClick,
                     roundness,
-                    size = 'normal'
+                    size = 'normal',
                 }: SliderProps) => {
     // Ensure thickness is non-negative
     const nonNegativeThickness = Math.max(0, thickness);

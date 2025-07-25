@@ -37,6 +37,16 @@ export type Control = Stretchable & {
      * @default 'normal'
      */
     size?: SizeType;
+    
+    /**
+     * Custom renderer for the value display
+     * If provided, this function will be used to render the value instead of the default formatter
+     * @param value The current value
+     * @param min The minimum value
+     * @param max The maximum value
+     * @returns A string representation of the value
+     */
+    renderValue?: (value: number, min: number, max: number) => string;
 };
 
 /**
