@@ -25,6 +25,7 @@ export type KeybedProps = Base & AdaptativeSize & {
      * @default 'C' for 61 keys, 'A' for 88 keys */
     startKey?: NoteName;
     /** Octave transpose index (default: 0)
+     * Positive values shift notes up by that many octaves, negative values shift down
      * @default 0 */
     octaveShift?: number;
     /** Array of notes that should be highlighted (e.g., ['C4', 'E4', 'G4'])
@@ -57,7 +58,7 @@ const positiveModulo = (number: number, modulus: number): number => {
  * @property {boolean} stretch - Whether the keybed should stretch to fill its container (from `Stretchable`)
  * @property {number} nbKeys - Number of keys on the keybed (default 61)
  * @property {NoteName} startKey - Starting note name (A-G) (default 'C' for 61 keys, 'A' for 88 keys)
- * @property {number} octaveShift - Octave transpose index (default 0)
+ * @property {number} octaveShift - Octave transpose index (default 0). Positive values shift notes up by that many octaves, negative values shift down.
  * @property {string[]} notesOn - Array of notes that should be highlighted (e.g., ['C4', 'E4', 'G4'])
  * @property {string} className - Additional CSS classes
  * @property {React.CSSProperties} style - Additional inline styles
@@ -162,7 +163,7 @@ function Keybed({
         return Array.from({ length: nbWhite }, (_, index) => {
             const currentNoteIndex = (startKeyIndex + index) % notesCount;
             const currentNoteName = noteNames[currentNoteIndex];
-            const currentOctave = (startOctave + octaveShift) + Math.floor((startKeyIndex + index) / notesCount);
+            const currentOctave = (startOctave - octaveShift) + Math.floor((startKeyIndex + index) / notesCount);
             const currentWhiteNote = currentNoteName + currentOctave.toString();
 
             return (
@@ -199,7 +200,7 @@ function Keybed({
 
             const currentNoteIndex = (startKeyIndex + index) % notesCount;
             const currentNoteName = noteNames[currentNoteIndex];
-            const currentOctave = (startOctave + octaveShift) + Math.floor((startKeyIndex + index) / notesCount);
+            const currentOctave = (startOctave - octaveShift) + Math.floor((startKeyIndex + index) / notesCount);
             const currentBlackNote = currentNoteName + "#" + currentOctave.toString();
 
             return (
