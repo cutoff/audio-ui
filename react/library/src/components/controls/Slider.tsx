@@ -1,3 +1,5 @@
+"use client";
+
 import React, {useCallback, useMemo} from 'react';
 import classNames from 'classnames';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';

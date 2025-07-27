@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 // Import only the debounce function instead of the entire lodash library
 // This significantly reduces bundle size through tree-shaking
