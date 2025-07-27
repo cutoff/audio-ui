@@ -5,15 +5,22 @@ import classNames from 'classnames';
 import AdaptiveSvgComponent from './support/AdaptiveSvgComponent';
 import {AdaptativeSize, Base} from "./types";
 import {keybedSizeMap} from "./utils/sizeMappings";
-import {createNoteNumSet, noteToNoteNum} from "./utils/noteUtils";
+import {
+    createNoteNumSet, 
+    noteToNoteNum, 
+    noteNumToNote, 
+    WHITE_KEY_NAMES, 
+    WHITE_KEY_TO_CHROMATIC, 
+    DIATONIC_TO_CHROMATIC, 
+    WHITE_KEY_POSITIONS
+} from "./utils/noteUtils";
 import "../styles.css";
 
 /**
- * Note names in order from C to B
+ * Type definition for note names (C to B)
  */
-const noteNames = ['C', 'D', 'E', 'F', 'G', 'A', 'B'] as const;
-type NoteName = typeof noteNames[number];
-const notesCount = noteNames.length;
+type NoteName = typeof WHITE_KEY_NAMES[number];
+const notesCount = WHITE_KEY_NAMES.length;
 
 /**
  * Props for the Keybed component
@@ -118,7 +125,7 @@ function Keybed({
         const whiteKeysInRemainder = Math.ceil(keyRemainder * 7 / 12);
         const nbWhite = (nbOctaves * 7) + whiteKeysInRemainder;
 
-        const startKeyIndex = noteNames.indexOf(startKey);
+        const startKeyIndex = WHITE_KEY_NAMES.indexOf(startKey);
 
         const middleKeyIndex = Math.floor((nbWhite - 1) / 2);
         const octavesFromMiddle = Math.floor(middleKeyIndex / 7);
@@ -168,6 +175,17 @@ function Keybed({
         return createNoteNumSet(notesOn || []);
     }, [notesOn]);
 
+    // Memoize the calculation of positions without black keys
+    // In a standard piano layout, there are no black keys between E-F and B-C
+    // These correspond to indices 2 and 6 when startKey is "C"
+    const correctBlackPass = useMemo(() => {
+        const startKeyIndex = WHITE_KEY_NAMES.indexOf(startKey);
+        return [
+            positiveModulo(2 - startKeyIndex, 7), // E-F gap (no black key after E)
+            positiveModulo(6 - startKeyIndex, 7)  // B-C gap (no black key after B)
+        ];
+    }, [startKey]);
+
     // Create a memoized function to check if a note is active
     const isNoteActive = useMemo(() => {
         return (note: string) => {
@@ -188,15 +206,31 @@ function Keybed({
             innerStrokeWidth
         } = keybedDimensions;
 
+        // Get the chromatic index of the start key
+        const startKeyChromatic = DIATONIC_TO_CHROMATIC[startKey];
+
+        // Calculate the base MIDI note number for the starting key
+        const baseNoteNum = (startOctave + 1) * 12 + startKeyChromatic;
+
         return Array.from({ length: nbWhite }, (_, index) => {
+            // Calculate the diatonic index (white keys only)
             const currentNoteIndex = (startKeyIndex + index) % notesCount;
-            const currentNoteName = noteNames[currentNoteIndex];
-            const currentOctave = (startOctave - octaveShift) + Math.floor((startKeyIndex + index) / notesCount);
-            const currentWhiteNote = currentNoteName + currentOctave.toString();
+            
+            // Calculate how many octaves we've moved from the start
+            const octaveOffset = Math.floor((startKeyIndex + index) / notesCount);
+            
+            // Calculate the MIDI note number for this key
+            // We need to find how many semitones we've moved from the start key
+            const chromaticOffset = WHITE_KEY_TO_CHROMATIC[currentNoteIndex] - WHITE_KEY_TO_CHROMATIC[startKeyIndex];
+            const adjustedOffset = chromaticOffset + (octaveOffset * 12);
+            const noteNum = baseNoteNum + adjustedOffset - (octaveShift * 12);
+            
+            // Convert the MIDI note number to a note name and octave
+            const currentWhiteNote = noteNumToNote(noteNum);
 
             return (
                 <rect
-                    key={currentWhiteNote}
+                    key={`white-${index}-${currentWhiteNote}`}
                     className={`stroke-primary-50 ${isNoteActive(currentWhiteNote) ? 'fill-primary' : 'fill-transparent'}`}
                     strokeWidth={innerStrokeWidth}
                     x={index * whiteWidth}
@@ -206,7 +240,7 @@ function Keybed({
                 />
             );
         });
-    }, [keybedDimensions, octaveShift, notesOn]);
+    }, [keybedDimensions, octaveShift, notesOn, startKey, isNoteActive]);
 
     // Memoize black keys rendering
     const renderBlackKeys = useMemo(() => {
@@ -219,21 +253,42 @@ function Keybed({
             blackXShift,
             blackHeight,
             innerStrokeWidth,
-            blackPass
         } = keybedDimensions;
+
+        // Get the chromatic index of the start key
+        const startKeyChromatic = DIATONIC_TO_CHROMATIC[startKey];
+
+        // Calculate the base MIDI note number for the starting key
+        const baseNoteNum = (startOctave + 1) * 12 + startKeyChromatic;
 
         return Array.from({ length: nbWhite - 1 }, (_, index) => {
             const octaveIndex = index % 7;
-            if (blackPass.includes(octaveIndex)) return null;
+            if (correctBlackPass.includes(octaveIndex)) return null;
 
+            // Calculate the diatonic index (white keys only)
             const currentNoteIndex = (startKeyIndex + index) % notesCount;
-            const currentNoteName = noteNames[currentNoteIndex];
-            const currentOctave = (startOctave - octaveShift) + Math.floor((startKeyIndex + index) / notesCount);
-            const currentBlackNote = currentNoteName + "#" + currentOctave.toString();
+            
+            // Calculate how many octaves we've moved from the start
+            const octaveOffset = Math.floor((startKeyIndex + index) / notesCount);
+            
+            // Calculate the MIDI note number for this key
+            // We need to find how many semitones we've moved from the start key
+            const chromaticOffset = WHITE_KEY_TO_CHROMATIC[currentNoteIndex] - WHITE_KEY_TO_CHROMATIC[startKeyIndex];
+            const adjustedOffset = chromaticOffset + (octaveOffset * 12);
+            
+            // Black keys are one semitone higher than the white key to their left
+            const noteNum = baseNoteNum + adjustedOffset + 1 - (octaveShift * 12);
+            
+            // Skip this black key if its note number corresponds to a white key position
+            // This prevents duplicate note assignments between white and black keys
+            if (WHITE_KEY_POSITIONS.has(noteNum % 12)) return null;
+            
+            // Convert the MIDI note number to a note name and octave
+            const currentBlackNote = noteNumToNote(noteNum);
 
             return (
                 <rect
-                    key={currentBlackNote}
+                    key={`black-${index}-${currentBlackNote}`}
                     className={`stroke-primary-50 ${isNoteActive(currentBlackNote) ? 'fill-primary' : 'fill-primary-50'}`}
                     style={{ zIndex: 1 }}
                     strokeWidth={innerStrokeWidth}
@@ -244,7 +299,7 @@ function Keybed({
                 />
             );
         }).filter(Boolean);
-    }, [keybedDimensions, octaveShift, notesOn]);
+    }, [keybedDimensions, octaveShift, notesOn, startKey, isNoteActive, correctBlackPass]);
 
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {

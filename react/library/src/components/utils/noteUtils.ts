@@ -10,7 +10,32 @@
 /**
  * Array of note names in chromatic order (C to B with sharps)
  */
-const CHROMATIC_NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] as const;
+export const CHROMATIC_NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] as const;
+
+/**
+ * Array of white key note names in order (C to B)
+ */
+export const WHITE_KEY_NAMES = ['C', 'D', 'E', 'F', 'G', 'A', 'B'] as const;
+
+/**
+ * Mapping from white key index to chromatic offset
+ * This represents the semitone positions of white keys in a standard piano layout
+ * C=0, D=2, E=4, F=5, G=7, A=9, B=11
+ */
+export const WHITE_KEY_TO_CHROMATIC = [0, 2, 4, 5, 7, 9, 11] as const;
+
+/**
+ * Mapping from diatonic note names to chromatic indices
+ */
+export const DIATONIC_TO_CHROMATIC: Record<string, number> = {
+  'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11
+};
+
+/**
+ * Set of chromatic positions that correspond to white keys (C, D, E, F, G, A, B)
+ * Used to determine if a note is a white key or black key
+ */
+export const WHITE_KEY_POSITIONS = new Set([0, 2, 4, 5, 7, 9, 11]);
 
 /**
  * Lookup maps for fast note conversion
