@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import AdaptiveSvgComponent from './support/AdaptiveSvgComponent';
 import {AdaptativeSize, Base} from "./types";
 import {keybedSizeMap} from "./utils/sizeMappings";
+import {isNoteOn} from "./utils/noteUtils";
 import "../styles.css";
 
 /**
@@ -28,9 +29,12 @@ export type KeybedProps = Base & AdaptativeSize & {
      * Positive values shift notes up by that many octaves, negative values shift down
      * @default 0 */
     octaveShift?: number;
-    /** Array of notes that should be highlighted (e.g., ['C4', 'E4', 'G4'])
-     * Notes should be in the format: NoteName + Octave (+ optional '#' for sharp) */
-    notesOn?: string[];
+    /** Array of notes that should be highlighted
+     * Notes can be specified as:
+     * - Strings in the format: NoteName + Octave (+ optional '#' for sharp), e.g., 'C4', 'F#5'
+     * - Numbers representing MIDI note IDs (e.g., 60 for C4, 61 for C#4, etc.)
+     * @example ['C4', 'E4', 'G4'] or [60, 64, 67] or ['C4', 64, 'G4'] */
+    notesOn?: (string | number)[];
 };
 
 /**
@@ -47,7 +51,7 @@ const positiveModulo = (number: number, modulus: number): number => {
  * Features:
  * - Configurable number of keys (default 61, supports 88 for full piano)
  * - Customizable starting position (note and octave)
- * - Highlights active notes
+ * - Highlights active notes (supports both note names and MIDI note numbers)
  * - Maintains proper piano key layout and proportions
  * - Responsive sizing through AdaptiveSvgComponent integration
  * - Multiple size variants (xsmall, small, normal, large, xlarge)
@@ -59,7 +63,7 @@ const positiveModulo = (number: number, modulus: number): number => {
  * @property {number} nbKeys - Number of keys on the keybed (default 61)
  * @property {NoteName} startKey - Starting note name (A-G) (default 'C' for 61 keys, 'A' for 88 keys)
  * @property {number} octaveShift - Octave transpose index (default 0). Positive values shift notes up by that many octaves, negative values shift down.
- * @property {string[]} notesOn - Array of notes that should be highlighted (e.g., ['C4', 'E4', 'G4'])
+ * @property {(string | number)[]} notesOn - Array of notes that should be highlighted. Can contain note names (e.g., 'C4') or MIDI note numbers (e.g., 60 for C4).
  * @property {string} className - Additional CSS classes
  * @property {React.CSSProperties} style - Additional inline styles
  * @property {SizeType} size - Size of the component (xsmall, small, normal, large, xlarge)
@@ -69,12 +73,22 @@ const positiveModulo = (number: number, modulus: number): number => {
  * // Basic usage
  * <Keybed />
  *
- * // Full piano configuration
+ * // Full piano configuration with note names
  * <Keybed
  *   nbKeys={88}
  *   startKey="A"
  *   octaveShift={0}
  *   notesOn={['C4', 'E4', 'G4']}
+ * />
+ *
+ * // Using MIDI note numbers
+ * <Keybed
+ *   notesOn={[60, 64, 67]} // C4, E4, G4
+ * />
+ *
+ * // Mixing note names and MIDI note numbers
+ * <Keybed
+ *   notesOn={['C4', 64, 'G4']} // C4, E4, G4
  * />
  *
  * // Custom styling with size
@@ -169,7 +183,7 @@ function Keybed({
             return (
                 <rect
                     key={currentWhiteNote}
-                    className={`stroke-primary-50 ${notesOn?.includes(currentWhiteNote) ? 'fill-primary' : 'fill-transparent'}`}
+                    className={`stroke-primary-50 ${isNoteOn(currentWhiteNote, notesOn || []) ? 'fill-primary' : 'fill-transparent'}`}
                     strokeWidth={innerStrokeWidth}
                     x={index * whiteWidth}
                     y={0}
@@ -206,7 +220,7 @@ function Keybed({
             return (
                 <rect
                     key={currentBlackNote}
-                    className={`stroke-primary-50 ${notesOn?.includes(currentBlackNote) ? 'fill-primary' : 'fill-primary-50'}`}
+                    className={`stroke-primary-50 ${isNoteOn(currentBlackNote, notesOn || []) ? 'fill-primary' : 'fill-primary-50'}`}
                     style={{ zIndex: 1 }}
                     strokeWidth={innerStrokeWidth}
                     x={index * whiteWidth + blackXShift}

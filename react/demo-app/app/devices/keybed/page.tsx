@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
-import { Keybed } from "@cutoff/audio-ui-react";
+import { Keybed, noteNumToNote, isNoteOn } from "@cutoff/audio-ui-react";
 
 // Define the NoteName type to match the one in the Keybed component
 type NoteName = "C" | "D" | "E" | "F" | "G" | "A" | "B";
@@ -16,7 +16,7 @@ export default function KeybedPage() {
   const [nbKeys, setNbKeys] = useState<number>(61);
   const [startKey, setStartKey] = useState<NoteName>("C");
   const [octaveShift, setOctaveShift] = useState<number>(0);
-  const [notesOn, setNotesOn] = useState<string[]>(["C4", "E4", "G4"]);
+  const [notesOn, setNotesOn] = useState<(string | number)[]>(["C4", 64, 67]);
   
   // MIDI related state
   const [midiInputs, setMidiInputs] = useState<WebMidi.MIDIInput[]>([]);
@@ -28,7 +28,7 @@ export default function KeybedPage() {
   nbKeys={${nbKeys}} 
   startKey="${startKey}" 
   octaveShift={${octaveShift}} 
-  notesOn={${JSON.stringify(notesOn)}} 
+  notesOn={[${notesOn.map(note => typeof note === 'string' ? `"${note}"` : note).join(', ')}]} 
 />`;
 
   const componentProps = {
@@ -165,11 +165,11 @@ export default function KeybedPage() {
     // Note on message (status byte: 0x90)
     if ((data[0] & 0xF0) === 0x90 && data[2] > 0) {
       const midiNote = data[1];
-      const noteName = midiNoteToNoteName(midiNote);
-
+      
       setNotesOn(prev => {
-        if (!prev.includes(noteName)) {
-          return [...prev, noteName];
+        // Check if the note is already in the array (either as string or number)
+        if (!isNoteOn(midiNote, prev)) {
+          return [...prev, midiNote];
         }
         return prev;
       });
@@ -178,18 +178,12 @@ export default function KeybedPage() {
     // Note off message (status byte: 0x80 or 0x90 with velocity 0)
     if ((data[0] & 0xF0) === 0x80 || ((data[0] & 0xF0) === 0x90 && data[2] === 0)) {
       const midiNote = data[1];
-      const noteName = midiNoteToNoteName(midiNote);
-
-      setNotesOn(prev => prev.filter(note => note !== noteName));
+      
+      setNotesOn(prev => {
+        // Filter out the note (need to check both string and number representations)
+        return prev.filter(note => !isNoteOn(note, [midiNote]));
+      });
     }
-  };
-
-  // Convert MIDI note number to note name (considering MIDI note 60 as C4)
-  const midiNoteToNoteName = (midiNote: number): string => {
-    const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-    const octave = Math.floor(midiNote / 12) - 1; // MIDI note 60 is C4, so we subtract 1 from the octave calculation
-    const noteName = noteNames[midiNote % 12];
-    return `${noteName}${octave}`;
   };
 
   return (
@@ -284,7 +278,7 @@ export default function KeybedPage() {
 
           <div className="text-sm text-muted-foreground">
             <p>Connect a MIDI keyboard and select it from the dropdown to play notes.</p>
-            <p className="mt-2">Active notes: {notesOn.join(', ') || 'None'}</p>
+            <p className="mt-2">Active notes: {notesOn.map(note => typeof note === 'number' ? noteNumToNote(note) : note).join(', ') || 'None'}</p>
           </div>
         </div>
       </div>

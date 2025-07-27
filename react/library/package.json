@@ -20,7 +20,8 @@
   ],
   "scripts": {
     "build": "npx vite build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "jest --config jest.config.cjs"
   },
   "keywords": [
     "react",

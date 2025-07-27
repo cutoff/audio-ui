@@ -29,3 +29,11 @@ export {
   frequencyFormatter,
   calculateCenterValue
 } from './components/utils/valueFormatters';
+
+// Export note utilities
+export {
+  // New function names
+  noteNumToNote,
+  noteToNoteNum,
+  isNoteOn,
+} from './components/utils/noteUtils';
