@@ -1,27 +1,19 @@
 import React, {useCallback, useMemo} from 'react';
 import classNames from 'classnames';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
-import {BipolarControl} from "../types";
+import {BipolarControl, ExplicitRange} from "../types";
 import {sliderSizeMap} from "../utils/sizeMappings";
 
 /**
  * Props for the Slider component
  */
-export type SliderProps = BipolarControl & {
+export type SliderProps = BipolarControl & ExplicitRange & {
     /** Orientation of the slider
      * @default 'vertical' */
     orientation?: 'horizontal' | 'vertical';
     /** Thickness of the slider in pixels
      * @default 20 */
     thickness?: number;
-    /** Additional CSS class names */
-    className?: string;
-    /** Additional inline styles. Supports grid layout properties */
-    style?: React.CSSProperties;
-    /** Handler for value changes. Called when the mouse wheel is used */
-    onChange?: (value: number | ((prev: number) => number)) => void;
-    /** Handler for click events */
-    onClick?: React.MouseEventHandler<SVGSVGElement>;
 };
 
 /**
@@ -262,6 +254,7 @@ const Slider = ({
                     onClick,
                     roundness,
                     size = 'normal',
+                    paramId,
                 }: SliderProps) => {
     // Ensure thickness is non-negative
     const nonNegativeThickness = Math.max(0, thickness);

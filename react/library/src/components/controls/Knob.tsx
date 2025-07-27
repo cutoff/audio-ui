@@ -2,7 +2,7 @@ import React, {useCallback, useMemo} from 'react';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import classNames from 'classnames';
 import "../../styles.css";
-import {BipolarControl} from "../types";
+import {BipolarControl, ExplicitRange} from "../types";
 import {knobSizeMap} from "../utils/sizeMappings";
 import {bipolarFormatter} from "../utils/valueFormatters";
 
@@ -17,17 +17,9 @@ const CENTER_ANGLE = 360;
 /**
  * Props for the Knob component
  */
-export type KnobProps = BipolarControl & {
+export type KnobProps = BipolarControl & ExplicitRange & {
     /** Content to display inside the knob (replaces the value display) */
     children?: React.ReactNode;
-    /** Additional CSS classes */
-    className?: string;
-    /** Additional inline styles */
-    style?: React.CSSProperties;
-    /** Handler for value changes via wheel input */
-    onChange?: (value: number | ((prev: number) => number)) => void;
-    /** Handler for click events */
-    onClick?: React.MouseEventHandler;
     /** Thickness of the knob's stroke
      * @default 12
      */
@@ -128,7 +120,8 @@ function Knob({
                                  roundness = 12,
                                  thickness = 12,
                                  size = 'normal',
-                                 renderValue
+                                 renderValue,
+                                 paramId
                              }: KnobProps) {
 
     const valueToAngle = useMemo(() => {

@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react';
+import React, {useMemo} from 'react';
 import classNames from 'classnames';
 import AdaptiveSvgComponent from './support/AdaptiveSvgComponent';
-import { Stretchable, SizeType } from "./types";
-import { keybedSizeMap } from "./utils/sizeMappings";
+import {AdaptativeSize, Base} from "./types";
+import {keybedSizeMap} from "./utils/sizeMappings";
 import "../styles.css";
 
 /**
@@ -15,7 +15,7 @@ const notesCount = noteNames.length;
 /**
  * Props for the Keybed component
  */
-export type KeybedProps = Stretchable & {
+export type KeybedProps = Base & AdaptativeSize & {
     /** Number of keys on the keybed
      * @default 61 */
     nbKeys?: number;
@@ -28,13 +28,6 @@ export type KeybedProps = Stretchable & {
     /** Array of notes that should be highlighted (e.g., ['C4', 'E4', 'G4'])
      * Notes should be in the format: NoteName + Octave (+ optional '#' for sharp) */
     notesOn?: string[];
-    /** Additional styles to apply to the container */
-    style?: React.CSSProperties;
-    /** Additional CSS classes to apply to the container */
-    className?: string;
-    /** Size of the component
-     * @default 'normal' */
-    size?: SizeType;
 };
 
 /**

@@ -1,43 +1,69 @@
+import React from "react";
+
 /**
  * Size options for control components
  */
 export type SizeType = 'xsmall' | 'small' | 'normal' | 'large' | 'xlarge';
 
-/**
- * Interface for components that can stretch to fill their container
- */
-export type Stretchable = {
+export type Base = {
+    /** Additional CSS classes */
+    className?: string;
+    /** Additional inline styles */
+    style?: React.CSSProperties;
+}
+
+export type AdaptativeSize = {
+    /** Size of the component
+     * @default 'normal'
+     */
+    size?: SizeType;
+
     /** Whether the component should stretch to fill its container
      *  @default false
      */
     stretch?: boolean;
 };
 
-/**
- * Base interface for control components with value ranges
- * Extends Stretchable to include responsive sizing capabilities
- */
-export type Control = Stretchable & {
-    /** Label displayed below the component */
-    label?: string;
+export type InteractiveControl = {
+
+    /** Handler for value changes
+     * @param value The new value or a function to update the previous value
+     */
+    onChange?: (value: number | ((prev: number) => number)) => void;
+
+    /** Handler for click events */
+    onClick?: React.MouseEventHandler;
+}
+
+export type ExplicitRange = {
     /** Minimum value of the component */
     min: number;
     /** Maximum value of the component */
     max: number;
+}
+
+/**
+ * Base interface for control components with value ranges
+ * Extends Stretchable to include responsive sizing capabilities
+ */
+export type Control = AdaptativeSize & InteractiveControl & Base & {
+    /** Label displayed below the component */
+    label?: string;
+
     /** Current value of the component */
     value: number;
+    
+    /** Identifier for the parameter this control represents
+     * Used as the first argument in onChange callbacks
+     */
+    paramId?: string;
     
     /** Roundness for component corners/caps
      * @default Component-specific: Knob uses 12, Slider uses half width, Button uses 10px
      * A value of 0 means square corners/caps, while values > 0 create rounded corners/caps
      */
     roundness?: number;
-    
-    /** Size of the component
-     * @default 'normal'
-     */
-    size?: SizeType;
-    
+
     /**
      * Custom renderer for the value display
      * If provided, this function will be used to render the value instead of the default formatter

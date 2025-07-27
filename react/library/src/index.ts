@@ -16,7 +16,7 @@ export type { ButtonProps } from './components/controls/Button';
 export type { KeybedProps } from './components/Keybed';
 
 // Export common types
-export type { SizeType, Stretchable, Control, BipolarControl } from './components/types';
+export type { SizeType, AdaptativeSize, Control, BipolarControl } from './components/types';
 
 // Export value formatters
 export {

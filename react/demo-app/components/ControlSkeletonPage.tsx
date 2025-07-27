@@ -17,7 +17,13 @@ export type ControlSkeletonPageProps = {
     properties: React.ReactNode[];
     /** Example instances to display */
     examples: React.ReactNode[];
-    /** Handler for value changes */
+    /** 
+     * Handler for value changes
+     * Note: This is a simplified version of the onChange handler expected by the control components.
+     * The actual control components expect an onChange handler with the signature:
+     * (paramId: string | undefined, value: number | ((prev: number) => number)) => void
+     * This component adapts this simplified handler to match the expected signature.
+     */
     onChange?: (value: number) => void;
     /** Layout orientation - horizontal for wide components, vertical for tall/square components */
     orientation?: "horizontal" | "vertical";
@@ -120,7 +126,7 @@ export default function ControlSkeletonPage({
                                                     key={`${size}-${componentProps.orientation || 'default'}`} 
                                                     {...componentProps} 
                                                     size={size} 
-                                                    label={size} 
+                                                    label={size}
                                                 />
                                             </div>
                                         ))}
@@ -155,7 +161,7 @@ export default function ControlSkeletonPage({
                                                     key={`${size}-${componentProps.orientation || 'default'}`} 
                                                     {...componentProps} 
                                                     size={size} 
-                                                    label={size} 
+                                                    label={size}
                                                 />
                                             </div>
                                         ))}

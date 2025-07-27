@@ -2,19 +2,17 @@ import React, {useMemo} from 'react';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import classNames from 'classnames';
 import "../../styles.css";
-import {Control} from "../types";
+import {Control, ExplicitRange} from "../types";
 import {buttonSizeMap} from "../utils/sizeMappings";
 
 /**
  * Props for the Button component
  */
-export type ButtonProps = Control & {
+export type ButtonProps = Control & ExplicitRange & {
     /** Additional CSS class names */
     className?: string;
     /** Additional inline styles. Supports grid layout properties */
     style?: React.CSSProperties;
-    /** Click event handler */
-    onClick?: React.MouseEventHandler<SVGSVGElement>;
 };
 
 /**

@@ -1,6 +1,6 @@
 import React from 'react';
 import Knob from './Knob';
-import {SizeType, Stretchable} from "../types";
+import {AdaptativeSize, Base, InteractiveControl} from "../types";
 
 /**
  * Props for the option elements within KnobSwitch
@@ -17,23 +17,15 @@ export type KnobSwitchOptionProps = {
 /**
  * Props for the KnobSwitch component
  */
-export type KnobSwitchProps = Stretchable & {
-    /** Text label displayed below the knob */
+export type KnobSwitchProps = AdaptativeSize & InteractiveControl & Base & {
+    /** Label displayed below the component */
     label?: string;
-    /** Currently selected value */
+    /** Current value of the component */
     value?: any;
     /** Child elements (KnobSwitch.Option components) */
     children: React.ReactNode;
-    /** Additional inline styles */
-    style?: React.CSSProperties;
-    /** Handler for value changes. Can accept either a new value or a function to update the previous value */
-    onChange?: (value: number | ((prev: number) => number)) => void;
-    /** Handler for click events */
-    onClick?: React.MouseEventHandler<SVGSVGElement>;
-    /** Size of the component
-     * @default 'normal'
-     */
-    size?: SizeType;
+    /** Identifier for the parameter this control represents */
+    paramId?: string;
 };
 
 /**
@@ -102,10 +94,12 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
          value,
          children,
          style,
+         className,
          stretch = false,
          onChange,
          onClick,
-         size = 'normal'
+         size = 'normal',
+         paramId
      }) => {
     const options = React.Children.toArray(children);
 
@@ -137,10 +131,12 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             value={selectedIndex}
             label={label}
             style={style}
+            className={className}
             stretch={stretch}
             onClick={onClick}
             onChange={onChange}
             size={size}
+            paramId={paramId}
         >
             {selectedLabel}
         </Knob>
