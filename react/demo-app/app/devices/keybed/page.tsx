@@ -2,15 +2,86 @@
 
 import React, { useState, useEffect } from "react";
 import { Keybed } from "@cutoff/audio-ui-react";
+
+// Define the NoteName type to match the one in the Keybed component
+type NoteName = "C" | "D" | "E" | "F" | "G" | "A" | "B";
+import ComponentSkeletonPage from "@/components/ComponentSkeletonPage";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 
 export default function KeybedPage() {
+  const [nbKeys, setNbKeys] = useState<number>(61);
+  const [startKey, setStartKey] = useState<NoteName>("C");
+  const [octaveShift, setOctaveShift] = useState<number>(0);
+  const [notesOn, setNotesOn] = useState<string[]>(["C4", "E4", "G4"]);
+  
+  // MIDI related state
   const [midiInputs, setMidiInputs] = useState<WebMidi.MIDIInput[]>([]);
   const [selectedInputId, setSelectedInputId] = useState<string>("");
-  const [notesOn, setNotesOn] = useState<string[]>([]);
   const [webMidiSupported, setWebMidiSupported] = useState<boolean>(true);
+
+  // Generate code snippet with dynamic notesOn array
+  const codeString = `<Keybed 
+  nbKeys={${nbKeys}} 
+  startKey="${startKey}" 
+  octaveShift={${octaveShift}} 
+  notesOn={${JSON.stringify(notesOn)}} 
+/>`;
+
+  const componentProps = {
+    nbKeys,
+    startKey,
+    octaveShift,
+    notesOn,
+  };
+
+  const properties = [
+    <div key="nbKeys" className="grid gap-2">
+      <Label htmlFor="nbKeysProp">Number of Keys</Label>
+      <Input
+        id="nbKeysProp"
+        type="number"
+        min="25"
+        max="88"
+        value={nbKeys}
+        onChange={(e) => setNbKeys(Math.max(25, Math.min(88, Number(e.target.value))))}
+      />
+    </div>,
+    <div key="startKey" className="grid gap-2">
+      <Label htmlFor="startKeyProp">Start Key</Label>
+      <Select
+        value={startKey}
+        onValueChange={(value) => setStartKey(value as NoteName)}
+      >
+        <SelectTrigger id="startKeyProp">
+          <SelectValue placeholder="Select a start key" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="C">C</SelectItem>
+          <SelectItem value="D">D</SelectItem>
+          <SelectItem value="E">E</SelectItem>
+          <SelectItem value="F">F</SelectItem>
+          <SelectItem value="G">G</SelectItem>
+          <SelectItem value="A">A</SelectItem>
+          <SelectItem value="B">B</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>,
+    <div key="octaveShift" className="grid gap-2">
+      <Label htmlFor="octaveShiftProp">Octave Shift</Label>
+      <Input
+        id="octaveShiftProp"
+        type="number"
+        min="-3"
+        max="3"
+        value={octaveShift}
+        onChange={(e) => setOctaveShift(Math.max(-3, Math.min(3, Number(e.target.value))))}
+      />
+    </div>,
+  ];
 
   // Initialize WebMIDI
   useEffect(() => {
@@ -65,7 +136,11 @@ export default function KeybedPage() {
     midiInputs.forEach(input => {
       input.removeEventListener('midimessage', handleMidiMessage);
     });
-    setNotesOn([]);
+    
+    // Only clear notes if we're changing inputs
+    if (selectedInputId !== "") {
+      setNotesOn([]);
+    }
 
     // Set up listener for the selected input
     if (selectedInputId) {
@@ -118,79 +193,100 @@ export default function KeybedPage() {
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-8">
-      <h1 className="text-2xl font-medium mb-6">Keybed</h1>
+    <div className="min-h-screen flex flex-col md:flex-row">
+      {/* Left Column - Using ComponentSkeletonPage */}
+      <ComponentSkeletonPage
+        componentName="Keybed"
+        codeSnippet={codeString}
+        PageComponent={Keybed}
+        componentProps={componentProps}
+        properties={properties}
+      />
 
-      {!webMidiSupported ? (
-        <Alert variant="destructive" className="mb-6">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>WebMIDI Not Supported</AlertTitle>
-          <AlertDescription>
-            Your browser does not support WebMIDI. Please use a browser that supports WebMIDI, such as Chrome, Edge, or Opera.
-            Safari does not currently support WebMIDI.
-          </AlertDescription>
-        </Alert>
-      ) : (
-        <div className="mb-6">
-          <label className="block text-sm font-medium mb-2">Select MIDI Input</label>
-          <Select
-            value={selectedInputId}
-            onValueChange={setSelectedInputId}
-          >
-            <SelectTrigger className="w-full md:w-80">
-              <SelectValue placeholder="Select a MIDI input device" />
-            </SelectTrigger>
-            <SelectContent>
-              {midiInputs.length === 0 ? (
-                <SelectItem value="none" disabled>No MIDI devices found</SelectItem>
-              ) : (
-                midiInputs.map(input => (
-                  <SelectItem key={input.id} value={input.id}>
-                    {input.name || `MIDI Input ${input.id}`}
-                  </SelectItem>
-                ))
-              )}
-            </SelectContent>
-          </Select>
+      {/* Right Column - Original Keybed Page Content */}
+      <div className="w-full md:w-2/3 p-4 md:p-8">
+        <div className="flex flex-col gap-6">
+          {!webMidiSupported ? (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>WebMIDI Not Supported</AlertTitle>
+              <AlertDescription>
+                Your browser does not support WebMIDI. Please use a browser that supports WebMIDI, such as Chrome, Edge, or Opera.
+                Safari does not currently support WebMIDI.
+              </AlertDescription>
+            </Alert>
+          ) : (
+            <div>
+              <h2 className="text-xl md:text-2xl font-medium mb-4">MIDI Input</h2>
+              <label className="block text-sm font-medium mb-2">Select MIDI Input</label>
+              <Select
+                value={selectedInputId}
+                onValueChange={setSelectedInputId}
+              >
+                <SelectTrigger className="w-full md:w-80">
+                  <SelectValue placeholder="Select a MIDI input device" />
+                </SelectTrigger>
+                <SelectContent>
+                  {midiInputs.length === 0 ? (
+                    <SelectItem value="none" disabled>No MIDI devices found</SelectItem>
+                  ) : (
+                    midiInputs.map(input => (
+                      <SelectItem key={input.id} value={input.id}>
+                        {input.name || `MIDI Input ${input.id}`}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          <div>
+            <h2 className="text-xl md:text-2xl font-medium mb-4">Keybed Sizes</h2>
+            <div className="flex flex-col flex-wrap gap-4 mb-6">
+              <Keybed
+                nbKeys={nbKeys}
+                startKey={startKey}
+                octaveShift={octaveShift}
+                notesOn={notesOn}
+                size="xsmall"
+              />
+              <Keybed
+                nbKeys={nbKeys}
+                startKey={startKey}
+                octaveShift={octaveShift}
+                notesOn={notesOn}
+                size="small"
+              />
+              <Keybed
+                nbKeys={nbKeys}
+                startKey={startKey}
+                octaveShift={octaveShift}
+                notesOn={notesOn}
+                size="normal"
+              />
+              <Keybed
+                nbKeys={nbKeys}
+                startKey={startKey}
+                octaveShift={octaveShift}
+                notesOn={notesOn}
+                size="large"
+              />
+              <Keybed
+                nbKeys={nbKeys}
+                startKey={startKey}
+                octaveShift={octaveShift}
+                notesOn={notesOn}
+                size="xlarge"
+              />
+            </div>
+          </div>
+
+          <div className="text-sm text-muted-foreground">
+            <p>Connect a MIDI keyboard and select it from the dropdown to play notes.</p>
+            <p className="mt-2">Active notes: {notesOn.join(', ') || 'None'}</p>
+          </div>
         </div>
-      )}
-
-      <div className="flex flex-col flex-wrap gap-4 mb-6">
-        <Keybed
-          nbKeys={88}
-          startKey="A"
-          notesOn={notesOn}
-          size="xsmall"
-        />
-        <Keybed
-          nbKeys={88}
-          startKey="A"
-          notesOn={notesOn}
-          size="small"
-        />
-        <Keybed
-          nbKeys={88}
-          startKey="A"
-          notesOn={notesOn}
-          size="normal"
-        />
-        <Keybed
-          nbKeys={88}
-          startKey="A"
-          notesOn={notesOn}
-          size="large"
-        />
-        <Keybed
-          nbKeys={88}
-          startKey="A"
-          notesOn={notesOn}
-          size="xlarge"
-        />
-      </div>
-
-      <div className="mt-6 text-sm text-muted-foreground">
-        <p>Connect a MIDI keyboard and select it from the dropdown to play notes.</p>
-        <p className="mt-2">Active notes: {notesOn.join(', ') || 'None'}</p>
       </div>
     </div>
   );
