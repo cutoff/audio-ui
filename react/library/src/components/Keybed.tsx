@@ -231,11 +231,7 @@ function Keybed({
     return (
         <AdaptiveSvgComponent
             className={componentClassNames}
-            style={{
-                backgroundColor: "#f6f6f605",
-                border: "0 0 0 0",
-                ...style
-            }}
+            style={style}
             viewBoxWidth={keybedDimensions.width}
             viewBoxHeight={keybedDimensions.whiteHeight}
             preferredWidth={preferredWidth}
