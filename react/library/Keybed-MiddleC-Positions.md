@@ -123,6 +123,7 @@ When implementing the Keybed component:
 3. For 88-key keyboards, the default starting note should be A
 4. Middle C (MIDI note 60, C4) should be positioned according to the conventions above
 5. The component should support transposition that shifts the apparent position of middle C
+6. While physical keyboards typically range from 25-88 keys, the component supports a wider range (1-128 keys) for software applications
 
 ## References
 

@@ -40,14 +40,14 @@ export default function KeybedPage() {
 
   const properties = [
     <div key="nbKeys" className="grid gap-2">
-      <Label htmlFor="nbKeysProp">Number of Keys</Label>
+      <Label htmlFor="nbKeysProp">Number of Keys (1-128)</Label>
       <Input
         id="nbKeysProp"
         type="number"
-        min="25"
-        max="88"
+        min="1"
+        max="128"
         value={nbKeys}
-        onChange={(e) => setNbKeys(Math.max(25, Math.min(88, Number(e.target.value))))}
+        onChange={(e) => setNbKeys(Math.max(1, Math.min(128, Number(e.target.value))))}
       />
     </div>,
     <div key="startKey" className="grid gap-2">

@@ -56,7 +56,7 @@ const positiveModulo = (number: number, modulus: number): number => {
  * Supports variable number of keys, different starting positions, and note highlighting.
  *
  * Features:
- * - Configurable number of keys (default 61, supports 88 for full piano)
+ * - Configurable number of keys (default 61, supports any number from 1 to 128)
  * - Customizable starting position (note and octave)
  * - Highlights active notes (supports both note names and MIDI note numbers)
  * - Maintains proper piano key layout and proportions
@@ -116,10 +116,12 @@ function Keybed({
     className = "",
     size = 'normal'
 }: KeybedProps) {
+    // Ensure nbKeys is within valid range (1-128)
+    const validNbKeys = Math.max(1, Math.min(128, nbKeys));
     // Memoize initial computations
     const keybedDimensions = useMemo(() => {
-        const nbOctaves = Math.floor(nbKeys / 12);
-        const keyRemainder = nbKeys % 12;
+        const nbOctaves = Math.floor(validNbKeys / 12);
+        const keyRemainder = validNbKeys % 12;
 
         // Calculate white keys mathematically
         const whiteKeysInRemainder = Math.ceil(keyRemainder * 7 / 12);
@@ -133,7 +135,19 @@ function Keybed({
         // If we start with A or B, we need to subtract one more octave
         // because these notes belong to the octave of the next C
         const octaveAdjustment = startKeyIndex >= 5 ? 1 : 0;
-        const startOctave = 4 - octavesFromMiddle - octaveAdjustment;
+        
+        // Adjust startOctave calculation for extreme keyboard sizes
+        let startOctave;
+        if (validNbKeys <= 12) {
+            // For very small keyboards (1-12 keys), center around C4
+            startOctave = 4 - octaveAdjustment;
+        } else if (validNbKeys >= 120) {
+            // For very large keyboards (120-128 keys), ensure we don't go below C0
+            startOctave = Math.max(0, 4 - octavesFromMiddle - octaveAdjustment);
+        } else {
+            // Standard calculation for normal keyboard sizes
+            startOctave = 4 - octavesFromMiddle - octaveAdjustment;
+        }
 
         // Key dimensions (in SVG units)
         const whiteWidth = 25;
@@ -168,7 +182,7 @@ function Keybed({
             width,
             blackPass
         };
-    }, [nbKeys, startKey]);
+    }, [validNbKeys, startKey]);
 
     // Memoize the active notes set for efficient lookups
     const activeNoteNumSet = useMemo(() => {
