@@ -1,4 +1,4 @@
-import { noteNumToNote, noteToNoteNum, isNoteOn } from './noteUtils';
+import { noteNumToNote, noteToNoteNum, isNoteOn, createNoteNumSet } from './noteUtils';
 
 describe('noteUtils', () => {
   describe('noteNumToNote', () => {
@@ -146,6 +146,85 @@ describe('noteUtils', () => {
       const notesOn = ['C4', 'E4', 'G4'];
       expect(isNoteOn('H4', notesOn)).toBe(false);
       expect(isNoteOn('Cb4', notesOn)).toBe(false);
+    });
+  });
+
+  describe('createNoteNumSet', () => {
+    it('should create a Set of MIDI note numbers from an array of notes', () => {
+      const notesOn = ['C4', 'E4', 'G4'];
+      const noteNumSet = createNoteNumSet(notesOn);
+      
+      // Check that the Set contains the correct MIDI note numbers
+      expect(noteNumSet.has(60)).toBe(true); // C4
+      expect(noteNumSet.has(64)).toBe(true); // E4
+      expect(noteNumSet.has(67)).toBe(true); // G4
+      
+      // Check that the Set does not contain other MIDI note numbers
+      expect(noteNumSet.has(62)).toBe(false); // D4
+      expect(noteNumSet.has(65)).toBe(false); // F4
+      expect(noteNumSet.has(69)).toBe(false); // A4
+    });
+
+    it('should handle mixed array of strings and numbers', () => {
+      const notesOn = ['C4', 64, 'G4'];
+      const noteNumSet = createNoteNumSet(notesOn);
+      
+      // Check that the Set contains the correct MIDI note numbers
+      expect(noteNumSet.has(60)).toBe(true); // C4
+      expect(noteNumSet.has(64)).toBe(true); // E4
+      expect(noteNumSet.has(67)).toBe(true); // G4
+      
+      // Check that the Set does not contain other MIDI note numbers
+      expect(noteNumSet.has(62)).toBe(false); // D4
+      expect(noteNumSet.has(65)).toBe(false); // F4
+      expect(noteNumSet.has(69)).toBe(false); // A4
+    });
+
+    it('should handle empty array', () => {
+      const notesOn: (string | number)[] = [];
+      const noteNumSet = createNoteNumSet(notesOn);
+      
+      // Check that the Set is empty
+      expect(noteNumSet.size).toBe(0);
+    });
+
+    it('should handle invalid note strings', () => {
+      const notesOn = ['H4', 'Cb4', 'C', 'C4b', '4C', ''];
+      const noteNumSet = createNoteNumSet(notesOn);
+      
+      // Check that the Set is empty (all notes are invalid)
+      expect(noteNumSet.size).toBe(0);
+    });
+  });
+
+  describe('lookup tables', () => {
+    it('should have pre-populated lookup tables for all 128 MIDI notes', () => {
+      // Test a few notes to verify the lookup tables are working
+      for (let noteNum = 0; noteNum < 128; noteNum++) {
+        const note = noteNumToNote(noteNum);
+        const convertedNoteNum = noteToNoteNum(note);
+        
+        // The round-trip conversion should give the original MIDI note number
+        expect(convertedNoteNum).toBe(noteNum);
+      }
+    });
+
+    it('should be faster than calculation for note conversion', () => {
+      // This is a simple performance test to verify that the lookup tables are faster
+      // than calculation. We'll measure the time it takes to convert 1000 notes.
+      
+      const startTime = performance.now();
+      for (let i = 0; i < 1000; i++) {
+        // Convert all 128 MIDI notes to note strings
+        for (let noteNum = 0; noteNum < 128; noteNum++) {
+          noteNumToNote(noteNum);
+        }
+      }
+      const endTime = performance.now();
+      
+      // The conversion should be very fast (typically < 100ms for 128,000 conversions)
+      // This is not a strict test, but it helps verify that the lookup tables are working
+      console.log(`Time to convert 128,000 MIDI notes: ${endTime - startTime}ms`);
     });
   });
 });

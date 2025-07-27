@@ -13,27 +13,59 @@
 const CHROMATIC_NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] as const;
 
 /**
- * Converts a MIDI note number to a note string
+ * Lookup maps for fast note conversion
+ * NUM_TO_NOTE_MAP: Maps MIDI note numbers to note strings
+ * NOTE_TO_NUM_MAP: Maps note strings to MIDI note numbers
+ */
+const NUM_TO_NOTE_MAP: string[] = [];
+const NOTE_TO_NUM_MAP = new Map<string, number>();
+
+// Pre-populate lookup tables for all 128 MIDI notes (0-127)
+for (let noteNum = 0; noteNum < 128; noteNum++) {
+  const octave = Math.floor(noteNum / 12) - 1; // MIDI note 60 is C4
+  const noteIndex = noteNum % 12;
+  const noteName = CHROMATIC_NOTES[noteIndex];
+  const note = `${noteName}${octave}`;
+  
+  // Store in lookup tables
+  NUM_TO_NOTE_MAP[noteNum] = note;
+  NOTE_TO_NUM_MAP.set(note, noteNum);
+}
+
+/**
+ * Converts a MIDI note number to a note string using a pre-computed lookup table
  * MIDI note 60 is middle C (C4)
  * 
  * @param noteNum - The MIDI note number to convert
  * @returns The corresponding note (e.g., "C4", "F#5")
  */
 export const noteNumToNote = (noteNum: number): string => {
-  const octave = Math.floor(noteNum / 12) - 1; // MIDI note 60 is C4
+  // Check if the note number is within valid MIDI range (0-127)
+  if (noteNum >= 0 && noteNum < 128) {
+    return NUM_TO_NOTE_MAP[noteNum];
+  }
+  
+  // Fallback to calculation for out-of-range values
+  const octave = Math.floor(noteNum / 12) - 1;
   const noteIndex = noteNum % 12;
   const noteName = CHROMATIC_NOTES[noteIndex];
   return `${noteName}${octave}`;
 };
 
 /**
- * Converts a note string to a MIDI note number
+ * Converts a note string to a MIDI note number using a pre-computed lookup table
  * 
  * @param note - The note to convert (e.g., "C4", "F#5")
  * @returns The corresponding MIDI note number, or -1 if the note is invalid
  */
 export const noteToNoteNum = (note: string): number => {
-  // Match note pattern: noteName (with optional #) followed by octave
+  // Check if the note is in the lookup table
+  const noteNum = NOTE_TO_NUM_MAP.get(note);
+  if (noteNum !== undefined) {
+    return noteNum;
+  }
+  
+  // Fallback to calculation for notes not in the lookup table
   const match = note.match(/^([A-G](#)?)(-?\d+)$/);
   if (!match) return -1;
   
@@ -49,7 +81,34 @@ export const noteToNoteNum = (note: string): number => {
 };
 
 /**
+ * Creates a Set of MIDI note numbers from an array of notes (strings and/or numbers)
+ * This can be used for efficient note lookups, especially when memoized in components
+ * 
+ * @param notesOn - Array of notes that are on (can contain string notes and/or MIDI note numbers)
+ * @returns A Set of MIDI note numbers
+ */
+export const createNoteNumSet = (notesOn: (string | number)[]): Set<number> => {
+  const noteNumSet = new Set<number>();
+  
+  for (const note of notesOn) {
+    if (typeof note === 'number') {
+      // If the note is already a number, add it directly
+      noteNumSet.add(note);
+    } else {
+      // If the note is a string, convert it to a number and add it
+      const noteNum = noteToNoteNum(note);
+      if (noteNum !== -1) {
+        noteNumSet.add(noteNum);
+      }
+    }
+  }
+  
+  return noteNumSet;
+};
+
+/**
  * Checks if a note is in the notesOn array, handling both string notes and MIDI note numbers
+ * Uses a Set for O(1) lookups instead of array includes
  * 
  * @param noteInput - The note to check (either a string note like "C4" or a MIDI note number)
  * @param notesOn - Array of notes that are on (can contain string notes and/or MIDI note numbers)
@@ -58,27 +117,15 @@ export const noteToNoteNum = (note: string): number => {
 export const isNoteOn = (noteInput: string | number, notesOn: (string | number)[]): boolean => {
   if (notesOn.length === 0) return false;
   
-  // If noteInput is a string (note)
+  // Convert all notes to a Set of MIDI note numbers for O(1) lookups
+  const noteNumSet = createNoteNumSet(notesOn);
+  
+  // If noteInput is a string (note), convert it to a MIDI note number
   if (typeof noteInput === 'string') {
-    // Check if the note is directly in the array
-    if (notesOn.includes(noteInput)) return true;
-    
-    // Convert note to MIDI note number and check if that's in the array
     const noteNum = noteToNoteNum(noteInput);
-    return noteNum !== -1 && notesOn.includes(noteNum);
+    return noteNum !== -1 && noteNumSet.has(noteNum);
   }
   
-  // If noteInput is a number (MIDI note number)
-  if (typeof noteInput === 'number') {
-    // Check if the MIDI note number is directly in the array
-    if (notesOn.includes(noteInput)) return true;
-
-    // Convert MIDI note number to note and check if that's in the array
-    const note = noteNumToNote(noteInput);
-    if (notesOn.includes(note)) return true;
-
-    return false;
-  }
-  
-  return false;
+  // If noteInput is a number (MIDI note number), check if it's in the Set
+  return noteNumSet.has(noteInput);
 };

@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import AdaptiveSvgComponent from './support/AdaptiveSvgComponent';
 import {AdaptativeSize, Base} from "./types";
 import {keybedSizeMap} from "./utils/sizeMappings";
-import {isNoteOn} from "./utils/noteUtils";
+import {createNoteNumSet, noteToNoteNum} from "./utils/noteUtils";
 import "../styles.css";
 
 /**
@@ -163,6 +163,20 @@ function Keybed({
         };
     }, [nbKeys, startKey]);
 
+    // Memoize the active notes set for efficient lookups
+    const activeNoteNumSet = useMemo(() => {
+        return createNoteNumSet(notesOn || []);
+    }, [notesOn]);
+
+    // Create a memoized function to check if a note is active
+    const isNoteActive = useMemo(() => {
+        return (note: string) => {
+            // If it's a string note, convert to MIDI note number and check if it's in the set
+            const noteNum = noteToNoteNum(note);
+            return noteNum !== -1 && activeNoteNumSet.has(noteNum);
+        };
+    }, [activeNoteNumSet]);
+
     // Memoize white keys rendering
     const renderWhiteKeys = useMemo(() => {
         const {
@@ -183,7 +197,7 @@ function Keybed({
             return (
                 <rect
                     key={currentWhiteNote}
-                    className={`stroke-primary-50 ${isNoteOn(currentWhiteNote, notesOn || []) ? 'fill-primary' : 'fill-transparent'}`}
+                    className={`stroke-primary-50 ${isNoteActive(currentWhiteNote) ? 'fill-primary' : 'fill-transparent'}`}
                     strokeWidth={innerStrokeWidth}
                     x={index * whiteWidth}
                     y={0}
@@ -220,7 +234,7 @@ function Keybed({
             return (
                 <rect
                     key={currentBlackNote}
-                    className={`stroke-primary-50 ${isNoteOn(currentBlackNote, notesOn || []) ? 'fill-primary' : 'fill-primary-50'}`}
+                    className={`stroke-primary-50 ${isNoteActive(currentBlackNote) ? 'fill-primary' : 'fill-primary-50'}`}
                     style={{ zIndex: 1 }}
                     strokeWidth={innerStrokeWidth}
                     x={index * whiteWidth + blackXShift}

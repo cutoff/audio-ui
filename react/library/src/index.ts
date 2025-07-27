@@ -36,4 +36,5 @@ export {
   noteNumToNote,
   noteToNoteNum,
   isNoteOn,
+  createNoteNumSet,
 } from './components/utils/noteUtils';
