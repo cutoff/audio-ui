@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef} from 'react';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import classNames from 'classnames';
 import "../../styles.css";
@@ -11,10 +11,8 @@ import {buttonSizeMap} from "../utils/sizeMappings";
  * Props for the Button component
  */
 export type ButtonProps = Control & ExplicitRange & {
-    /** Additional CSS class names */
-    className?: string;
-    /** Additional inline styles. Supports grid layout properties */
-    style?: React.CSSProperties;
+    /** Whether the button should latch (toggle between states) or momentary (only active while pressed) */
+    latch?: boolean;
 };
 
 /**
@@ -26,10 +24,12 @@ export type ButtonProps = Control & ExplicitRange & {
  * - Grid layout compatible
  * - Visual feedback for interactive state
  * - Configurable corner/cap style (square or round)
+ * - Clickable with latch or momentary behavior
  * 
  * This component inherits properties from:
  * - `Stretchable`: For responsive sizing
  * - `Control`: For basic control properties
+ * - `InteractiveControl`: For interactive behavior (onChange)
  * 
  * @property {boolean} stretch - Whether the button should stretch to fill its container (from `Stretchable`)
  * @property {string} label - Label displayed below the button (from `Control`)
@@ -37,17 +37,31 @@ export type ButtonProps = Control & ExplicitRange & {
  * @property {number} max - Maximum value of the button (from `Control`)
  * @property {number} value - Current value of the button (from `Control`)
  * @property {number} roundness - Controls the corner style: 0 for square corners, > 0 for rounded corners (from `Control`, defaults to 10)
- * @property {string} className - Additional CSS class names
- * @property {React.CSSProperties} style - Additional inline styles
- * @property {React.MouseEventHandler} onClick - Click event handler
+ * @property {Function} onChange - Handler for value changes. When provided, makes the button clickable and interactive. If not provided, the button is not editable. (from `InteractiveControl`)
+ * @property {boolean} latch - Whether the button should latch (toggle between states) or momentary (only active while pressed). Defaults to false.
  * 
  * @example
  * ```tsx
- * // Basic usage
+ * // Non-interactive button (display only)
  * <Button
  *   value={75}
  *   label="Power"
- *   onClick={handleClick}
+ * />
+ * 
+ * // Interactive button with latch behavior
+ * <Button
+ *   value={75}
+ *   label="Power"
+ *   onChange={setValue}
+ *   latch={true}
+ * />
+ * 
+ * // Interactive button with momentary behavior
+ * <Button
+ *   value={0}
+ *   label="Trigger"
+ *   onChange={setValue}
+ *   latch={false}
  * />
  * 
  * // Grid-aligned stretched button
@@ -56,7 +70,7 @@ export type ButtonProps = Control & ExplicitRange & {
  *   label="Mode"
  *   stretch={true}
  *   style={{ justifySelf: 'center' }}
- *   onClick={handleClick}
+ *   onChange={setValue}
  * />
  * ```
  */
@@ -68,10 +82,14 @@ function Button({
     stretch = false,
     className,
     style,
-    onClick,
+    onChange,
+    latch = false,
     roundness = 10,
     size = 'normal'
 }: ButtonProps) {
+    // Ref to track if the button is currently pressed (for momentary mode)
+    const isPressedRef = useRef(false);
+    
     // Calculate the center value based on min and max
     const actualCenter = useMemo(() => {
         return Math.floor((max - min + 1) / 2) + min;
@@ -95,14 +113,66 @@ function Button({
         return nonNegativeRoundness === 0 ? 0 : nonNegativeRoundness; // Use 0 for square corners, roundness for rounded corners
     }, [roundness]);
 
+    // Handle mouse down events to toggle the button state or set to max value
+    const handleMouseDown = useCallback((_e: React.MouseEvent) => {
+        // If onChange is provided, handle the button state
+        if (onChange) {
+            if (latch) {
+                // For latch buttons, toggle between min and max values
+                const newValue = isOn ? min : max;
+                onChange(newValue);
+            } else {
+                // For non-latch buttons, set to max value and mark as pressed
+                isPressedRef.current = true;
+                onChange(max);
+            }
+        }
+    }, [onChange, latch, isOn, min, max]);
+    
+    // Handle mouse up event for both latch and non-latch buttons
+    const handleMouseUp = useCallback(() => {
+        // For non-latch buttons, reset to min value if the button is pressed
+        if (onChange && !latch && isPressedRef.current) {
+            isPressedRef.current = false;
+            onChange(min);
+        }
+        // For latch buttons, do nothing (the toggle happens on mouseDown)
+    }, [onChange, latch, min]);
+    
+    // Memoize the global mouseup handler to ensure consistent function reference
+    // This is important for proper cleanup when dependencies change
+    const handleGlobalMouseUp = useCallback(() => {
+        if (isPressedRef.current) {
+            isPressedRef.current = false;
+            onChange?.(min);
+        }
+    }, [onChange, min]);
+    
+    // Set up global mouseup event listener for momentary buttons
+    useEffect(() => {
+        // Only add the global listener if this is a momentary button with onChange handler
+        if (!latch && onChange) {
+            // Add global mouseup listener
+            window.addEventListener('mouseup', handleGlobalMouseUp);
+            
+            // Clean up
+            return () => {
+                window.removeEventListener('mouseup', handleGlobalMouseUp);
+            };
+        }
+        // Return undefined for the case when we don't add a listener
+        // This fixes the TypeScript warning: TS7030: Not all code paths return a value
+        return undefined;
+    }, [latch, onChange, handleGlobalMouseUp]); // Use memoized function in dependencies
+    
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {
         return classNames(
             className,
             "cutoffAudioKit",
-            onClick ? "highlight" : ""
+            onChange ? "highlight" : ""
         );
-    }, [className, onClick]);
+    }, [className, onChange]);
 
     // Get the preferred dimensions based on the size prop
     const { width: preferredWidth, height: preferredHeight } = buttonSizeMap[size];
@@ -118,7 +188,8 @@ function Button({
             stretch={stretch}
             className={componentClassNames}
             style={style}
-            onClick={onClick}
+            onMouseDown={onChange ? handleMouseDown : undefined}
+            onMouseUp={onChange ? handleMouseUp : undefined}
         >
             {/* Button Rectangle */}
             <rect 

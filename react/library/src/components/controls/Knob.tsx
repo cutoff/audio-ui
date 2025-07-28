@@ -83,7 +83,6 @@ const polarToCartesian = (centerX: number, centerY: number, radius: number, angl
  * @property {string} className - Additional CSS classes
  * @property {React.CSSProperties} style - Additional inline styles
  * @property {Function} onChange - Handler for value changes via wheel input
- * @property {React.MouseEventHandler} onClick - Handler for click events
  *
  * @example
  * ```tsx
@@ -118,7 +117,6 @@ function Knob({
                                  className,
                                  style,
                                  onChange,
-                                 onClick,
                                  roundness = 12,
                                  thickness = 12,
                                  size = 'normal',
@@ -161,9 +159,9 @@ function Knob({
             className,
             "cutoffAudioKit",
             "componentContainer",
-            onChange || onClick ? "highlight" : ""
+            onChange ? "highlight" : ""
         );
-    }, [className, onChange, onClick]);
+    }, [className, onChange]);
 
     // Get the preferred width based on the size prop
     const { width: preferredWidth, height: preferredHeight } = knobSizeMap[size];
@@ -178,7 +176,6 @@ function Knob({
             preferredWidth={preferredWidth}
             preferredHeight={preferredHeight}
             onWheel={onChange ? handleWheel : undefined}
-            onClick={onClick}
         >
             {/* Background Arc */}
             <path

@@ -46,6 +46,10 @@ export type AdaptiveSvgComponentProps = {
     onWheel?: (e: WheelEvent) => void;
     /** Handler for click events on the SVG element */
     onClick?: React.MouseEventHandler<SVGSVGElement>;
+    /** Handler for mouse down events on the SVG element */
+    onMouseDown?: React.MouseEventHandler<SVGSVGElement>;
+    /** Handler for mouse up events on the SVG element */
+    onMouseUp?: React.MouseEventHandler<SVGSVGElement>;
 };
 
 /**
@@ -107,6 +111,8 @@ function AdaptiveSvgComponent({
                                   viewBoxHeight = 100,
                                   onWheel,
                                   onClick,
+                                  onMouseDown,
+                                  onMouseUp,
                               }: AdaptiveSvgComponentProps) {
     const svgRef = useRef<SVGSVGElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -339,6 +345,8 @@ function AdaptiveSvgComponent({
                 viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
                 style={svgStyle}
                 onClick={onClick}
+                onMouseDown={onMouseDown}
+                onMouseUp={onMouseUp}
             >
                 {children}
             </svg>

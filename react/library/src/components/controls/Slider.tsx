@@ -207,7 +207,6 @@ const computeFilledZone = (
  * @property {string} className - Additional CSS class names
  * @property {React.CSSProperties} style - Additional inline styles
  * @property {Function} onChange - Handler for value changes
- * @property {React.MouseEventHandler} onClick - Handler for click events
  *
  * @example
  * ```tsx
@@ -253,7 +252,6 @@ const Slider = ({
                     className,
                     style,
                     onChange,
-                    onClick,
                     roundness,
                     size = 'normal',
                     paramId,
@@ -329,9 +327,9 @@ const Slider = ({
         return classNames(
             className,
             'cutoffAudioKit',
-            (onChange || onClick) ? 'highlight' : ''
+            onChange ? 'highlight' : ''
         );
-    }, [className, onChange, onClick]);
+    }, [className, onChange]);
 
     // Get the preferred dimensions based on the size prop and orientation
     const { width: preferredWidth, height: preferredHeight } = sliderSizeMap[size][orientation];
@@ -360,7 +358,6 @@ const Slider = ({
             className={componentClassNames}
             style={style}
             onWheel={onChange ? handleWheel : undefined}
-            onClick={onClick}
         >
             {/* Background Rectangle */}
             <rect

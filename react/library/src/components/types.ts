@@ -30,9 +30,6 @@ export type InteractiveControl = {
      * @param value The new value or a function to update the previous value
      */
     onChange?: (value: number | ((prev: number) => number)) => void;
-
-    /** Handler for click events */
-    onClick?: React.MouseEventHandler;
 }
 
 export type ExplicitRange = {

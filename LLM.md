@@ -2,6 +2,8 @@
 
 This document provides essential information for LLMs working on the Audio UI project, a React component library for audio and MIDI applications.
 
+**IMPORTANT: This library has never been released.** There is no need to maintain backward compatibility with previous versions. All design decisions should prioritize clean, maintainable code over backward compatibility.
+
 ## CRITICAL: React Version Policy
 
 **This project MUST maintain React 18 compatibility.**
@@ -37,11 +39,11 @@ The project is organized as a monorepo with the following structure:
 Due to known issues, avoid running the following commands:
 - `npm run dev` (demo application)
 - `npm test` (unit tests)
+- `npm run typecheck` (may turn into infinite loops requiring manual cancellation)
 - Any commands that start a development server or run tests
 
 Instead, rely on:
 - Static code analysis
-- TypeScript type checking (`npm run typecheck`)
 - Linting (ESLint)
 - Code review
 

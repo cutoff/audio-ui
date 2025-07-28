@@ -7,31 +7,42 @@ import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 
 export default function Page() {
-    const [value, setValue] = useState(75);
+    const [value, setValue] = useState(0);
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(100);
     const [center, setCenter] = useState(50);
-    const [label, setLabel] = useState("Button");
+    const [label, setLabel] = useState("Momentary");
     const [roundness, setRoundness] = useState(10);
+    const [latch, setLatch] = useState(false);
 
-    // Generate code snippet with roundness
-    const codeString = `<Button min={${min}} max={${max}} value={${value}} center={${center}} label="${label}" roundness={${roundness}} />`;
+    // Generate code snippet with all props
+    const codeString = `<Button 
+  min={${min}} 
+  max={${max}} 
+  value={${value}} 
+  center={${center}} 
+  label="${label}" 
+  roundness={${roundness}}
+  latch={${latch}}
+/>`;
 
     const handleExampleClick = (num: 0 | 1 | 2): void => {
         switch (num) {
             case 0:
-                setValue(75);
+                setValue(0);
                 setMin(0);
                 setMax(100);
                 setCenter(50);
-                setLabel("Button");
+                setLabel("Momentary");
+                setLatch(false);
                 break;
             case 1:
-                setValue(25);
+                setValue(0);
                 setMin(0);
                 setMax(100);
                 setCenter(50);
-                setLabel("Off");
+                setLabel("Latch");
+                setLatch(true);
                 break;
         }
     };
@@ -43,6 +54,7 @@ export default function Page() {
         value,
         label,
         roundness,
+        latch
     };
 
     const properties = [
@@ -91,6 +103,19 @@ export default function Page() {
                 onChange={(e) => setRoundness(Math.max(0, Number(e.target.value)))}
             />
         </div>,
+        <div key="latch" className="grid gap-2">
+            <Label htmlFor="latchProp">Latch</Label>
+            <div className="flex items-center">
+                <input
+                    id="latchProp"
+                    type="checkbox"
+                    checked={latch}
+                    onChange={(e) => setLatch(e.target.checked)}
+                    className="mr-2 h-4 w-4"
+                />
+                <span>{latch ? "Latch (toggle)" : "Momentary"}</span>
+            </div>
+        </div>,
     ];
 
     const examples = [
@@ -98,17 +123,19 @@ export default function Page() {
             key="0"
             min={0}
             max={100}
-            value={75}
-            label="Button"
-            onClick={() => handleExampleClick(0)}
+            value={0}
+            label="Momentary"
+            latch={false}
+            onChange={() => handleExampleClick(0)}
         />,
         <Button
             key="1"
             min={0}
             max={100}
-            value={25}
-            label="Off"
-            onClick={() => handleExampleClick(1)}
+            value={0}
+            label="Latch"
+            latch={true}
+            onChange={() => handleExampleClick(1)}
         />,
     ];
 
