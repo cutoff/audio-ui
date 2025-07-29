@@ -1,19 +1,20 @@
 "use client";
 
-import React, {useCallback, useEffect, useMemo, useRef} from 'react';
-import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
-import classNames from 'classnames';
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import AdaptiveSvgComponent from "../support/AdaptiveSvgComponent";
+import classNames from "classnames";
 import "../../styles.css";
-import {Control, ExplicitRange} from "../types";
-import {buttonSizeMap} from "../utils/sizeMappings";
+import { Control, ExplicitRange } from "../types";
+import { buttonSizeMap } from "../utils/sizeMappings";
 
 /**
  * Props for the Button component
  */
-export type ButtonProps = Control & ExplicitRange & {
-    /** Whether the button should latch (toggle between states) or momentary (only active while pressed) */
-    latch?: boolean;
-};
+export type ButtonProps = Control &
+    ExplicitRange & {
+        /** Whether the button should latch (toggle between states) or momentary (only active while pressed) */
+        latch?: boolean;
+    };
 
 /**
  * A button component for audio applications.
@@ -75,18 +76,23 @@ export type ButtonProps = Control & ExplicitRange & {
  * ```
  */
 function Button({
-                    min = 0,
-                    max = 100,
-                    value = 0,
-                    label,
-                    stretch = false,
-                    className,
-                    style,
-                    onChange,
-                    latch = false,
-                    roundness = 10,
-                    size = 'normal'
-                }: ButtonProps) {
+    min = 0,
+    max = 100,
+    value = 0,
+    label,
+    stretch = false,
+    className,
+    style,
+    onChange,
+    latch = false,
+    roundness = 10,
+    size = "normal",
+    onClick,
+    onMouseDown,
+    onMouseUp,
+    onMouseEnter,
+    onMouseLeave,
+}: ButtonProps) {
     // Ref to track if the button is currently pressed (for momentary mode)
     const isPressedRef = useRef(false);
 
@@ -104,7 +110,7 @@ function Button({
     const buttonClasses = useMemo(() => {
         const stroke = isOn ? "stroke-primary-50" : "stroke-primary-20";
         const fill = isOn ? "fill-primary" : "fill-primary-50";
-        return {stroke, fill};
+        return { stroke, fill };
     }, [isOn]);
 
     // Calculate corner radius based on roundness (ensure non-negative)
@@ -113,31 +119,69 @@ function Button({
         return nonNegativeRoundness === 0 ? 0 : nonNegativeRoundness; // Use 0 for square corners, roundness for rounded corners
     }, [roundness]);
 
-    // Handle mouse down events to toggle the button state or set to max value
-    const handleMouseDown = useCallback((_e: React.MouseEvent) => {
-        // If onChange is provided, handle the button state
-        if (onChange) {
-            if (latch) {
-                // For latch buttons, toggle between min and max values
-                const newValue = isOn ? min : max;
-                onChange(newValue);
-            } else {
-                // For non-latch buttons, set to max value and mark as pressed
-                isPressedRef.current = true;
-                onChange(max);
+    // Internal handler for mouse down events to toggle the button state or set to max value
+    const handleInternalMouseDown = useCallback(
+        (_e: React.MouseEvent) => {
+            // If onChange is provided, handle the button state
+            if (onChange) {
+                if (latch) {
+                    // For latch buttons, toggle between min and max values
+                    const newValue = isOn ? min : max;
+                    onChange(newValue);
+                } else {
+                    // For non-latch buttons, set to max value and mark as pressed
+                    isPressedRef.current = true;
+                    onChange(max);
+                }
             }
-        }
-    }, [onChange, latch, isOn, min, max]);
+        },
+        [onChange, latch, isOn, min, max]
+    );
 
-    // Handle mouse up event for both latch and non-latch buttons
-    const handleMouseUp = useCallback(() => {
-        // For non-latch buttons, reset to min value if the button is pressed
-        if (onChange && !latch && isPressedRef.current) {
-            isPressedRef.current = false;
-            onChange(min);
-        }
-        // For latch buttons, do nothing (the toggle happens on mouseDown)
-    }, [onChange, latch, min]);
+    // Internal handler for mouse up event for both latch and non-latch buttons
+    const handleInternalMouseUp = useCallback(
+        (_e: React.MouseEvent) => {
+            // For non-latch buttons, reset to min value if the button is pressed
+            if (onChange && !latch && isPressedRef.current) {
+                isPressedRef.current = false;
+                onChange(min);
+            }
+            // For latch buttons, do nothing (the toggle happens on mouseDown)
+        },
+        [onChange, latch, min]
+    );
+
+    // Combined handler for mouse down events that calls both user handler and internal handler
+    const handleMouseDown = useCallback(
+        (e: React.MouseEvent) => {
+            // Call user's handler if provided
+            if (onMouseDown) {
+                onMouseDown(e);
+            }
+
+            // If event wasn't prevented by user's handler, call internal handler
+            if (!e.defaultPrevented) {
+                handleInternalMouseDown(e);
+            }
+        },
+        [onMouseDown, handleInternalMouseDown]
+    );
+
+    // Combined handler for mouse up events that calls both user handler and internal handler
+    const handleMouseUp = useCallback(
+        (e: React.MouseEvent) => {
+            // Call user's handler if provided
+            if (onMouseUp) {
+                onMouseUp(e);
+            }
+
+            // If event wasn't prevented by user's handler, call internal handler
+            if (!e.defaultPrevented) {
+                handleInternalMouseUp(e);
+            }
+        },
+        [onMouseUp, handleInternalMouseUp]
+    );
 
     // Memoize the global mouseup handler to ensure consistent function reference
     // This is important for proper cleanup when dependencies change
@@ -153,11 +197,11 @@ function Button({
         // Only add the global listener if this is a momentary button with onChange handler
         if (!latch && onChange) {
             // Add global mouseup listener
-            window.addEventListener('mouseup', handleGlobalMouseUp);
+            window.addEventListener("mouseup", handleGlobalMouseUp);
 
             // Clean up
             return () => {
-                window.removeEventListener('mouseup', handleGlobalMouseUp);
+                window.removeEventListener("mouseup", handleGlobalMouseUp);
             };
         }
         // Return undefined for the case when we don't add a listener
@@ -167,15 +211,11 @@ function Button({
 
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {
-        return classNames(
-            className,
-            "cutoffAudioKit",
-            onChange ? "highlight" : ""
-        );
+        return classNames(className, "cutoffAudioKit", onChange ? "highlight" : "");
     }, [className, onChange]);
 
     // Get the preferred dimensions based on the size prop
-    const {width: preferredWidth, height: preferredHeight} = buttonSizeMap[size];
+    const { width: preferredWidth, height: preferredHeight } = buttonSizeMap[size];
 
     return (
         <AdaptiveSvgComponent
@@ -188,8 +228,11 @@ function Button({
             stretch={stretch}
             className={componentClassNames}
             style={style}
-            onMouseDown={onChange ? handleMouseDown : undefined}
-            onMouseUp={onChange ? handleMouseUp : undefined}
+            onClick={onClick}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
         >
             {/* Button Rectangle */}
             <rect
@@ -205,14 +248,7 @@ function Button({
 
             {/* Label Text */}
             {label && (
-                <text
-                    className="fill-text"
-                    x="50"
-                    y="88"
-                    fontSize="30"
-                    fontWeight="500"
-                    textAnchor="middle"
-                >
+                <text className="fill-text" x="50" y="88" fontSize="30" fontWeight="500" textAnchor="middle">
                     {label}
                 </text>
             )}

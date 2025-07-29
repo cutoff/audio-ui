@@ -254,7 +254,12 @@ const Slider = ({
                     onChange,
                     roundness,
                     size = 'normal',
-                    paramId,
+                    paramId: _paramId,
+                    onClick,
+                    onMouseDown,
+                    onMouseUp,
+                    onMouseEnter,
+                    onMouseLeave
                 }: SliderProps) => {
     // Ensure thickness is non-negative
     const nonNegativeThickness = Math.max(0, thickness);
@@ -312,14 +317,18 @@ const Slider = ({
         return nonNegativeRoundness !== undefined ? nonNegativeRoundness : dimension / 2;
     }, [mainZone, roundness, orientation]);
 
-    // Handle mouse wheel events to change the value
+    /**
+     * Wheel event handler that adjusts the slider value if onChange is defined
+     * and the event hasn't been prevented by a user handler
+     */
     const handleWheel = useCallback((e: WheelEvent) => {
-        if (!onChange) return;
-
-        const delta = e.deltaY;
-        onChange((currentValue: number) => {
-            return Math.max(min, Math.min(currentValue + delta, max));
-        });
+        // Only adjust the value if onChange is defined and the event hasn't been prevented
+        if (onChange && !e.defaultPrevented) {
+            const delta = e.deltaY;
+            onChange((currentValue: number) => {
+                return Math.max(min, Math.min(currentValue + delta, max));
+            });
+        }
     }, [onChange, min, max]);
 
     // Memoize the classNames calculation
@@ -357,7 +366,12 @@ const Slider = ({
             stretch={stretch}
             className={componentClassNames}
             style={style}
-            onWheel={onChange ? handleWheel : undefined}
+            onWheel={handleWheel}
+            onClick={onClick}
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
         >
             {/* Background Rectangle */}
             <rect

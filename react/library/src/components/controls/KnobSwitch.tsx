@@ -98,6 +98,10 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
          stretch = false,
          onChange,
          onClick,
+         onMouseDown,
+         onMouseUp,
+         onMouseEnter,
+         onMouseLeave,
          size = 'normal',
          paramId
      }) => {
@@ -134,6 +138,10 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             className={className}
             stretch={stretch}
             onClick={onClick}
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
             onChange={onChange}
             size={size}
             paramId={paramId}

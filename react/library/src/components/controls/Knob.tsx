@@ -121,7 +121,12 @@ function Knob({
                   thickness = 12,
                   size = 'normal',
                   renderValue,
-                  paramId
+                  paramId: _paramId,
+                  onClick,
+                  onMouseDown,
+                  onMouseUp,
+                  onMouseEnter,
+                  onMouseLeave
               }: KnobProps) {
 
     const valueToAngle = useMemo(() => {
@@ -145,12 +150,18 @@ function Knob({
         return bipolar ? bipolarFormatter(val) : val.toString();
     }, [bipolar]);
 
+    /**
+     * Wheel event handler that adjusts the knob value if onChange is defined
+     * and the event hasn't been prevented by a user handler
+     */
     const handleWheel = useCallback((e: WheelEvent) => {
-        if (!onChange) return;
-        const delta = e.deltaY;
-        onChange((currentValue: number) => {
-            return Math.max(min, Math.min(currentValue + delta, max));
-        });
+        // Only adjust the value if onChange is defined and the event hasn't been prevented
+        if (onChange && !e.defaultPrevented) {
+            const delta = e.deltaY;
+            onChange((currentValue: number) => {
+                return Math.max(min, Math.min(currentValue + delta, max));
+            });
+        }
     }, [onChange, min, max]);
 
     // Memoize the classNames calculation
@@ -175,7 +186,12 @@ function Knob({
             viewBoxHeight={115}
             preferredWidth={preferredWidth}
             preferredHeight={preferredHeight}
-            onWheel={onChange ? handleWheel : undefined}
+            onWheel={handleWheel}
+            onClick={onClick}
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
         >
             {/* Background Arc */}
             <path

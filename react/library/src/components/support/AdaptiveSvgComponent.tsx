@@ -4,23 +4,16 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 // Import only the debounce function instead of the entire lodash library
 // This significantly reduces bundle size through tree-shaking
 import debounce from 'lodash/debounce';
+import {Base} from '../types';
 
 /**
  * Props for the AdaptiveSvgComponent
+ * Extends Base to include common properties like className, style, and event handlers
  */
-export type AdaptiveSvgComponentProps = {
+export type AdaptiveSvgComponentProps = Base & {
     /** Whether the component should stretch to fill its container while maintaining aspect ratio
      * @default false */
     stretch?: boolean;
-    /** Additional CSS classes to apply to the container element */
-    className?: string;
-    /** Additional inline styles to apply to the container element.
-     * Supports grid layout properties (justifySelf, alignSelf) which control
-     * the alignment of the SVG within its container:
-     * - alignSelf: 'start' | 'end' | 'center' - Controls vertical alignment
-     * - justifySelf: 'start' | 'end' | 'center' - Controls horizontal alignment
-     * Default alignment is center for both axes when not specified. */
-    style?: React.CSSProperties;
     /** SVG content to render within the component */
     children: React.ReactNode;
     /** Desired width when not stretching
@@ -44,12 +37,12 @@ export type AdaptiveSvgComponentProps = {
     /** Handler for wheel events. When provided, wheel events are prevented from propagating
      * and their default behavior is prevented */
     onWheel?: (e: WheelEvent) => void;
-    /** Handler for click events on the SVG element */
+    /** Override event handlers with more specific SVGSVGElement type */
     onClick?: React.MouseEventHandler<SVGSVGElement>;
-    /** Handler for mouse down events on the SVG element */
     onMouseDown?: React.MouseEventHandler<SVGSVGElement>;
-    /** Handler for mouse up events on the SVG element */
     onMouseUp?: React.MouseEventHandler<SVGSVGElement>;
+    onMouseEnter?: React.MouseEventHandler<SVGSVGElement>;
+    onMouseLeave?: React.MouseEventHandler<SVGSVGElement>;
 };
 
 /**
@@ -113,6 +106,8 @@ function AdaptiveSvgComponent({
                                   onClick,
                                   onMouseDown,
                                   onMouseUp,
+                                  onMouseEnter,
+                                  onMouseLeave,
                               }: AdaptiveSvgComponentProps) {
     const svgRef = useRef<SVGSVGElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -269,13 +264,20 @@ function AdaptiveSvgComponent({
 
     // Handle wheel events
     useEffect(() => {
-        if (!onWheel || !svgRef.current) return;
+        if (!svgRef.current) return;
 
         const element = svgRef.current;
         const wheelHandler = (e: WheelEvent) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onWheel(e);
+            // Only call the user's handler if it's defined
+            if (onWheel) {
+                onWheel(e);
+            }
+            
+            // Only prevent default and stop propagation if the event hasn't been prevented by the user's handler
+            if (!e.defaultPrevented) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
         };
 
         element.addEventListener('wheel', wheelHandler, {passive: false});
@@ -347,6 +349,8 @@ function AdaptiveSvgComponent({
                 onClick={onClick}
                 onMouseDown={onMouseDown}
                 onMouseUp={onMouseUp}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
             >
                 {children}
             </svg>

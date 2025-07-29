@@ -10,6 +10,16 @@ export type Base = {
     className?: string;
     /** Additional inline styles */
     style?: React.CSSProperties;
+    /** Click event handler */
+    onClick?: React.MouseEventHandler;
+    /** Mouse down event handler */
+    onMouseDown?: React.MouseEventHandler;
+    /** Mouse up event handler */
+    onMouseUp?: React.MouseEventHandler;
+    /** Mouse enter event handler */
+    onMouseEnter?: React.MouseEventHandler;
+    /** Mouse leave event handler */
+    onMouseLeave?: React.MouseEventHandler;
 }
 
 export type AdaptativeSize = {
