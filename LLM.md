@@ -45,11 +45,9 @@ The project has been updated to fix previous issues with npm scripts. You can no
 - `npm run clean` - Clean build artifacts
 - `npm run format` - Format code with Prettier
 
-For the demo application:
+Because of some persisting issues, never run the development server for testing:
 
 - `npm run dev` (in react/demo-app directory) - Start the development server
-
-These commands have been fixed to avoid the infinite loop issues that were present in earlier versions of the project.
 
 ### Setting Up the Project
 
@@ -97,51 +95,6 @@ The library uses Vite for building and TypeScript for type checking:
   ```
 
 ## Testing Information
-
-### Testing Setup
-
-The project uses Jest and React Testing Library for testing React components.
-
-1. Configure Jest:
-    - Create a `jest.config.cjs` file in the library directory:
-      ```js
-      module.exports = {
-        preset: 'ts-jest',
-        testEnvironment: 'jsdom',
-        moduleNameMapper: {
-          '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-        },
-        setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-        testMatch: ['**/__tests__/**/*.test.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
-        transform: {
-          '^.+\\.(ts|tsx)$': ['ts-jest', {
-            tsconfig: 'tsconfig.json',
-          }],
-        },
-      };
-      ```
-
-2. Create a Jest setup file:
-    - Create a `jest.setup.js` file in the library directory:
-      ```js
-      // Import any global setup for Jest tests here
-      require('@testing-library/jest-dom');
-      ```
-
-3. Add testing dependencies:
-   ```bash
-   cd react/library
-   npm install --save-dev @testing-library/jest-dom @testing-library/react @types/jest identity-obj-proxy jest jest-environment-jsdom ts-jest
-   ```
-
-4. Add a test script to package.json:
-   ```json
-   {
-     "scripts": {
-       "test": "jest --config jest.config.cjs"
-     }
-   }
-   ```
 
 ### Running Tests
 
