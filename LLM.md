@@ -298,6 +298,7 @@ Components in this library follow these conventions:
 - Export all components from `react/library/src/index.ts`
 - Demo pages in `react/demo-app/app/components/[component-name]/page.tsx`
 - Shared UI components in `react/demo-app/components/ui/`
+- Specialized technical documentation in `react/library/docs/` (intended for contributors)
 
 ### Performance Considerations
 
