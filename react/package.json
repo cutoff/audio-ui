@@ -6,10 +6,10 @@
   "author": "Renaud Denis <mail@renauddenis.com>",
   "license": "UNLICENSED",
   "scripts": {
-    "typecheck": "npm run typecheck --workspaces --if-present",
-    "build": "npm run build --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present",
-    "clean": "npm run clean --workspaces --if-present",
+    "typecheck": "cd library && npm run typecheck && cd ../demo-app && npm run typecheck",
+    "build": "cd library && npm run build && cd ../demo-app && npm run build",
+    "test": "cd library && npm run test",
+    "clean": "if [ -d \"library/dist\" ]; then rm -r library/dist; fi && if [ -d \"demo-app/.next\" ]; then rm -r demo-app/.next; fi",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\""
   },
   "keywords": [

@@ -35,22 +35,21 @@ The project is organized as a monorepo with the following structure:
 
 ## Build/Configuration Instructions
 
-### IMPORTANT: Runtime Testing Limitations
+### Build and Test Commands
 
-**Note: Running the app, test HTML pages, or unit tests may fail and require manual cancellation.**
+The project has been updated to fix previous issues with npm scripts. You can now safely run the following commands:
 
-Due to known issues, avoid running the following commands:
+- `npm run typecheck` - Run TypeScript type checking
+- `npm run build` - Build the library
+- `npm run test` - Run unit tests
+- `npm run clean` - Clean build artifacts
+- `npm run format` - Format code with Prettier
 
-- `npm run dev` (demo application)
-- `npm test` (unit tests)
-- `npm run typecheck` (may turn into infinite loops requiring manual cancellation)
-- Any commands that start a development server or run tests
+For the demo application:
 
-Instead, rely on:
+- `npm run dev` (in react/demo-app directory) - Start the development server
 
-- Static code analysis
-- Linting (ESLint)
-- Code review
+These commands have been fixed to avoid the infinite loop issues that were present in earlier versions of the project.
 
 ### Setting Up the Project
 
@@ -59,18 +58,19 @@ Instead, rely on:
    npm install
    ```
 
-2. Build the library (for type checking only, not for running):
+2. Build the library:
    ```bash
    npm run build
    ```
 
-3. ~~Run the demo application~~ Use static analysis instead:
+3. Run the demo application:
    ```bash
-   # Instead of running the app with:
-   # cd react/demo-app
-   # npm run dev
+   cd react/demo-app
+   npm run dev
+   ```
    
-   # Use type checking:
+   Or run type checking:
+   ```bash
    npm run typecheck
    ```
 
@@ -145,17 +145,14 @@ The project uses Jest and React Testing Library for testing React components.
 
 ### Running Tests
 
-**IMPORTANT: As noted above, running tests may fail and require manual cancellation.**
-
-Instead of running tests with:
+You can now safely run tests with:
 
 ```bash
-# DON'T RUN THIS - it may fail and require manual cancellation
-# cd react/library
-# npm test
+cd react/library
+npm test
 ```
 
-Rely on static analysis:
+You can also use static analysis for additional code quality checks:
 
 ```bash
 cd react/library
@@ -236,17 +233,14 @@ The demo application is built with Next.js and showcases the components in the l
 2. Import and use the component from the library
 3. Add examples and documentation
 
-**IMPORTANT: As noted above, running the demo application may fail and require manual cancellation.**
-
-Instead of running the demo application with:
+You can now safely run the demo application with:
 
 ```bash
-# DON'T RUN THIS - it may fail and require manual cancellation
-# cd react/demo-app
-# npm run dev
+cd react/demo-app
+npm run dev
 ```
 
-Rely on static analysis:
+You can also use static analysis for code quality checks:
 
 ```bash
 cd react/demo-app
