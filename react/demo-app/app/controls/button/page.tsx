@@ -5,6 +5,7 @@ import {Button} from "@cutoff/audio-ui-react";
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
+import {ColorPicker} from "@/components/ui/color-picker";
 
 export default function Page() {
     const [value, setValue] = useState(0);
@@ -14,6 +15,7 @@ export default function Page() {
     const [label, setLabel] = useState("Momentary");
     const [roundness, setRoundness] = useState(10);
     const [latch, setLatch] = useState(false);
+    const [color, setColor] = useState("#3399ff"); // Default blue color
 
     // Generate code snippet with all props
     const codeString = `<Button 
@@ -24,6 +26,7 @@ export default function Page() {
   label="${label}" 
   roundness={${roundness}}
   latch={${latch}}
+  color="${color}"
 />`;
 
     const handleExampleClick = (num: 0 | 1 | 2): void => {
@@ -54,7 +57,8 @@ export default function Page() {
         value,
         label,
         roundness,
-        latch
+        latch,
+        color
     };
 
     const properties = [
@@ -116,6 +120,14 @@ export default function Page() {
                 <span>{latch ? "Latch (toggle)" : "Momentary"}</span>
             </div>
         </div>,
+        <div key="color" className="grid gap-2">
+            <ColorPicker
+                id="colorProp"
+                label="Color"
+                value={color}
+                onChange={setColor}
+            />
+        </div>,
     ];
 
     const examples = [
@@ -126,6 +138,7 @@ export default function Page() {
             value={0}
             label="Momentary"
             latch={false}
+            color="#3399ff" // Blue
             onChange={() => handleExampleClick(0)}
         />,
         <Button
@@ -135,6 +148,7 @@ export default function Page() {
             value={0}
             label="Latch"
             latch={true}
+            color="#ff3366" // Pink
             onChange={() => handleExampleClick(1)}
         />,
     ];

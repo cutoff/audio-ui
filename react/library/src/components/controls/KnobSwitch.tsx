@@ -103,7 +103,8 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
          onMouseEnter,
          onMouseLeave,
          size = 'normal',
-         paramId
+         paramId,
+         color = 'blue'
      }) => {
     const options = React.Children.toArray(children);
 
@@ -145,6 +146,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             onChange={onChange}
             size={size}
             paramId={paramId}
+            color={color}
         >
             {selectedLabel}
         </Knob>

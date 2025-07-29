@@ -5,7 +5,23 @@ import React from "react";
  */
 export type SizeType = 'xsmall' | 'small' | 'normal' | 'large' | 'xlarge';
 
-export type Base = {
+/**
+ * Interface for themable components
+ */
+export type Themable = {
+    /** Component primary color - any valid CSS color value
+     * @default "blue"
+     */
+    color?: string;
+    
+    /** Roundness for component corners/caps
+     * @default Component-specific: Knob uses 12, Slider uses half width, Button uses 10px
+     * A value of 0 means square corners/caps, while values > 0 create rounded corners/caps
+     */
+    roundness?: number;
+};
+
+export type Base = Themable & {
     /** Additional CSS classes */
     className?: string;
     /** Additional inline styles */
@@ -64,12 +80,6 @@ export type Control = AdaptativeSize & InteractiveControl & Base & {
      * Used as the first argument in onChange callbacks
      */
     paramId?: string;
-
-    /** Roundness for component corners/caps
-     * @default Component-specific: Knob uses 12, Slider uses half width, Button uses 10px
-     * A value of 0 means square corners/caps, while values > 0 create rounded corners/caps
-     */
-    roundness?: number;
 
     /**
      * Custom renderer for the value display

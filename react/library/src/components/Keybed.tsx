@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import AdaptiveSvgComponent from './support/AdaptiveSvgComponent';
 import {AdaptativeSize, Base} from "./types";
 import {keybedSizeMap} from "./utils/sizeMappings";
+import {generateColorVariants} from "./utils/colorUtils";
 import {
     createNoteNumSet,
     DIATONIC_TO_CHROMATIC,
@@ -114,7 +115,8 @@ function Keybed({
                     notesOn = [],
                     style = {},
                     className = "",
-                    size = 'normal'
+                    size = 'normal',
+                    color = "blue"
                 }: KeybedProps) {
     // Ensure nbKeys is within valid range (1-128)
     const validNbKeys = Math.max(1, Math.min(128, nbKeys));
@@ -184,6 +186,11 @@ function Keybed({
         };
     }, [validNbKeys, startKey]);
 
+    // Generate color variants using the centralized utility
+    const colorVariants = useMemo(() => {
+        return generateColorVariants(color, 'luminosity');
+    }, [color]);
+
     // Memoize the active notes set for efficient lookups
     const activeNoteNumSet = useMemo(() => {
         return createNoteNumSet(notesOn || []);
@@ -245,7 +252,10 @@ function Keybed({
             return (
                 <rect
                     key={`white-${index}-${currentWhiteNote}`}
-                    className={`stroke-primary-50 ${isNoteActive(currentWhiteNote) ? 'fill-primary' : 'fill-transparent'}`}
+                    style={{
+                        stroke: colorVariants.primary50,
+                        fill: isNoteActive(currentWhiteNote) ? colorVariants.primary : 'transparent'
+                    }}
                     strokeWidth={innerStrokeWidth}
                     x={index * whiteWidth}
                     y={0}
@@ -303,8 +313,11 @@ function Keybed({
             return (
                 <rect
                     key={`black-${index}-${currentBlackNote}`}
-                    className={`stroke-primary-50 ${isNoteActive(currentBlackNote) ? 'fill-primary' : 'fill-primary-50'}`}
-                    style={{zIndex: 1}}
+                    style={{
+                        zIndex: 1,
+                        stroke: colorVariants.primary50,
+                        fill: isNoteActive(currentBlackNote) ? colorVariants.primary : colorVariants.primary50
+                    }}
                     strokeWidth={innerStrokeWidth}
                     x={index * whiteWidth + blackXShift}
                     y={0}
@@ -337,7 +350,10 @@ function Keybed({
             stretch={stretch}
         >
             <rect
-                className="stroke-primary-50 fill-transparent"
+                style={{
+                    stroke: colorVariants.primary50,
+                    fill: 'transparent'
+                }}
                 strokeWidth={keybedDimensions.outerStrokeWidth}
                 x={keybedDimensions.outerStrokeWidth / 2}
                 y={keybedDimensions.outerStrokeWidth / 2}

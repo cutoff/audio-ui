@@ -8,6 +8,7 @@ import {Label} from "@/components/ui/label";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
 import {AlertTriangle} from "lucide-react";
+import {ColorPicker} from "@/components/ui/color-picker";
 
 // Define the NoteName type to match the one in the Keybed component
 type NoteName = "C" | "D" | "E" | "F" | "G" | "A" | "B";
@@ -17,6 +18,7 @@ export default function KeybedPage() {
     const [startKey, setStartKey] = useState<NoteName>("C");
     const [octaveShift, setOctaveShift] = useState<number>(0);
     const [notesOn, setNotesOn] = useState<(string | number)[]>(["C4", 64, 67]);
+    const [color, setColor] = useState<string>("#3399ff"); // Default blue color
 
     // MIDI related state
     const [midiInputs, setMidiInputs] = useState<WebMidi.MIDIInput[]>([]);
@@ -28,7 +30,8 @@ export default function KeybedPage() {
   nbKeys={${nbKeys}} 
   startKey="${startKey}" 
   octaveShift={${octaveShift}} 
-  notesOn={[${notesOn.map(note => typeof note === 'string' ? `"${note}"` : note).join(', ')}]} 
+  notesOn={[${notesOn.map(note => typeof note === 'string' ? `"${note}"` : note).join(', ')}]}
+  color="${color}" 
 />`;
 
     const componentProps = {
@@ -36,6 +39,7 @@ export default function KeybedPage() {
         startKey,
         octaveShift,
         notesOn,
+        color,
     };
 
     const properties = [
@@ -79,6 +83,14 @@ export default function KeybedPage() {
                 max="3"
                 value={octaveShift}
                 onChange={(e) => setOctaveShift(Math.max(-3, Math.min(3, Number(e.target.value))))}
+            />
+        </div>,
+        <div key="color" className="grid gap-2">
+            <ColorPicker
+                id="colorProp"
+                label="Color"
+                value={color}
+                onChange={setColor}
             />
         </div>,
     ];
@@ -245,6 +257,7 @@ export default function KeybedPage() {
                                 octaveShift={octaveShift}
                                 notesOn={notesOn}
                                 size="xsmall"
+                                color="#3399ff" // Blue
                             />
                             <Keybed
                                 nbKeys={nbKeys}
@@ -252,6 +265,7 @@ export default function KeybedPage() {
                                 octaveShift={octaveShift}
                                 notesOn={notesOn}
                                 size="small"
+                                color="#ff3366" // Pink
                             />
                             <Keybed
                                 nbKeys={nbKeys}
@@ -259,6 +273,7 @@ export default function KeybedPage() {
                                 octaveShift={octaveShift}
                                 notesOn={notesOn}
                                 size="normal"
+                                color="#33cc66" // Green
                             />
                             <Keybed
                                 nbKeys={nbKeys}
@@ -266,6 +281,7 @@ export default function KeybedPage() {
                                 octaveShift={octaveShift}
                                 notesOn={notesOn}
                                 size="large"
+                                color="#9966ff" // Purple
                             />
                             <Keybed
                                 nbKeys={nbKeys}
@@ -273,6 +289,7 @@ export default function KeybedPage() {
                                 octaveShift={octaveShift}
                                 notesOn={notesOn}
                                 size="xlarge"
+                                color="#ff9933" // Orange
                             />
                         </div>
                     </div>

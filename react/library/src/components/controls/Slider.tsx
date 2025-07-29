@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
 import {BipolarControl, ExplicitRange} from "../types";
 import {sliderSizeMap} from "../utils/sizeMappings";
+import {generateColorVariants} from "../utils/colorUtils";
 
 /**
  * Props for the Slider component
@@ -259,7 +260,8 @@ const Slider = ({
                     onMouseDown,
                     onMouseUp,
                     onMouseEnter,
-                    onMouseLeave
+                    onMouseLeave,
+                    color = "blue"
                 }: SliderProps) => {
     // Ensure thickness is non-negative
     const nonNegativeThickness = Math.max(0, thickness);
@@ -316,6 +318,11 @@ const Slider = ({
         const dimension = orientation === 'vertical' ? mainZone.w : mainZone.h;
         return nonNegativeRoundness !== undefined ? nonNegativeRoundness : dimension / 2;
     }, [mainZone, roundness, orientation]);
+    
+    // Generate color variants using the centralized utility
+    const colorVariants = useMemo(() => {
+        return generateColorVariants(color, 'transparency');
+    }, [color]);
 
     /**
      * Wheel event handler that adjusts the slider value if onChange is defined
@@ -375,7 +382,7 @@ const Slider = ({
         >
             {/* Background Rectangle */}
             <rect
-                className="fill-primary-50"
+                style={{ fill: colorVariants.primary50 }}
                 x={mainZone.x}
                 y={mainZone.y}
                 width={mainZone.w}
@@ -386,7 +393,7 @@ const Slider = ({
 
             {/* Foreground Rectangle */}
             <rect
-                className="fill-primary"
+                style={{ fill: colorVariants.primary }}
                 x={orientation === 'horizontal' ? filledZone.x : mainZone.x}
                 y={orientation === 'vertical' ? filledZone.y : mainZone.y}
                 width={orientation === 'horizontal' ? filledZone.w : mainZone.w}
@@ -397,7 +404,7 @@ const Slider = ({
 
             {/* Label Text */}
             <text
-                className="fill-text"
+                style={{ fill: "var(--text-color)" }} // Keep using the text color CSS variable
                 textAnchor="middle"
                 x={labelX}
                 y={labelY}

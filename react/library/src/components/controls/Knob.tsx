@@ -7,6 +7,7 @@ import "../../styles.css";
 import {BipolarControl, ExplicitRange} from "../types";
 import {knobSizeMap} from "../utils/sizeMappings";
 import {bipolarFormatter} from "../utils/valueFormatters";
+import {generateColorVariants} from "../utils/colorUtils";
 
 /**
  * Angular constants for the knob's arc
@@ -126,7 +127,8 @@ function Knob({
                   onMouseDown,
                   onMouseUp,
                   onMouseEnter,
-                  onMouseLeave
+                  onMouseLeave,
+                  color = "blue"
               }: KnobProps) {
 
     const valueToAngle = useMemo(() => {
@@ -140,6 +142,11 @@ function Knob({
     // Ensure roundness is non-negative
     const nonNegativeRoundness = Math.max(0, roundness);
     const strokeLinecap = nonNegativeRoundness === 0 ? 'square' : 'round';
+    
+    // Generate color variants using the centralized utility
+    const colorVariants = useMemo(() => {
+        return generateColorVariants(color, 'transparency');
+    }, [color]);
 
     /**
      * Memoized function to format value based on bipolar mode
@@ -195,7 +202,7 @@ function Knob({
         >
             {/* Background Arc */}
             <path
-                className="stroke-primary-50"
+                style={{ stroke: colorVariants.primary50 }}
                 fill="none"
                 strokeWidth={strokeWidth}
                 strokeLinecap={strokeLinecap}
@@ -204,7 +211,7 @@ function Knob({
 
             {/* Foreground Arc */}
             <path
-                className="stroke-primary"
+                style={{ stroke: colorVariants.primary }}
                 fill="none"
                 strokeWidth={strokeWidth}
                 strokeLinecap={strokeLinecap}
@@ -256,8 +263,10 @@ function Knob({
             {/* Label */}
             {label && (
                 <text
-                    style={{cursor: "inherit"}}
-                    className="fill-text"
+                    style={{
+                        cursor: "inherit",
+                        fill: "var(--text-color)" // Keep using the text color CSS variable
+                    }}
                     x="50"
                     y="110"
                     fontSize="18"

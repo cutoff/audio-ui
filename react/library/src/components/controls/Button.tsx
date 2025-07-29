@@ -6,6 +6,7 @@ import classNames from "classnames";
 import "../../styles.css";
 import { Control, ExplicitRange } from "../types";
 import { buttonSizeMap } from "../utils/sizeMappings";
+import { generateColorVariants } from "../utils/colorUtils";
 
 /**
  * Props for the Button component
@@ -92,6 +93,7 @@ function Button({
     onMouseUp,
     onMouseEnter,
     onMouseLeave,
+    color = "blue",
 }: ButtonProps) {
     // Ref to track if the button is currently pressed (for momentary mode)
     const isPressedRef = useRef(false);
@@ -106,12 +108,18 @@ function Button({
         return value > actualCenter;
     }, [value, actualCenter]);
 
-    // Determine the button's appearance classes based on state
-    const buttonClasses = useMemo(() => {
-        const stroke = isOn ? "stroke-primary-50" : "stroke-primary-20";
-        const fill = isOn ? "fill-primary" : "fill-primary-50";
-        return { stroke, fill };
-    }, [isOn]);
+    // Generate color variants using the centralized utility
+    const colorVariants = useMemo(() => {
+        return generateColorVariants(color, 'transparency');
+    }, [color]);
+    
+    // Determine the button's appearance styles based on state
+    const buttonStyles = useMemo(() => {
+        return {
+            stroke: isOn ? colorVariants.primary50 : colorVariants.primary20,
+            fill: isOn ? colorVariants.primary : colorVariants.primary50,
+        };
+    }, [isOn, colorVariants]);
 
     // Calculate corner radius based on roundness (ensure non-negative)
     const cornerRadius = useMemo(() => {
@@ -236,7 +244,10 @@ function Button({
         >
             {/* Button Rectangle */}
             <rect
-                className={`${buttonClasses.stroke} ${buttonClasses.fill}`}
+                style={{
+                    stroke: buttonStyles.stroke,
+                    fill: buttonStyles.fill,
+                }}
                 strokeWidth="5"
                 x={10}
                 y={10}

@@ -6,6 +6,7 @@ import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {Checkbox} from "@/components/ui/checkbox";
+import {ColorPicker} from "@/components/ui/color-picker";
 
 export type SliderPageProps = {
     orientation: "horizontal" | "vertical";
@@ -19,6 +20,7 @@ export default function SliderPage({orientation}: SliderPageProps) {
     const [bipolar, setBipolar] = useState(false);
     const [thickness, setThickness] = useState(20);
     const [roundness, setRoundness] = useState(10);
+    const [color, setColor] = useState("#3399ff"); // Default blue color
 
     // Generate code snippet with all props
     const codeString = `<Slider 
@@ -30,6 +32,7 @@ export default function SliderPage({orientation}: SliderPageProps) {
   bipolar={${bipolar}} 
   roundness={${roundness}} 
   orientation='${orientation}'
+  color='${color}'
 />`;
 
     const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4): void => {
@@ -41,6 +44,7 @@ export default function SliderPage({orientation}: SliderPageProps) {
                 setLabel("Default");
                 setBipolar(false);
                 setThickness(20);
+                setColor("#3399ff"); // Blue
                 break;
             case 1:
                 setValue(64);
@@ -49,6 +53,7 @@ export default function SliderPage({orientation}: SliderPageProps) {
                 setLabel("Bipolar");
                 setBipolar(true);
                 setThickness(20);
+                setColor("#ff3366"); // Pink
                 break;
             case 2:
                 setValue(22);
@@ -57,11 +62,12 @@ export default function SliderPage({orientation}: SliderPageProps) {
                 setLabel("Thick");
                 setBipolar(false);
                 setThickness(40);
+                setColor("#33cc66"); // Green
                 break;
         }
     };
 
-    const componentProps = {min, bipolar, max, value, label, thickness, roundness, orientation};
+    const componentProps = {min, bipolar, max, value, label, thickness, roundness, orientation, color};
 
     const properties = [
         <div key="label" className="grid gap-2">
@@ -118,6 +124,14 @@ export default function SliderPage({orientation}: SliderPageProps) {
             />
             <Label htmlFor="bipolarProp" className="cursor-pointer">Bipolar</Label>
         </div>,
+        <div key="color" className="grid gap-2">
+            <ColorPicker
+                id="colorProp"
+                label="Color"
+                value={color}
+                onChange={setColor}
+            />
+        </div>,
     ];
 
     const examples = [
@@ -130,6 +144,7 @@ export default function SliderPage({orientation}: SliderPageProps) {
             thickness={20}
             label="Default"
             orientation={orientation}
+            color="#3399ff" // Blue
             onClick={() => handleExampleClick(0)}
         />,
         <Slider
@@ -142,6 +157,7 @@ export default function SliderPage({orientation}: SliderPageProps) {
             thickness={20}
             label="Bipolar"
             orientation={orientation}
+            color="#ff3366" // Pink
             onClick={() => handleExampleClick(1)}
         />,
         <Slider
@@ -154,6 +170,7 @@ export default function SliderPage({orientation}: SliderPageProps) {
             thickness={40}
             label="Thick"
             orientation={orientation}
+            color="#33cc66" // Green
             onClick={() => handleExampleClick(2)}
         />,
     ];
