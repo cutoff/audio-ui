@@ -1,8 +1,10 @@
 # Audio UI Development Guide for LLMs
 
-This document provides essential information for LLMs working on the Audio UI project, a React component library for audio and MIDI applications.
+This document provides essential information for LLMs working on the Audio UI project, a React component library for
+audio and MIDI applications.
 
-**IMPORTANT: This library has never been released.** There is no need to maintain backward compatibility with previous versions. All design decisions should prioritize clean, maintainable code over backward compatibility.
+**IMPORTANT: This library has never been released.** There is no need to maintain backward compatibility with previous
+versions. All design decisions should prioritize clean, maintainable code over backward compatibility.
 
 ## CRITICAL: React Version Policy
 
@@ -15,6 +17,7 @@ This document provides essential information for LLMs working on the Audio UI pr
 **NEVER upgrade to React 19 or higher without explicit approval.**
 
 If you encounter React version conflicts:
+
 1. Check `npm ls react @types/react` to identify version mismatches
 2. Downgrade to React 18 compatible versions
 3. Run `npm run typecheck` to verify TypeScript compatibility
@@ -25,10 +28,10 @@ If you encounter React version conflicts:
 The project is organized as a monorepo with the following structure:
 
 - `react/` - Contains the React implementation
-  - `library/` - The component library (React 18 peer dependencies)
-    - `src/` - Source code for the components
-    - `dist/` - Built output (generated)
-  - `demo-app/` - Next.js application for demonstrating the components (React 18 direct dependencies)
+    - `library/` - The component library (React 18 peer dependencies)
+        - `src/` - Source code for the components
+        - `dist/` - Built output (generated)
+    - `demo-app/` - Next.js application for demonstrating the components (React 18 direct dependencies)
 
 ## Build/Configuration Instructions
 
@@ -37,12 +40,14 @@ The project is organized as a monorepo with the following structure:
 **Note: Running the app, test HTML pages, or unit tests may fail and require manual cancellation.**
 
 Due to known issues, avoid running the following commands:
+
 - `npm run dev` (demo application)
 - `npm test` (unit tests)
 - `npm run typecheck` (may turn into infinite loops requiring manual cancellation)
 - Any commands that start a development server or run tests
 
 Instead, rely on:
+
 - Static code analysis
 - Linting (ESLint)
 - Code review
@@ -98,30 +103,30 @@ The library uses Vite for building and TypeScript for type checking:
 The project uses Jest and React Testing Library for testing React components.
 
 1. Configure Jest:
-   - Create a `jest.config.cjs` file in the library directory:
-     ```js
-     module.exports = {
-       preset: 'ts-jest',
-       testEnvironment: 'jsdom',
-       moduleNameMapper: {
-         '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-       },
-       setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-       testMatch: ['**/__tests__/**/*.test.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
-       transform: {
-         '^.+\\.(ts|tsx)$': ['ts-jest', {
-           tsconfig: 'tsconfig.json',
-         }],
-       },
-     };
-     ```
+    - Create a `jest.config.cjs` file in the library directory:
+      ```js
+      module.exports = {
+        preset: 'ts-jest',
+        testEnvironment: 'jsdom',
+        moduleNameMapper: {
+          '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+        },
+        setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+        testMatch: ['**/__tests__/**/*.test.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+        transform: {
+          '^.+\\.(ts|tsx)$': ['ts-jest', {
+            tsconfig: 'tsconfig.json',
+          }],
+        },
+      };
+      ```
 
 2. Create a Jest setup file:
-   - Create a `jest.setup.js` file in the library directory:
-     ```js
-     // Import any global setup for Jest tests here
-     require('@testing-library/jest-dom');
-     ```
+    - Create a `jest.setup.js` file in the library directory:
+      ```js
+      // Import any global setup for Jest tests here
+      require('@testing-library/jest-dom');
+      ```
 
 3. Add testing dependencies:
    ```bash
@@ -143,6 +148,7 @@ The project uses Jest and React Testing Library for testing React components.
 **IMPORTANT: As noted above, running tests may fail and require manual cancellation.**
 
 Instead of running tests with:
+
 ```bash
 # DON'T RUN THIS - it may fail and require manual cancellation
 # cd react/library
@@ -150,6 +156,7 @@ Instead of running tests with:
 ```
 
 Rely on static analysis:
+
 ```bash
 cd react/library
 npm run typecheck
@@ -159,7 +166,8 @@ npm run lint
 
 ### Writing Tests
 
-Tests should be placed alongside the components they test with a `.test.tsx` extension. Here's an example test for the Button component:
+Tests should be placed alongside the components they test with a `.test.tsx` extension. Here's an example test for the
+Button component:
 
 ```tsx
 import React from 'react';
@@ -231,6 +239,7 @@ The demo application is built with Next.js and showcases the components in the l
 **IMPORTANT: As noted above, running the demo application may fail and require manual cancellation.**
 
 Instead of running the demo application with:
+
 ```bash
 # DON'T RUN THIS - it may fail and require manual cancellation
 # cd react/demo-app
@@ -238,6 +247,7 @@ Instead of running the demo application with:
 ```
 
 Rely on static analysis:
+
 ```bash
 cd react/demo-app
 npm run typecheck
@@ -253,7 +263,8 @@ When encountering TypeScript errors, follow this debugging sequence:
 
 1. **Check React versions**: Run `npm ls react @types/react` to identify version mismatches
 2. **Verify package.json**: Ensure all React dependencies specify React 18 versions
-3. **Fix version conflicts**: Use `npm install react@^18.3.1 react-dom@^18.3.1 @types/react@^18.3.23 @types/react-dom@^18.3.7`
+3. **Fix version conflicts**: Use
+   `npm install react@^18.3.1 react-dom@^18.3.1 @types/react@^18.3.23 @types/react-dom@^18.3.7`
 4. **Run type checks**: Execute `npm run typecheck` in both library and demo app
 5. **Build verification**: Run `npm run build` to ensure no compilation errors
 
@@ -300,3 +311,124 @@ Components in this library follow these conventions:
 - Components use SVG for scalable graphics
 - CSS is minimal and uses CSS custom properties for theming
 - Demo app uses Next.js optimization features
+
+## Coding Conventions (JetBrains Defaults)
+
+This project follows JetBrains' default coding conventions for JavaScript and TypeScript. Adhering to these conventions
+ensures code consistency and readability across the project.
+
+### Formatting
+
+- **Indentation**: 4 spaces (not tabs)
+- **Line length**: Maximum 120 characters
+- **Braces**:
+    - Opening brace on the same line as the statement
+    - Closing brace aligned with the original statement
+- **Spacing**:
+    - Space after keywords (`if`, `for`, `while`, etc.)
+    - Space around operators (`+`, `-`, `=`, etc.)
+    - No space between function name and parentheses
+    - Space after commas in argument lists
+    - No space after property name and before colon in object literals, but space after colon: `{width: 50}`
+- **String literals**:
+    - Use double quotes (`"`) rather than single quotes (`'`) for string literals
+    - Use template literals (backticks) when string interpolation is needed or for multi-line strings
+- **Line breaks**:
+    - Line break after opening brace
+    - Line break before closing brace
+    - Line break after semicolons
+- **Semicolons**: Generally required at the end of statements
+    - Required in .ts files
+    - May be omitted in some .tsx files, particularly in the demo app
+- **Control structures**:
+    - Switch-case statements have cases indented inside the switch block
+    - Case blocks are further indented inside each case
+
+### Naming Conventions
+
+- **Variables and functions**: camelCase
+- **Classes and interfaces**: PascalCase
+- **Constants**: UPPER_SNAKE_CASE for true constants, camelCase for variables that won't be reassigned
+- **Private properties**: camelCase with no underscore prefix
+- **Type parameters**: PascalCase, typically single letters (T, K, V) or descriptive names with a 'T' suffix
+- **Enum members**: PascalCase
+- **File names**: Match the main export, typically PascalCase for components
+
+### Code Organization
+
+- **Imports**: Grouped and sorted:
+    1. React and React-related imports
+    2. Third-party library imports
+    3. Project imports (absolute paths)
+    4. Project imports (relative paths)
+    5. CSS/style imports
+- **Component structure**:
+    1. Type definitions and interfaces
+    2. JSDoc component documentation
+    3. Component function
+    4. Helper functions and hooks
+    5. Default export
+- **Props**: Destructured in function parameters with default values
+
+### TypeScript Specifics
+
+- **Type annotations**: Use explicit type annotations for function parameters and return types
+- **Interfaces vs Types**: Prefer interfaces for object shapes, types for unions/intersections
+- **Generics**: Use generics with constraints when appropriate
+- **Optional properties**: Use the `?` operator for optional properties
+- **Null handling**: Avoid `null`, prefer `undefined` for optional values
+- **Type assertions**: Use `as` syntax rather than angle brackets
+
+### JSDoc Comments
+
+- **Components**: Document with JSDoc comments including description, properties, and examples
+- **Functions**: Document parameters, return values, and thrown exceptions
+- **Properties**: Document with inline JSDoc comments in interface/type definitions
+- **Formatting**:
+    - JSDoc blocks start with `/**` on a separate line
+    - Each line within the block starts with ` * ` (space, asterisk, space)
+    - The closing `*/` is on a separate line
+    - Parameter descriptions use `@param {type} name - Description` format
+    - Return value descriptions use `@returns {type} Description` format
+    - Examples are enclosed in code blocks with the appropriate language tag
+    - Empty lines within JSDoc blocks have a ` *` (space, asterisk) without additional text
+- **Type documentation**:
+    - Type definitions have a brief description above the type declaration
+    - Interface properties have inline JSDoc comments explaining their purpose
+    - Enum values have explanatory comments when their meaning isn't obvious
+
+### React Specifics
+
+- **Functional components**: Use functional components with hooks, not class components
+- **Hooks**: Follow React hooks naming convention (`useXxx`)
+- **Event handlers**: Name with `handleXxx` pattern
+- **Props**: Define using TypeScript interfaces or types with JSDoc comments
+- **Default values**: Use parameter defaults, not `defaultProps`
+- **JSX formatting**:
+    - JSX attributes are aligned and indented when they span multiple lines
+    - JSX closing tags are aligned with their opening tags
+    - Self-closing tags have a space before the closing bracket: `<Component />`
+    - JSX expressions in curly braces have consistent spacing: `{condition ? (...) : (...)}`
+    - JSX conditional rendering uses parentheses for multi-line expressions
+    - Component props are destructured with multi-line formatting and proper indentation when there are many props
+
+### ESLint Configuration
+
+The project uses ESLint with TypeScript support. The configuration enforces most of these conventions automatically.
+Always run ESLint before committing code:
+
+```bash
+npm run lint
+```
+
+### Prettier Configuration
+
+The project uses Prettier with a JSON configuration file (`.prettierrc.json`). The configuration enforces the formatting
+conventions described in this document. See [PRETTIER.md](./PRETTIER.md) for detailed documentation of all Prettier
+settings.
+
+Run Prettier to automatically format code:
+
+```bash
+npm run format
+```
