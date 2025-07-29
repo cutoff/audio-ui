@@ -1,0 +1,27 @@
+{
+  "tabWidth": 4,
+  "useTabs": false,
+  "printWidth": 120,
+  "bracketSameLine": false,
+  "bracketSpacing": true,
+  "singleQuote": false,
+  "jsxSingleQuote": false,
+  "semi": true,
+  "trailingComma": "es5",
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "options": {
+        "semi": true
+      }
+    },
+    {
+      "files": ["*.tsx"],
+      "options": {
+        "semi": true
+      }
+    }
+  ]
+}
