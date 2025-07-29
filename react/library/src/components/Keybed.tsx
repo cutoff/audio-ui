@@ -3,7 +3,7 @@
 import React, {useMemo} from 'react';
 import classNames from 'classnames';
 import AdaptiveSvgComponent from './support/AdaptiveSvgComponent';
-import {AdaptativeSize, Base} from "./types";
+import {AdaptativeSize, Base, Themable} from "./types";
 import {keybedSizeMap} from "./utils/sizeMappings";
 import {generateColorVariants} from "./utils/colorUtils";
 import {
@@ -26,7 +26,7 @@ const notesCount = WHITE_KEY_NAMES.length;
 /**
  * Props for the Keybed component
  */
-export type KeybedProps = Base & AdaptativeSize & {
+export type KeybedProps = Base & AdaptativeSize & Themable & {
     /** Number of keys on the keybed
      * @default 61 */
     nbKeys?: number;

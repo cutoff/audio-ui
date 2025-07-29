@@ -21,7 +21,7 @@ export type Themable = {
     roundness?: number;
 };
 
-export type Base = Themable & {
+export type Base = {
     /** Additional CSS classes */
     className?: string;
     /** Additional inline styles */
@@ -69,7 +69,7 @@ export type ExplicitRange = {
  * Base interface for control components with value ranges
  * Extends Stretchable to include responsive sizing capabilities
  */
-export type Control = AdaptativeSize & InteractiveControl & Base & {
+export type Control = AdaptativeSize & InteractiveControl & Base & Themable & {
     /** Label displayed below the component */
     label?: string;
 

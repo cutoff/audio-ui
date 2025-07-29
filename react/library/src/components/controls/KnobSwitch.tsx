@@ -1,6 +1,6 @@
 import React from 'react';
 import Knob from './Knob';
-import {AdaptativeSize, Base, InteractiveControl} from "../types";
+import {AdaptativeSize, Base, InteractiveControl, Themable} from "../types";
 
 /**
  * Props for the option elements within KnobSwitch
@@ -17,7 +17,7 @@ export type KnobSwitchOptionProps = {
 /**
  * Props for the KnobSwitch component
  */
-export type KnobSwitchProps = AdaptativeSize & InteractiveControl & Base & {
+export type KnobSwitchProps = AdaptativeSize & InteractiveControl & Base & Themable & {
     /** Label displayed below the component */
     label?: string;
     /** Current value of the component */
