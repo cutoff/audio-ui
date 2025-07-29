@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 // Import only the debounce function instead of the entire lodash library
 // This significantly reduces bundle size through tree-shaking
 import debounce from 'lodash/debounce';
@@ -117,7 +117,7 @@ function AdaptiveSvgComponent({
     const svgRef = useRef<SVGSVGElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     // Use useRef for the previous dimensions to avoid unnecessary re-renders
-    const prevDimensionsRef = useRef({ width: preferredWidth, height: preferredHeight });
+    const prevDimensionsRef = useRef({width: preferredWidth, height: preferredHeight});
     const [dimensions, setDimensions] = useState({
         width: preferredWidth,
         height: preferredHeight
@@ -125,7 +125,7 @@ function AdaptiveSvgComponent({
 
     // Calculate aspect ratio once and store in a ref since it's derived from props and doesn't change
     const aspectRatioRef = useRef(viewBoxHeight / viewBoxWidth);
-    
+
     // Update aspect ratio ref if viewBox dimensions change
     useEffect(() => {
         aspectRatioRef.current = viewBoxHeight / viewBoxWidth;
@@ -134,7 +134,7 @@ function AdaptiveSvgComponent({
     const calculateFixedDimensions = (availableWidth: number, availableHeight: number) => {
         const newWidth = Math.min(Math.max(preferredWidth, minWidth), availableWidth);
         const newHeight = Math.min(Math.max(preferredHeight, minHeight), availableHeight);
-        return { width: newWidth, height: newHeight };
+        return {width: newWidth, height: newHeight};
     };
 
     const calculateStretchedDimensions = (availableWidth: number, availableHeight: number) => {
@@ -175,7 +175,7 @@ function AdaptiveSvgComponent({
     /**
      * Calculates dimensions based on container size and constraints while
      * maintaining the aspect ratio defined by viewBox dimensions
-     * 
+     *
      * Optimized to avoid unnecessary recalculations by removing dimensions from dependency array
      */
     const calculateDimensions = useCallback(() => {
@@ -202,36 +202,36 @@ function AdaptiveSvgComponent({
      * We use a 100ms delay to prevent flickering during rapid shrinking.
      * This is only used when the container is getting smaller.
      */
-    const debouncedShrinkCalculate = useMemo(() => 
-        debounce(calculateDimensions, 100), 
-    [calculateDimensions]);
+    const debouncedShrinkCalculate = useMemo(() =>
+            debounce(calculateDimensions, 100),
+        [calculateDimensions]);
 
     /**
      * Reference to track the container's previous dimensions.
      * This allows us to determine if the container is growing or shrinking.
      */
-    const containerSizeRef = useRef({ width: 0, height: 0 });
+    const containerSizeRef = useRef({width: 0, height: 0});
 
     /**
      * Asymmetric resize handler that responds differently to growth vs. shrinking:
      * - For growth: Calculate dimensions immediately for responsive UI
      * - For shrinking: Use debounced calculation to prevent flickering
-     * 
+     *
      * This approach eliminates lag when the container grows while maintaining
      * smooth behavior when it shrinks.
      */
     const handleResize = useCallback((entries: ResizeObserverEntry[]) => {
         if (!containerRef.current || entries.length === 0) return;
-    
+
         const entry = entries[0];
         const newWidth = entry.contentRect.width;
         const newHeight = entry.contentRect.height;
         const prevWidth = containerSizeRef.current.width;
         const prevHeight = containerSizeRef.current.height;
-    
+
         // Update the stored size
-        containerSizeRef.current = { width: newWidth, height: newHeight };
-    
+        containerSizeRef.current = {width: newWidth, height: newHeight};
+
         // If container is growing in either dimension, calculate immediately
         if (newWidth > prevWidth || newHeight > prevHeight) {
             // Cancel any pending debounced calculations
@@ -278,14 +278,14 @@ function AdaptiveSvgComponent({
             onWheel(e);
         };
 
-        element.addEventListener('wheel', wheelHandler, { passive: false });
+        element.addEventListener('wheel', wheelHandler, {passive: false});
         return () => element.removeEventListener('wheel', wheelHandler);
     }, [onWheel]);
 
     // Styles to ensure proper grid cell containment
     const containerStyle = useMemo<React.CSSProperties>(() => {
         // Extract alignment properties from style
-        const { alignSelf, justifySelf, ...restStyle } = style;
+        const {alignSelf, justifySelf, ...restStyle} = style;
 
         // Map grid alignment properties to flex alignment properties
         let alignItems = 'center';
@@ -356,8 +356,8 @@ function AdaptiveSvgComponent({
 
 // Custom comparison function for React.memo to prevent unnecessary re-renders
 function arePropsEqual(prevProps: AdaptiveSvgComponentProps, nextProps: AdaptiveSvgComponentProps) {
-    const { style: prevStyle, children: prevChildren, ...prevRest } = prevProps;
-    const { style: nextStyle, children: nextChildren, ...nextRest } = nextProps;
+    const {style: prevStyle, children: prevChildren, ...prevRest} = prevProps;
+    const {style: nextStyle, children: nextChildren, ...nextRest} = nextProps;
 
     // Compare primitive props
     for (const key in prevRest) {

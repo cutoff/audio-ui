@@ -33,7 +33,7 @@ export default function RootLayout({
         <Providers>
             <div className="flex flex-col md:flex-row min-h-screen">
                 {/* SideBar will be client-side rendered */}
-                <SideBar />
+                <SideBar/>
                 <div className="flex-1 pt-16 md:pt-0">
                     {children}
                 </div>

@@ -1,17 +1,17 @@
 "use client"
 
-import { useState } from "react";
-import { Slider } from "@cutoff/audio-ui-react";
+import {useState} from "react";
+import {Slider} from "@cutoff/audio-ui-react";
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {Checkbox} from "@/components/ui/checkbox";
 
 export type SliderPageProps = {
     orientation: "horizontal" | "vertical";
 };
 
-export default function SliderPage({ orientation }: SliderPageProps) {
+export default function SliderPage({orientation}: SliderPageProps) {
     const [value, setValue] = useState(42);
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(100);

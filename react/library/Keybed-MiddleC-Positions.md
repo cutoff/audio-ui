@@ -1,10 +1,12 @@
 # Middle C Positions on Physical MIDI Keyboards
 
-This document outlines the conventional positions of the middle C key (MIDI note 60, C4) on various physical MIDI keyboard sizes. This information will be used as part of the specifications for the Keybed component.
+This document outlines the conventional positions of the middle C key (MIDI note 60, C4) on various physical MIDI
+keyboard sizes. This information will be used as part of the specifications for the Keybed component.
 
 ## MIDI Note Numbering Convention
 
 In the MIDI standard:
+
 - Middle C is assigned MIDI note number 60
 - In our notation system, this is represented as C4
 - Each octave spans 12 semitones (C, C#, D, D#, E, F, F#, G, G#, A, A#, B)
@@ -112,7 +114,8 @@ The positions described above are for keyboards with no transposition applied. W
 - Positive transposition: Middle C shifts to the right on the keyboard
 - Negative transposition: Middle C shifts to the left on the keyboard
 
-For example, with a -12 semitone transposition on a 61-key keyboard, middle C would appear to be the 2nd C from the left instead of the 3rd.
+For example, with a -12 semitone transposition on a 61-key keyboard, middle C would appear to be the 2nd C from the left
+instead of the 3rd.
 
 ## Implementation Notes
 
@@ -123,8 +126,11 @@ When implementing the Keybed component:
 3. For 88-key keyboards, the default starting note should be A
 4. Middle C (MIDI note 60, C4) should be positioned according to the conventions above
 5. The component should support transposition that shifts the apparent position of middle C
-6. While physical keyboards typically range from 25-88 keys, the component supports a wider range (1-128 keys) for software applications
+6. While physical keyboards typically range from 25-88 keys, the component supports a wider range (1-128 keys) for
+   software applications
 
 ## References
 
-This information is based on standard MIDI keyboard layouts used by major manufacturers including Yamaha, Roland, Korg, Nord, and others. While there may be some variations between specific models, these conventions are widely followed in the industry.
+This information is based on standard MIDI keyboard layouts used by major manufacturers including Yamaha, Roland, Korg,
+Nord, and others. While there may be some variations between specific models, these conventions are widely followed in
+the industry.

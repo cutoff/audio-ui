@@ -1,25 +1,19 @@
 "use client"
 
-import { useState } from "react";
-import { 
-  Knob, 
-  KnobProps, 
-  KnobSwitch, 
-  KnobSwitchProps, 
-  Option
-} from "@cutoff/audio-ui-react";
+import {useState} from "react";
+import {Knob, KnobProps, KnobSwitch, KnobSwitchProps, Option} from "@cutoff/audio-ui-react";
 
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {Checkbox} from "@/components/ui/checkbox";
 
 // Define a simple MIDI bipolar formatter function for the demo
 // This will be replaced by the library's midiBipolarFormatter when it's available
 const midiBipolarFormatter = (value: number, min: number, max: number): string => {
-  const centerValue = Math.floor((max - min + 1) / 2) + min;
-  const shiftedValue = value - centerValue;
-  return shiftedValue > 0 ? `+${shiftedValue}` : shiftedValue.toString();
+    const centerValue = Math.floor((max - min + 1) / 2) + min;
+    const shiftedValue = value - centerValue;
+    return shiftedValue > 0 ? `+${shiftedValue}` : shiftedValue.toString();
 };
 
 const iconSineWave = "/sine-wave.svg";
@@ -57,12 +51,12 @@ function generateCodeSnippet(
 `;
     } else {
         let props = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}} roundness={${roundness}} thickness={${thickness}}`;
-        
+
         // Add renderValue prop if using MIDI bipolar formatter
         if (bipolar && useMidiBipolar) {
             props += `\n  renderValue={midiBipolarFormatter}`;
         }
-        
+
         return `<Knob ${props} />`;
     }
 }
@@ -298,7 +292,7 @@ export default function KnobDemoPage() {
         >
             {sampleOptions}
         </KnobSwitch>,
-        <Knob 
+        <Knob
             key="4"
             style={{cursor: "pointer"}}
             min={0}

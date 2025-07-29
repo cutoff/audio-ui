@@ -48,7 +48,7 @@ type FilledZone = {
 
 /**
  * Helper function to calculate a bounded ratio between 0 and 1
- * 
+ *
  * @param value The value to convert to a ratio
  * @param min The minimum value (corresponds to ratio = 0)
  * @param max The maximum value (corresponds to ratio = 1)
@@ -64,12 +64,12 @@ const calculateBoundedRatio = (value: number, min: number, max: number): number 
 
 /**
  * Calculates the filled zone dimensions for a slider
- * 
+ *
  * This function determines how to draw the filled portion of a slider based on:
  * - The slider's orientation (horizontal or vertical)
  * - Whether it's in bipolar mode (has a center point)
  * - The current value relative to min, max, and center
- * 
+ *
  * @param mainZone The dimensions of the slider's background
  * @param value The current value (will be bounded to min-max range)
  * @param min The minimum value
@@ -77,10 +77,10 @@ const calculateBoundedRatio = (value: number, min: number, max: number): number 
  * @param center Optional center point for bipolar mode
  * @param isHorizontal Whether the slider is horizontal (false = vertical)
  * @returns Dimensions of the filled portion (x,w for horizontal; y,h for vertical)
- * 
+ *
  * For horizontal sliders:
  * - Normal mode: Fills from left edge, growing rightward as value increases
- * - Bipolar mode: 
+ * - Bipolar mode:
  *   - When value > center: Fills from center, growing rightward
  *   - When value < center: Fills from center, growing leftward (DJ crossfader style)
  *
@@ -91,20 +91,20 @@ const calculateBoundedRatio = (value: number, min: number, max: number): number 
  *   - When value < center: Fills from center, growing downward
  */
 const computeFilledZone = (
-    mainZone: Zone, 
-    value: number, 
-    min: number, 
-    max: number, 
+    mainZone: Zone,
+    value: number,
+    min: number,
+    max: number,
     center?: number,
     isHorizontal: boolean = false
 ): FilledZone => {
     // Ensure value is within bounds (min-max range)
     const boundedValue = Math.max(min, Math.min(value, max));
-    
+
     // Select the dimension and position properties based on orientation
     const dimension = isHorizontal ? mainZone.w : mainZone.h;
     const position = isHorizontal ? mainZone.x : mainZone.y;
-    
+
     // Normal mode (no center point)
     if (center === undefined) {
         // Calculate the ratio and size
@@ -125,16 +125,16 @@ const computeFilledZone = (
             };
         }
     }
-    
+
     // Bipolar mode calculations
     const halfSize = dimension / 2;
     const centerPoint = position + halfSize;
-    
+
     if (boundedValue >= center) {
         // Value >= center (right/upper half)
         const bipolarRatio = calculateBoundedRatio(boundedValue, center, max);
         const bipolarSize = halfSize * bipolarRatio;
-        
+
         if (isHorizontal) {
             // Horizontal: Fill from center to right
             return {
@@ -156,7 +156,7 @@ const computeFilledZone = (
         // The inversion (1 - ratio) achieves this transformation efficiently
         const bipolarRatio = 1 - calculateBoundedRatio(boundedValue, min, center);
         const bipolarSize = halfSize * bipolarRatio;
-        
+
         if (isHorizontal) {
             // Horizontal: Fill from center to left (DJ crossfader style)
             return {
@@ -258,26 +258,26 @@ const Slider = ({
                 }: SliderProps) => {
     // Ensure thickness is non-negative
     const nonNegativeThickness = Math.max(0, thickness);
-    
+
     // Calculate the dimensions of the slider's main zone based on orientation and thickness
     const mainZone = useMemo<Zone>(() => {
         if (orientation === 'vertical') {
             // Center the slider based on its thickness
             const x = 50 - (nonNegativeThickness / 2);
-            return { 
-                x, 
-                y: 20, 
-                w: nonNegativeThickness, 
-                h: 330 
+            return {
+                x,
+                y: 20,
+                w: nonNegativeThickness,
+                h: 330
             };
         } else {
             // For horizontal orientation
             const y = 50 - (nonNegativeThickness / 2);
-            return { 
-                x: 20, 
-                y, 
-                w: 330, 
-                h: nonNegativeThickness 
+            return {
+                x: 20,
+                y,
+                w: 330,
+                h: nonNegativeThickness
             };
         }
     }, [nonNegativeThickness, orientation]);
@@ -288,11 +288,11 @@ const Slider = ({
         const normalizedCenter = bipolar ? (Math.floor((max - min + 1) / 2) + min) : undefined;
 
         return computeFilledZone(
-            mainZone, 
-            normalizedValue, 
-            min, 
-            max, 
-            normalizedCenter, 
+            mainZone,
+            normalizedValue,
+            min,
+            max,
+            normalizedCenter,
             orientation === 'horizontal'
         );
     }, [min, max, value, bipolar, mainZone, orientation]);
@@ -301,12 +301,12 @@ const Slider = ({
     const cornerRadius = useMemo(() => {
         // Ensure roundness is non-negative
         const nonNegativeRoundness = roundness !== undefined ? Math.max(0, roundness) : undefined;
-        
+
         // If roundness is 0, use square caps (cornerRadius = 0)
         if (nonNegativeRoundness === 0) {
             return 0; // No rounding for square caps
         }
-        
+
         // Use provided roundness or fall back to half the thickness for fully rounded corners
         const dimension = orientation === 'vertical' ? mainZone.w : mainZone.h;
         return nonNegativeRoundness !== undefined ? nonNegativeRoundness : dimension / 2;
@@ -332,7 +332,7 @@ const Slider = ({
     }, [className, onChange]);
 
     // Get the preferred dimensions based on the size prop and orientation
-    const { width: preferredWidth, height: preferredHeight } = sliderSizeMap[size][orientation];
+    const {width: preferredWidth, height: preferredHeight} = sliderSizeMap[size][orientation];
 
     // Determine viewBox dimensions based on orientation
     const viewBoxWidth = orientation === 'vertical' ? 100 : 400;

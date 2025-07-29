@@ -49,12 +49,12 @@ export type Control = AdaptativeSize & InteractiveControl & Base & {
 
     /** Current value of the component */
     value: number;
-    
+
     /** Identifier for the parameter this control represents
      * Used as the first argument in onChange callbacks
      */
     paramId?: string;
-    
+
     /** Roundness for component corners/caps
      * @default Component-specific: Knob uses 12, Slider uses half width, Button uses 10px
      * A value of 0 means square corners/caps, while values > 0 create rounded corners/caps
@@ -77,7 +77,7 @@ export type Control = AdaptativeSize & InteractiveControl & Base & {
  * Extends Control to include all basic control properties
  */
 export type BipolarControl = Control & {
-    /** 
+    /**
      * Whether the component should operate in bipolar mode
      * In bipolar mode, the component visualizes values relative to a center point
      * rather than from minimum to maximum

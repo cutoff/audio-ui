@@ -2,7 +2,8 @@
 
 This directory contains the React implementation of the Audio UI component library.
 
-> **For general usage, installation, and component documentation, see the [main README](../README.md) at the project root.**
+> **For general usage, installation, and component documentation, see the [main README](../README.md) at the project
+root.**
 
 ## Development Setup
 
@@ -93,8 +94,9 @@ npm ls react @types/react
 ```
 
 If you encounter version conflicts:
+
 1. Install React 18 versions: `npm install react@^18.3.1 react-dom@^18.3.1 @types/react@^18.3.23`
-2. Run type checks: `npm run typecheck` 
+2. Run type checks: `npm run typecheck`
 3. Rebuild: `npm run build`
 
 ## Building and Testing
@@ -147,17 +149,20 @@ npm run dev  # Test visually in browser
 ### Troubleshooting
 
 **React type errors**: Usually indicates version mismatch
+
 ```bash
 npm ls react @types/react
 # Fix by installing consistent React 18 versions
 ```
 
 **Build failures**: Check TypeScript errors
+
 ```bash
 npm run typecheck  # Shows detailed error information
 ```
 
 **Demo app not updating**: Rebuild library first
+
 ```bash
 cd react/library && npm run build
 cd ../demo-app && npm run dev

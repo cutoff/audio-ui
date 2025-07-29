@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [ "dom", "dom.iterable", "esnext" ],
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -14,5 +14,5 @@
     "incremental": true,
     "composite": true
   },
-  "exclude": ["**/node_modules", "**/dist"]
+  "exclude": [ "**/node_modules", "**/dist" ]
 }

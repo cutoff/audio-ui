@@ -6,13 +6,13 @@ import AdaptiveSvgComponent from './support/AdaptiveSvgComponent';
 import {AdaptativeSize, Base} from "./types";
 import {keybedSizeMap} from "./utils/sizeMappings";
 import {
-    createNoteNumSet, 
-    noteToNoteNum, 
-    noteNumToNote, 
-    WHITE_KEY_NAMES, 
-    WHITE_KEY_TO_CHROMATIC, 
-    DIATONIC_TO_CHROMATIC, 
-    WHITE_KEY_POSITIONS
+    createNoteNumSet,
+    DIATONIC_TO_CHROMATIC,
+    noteNumToNote,
+    noteToNoteNum,
+    WHITE_KEY_NAMES,
+    WHITE_KEY_POSITIONS,
+    WHITE_KEY_TO_CHROMATIC
 } from "./utils/noteUtils";
 import "../styles.css";
 
@@ -107,15 +107,15 @@ const positiveModulo = (number: number, modulus: number): number => {
  * ```
  */
 function Keybed({
-    nbKeys = 61,
-    startKey = (nbKeys === 88) ? 'A' : 'C',
-    octaveShift = 0,
-    stretch = false,
-    notesOn = [],
-    style = {},
-    className = "",
-    size = 'normal'
-}: KeybedProps) {
+                    nbKeys = 61,
+                    startKey = (nbKeys === 88) ? 'A' : 'C',
+                    octaveShift = 0,
+                    stretch = false,
+                    notesOn = [],
+                    style = {},
+                    className = "",
+                    size = 'normal'
+                }: KeybedProps) {
     // Ensure nbKeys is within valid range (1-128)
     const validNbKeys = Math.max(1, Math.min(128, nbKeys));
     // Memoize initial computations
@@ -135,7 +135,7 @@ function Keybed({
         // If we start with A or B, we need to subtract one more octave
         // because these notes belong to the octave of the next C
         const octaveAdjustment = startKeyIndex >= 5 ? 1 : 0;
-        
+
         // Adjust startOctave calculation for extreme keyboard sizes
         let startOctave;
         if (validNbKeys <= 12) {
@@ -226,19 +226,19 @@ function Keybed({
         // Calculate the base MIDI note number for the starting key
         const baseNoteNum = (startOctave + 1) * 12 + startKeyChromatic;
 
-        return Array.from({ length: nbWhite }, (_, index) => {
+        return Array.from({length: nbWhite}, (_, index) => {
             // Calculate the diatonic index (white keys only)
             const currentNoteIndex = (startKeyIndex + index) % notesCount;
-            
+
             // Calculate how many octaves we've moved from the start
             const octaveOffset = Math.floor((startKeyIndex + index) / notesCount);
-            
+
             // Calculate the MIDI note number for this key
             // We need to find how many semitones we've moved from the start key
             const chromaticOffset = WHITE_KEY_TO_CHROMATIC[currentNoteIndex] - WHITE_KEY_TO_CHROMATIC[startKeyIndex];
             const adjustedOffset = chromaticOffset + (octaveOffset * 12);
             const noteNum = baseNoteNum + adjustedOffset - (octaveShift * 12);
-            
+
             // Convert the MIDI note number to a note name and octave
             const currentWhiteNote = noteNumToNote(noteNum);
 
@@ -275,28 +275,28 @@ function Keybed({
         // Calculate the base MIDI note number for the starting key
         const baseNoteNum = (startOctave + 1) * 12 + startKeyChromatic;
 
-        return Array.from({ length: nbWhite - 1 }, (_, index) => {
+        return Array.from({length: nbWhite - 1}, (_, index) => {
             const octaveIndex = index % 7;
             if (correctBlackPass.includes(octaveIndex)) return null;
 
             // Calculate the diatonic index (white keys only)
             const currentNoteIndex = (startKeyIndex + index) % notesCount;
-            
+
             // Calculate how many octaves we've moved from the start
             const octaveOffset = Math.floor((startKeyIndex + index) / notesCount);
-            
+
             // Calculate the MIDI note number for this key
             // We need to find how many semitones we've moved from the start key
             const chromaticOffset = WHITE_KEY_TO_CHROMATIC[currentNoteIndex] - WHITE_KEY_TO_CHROMATIC[startKeyIndex];
             const adjustedOffset = chromaticOffset + (octaveOffset * 12);
-            
+
             // Black keys are one semitone higher than the white key to their left
             const noteNum = baseNoteNum + adjustedOffset + 1 - (octaveShift * 12);
-            
+
             // Skip this black key if its note number corresponds to a white key position
             // This prevents duplicate note assignments between white and black keys
             if (WHITE_KEY_POSITIONS.has(noteNum % 12)) return null;
-            
+
             // Convert the MIDI note number to a note name and octave
             const currentBlackNote = noteNumToNote(noteNum);
 
@@ -304,7 +304,7 @@ function Keybed({
                 <rect
                     key={`black-${index}-${currentBlackNote}`}
                     className={`stroke-primary-50 ${isNoteActive(currentBlackNote) ? 'fill-primary' : 'fill-primary-50'}`}
-                    style={{ zIndex: 1 }}
+                    style={{zIndex: 1}}
                     strokeWidth={innerStrokeWidth}
                     x={index * whiteWidth + blackXShift}
                     y={0}
@@ -324,7 +324,7 @@ function Keybed({
     }, [className]);
 
     // Get the preferred dimensions based on the size prop
-    const { width: preferredWidth, height: preferredHeight } = keybedSizeMap[size];
+    const {width: preferredWidth, height: preferredHeight} = keybedSizeMap[size];
 
     return (
         <AdaptiveSvgComponent

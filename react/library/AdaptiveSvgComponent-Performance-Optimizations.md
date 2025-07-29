@@ -1,6 +1,7 @@
 # AdaptiveSvgComponent Performance Optimizations
 
-This document outlines the performance optimizations made to the `AdaptiveSvgComponent`, which serves as a foundation for audio control components in the Audio UI library.
+This document outlines the performance optimizations made to the `AdaptiveSvgComponent`, which serves as a foundation
+for audio control components in the Audio UI library.
 
 ## Summary of Optimizations
 
@@ -20,16 +21,19 @@ The following optimizations have been implemented to improve the performance of 
 ### 1. Targeted Lodash Import
 
 **Before:**
+
 ```typescript
 import { debounce } from 'lodash';
 ```
 
 **After:**
+
 ```typescript
 import debounce from 'lodash/debounce';
 ```
 
 **Benefits:**
+
 - Significantly reduces bundle size through tree-shaking
 - Only imports the specific function needed instead of the entire lodash library
 - Improves initial load time and reduces memory usage
@@ -37,6 +41,7 @@ import debounce from 'lodash/debounce';
 ### 2. Optimized Hook Dependency Arrays
 
 **Before:**
+
 ```typescript
 const calculateDimensions = useCallback(() => {
     // ... calculation logic
@@ -47,6 +52,7 @@ const calculateDimensions = useCallback(() => {
 ```
 
 **After:**
+
 ```typescript
 const calculateDimensions = useCallback(() => {
     // ... calculation logic
@@ -59,6 +65,7 @@ const calculateDimensions = useCallback(() => {
 ```
 
 **Benefits:**
+
 - Prevents unnecessary recalculations by removing `dimensions` from the dependency array
 - Avoids potential render loops caused by the function depending on state that it updates
 - Reduces the number of function recreations, improving performance
@@ -66,6 +73,7 @@ const calculateDimensions = useCallback(() => {
 ### 3. Reference-Based Dimension Tracking
 
 **Before:**
+
 ```typescript
 const [dimensions, setDimensions] = useState({
     width: preferredWidth,
@@ -79,6 +87,7 @@ if (dimensions.width !== newDimensions.width || dimensions.height !== newDimensi
 ```
 
 **After:**
+
 ```typescript
 const prevDimensionsRef = useRef({ width: preferredWidth, height: preferredHeight });
 const [dimensions, setDimensions] = useState({
@@ -95,6 +104,7 @@ if (prevDimensionsRef.current.width !== newDimensions.width ||
 ```
 
 **Benefits:**
+
 - Uses a ref to track previous dimensions instead of comparing with current state
 - Avoids unnecessary state updates and re-renders
 - Provides a stable reference for comparison that doesn't trigger re-renders
@@ -102,6 +112,7 @@ if (prevDimensionsRef.current.width !== newDimensions.width ||
 ### 4. Memoized Style Objects
 
 **Before:**
+
 ```typescript
 const containerStyle = useMemo<React.CSSProperties>(() => {
     // ... style calculation
@@ -113,6 +124,7 @@ const svgStyle = useMemo<React.CSSProperties>(() => ({
 ```
 
 **After:**
+
 ```typescript
 // Same implementation, but now more effective due to other optimizations
 const containerStyle = useMemo<React.CSSProperties>(() => {
@@ -125,6 +137,7 @@ const svgStyle = useMemo<React.CSSProperties>(() => ({
 ```
 
 **Benefits:**
+
 - Prevents recreation of style objects on every render
 - Reduces unnecessary re-renders of child components
 - Works more effectively with other optimizations
@@ -132,11 +145,13 @@ const svgStyle = useMemo<React.CSSProperties>(() => ({
 ### 5. Custom React.memo Comparison Function
 
 **Before:**
+
 ```typescript
 export default React.memo(AdaptiveSvgComponent);
 ```
 
 **Initial Implementation:**
+
 ```typescript
 function arePropsEqual(prevProps: AdaptiveSvgComponentProps, nextProps: AdaptiveSvgComponentProps) {
     // Compare primitive props
@@ -180,6 +195,7 @@ function arePropsEqual(prevProps: AdaptiveSvgComponentProps, nextProps: Adaptive
 ```
 
 **Final Implementation:**
+
 ```typescript
 function arePropsEqual(prevProps: AdaptiveSvgComponentProps, nextProps: AdaptiveSvgComponentProps) {
     // Compare primitive props
@@ -229,17 +245,20 @@ export default React.memo(AdaptiveSvgComponent, arePropsEqual);
 ```
 
 **Benefits:**
+
 - Prevents unnecessary re-renders when props haven't meaningfully changed
 - Performs deep comparison of style objects
 - Provides fine-grained control over when the component should re-render
 - Ensures proper re-rendering when children change (critical for dynamic content)
 
 **Important Note:**
-The explicit check for children changes is crucial for components like Knob that display dynamic values through the children prop. Without this check, the component would not re-render when values change, leading to stale UI.
+The explicit check for children changes is crucial for components like Knob that display dynamic values through the
+children prop. Without this check, the component would not re-render when values change, leading to stale UI.
 
 ### 6. Aspect Ratio Caching
 
 **Before:**
+
 ```typescript
 const aspectRatio = viewBoxHeight / viewBoxWidth;
 
@@ -247,6 +266,7 @@ const aspectRatio = viewBoxHeight / viewBoxWidth;
 ```
 
 **After:**
+
 ```typescript
 const aspectRatioRef = useRef(viewBoxHeight / viewBoxWidth);
 
@@ -260,6 +280,7 @@ const aspectRatio = aspectRatioRef.current;
 ```
 
 **Benefits:**
+
 - Stores the aspect ratio in a ref to avoid recalculating it on every render
 - Only updates when viewBox dimensions change
 - Provides a stable reference that doesn't trigger re-renders
@@ -267,6 +288,7 @@ const aspectRatio = aspectRatioRef.current;
 ### 7. Optimized Resize Handling
 
 **Before:**
+
 ```typescript
 useEffect(() => {
     const debouncedCalculate = debounce(calculateDimensions, 100);
@@ -284,6 +306,7 @@ useEffect(() => {
 ```
 
 **After:**
+
 ```typescript
 const debouncedCalculate = useMemo(() => 
     debounce(calculateDimensions, 100), 
@@ -306,6 +329,7 @@ useEffect(() => {
 ```
 
 **Benefits:**
+
 - Memoizes the debounced function to avoid recreation on every render
 - Ensures consistent debounce behavior across renders
 - Adds initial calculation to ensure dimensions are set on mount
@@ -313,6 +337,7 @@ useEffect(() => {
 ### 8. Explicit Initial Calculation
 
 **Before:**
+
 ```typescript
 useEffect(() => {
     const resizeObserver = new ResizeObserver(debouncedCalculate);
@@ -328,6 +353,7 @@ useEffect(() => {
 ```
 
 **After:**
+
 ```typescript
 useEffect(() => {
     const resizeObserver = new ResizeObserver(debouncedCalculate);
@@ -346,6 +372,7 @@ useEffect(() => {
 ```
 
 **Benefits:**
+
 - Ensures dimensions are calculated immediately on mount
 - Prevents initial render with incorrect dimensions
 - Improves initial rendering accuracy
@@ -369,7 +396,8 @@ To test the performance improvements:
 
 ### Reactivity Testing
 
-An additional test component `AdaptiveSvgComponentValueTest.tsx` has been created to verify that the component properly re-renders when its children change due to value changes. This component:
+An additional test component `AdaptiveSvgComponentValueTest.tsx` has been created to verify that the component properly
+re-renders when its children change due to value changes. This component:
 
 1. Renders two instances of `AdaptiveSvgComponent` side by side
 2. The left component displays a dynamic value that changes when buttons are clicked
@@ -383,7 +411,8 @@ To test the reactivity:
 3. Verify that the left component updates to show the new value
 4. Verify that the right component remains unchanged (for reference)
 
-This test ensures that our performance optimizations don't prevent necessary re-renders when values change, which is critical for components like Knob that display dynamic values.
+This test ensures that our performance optimizations don't prevent necessary re-renders when values change, which is
+critical for components like Knob that display dynamic values.
 
 ## Conclusion
 
@@ -398,13 +427,18 @@ These optimizations significantly improve the performance of the `AdaptiveSvgCom
 
 ### Balancing Performance and Reactivity
 
-While performance optimizations are important, it's crucial to maintain the correct balance between performance and reactivity. The custom React.memo comparison function demonstrates this balance:
+While performance optimizations are important, it's crucial to maintain the correct balance between performance and
+reactivity. The custom React.memo comparison function demonstrates this balance:
 
 - **Performance**: We avoid unnecessary re-renders by carefully comparing props
 - **Reactivity**: We ensure necessary re-renders by explicitly checking for children changes
 
-This balance is especially important for components like Knob, Slider, and other UI controls that need to update their visual representation when values change. Without proper reactivity, performance optimizations can lead to a non-responsive UI where value changes aren't reflected visually.
+This balance is especially important for components like Knob, Slider, and other UI controls that need to update their
+visual representation when values change. Without proper reactivity, performance optimizations can lead to a
+non-responsive UI where value changes aren't reflected visually.
 
-The explicit check for children changes in the custom comparison function ensures that components will re-render when their content changes, while still preventing unnecessary re-renders when other props remain the same.
+The explicit check for children changes in the custom comparison function ensures that components will re-render when
+their content changes, while still preventing unnecessary re-renders when other props remain the same.
 
-Since `AdaptiveSvgComponent` serves as a foundation for other components like Knob, Slider, and Keybed, these balanced optimizations will have a positive impact on both the performance and reactivity of the Audio UI library.
+Since `AdaptiveSvgComponent` serves as a foundation for other components like Knob, Slider, and Keybed, these balanced
+optimizations will have a positive impact on both the performance and reactivity of the Audio UI library.

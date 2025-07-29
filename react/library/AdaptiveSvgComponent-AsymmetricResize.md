@@ -1,10 +1,12 @@
 # AdaptiveSvgComponent Asymmetric Resize Handling
 
-This document explains the asymmetric resize handling implemented in the `AdaptiveSvgComponent` to address the lag issue when the parent container grows.
+This document explains the asymmetric resize handling implemented in the `AdaptiveSvgComponent` to address the lag issue
+when the parent container grows.
 
 ## Problem Statement
 
-The `AdaptiveSvgComponent` previously used a debounced resize handler with a fixed 100ms delay for all resize events. This approach caused a noticeable lag when the parent container grew, while working smoothly when the container shrank.
+The `AdaptiveSvgComponent` previously used a debounced resize handler with a fixed 100ms delay for all resize events.
+This approach caused a noticeable lag when the parent container grew, while working smoothly when the container shrank.
 
 ```javascript
 // Previous implementation
@@ -18,16 +20,19 @@ useEffect(() => {
 }, [calculateDimensions, debouncedCalculate]);
 ```
 
-The 100ms debounce delay was beneficial for shrinking events to prevent flickering during rapid resizing, but it created an undesirable lag when the container grew, where users typically expect immediate feedback.
+The 100ms debounce delay was beneficial for shrinking events to prevent flickering during rapid resizing, but it created
+an undesirable lag when the container grew, where users typically expect immediate feedback.
 
 ## Solution: Asymmetric Resize Handling
 
-To address this issue, we implemented an asymmetric resize handling approach that responds differently to growth vs. shrinking:
+To address this issue, we implemented an asymmetric resize handling approach that responds differently to growth vs.
+shrinking:
 
 1. **For growth**: Calculate dimensions immediately for responsive UI
 2. **For shrinking**: Use debounced calculation (100ms delay) to prevent flickering
 
 This approach provides the best of both worlds:
+
 - Immediate response when the container grows, eliminating lag
 - Smooth behavior when the container shrinks, preventing flickering
 
@@ -45,7 +50,8 @@ const containerSizeRef = useRef({ width: 0, height: 0 });
 
 ### 2. Asymmetric Resize Handler
 
-A wrapper function determines whether to use immediate or debounced calculation based on whether the container is growing or shrinking:
+A wrapper function determines whether to use immediate or debounced calculation based on whether the container is
+growing or shrinking:
 
 ```javascript
 const handleResize = useCallback((entries: ResizeObserverEntry[]) => {
@@ -116,10 +122,12 @@ A test page has been created to demonstrate the asymmetric resize handling:
 
 - Location: `/react/demo-app/app/components/adaptive-svg-resize-test/page.tsx`
 - Features:
-  - Buttons to increase and decrease container size
-  - Toggle for stretch mode
-  - Visual feedback to observe resize behavior
+    - Buttons to increase and decrease container size
+    - Toggle for stretch mode
+    - Visual feedback to observe resize behavior
 
 ## Conclusion
 
-The asymmetric resize handling approach effectively addresses the lag issue when the parent container grows while maintaining smooth behavior when it shrinks. This improvement enhances the responsiveness and user experience of all components built on top of the `AdaptiveSvgComponent`.
+The asymmetric resize handling approach effectively addresses the lag issue when the parent container grows while
+maintaining smooth behavior when it shrinks. This improvement enhances the responsiveness and user experience of all
+components built on top of the `AdaptiveSvgComponent`.

@@ -17,7 +17,7 @@ export type ButtonProps = Control & ExplicitRange & {
 
 /**
  * A button component for audio applications.
- * 
+ *
  * Features:
  * - Supports value-based appearance changes
  * - Responsive sizing with stretch option
@@ -25,12 +25,12 @@ export type ButtonProps = Control & ExplicitRange & {
  * - Visual feedback for interactive state
  * - Configurable corner/cap style (square or round)
  * - Clickable with latch or momentary behavior
- * 
+ *
  * This component inherits properties from:
  * - `Stretchable`: For responsive sizing
  * - `Control`: For basic control properties
  * - `InteractiveControl`: For interactive behavior (onChange)
- * 
+ *
  * @property {boolean} stretch - Whether the button should stretch to fill its container (from `Stretchable`)
  * @property {string} label - Label displayed below the button (from `Control`)
  * @property {number} min - Minimum value of the button (from `Control`)
@@ -39,7 +39,7 @@ export type ButtonProps = Control & ExplicitRange & {
  * @property {number} roundness - Controls the corner style: 0 for square corners, > 0 for rounded corners (from `Control`, defaults to 10)
  * @property {Function} onChange - Handler for value changes. When provided, makes the button clickable and interactive. If not provided, the button is not editable. (from `InteractiveControl`)
  * @property {boolean} latch - Whether the button should latch (toggle between states) or momentary (only active while pressed). Defaults to false.
- * 
+ *
  * @example
  * ```tsx
  * // Non-interactive button (display only)
@@ -47,7 +47,7 @@ export type ButtonProps = Control & ExplicitRange & {
  *   value={75}
  *   label="Power"
  * />
- * 
+ *
  * // Interactive button with latch behavior
  * <Button
  *   value={75}
@@ -55,7 +55,7 @@ export type ButtonProps = Control & ExplicitRange & {
  *   onChange={setValue}
  *   latch={true}
  * />
- * 
+ *
  * // Interactive button with momentary behavior
  * <Button
  *   value={0}
@@ -63,7 +63,7 @@ export type ButtonProps = Control & ExplicitRange & {
  *   onChange={setValue}
  *   latch={false}
  * />
- * 
+ *
  * // Grid-aligned stretched button
  * <Button
  *   value={50}
@@ -75,21 +75,21 @@ export type ButtonProps = Control & ExplicitRange & {
  * ```
  */
 function Button({
-    min = 0,
-    max = 100,
-    value = 0,
-    label,
-    stretch = false,
-    className,
-    style,
-    onChange,
-    latch = false,
-    roundness = 10,
-    size = 'normal'
-}: ButtonProps) {
+                    min = 0,
+                    max = 100,
+                    value = 0,
+                    label,
+                    stretch = false,
+                    className,
+                    style,
+                    onChange,
+                    latch = false,
+                    roundness = 10,
+                    size = 'normal'
+                }: ButtonProps) {
     // Ref to track if the button is currently pressed (for momentary mode)
     const isPressedRef = useRef(false);
-    
+
     // Calculate the center value based on min and max
     const actualCenter = useMemo(() => {
         return Math.floor((max - min + 1) / 2) + min;
@@ -104,9 +104,9 @@ function Button({
     const buttonClasses = useMemo(() => {
         const stroke = isOn ? "stroke-primary-50" : "stroke-primary-20";
         const fill = isOn ? "fill-primary" : "fill-primary-50";
-        return { stroke, fill };
+        return {stroke, fill};
     }, [isOn]);
-    
+
     // Calculate corner radius based on roundness (ensure non-negative)
     const cornerRadius = useMemo(() => {
         const nonNegativeRoundness = Math.max(0, roundness); // Clamp to non-negative values
@@ -128,7 +128,7 @@ function Button({
             }
         }
     }, [onChange, latch, isOn, min, max]);
-    
+
     // Handle mouse up event for both latch and non-latch buttons
     const handleMouseUp = useCallback(() => {
         // For non-latch buttons, reset to min value if the button is pressed
@@ -138,7 +138,7 @@ function Button({
         }
         // For latch buttons, do nothing (the toggle happens on mouseDown)
     }, [onChange, latch, min]);
-    
+
     // Memoize the global mouseup handler to ensure consistent function reference
     // This is important for proper cleanup when dependencies change
     const handleGlobalMouseUp = useCallback(() => {
@@ -147,14 +147,14 @@ function Button({
             onChange?.(min);
         }
     }, [onChange, min]);
-    
+
     // Set up global mouseup event listener for momentary buttons
     useEffect(() => {
         // Only add the global listener if this is a momentary button with onChange handler
         if (!latch && onChange) {
             // Add global mouseup listener
             window.addEventListener('mouseup', handleGlobalMouseUp);
-            
+
             // Clean up
             return () => {
                 window.removeEventListener('mouseup', handleGlobalMouseUp);
@@ -164,7 +164,7 @@ function Button({
         // This fixes the TypeScript warning: TS7030: Not all code paths return a value
         return undefined;
     }, [latch, onChange, handleGlobalMouseUp]); // Use memoized function in dependencies
-    
+
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {
         return classNames(
@@ -175,7 +175,7 @@ function Button({
     }, [className, onChange]);
 
     // Get the preferred dimensions based on the size prop
-    const { width: preferredWidth, height: preferredHeight } = buttonSizeMap[size];
+    const {width: preferredWidth, height: preferredHeight} = buttonSizeMap[size];
 
     return (
         <AdaptiveSvgComponent
@@ -192,7 +192,7 @@ function Button({
             onMouseUp={onChange ? handleMouseUp : undefined}
         >
             {/* Button Rectangle */}
-            <rect 
+            <rect
                 className={`${buttonClasses.stroke} ${buttonClasses.fill}`}
                 strokeWidth="5"
                 x={10}
@@ -202,15 +202,15 @@ function Button({
                 rx={cornerRadius}
                 ry={cornerRadius}
             />
-            
+
             {/* Label Text */}
             {label && (
-                <text 
-                    className="fill-text" 
-                    x="50" 
+                <text
+                    className="fill-text"
+                    x="50"
                     y="88"
                     fontSize="30"
-                    fontWeight="500" 
+                    fontWeight="500"
                     textAnchor="middle"
                 >
                     {label}

@@ -22,10 +22,10 @@ export default function ControlSkeletonPage(props: ControlSkeletonPageProps) {
         onChange,
         orientation = "vertical"
     } = props;
-    
+
     // Array of all size types for dynamic generation
     const sizeTypes: SizeType[] = ['xsmall', 'small', 'normal', 'large', 'xlarge'];
-    
+
     const fillItems = useMemo(() => {
         const items: React.ReactNode[] = [];
         for (let i = 0; i < 36; i++) {
@@ -79,14 +79,14 @@ export default function ControlSkeletonPage(props: ControlSkeletonPageProps) {
                                     <h2 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Size</h2>
                                     <div className="flex flex-col gap-6 md:gap-8 items-center md:items-start">
                                         {sizeTypes.map((size) => (
-                                            <div 
-                                                key={`container-${size}-${componentProps.orientation || 'default'}`} 
+                                            <div
+                                                key={`container-${size}-${componentProps.orientation || 'default'}`}
                                                 className="flex flex-col items-center justify-center"
                                             >
-                                                <PageComponent 
-                                                    key={`${size}-${componentProps.orientation || 'default'}`} 
-                                                    {...componentProps} 
-                                                    size={size} 
+                                                <PageComponent
+                                                    key={`${size}-${componentProps.orientation || 'default'}`}
+                                                    {...componentProps}
+                                                    size={size}
                                                     label={size}
                                                 />
                                             </div>
@@ -114,14 +114,14 @@ export default function ControlSkeletonPage(props: ControlSkeletonPageProps) {
                                     <h2 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Size</h2>
                                     <div className="flex flex-wrap gap-4 md:gap-8 justify-center md:justify-start">
                                         {sizeTypes.map((size) => (
-                                            <div 
-                                                key={`container-${size}-${componentProps.orientation || 'default'}`} 
+                                            <div
+                                                key={`container-${size}-${componentProps.orientation || 'default'}`}
                                                 className="flex flex-col items-center justify-center"
                                             >
-                                                <PageComponent 
-                                                    key={`${size}-${componentProps.orientation || 'default'}`} 
-                                                    {...componentProps} 
-                                                    size={size} 
+                                                <PageComponent
+                                                    key={`${size}-${componentProps.orientation || 'default'}`}
+                                                    {...componentProps}
+                                                    size={size}
                                                     label={size}
                                                 />
                                             </div>
@@ -134,11 +134,13 @@ export default function ControlSkeletonPage(props: ControlSkeletonPageProps) {
                         {/* Grid Layout - Hidden on small screens, visible on medium and up */}
                         <div className="hidden md:block">
                             <h2 className="text-xl md:text-2xl font-medium mb-4">Grid Layout</h2>
-                            <div className="w-full h-80 grid grid-rows-4 grid-cols-9 gap-2 relative dark:bg-zinc-900/10 bg-zinc-100/50 p-2 rounded-md">
+                            <div
+                                className="w-full h-80 grid grid-rows-4 grid-cols-9 gap-2 relative dark:bg-zinc-900/10 bg-zinc-100/50 p-2 rounded-md">
                                 {fillItems}
 
                                 {/* Grid title */}
-                                <div className="row-start-2 col-start-1 col-span-3 absolute -top-14 left-2 text-base font-medium text-muted-foreground">
+                                <div
+                                    className="row-start-2 col-start-1 col-span-3 absolute -top-14 left-2 text-base font-medium text-muted-foreground">
                                     align-self
                                 </div>
 
@@ -216,7 +218,8 @@ export default function ControlSkeletonPage(props: ControlSkeletonPageProps) {
 
                         {/* Message for small screens */}
                         <div className="md:hidden">
-                            <div className="dark:bg-zinc-800/50 bg-zinc-200/50 dark:border-zinc-700 border-zinc-300 rounded-lg p-6 text-center">
+                            <div
+                                className="dark:bg-zinc-800/50 bg-zinc-200/50 dark:border-zinc-700 border-zinc-300 rounded-lg p-6 text-center">
                                 <h2 className="text-lg font-medium mb-3 text-primary-color">Screen Size Notice</h2>
                                 <p className="dark:text-zinc-300 text-zinc-700">
                                     Control surface examples are not suitable for small screens.

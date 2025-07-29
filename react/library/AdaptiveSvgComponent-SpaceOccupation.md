@@ -1,6 +1,7 @@
 # AdaptiveSvgComponent Space Occupation Guide
 
-This document provides a comprehensive explanation of how the `AdaptiveSvgComponent` occupies space within different container contexts, with a particular focus on flex and grid layouts.
+This document provides a comprehensive explanation of how the `AdaptiveSvgComponent` occupies space within different
+container contexts, with a particular focus on flex and grid layouts.
 
 ## Table of Contents
 
@@ -15,13 +16,16 @@ This document provides a comprehensive explanation of how the `AdaptiveSvgCompon
 
 ## Introduction
 
-The `AdaptiveSvgComponent` serves as the foundation for audio control components in the Audio UI library. It provides consistent sizing, aspect ratio maintenance, and event handling across different layout contexts. Understanding how it occupies space is crucial for creating responsive and visually consistent audio interfaces.
+The `AdaptiveSvgComponent` serves as the foundation for audio control components in the Audio UI library. It provides
+consistent sizing, aspect ratio maintenance, and event handling across different layout contexts. Understanding how it
+occupies space is crucial for creating responsive and visually consistent audio interfaces.
 
 ## Core Concepts
 
 ### Nested Structure
 
 The component uses a nested structure:
+
 - **Outer Container**: A `div` that handles positioning within parent layouts
 - **SVG Element**: The actual SVG that maintains aspect ratio and renders content
 
@@ -48,7 +52,8 @@ The component maintains a consistent aspect ratio based on the `viewBoxWidth` an
 const aspectRatio = viewBoxHeight / viewBoxWidth;
 ```
 
-This aspect ratio is preserved in all sizing calculations, ensuring the component's content doesn't distort when resized.
+This aspect ratio is preserved in all sizing calculations, ensuring the component's content doesn't distort when
+resized.
 
 ## Space Occupation Modes
 
@@ -128,9 +133,9 @@ In a flex container:
 
 1. The outer container takes up 100% width and height of its allocated flex space
 2. The SVG element is centered within this container using flex properties:
-   - The container has `display: flex`
-   - It uses `align-items: center` to center vertically
-   - It uses `justify-content: center` to center horizontally
+    - The container has `display: flex`
+    - It uses `align-items: center` to center vertically
+    - It uses `justify-content: center` to center horizontally
 3. In fixed mode, the SVG maintains its preferred dimensions (centered)
 4. In stretch mode, the SVG attempts to fill the container while maintaining aspect ratio
 
@@ -156,7 +161,8 @@ In a CSS Grid container:
 
 ### Overflow Handling
 
-The component prevents overflow by setting `overflow: hidden` on the container. This ensures that even if calculations result in dimensions slightly larger than the container, content won't spill out and break layouts.
+The component prevents overflow by setting `overflow: hidden` on the container. This ensures that even if calculations
+result in dimensions slightly larger than the container, content won't spill out and break layouts.
 
 ## Styling Properties Impact
 
@@ -177,7 +183,8 @@ const containerStyle = {
 };
 ```
 
-Custom styles passed via the `style` prop are merged with these defaults, allowing for customization while maintaining core functionality.
+Custom styles passed via the `style` prop are merged with these defaults, allowing for customization while maintaining
+core functionality.
 
 ### SVG Styles
 
@@ -193,11 +200,13 @@ const svgStyle = {
 };
 ```
 
-In stretch mode, the SVG uses percentage-based sizing to fill its container. In fixed mode, it uses the calculated dimensions.
+In stretch mode, the SVG uses percentage-based sizing to fill its container. In fixed mode, it uses the calculated
+dimensions.
 
 ### CSS Classes
 
-The component accepts a `className` prop that is applied to the container `div`. This allows for additional styling through CSS classes, such as the library's utility classes:
+The component accepts a `className` prop that is applied to the container `div`. This allows for additional styling
+through CSS classes, such as the library's utility classes:
 
 - `.cutoffAudioKit` - Base class for all components
 - `.componentContainer` - Sets max dimensions and height
@@ -233,25 +242,27 @@ This prevents components from becoming too small to be usable.
 When a container's aspect ratio differs significantly from the component's aspect ratio:
 
 1. In fixed mode, the component maintains its aspect ratio and centers itself
-2. In stretch mode, the component fills as much space as possible while maintaining aspect ratio, which may result in unused space in one dimension
+2. In stretch mode, the component fills as much space as possible while maintaining aspect ratio, which may result in
+   unused space in one dimension
 
 ### Zero-Size Containers
 
-The component handles zero-size containers by using `Math.max(0, parent.clientWidth)` and `Math.max(0, parent.clientHeight)` to ensure non-negative dimensions.
+The component handles zero-size containers by using `Math.max(0, parent.clientWidth)` and
+`Math.max(0, parent.clientHeight)` to ensure non-negative dimensions.
 
 ## Best Practices
 
 ### When to Use Fixed Mode vs. Stretch Mode
 
 - **Fixed Mode** (`stretch={false}`):
-  - When components need consistent sizing regardless of container
-  - For components that should maintain a specific size
-  - When placing multiple components with the same visual weight
+    - When components need consistent sizing regardless of container
+    - For components that should maintain a specific size
+    - When placing multiple components with the same visual weight
 
 - **Stretch Mode** (`stretch={true}`):
-  - When components should adapt to available space
-  - In grid layouts where components should fill their cells
-  - For responsive designs that adapt to different screen sizes
+    - When components should adapt to available space
+    - In grid layouts where components should fill their cells
+    - For responsive designs that adapt to different screen sizes
 
 ### Grid Layout Recommendations
 
@@ -273,4 +284,5 @@ The component handles zero-size containers by using `Math.max(0, parent.clientWi
 
 ---
 
-By understanding how `AdaptiveSvgComponent` occupies space, you can create responsive, visually consistent audio interfaces that work well across different layout contexts and screen sizes.
+By understanding how `AdaptiveSvgComponent` occupies space, you can create responsive, visually consistent audio
+interfaces that work well across different layout contexts and screen sizes.

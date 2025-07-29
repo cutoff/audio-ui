@@ -107,30 +107,30 @@ const polarToCartesian = (centerX: number, centerY: number, radius: number, angl
  * ```
  */
 function Knob({
-                                 min,
-                                 max,
-                                 bipolar = false,
-                                 value,
-                                 label,
-                                 children,
-                                 stretch = false,
-                                 className,
-                                 style,
-                                 onChange,
-                                 roundness = 12,
-                                 thickness = 12,
-                                 size = 'normal',
-                                 renderValue,
-                                 paramId
-                             }: KnobProps) {
+                  min,
+                  max,
+                  bipolar = false,
+                  value,
+                  label,
+                  children,
+                  stretch = false,
+                  className,
+                  style,
+                  onChange,
+                  roundness = 12,
+                  thickness = 12,
+                  size = 'normal',
+                  renderValue,
+                  paramId
+              }: KnobProps) {
 
     const valueToAngle = useMemo(() => {
         return ((value - min) / (max - min)) * MAX_ARC_ANGLE + MAX_START_ANGLE;
     }, [value, min, max]);
-    
+
     // Use the thickness prop for stroke width (ensure non-negative)
     const strokeWidth = Math.max(0, thickness);
-    
+
     // Determine stroke linecap based on roundness (square if 0, round if > 0)
     // Ensure roundness is non-negative
     const nonNegativeRoundness = Math.max(0, roundness);
@@ -164,7 +164,7 @@ function Knob({
     }, [className, onChange]);
 
     // Get the preferred width based on the size prop
-    const { width: preferredWidth, height: preferredHeight } = knobSizeMap[size];
+    const {width: preferredWidth, height: preferredHeight} = knobSizeMap[size];
 
     return (
         <AdaptiveSvgComponent

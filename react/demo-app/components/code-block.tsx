@@ -1,11 +1,11 @@
 "use client"
 
 import React from 'react'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { oneDark, atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { CheckIcon, CopyIcon } from "lucide-react"
+import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
+import {atomDark, oneDark} from 'react-syntax-highlighter/dist/esm/styles/prism'
+import {cn} from "@/lib/utils"
+import {Button} from "@/components/ui/button"
+import {CheckIcon, CopyIcon} from "lucide-react"
 
 interface CodeBlockProps {
     code: string
@@ -79,9 +79,9 @@ export const CodeBlock = ({
                     onClick={onCopy}
                 >
                     {copied ? (
-                        <CheckIcon className="h-4 w-4 text-green-400" />
+                        <CheckIcon className="h-4 w-4 text-green-400"/>
                     ) : (
-                        <CopyIcon className="h-4 w-4" />
+                        <CopyIcon className="h-4 w-4"/>
                     )}
                     <span className="sr-only">Copy code</span>
                 </Button>
