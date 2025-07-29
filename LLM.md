@@ -233,9 +233,9 @@ Components in this library follow these conventions:
 
 ### Testing Requirements
 
-- Use Jest and React Testing Library
-- Test files: `*.test.tsx` alongside components
-- Mock external dependencies appropriately
+- Use Vitest for testing (integrated with Vite build system)
+- Test files: `*.test.tsx` or `*.test.ts` alongside components
+- Mock external dependencies using Vitest's mocking capabilities
 - Ensure tests pass with React 18 compatibility
 
 ### Build Process
