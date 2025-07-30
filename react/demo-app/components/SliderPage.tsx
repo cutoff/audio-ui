@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import {useState} from "react";
-import {Slider} from "@cutoff/audio-ui-react";
+import { useState } from "react";
+import { Slider } from "@cutoff/audio-ui-react";
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {Checkbox} from "@/components/ui/checkbox";
-import {ColorPicker} from "@/components/ui/color-picker";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ColorPicker } from "@/components/ui/color-picker";
 
 export type SliderPageProps = {
     orientation: "horizontal" | "vertical";
 };
 
-export default function SliderPage({orientation}: SliderPageProps) {
+export default function SliderPage({ orientation }: SliderPageProps) {
     const [value, setValue] = useState(42);
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(100);
@@ -67,34 +67,20 @@ export default function SliderPage({orientation}: SliderPageProps) {
         }
     };
 
-    const componentProps = {min, bipolar, max, value, label, thickness, roundness, orientation, color};
+    const componentProps = { min, bipolar, max, value, label, thickness, roundness, orientation, color };
 
     const properties = [
         <div key="label" className="grid gap-2">
             <Label htmlFor="labelProp">Label</Label>
-            <Input
-                id="labelProp"
-                value={label}
-                onChange={(e) => setLabel(e.target.value)}
-            />
+            <Input id="labelProp" value={label} onChange={(e) => setLabel(e.target.value)} />
         </div>,
         <div key="min" className="grid gap-2">
             <Label htmlFor="minProp">Min</Label>
-            <Input
-                id="minProp"
-                type="number"
-                value={min}
-                onChange={(e) => setMin(Number(e.target.value))}
-            />
+            <Input id="minProp" type="number" value={min} onChange={(e) => setMin(Number(e.target.value))} />
         </div>,
         <div key="max" className="grid gap-2">
             <Label htmlFor="maxProp">Max</Label>
-            <Input
-                id="maxProp"
-                type="number"
-                value={max}
-                onChange={(e) => setMax(Number(e.target.value))}
-            />
+            <Input id="maxProp" type="number" value={max} onChange={(e) => setMax(Number(e.target.value))} />
         </div>,
         <div key="thickness" className="grid gap-2">
             <Label htmlFor="thicknessProp">Thickness</Label>
@@ -117,27 +103,20 @@ export default function SliderPage({orientation}: SliderPageProps) {
             />
         </div>,
         <div key="bipolar" className="grid gap-2">
-            <Checkbox
-                id="bipolarProp"
-                checked={bipolar}
-                onCheckedChange={(checked) => setBipolar(checked === true)}
-            />
-            <Label htmlFor="bipolarProp" className="cursor-pointer">Bipolar</Label>
+            <Checkbox id="bipolarProp" checked={bipolar} onCheckedChange={(checked) => setBipolar(checked === true)} />
+            <Label htmlFor="bipolarProp" className="cursor-pointer">
+                Bipolar
+            </Label>
         </div>,
         <div key="color" className="grid gap-2">
-            <ColorPicker
-                id="colorProp"
-                label="Color"
-                value={color}
-                onChange={setColor}
-            />
+            <ColorPicker id="colorProp" label="Color" value={color} onChange={setColor} />
         </div>,
     ];
 
     const examples = [
         <Slider
             key="0"
-            style={{cursor: "pointer"}}
+            style={{ cursor: "pointer" }}
             min={0}
             max={100}
             value={42}
@@ -149,7 +128,7 @@ export default function SliderPage({orientation}: SliderPageProps) {
         />,
         <Slider
             key="1"
-            style={{cursor: "pointer"}}
+            style={{ cursor: "pointer" }}
             min={0}
             bipolar={true}
             max={127}
@@ -162,7 +141,7 @@ export default function SliderPage({orientation}: SliderPageProps) {
         />,
         <Slider
             key="2"
-            style={{cursor: "pointer"}}
+            style={{ cursor: "pointer" }}
             min={0}
             bipolar={false}
             max={127}

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 import SliderPage from "@/components/SliderPage";
 
 export default function Page() {
-    return <SliderPage orientation="vertical"/>;
+    return <SliderPage orientation="vertical" />;
 }

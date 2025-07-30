@@ -61,9 +61,9 @@ export const combineFormatters = (...formatters: ((value: number, min?: number, 
     return (value: number, min?: number, max?: number): string => {
         let result: string | number = value;
         for (const formatter of formatters) {
-            // If the result is already a string (from previous formatter), 
+            // If the result is already a string (from previous formatter),
             // convert back to number for the next formatter if possible
-            if (typeof result === 'string') {
+            if (typeof result === "string") {
                 const parsed = parseFloat(result);
                 if (!isNaN(parsed)) {
                     result = formatter(parsed, min, max);

@@ -1,6 +1,6 @@
-import React from 'react';
-import Knob from './Knob';
-import {AdaptativeSize, Base, InteractiveControl, Themable} from "../types";
+import React from "react";
+import Knob from "./Knob";
+import { AdaptativeSize, Base, InteractiveControl, Themable } from "../types";
 
 /**
  * Props for the option elements within KnobSwitch
@@ -17,16 +17,19 @@ export type KnobSwitchOptionProps = {
 /**
  * Props for the KnobSwitch component
  */
-export type KnobSwitchProps = AdaptativeSize & InteractiveControl & Base & Themable & {
-    /** Label displayed below the component */
-    label?: string;
-    /** Current value of the component */
-    value?: any;
-    /** Child elements (KnobSwitch.Option components) */
-    children: React.ReactNode;
-    /** Identifier for the parameter this control represents */
-    paramId?: string;
-};
+export type KnobSwitchProps = AdaptativeSize &
+    InteractiveControl &
+    Base &
+    Themable & {
+        /** Label displayed below the component */
+        label?: string;
+        /** Current value of the component */
+        value?: any;
+        /** Child elements (KnobSwitch.Option components) */
+        children: React.ReactNode;
+        /** Identifier for the parameter this control represents */
+        paramId?: string;
+    };
 
 /**
  * A switch component that uses a knob interface to cycle through options.
@@ -90,35 +93,31 @@ export type KnobSwitchProps = AdaptativeSize & InteractiveControl & Base & Thema
 const KnobSwitch: React.FC<KnobSwitchProps> & {
     Option: React.FC<KnobSwitchOptionProps>;
 } = ({
-         label,
-         value,
-         children,
-         style,
-         className,
-         stretch = false,
-         onChange,
-         onClick,
-         onMouseDown,
-         onMouseUp,
-         onMouseEnter,
-         onMouseLeave,
-         size = 'normal',
-         paramId,
-         color = 'blue'
-     }) => {
+    label,
+    value,
+    children,
+    style,
+    className,
+    stretch = false,
+    onChange,
+    onClick,
+    onMouseDown,
+    onMouseUp,
+    onMouseEnter,
+    onMouseLeave,
+    size = "normal",
+    paramId,
+    color = "blue",
+}) => {
     const options = React.Children.toArray(children);
 
     // Determine the index of the selected option
     const selectedIndex = React.useMemo(() => {
         if (value !== undefined) {
-            const index = options.findIndex(
-                option => React.isValidElement(option) && option.props.value === value
-            );
+            const index = options.findIndex((option) => React.isValidElement(option) && option.props.value === value);
             return Math.max(0, Math.min(index, options.length - 1));
         } else {
-            const selectedOption = options.find(
-                option => React.isValidElement(option) && option.props.selected
-            );
+            const selectedOption = options.find((option) => React.isValidElement(option) && option.props.selected);
             return selectedOption ? options.indexOf(selectedOption) : 0;
         }
     }, [value, options]);

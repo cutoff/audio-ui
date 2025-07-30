@@ -10,9 +10,7 @@ This approach caused a noticeable lag when the parent container grew, while work
 
 ```javascript
 // Previous implementation
-const debouncedCalculate = useMemo(() => 
-    debounce(calculateDimensions, 100), 
-[calculateDimensions]);
+const debouncedCalculate = useMemo(() => debounce(calculateDimensions, 100), [calculateDimensions]);
 
 useEffect(() => {
     const resizeObserver = new ResizeObserver(debouncedCalculate);
@@ -56,16 +54,16 @@ growing or shrinking:
 ```javascript
 const handleResize = useCallback((entries: ResizeObserverEntry[]) => {
     if (!containerRef.current || entries.length === 0) return;
-    
+
     const entry = entries[0];
     const newWidth = entry.contentRect.width;
     const newHeight = entry.contentRect.height;
     const prevWidth = containerSizeRef.current.width;
     const prevHeight = containerSizeRef.current.height;
-    
+
     // Update the stored size
     containerSizeRef.current = { width: newWidth, height: newHeight };
-    
+
     // If container is growing in either dimension, calculate immediately
     if (newWidth > prevWidth || newHeight > prevHeight) {
         // Cancel any pending debounced calculations
@@ -91,7 +89,7 @@ useEffect(() => {
         if (containerRef.current.clientWidth && containerRef.current.clientHeight) {
             containerSizeRef.current = {
                 width: containerRef.current.clientWidth,
-                height: containerRef.current.clientHeight
+                height: containerRef.current.clientHeight,
             };
         }
         resizeObserver.observe(containerRef.current);

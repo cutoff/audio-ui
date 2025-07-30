@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
 import Link from "next/link";
-import {usePathname} from "next/navigation";
-import {useEffect, useState} from "react";
-import {useTheme} from "next-themes";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {Menu, Moon, Sun, X} from "lucide-react";
-import {Button} from "@/components/ui/button";
-import {Switch} from "@/components/ui/switch";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Menu, Moon, Sun, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
 // Define types for components and theme colors
 type Page = {
@@ -23,54 +23,54 @@ type ThemeColor = {
 
 // List of components to display in the sidebar
 const controls: Page[] = [
-    {name: "Knob", path: "/controls/knob"},
-    {name: "Slider (vertical)", path: "/controls/vslider"},
-    {name: "Slider (horizontal)", path: "/controls/hslider"},
-    {name: "Button", path: "/controls/button"},
+    { name: "Knob", path: "/controls/knob" },
+    { name: "Slider (vertical)", path: "/controls/vslider" },
+    { name: "Slider (horizontal)", path: "/controls/hslider" },
+    { name: "Button", path: "/controls/button" },
     // More components can be added here in the future
 ];
 
 // List of device pages
 const devices: Page[] = [
-    {name: "Keybed", path: "/devices/keybed"},
+    { name: "Keybed", path: "/devices/keybed" },
     // More device pages can be added here in the future
 ];
 
 // Theme color options
 const themeColors: ThemeColor[] = [
-    {color: "bg-blue-500", name: "Blue", cssVar: "--theme-blue-primary"},
-    {color: "bg-orange-500", name: "Orange", cssVar: "--theme-orange-primary"},
-    {color: "bg-pink-500", name: "Pink", cssVar: "--theme-pink-primary"},
-    {color: "bg-zinc-500", name: "White", cssVar: "--theme-white-primary"},
-    {color: "bg-green-500", name: "Green", cssVar: "--theme-green-primary"},
-    {color: "bg-purple-500", name: "Purple", cssVar: "--theme-purple-primary"},
-    {color: "bg-yellow-500", name: "Yellow", cssVar: "--theme-yellow-primary"}
+    { color: "bg-blue-500", name: "Blue", cssVar: "--theme-blue-primary" },
+    { color: "bg-orange-500", name: "Orange", cssVar: "--theme-orange-primary" },
+    { color: "bg-pink-500", name: "Pink", cssVar: "--theme-pink-primary" },
+    { color: "bg-zinc-500", name: "White", cssVar: "--theme-white-primary" },
+    { color: "bg-green-500", name: "Green", cssVar: "--theme-green-primary" },
+    { color: "bg-purple-500", name: "Purple", cssVar: "--theme-purple-primary" },
+    { color: "bg-yellow-500", name: "Yellow", cssVar: "--theme-yellow-primary" },
 ];
 
 export default function SideBar() {
     const pathname = usePathname();
-    const {theme, setTheme} = useTheme();
-    const [currentTheme, setCurrentTheme] = useState('--theme-blue-primary');
+    const { theme, setTheme } = useTheme();
+    const [currentTheme, setCurrentTheme] = useState("--theme-blue-primary");
     const [isOpen, setIsOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
 
     // Function to change theme
     const changeTheme = (themeCssVar: string) => {
-        document.documentElement.style.setProperty('--primary-color', `var(${themeCssVar})`);
-        document.documentElement.style.setProperty('--primary-color-50', `var(${themeCssVar}-50)`);
-        document.documentElement.style.setProperty('--primary-color-20', `var(${themeCssVar}-20)`);
+        document.documentElement.style.setProperty("--primary-color", `var(${themeCssVar})`);
+        document.documentElement.style.setProperty("--primary-color-50", `var(${themeCssVar}-50)`);
+        document.documentElement.style.setProperty("--primary-color-20", `var(${themeCssVar}-20)`);
         setCurrentTheme(themeCssVar);
     };
 
     // Toggle between light and dark mode
     const toggleDarkMode = (checked: boolean) => {
-        setTheme(checked ? 'dark' : 'light');
+        setTheme(checked ? "dark" : "light");
     };
 
     // Set initial theme when component mounts
     useEffect(() => {
         // Blue is the default theme in styles.css, but we set it explicitly to ensure consistency
-        changeTheme('--theme-blue-primary');
+        changeTheme("--theme-blue-primary");
         // Set mounted to true after component mounts to avoid hydration issues
         setMounted(true);
     }, []);
@@ -90,17 +90,12 @@ export default function SideBar() {
                     onClick={() => setIsOpen(!isOpen)}
                     className="dark:bg-zinc-800 dark:border-zinc-700 dark:hover:bg-zinc-700 bg-zinc-200 border-zinc-300 hover:bg-zinc-300"
                 >
-                    {isOpen ? <X className="h-5 w-5"/> : <Menu className="h-5 w-5"/>}
+                    {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                 </Button>
             </div>
 
             {/* Overlay for mobile - only appears when sidebar is open */}
-            {isOpen && (
-                <div
-                    className="md:hidden fixed inset-0 bg-black/50 z-40"
-                    onClick={() => setIsOpen(false)}
-                />
-            )}
+            {isOpen && <div className="md:hidden fixed inset-0 bg-black/50 z-40" onClick={() => setIsOpen(false)} />}
 
             {/* Sidebar */}
             <div
@@ -108,7 +103,7 @@ export default function SideBar() {
           fixed md:sticky top-0 z-40
           h-screen md:h-screen bg-sidebar-background border-r border-sidebar-border p-4 flex flex-col
           w-64 transition-transform duration-300 ease-in-out
-          ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+          ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
             >
                 <div className="flex-grow">
@@ -158,14 +153,12 @@ export default function SideBar() {
                 <div className="mt-auto pt-4 border-t border-sidebar-border">
                     {/* Color Theme Selector */}
                     <div className="flex items-center justify-between gap-2 mb-4">
-                        <span
-                            className="text-sm text-sidebar-foreground flex items-center h-9 px-3 leading-none">Color</span>
-                        <Select
-                            value={currentTheme}
-                            onValueChange={(value) => changeTheme(value)}
-                        >
+                        <span className="text-sm text-sidebar-foreground flex items-center h-9 px-3 leading-none">
+                            Color
+                        </span>
+                        <Select value={currentTheme} onValueChange={(value) => changeTheme(value)}>
                             <SelectTrigger className="w-[120px] bg-sidebar-accent border-sidebar-border">
-                                <SelectValue placeholder="Select theme"/>
+                                <SelectValue placeholder="Select theme" />
                             </SelectTrigger>
                             <SelectContent>
                                 {themeColors.map((themeColor) => (
@@ -175,7 +168,8 @@ export default function SideBar() {
                                         className="inline-flex items-center"
                                     >
                                         <div
-                                            className={`w-4 h-4 rounded-full ${themeColor.color} inline-block align-middle mr-2`}></div>
+                                            className={`w-4 h-4 rounded-full ${themeColor.color} inline-block align-middle mr-2`}
+                                        ></div>
                                         <span className="align-middle">{themeColor.name}</span>
                                     </SelectItem>
                                 ))}
@@ -186,15 +180,13 @@ export default function SideBar() {
                     {/* Dark/Light Mode Switch */}
                     {mounted && (
                         <div className="flex items-center justify-between gap-2">
-                            <span
-                                className="text-sm text-sidebar-foreground flex items-center h-9 px-3 leading-none">Mode</span>
+                            <span className="text-sm text-sidebar-foreground flex items-center h-9 px-3 leading-none">
+                                Mode
+                            </span>
                             <div className="flex items-center gap-2">
-                                <Sun className="h-4 w-4 text-sidebar-foreground"/>
-                                <Switch
-                                    checked={theme === 'dark'}
-                                    onCheckedChange={toggleDarkMode}
-                                />
-                                <Moon className="h-4 w-4 text-sidebar-foreground"/>
+                                <Sun className="h-4 w-4 text-sidebar-foreground" />
+                                <Switch checked={theme === "dark"} onCheckedChange={toggleDarkMode} />
+                                <Moon className="h-4 w-4 text-sidebar-foreground" />
                             </div>
                         </div>
                     )}

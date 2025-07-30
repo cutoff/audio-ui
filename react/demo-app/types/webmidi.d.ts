@@ -29,13 +29,29 @@ declare namespace WebMidi {
         outputs: MIDIOutputMap;
         onstatechange: ((this: MIDIAccess, ev: MIDIConnectionEvent) => void) | null;
 
-        addEventListener(type: "statechange", listener: (this: MIDIAccess, ev: MIDIConnectionEvent) => void, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(
+            type: "statechange",
+            listener: (this: MIDIAccess, ev: MIDIConnectionEvent) => void,
+            options?: boolean | AddEventListenerOptions
+        ): void;
 
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(
+            type: string,
+            listener: EventListenerOrEventListenerObject,
+            options?: boolean | AddEventListenerOptions
+        ): void;
 
-        removeEventListener(type: "statechange", listener: (this: MIDIAccess, ev: MIDIConnectionEvent) => void, options?: boolean | EventListenerOptions): void;
+        removeEventListener(
+            type: "statechange",
+            listener: (this: MIDIAccess, ev: MIDIConnectionEvent) => void,
+            options?: boolean | EventListenerOptions
+        ): void;
 
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+        removeEventListener(
+            type: string,
+            listener: EventListenerOrEventListenerObject,
+            options?: boolean | EventListenerOptions
+        ): void;
     }
 
     interface MIDIPort extends EventTarget {
@@ -52,30 +68,70 @@ declare namespace WebMidi {
 
         close(): Promise<MIDIPort>;
 
-        addEventListener(type: "statechange", listener: (this: MIDIPort, ev: MIDIConnectionEvent) => void, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(
+            type: "statechange",
+            listener: (this: MIDIPort, ev: MIDIConnectionEvent) => void,
+            options?: boolean | AddEventListenerOptions
+        ): void;
 
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(
+            type: string,
+            listener: EventListenerOrEventListenerObject,
+            options?: boolean | AddEventListenerOptions
+        ): void;
 
-        removeEventListener(type: "statechange", listener: (this: MIDIPort, ev: MIDIConnectionEvent) => void, options?: boolean | EventListenerOptions): void;
+        removeEventListener(
+            type: "statechange",
+            listener: (this: MIDIPort, ev: MIDIConnectionEvent) => void,
+            options?: boolean | EventListenerOptions
+        ): void;
 
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+        removeEventListener(
+            type: string,
+            listener: EventListenerOrEventListenerObject,
+            options?: boolean | EventListenerOptions
+        ): void;
     }
 
     interface MIDIInput extends MIDIPort {
         type: "input";
         onmidimessage: ((this: MIDIInput, ev: MIDIMessageEvent) => void) | null;
 
-        addEventListener(type: "midimessage", listener: (this: MIDIInput, ev: MIDIMessageEvent) => void, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(
+            type: "midimessage",
+            listener: (this: MIDIInput, ev: MIDIMessageEvent) => void,
+            options?: boolean | AddEventListenerOptions
+        ): void;
 
-        addEventListener(type: "statechange", listener: (this: MIDIInput, ev: MIDIConnectionEvent) => void, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(
+            type: "statechange",
+            listener: (this: MIDIInput, ev: MIDIConnectionEvent) => void,
+            options?: boolean | AddEventListenerOptions
+        ): void;
 
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(
+            type: string,
+            listener: EventListenerOrEventListenerObject,
+            options?: boolean | AddEventListenerOptions
+        ): void;
 
-        removeEventListener(type: "midimessage", listener: (this: MIDIInput, ev: MIDIMessageEvent) => void, options?: boolean | EventListenerOptions): void;
+        removeEventListener(
+            type: "midimessage",
+            listener: (this: MIDIInput, ev: MIDIMessageEvent) => void,
+            options?: boolean | EventListenerOptions
+        ): void;
 
-        removeEventListener(type: "statechange", listener: (this: MIDIInput, ev: MIDIConnectionEvent) => void, options?: boolean | EventListenerOptions): void;
+        removeEventListener(
+            type: "statechange",
+            listener: (this: MIDIInput, ev: MIDIConnectionEvent) => void,
+            options?: boolean | EventListenerOptions
+        ): void;
 
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+        removeEventListener(
+            type: string,
+            listener: EventListenerOrEventListenerObject,
+            options?: boolean | EventListenerOptions
+        ): void;
     }
 
     interface MIDIOutput extends MIDIPort {

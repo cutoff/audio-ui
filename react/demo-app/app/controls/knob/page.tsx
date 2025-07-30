@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import {useState} from "react";
-import {Knob, KnobProps, KnobSwitch, KnobSwitchProps, Option} from "@cutoff/audio-ui-react";
+import { useState } from "react";
+import { Knob, KnobProps, KnobSwitch, KnobSwitchProps, Option } from "@cutoff/audio-ui-react";
 
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {Checkbox} from "@/components/ui/checkbox";
-import {ColorPicker} from "@/components/ui/color-picker";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ColorPicker } from "@/components/ui/color-picker";
 
 // Define a simple MIDI bipolar formatter function for the demo
 // This will be replaced by the library's midiBipolarFormatter when it's available
@@ -23,11 +23,21 @@ const iconSawWave = "/saw-wave.svg";
 const iconSquareWave = "/square-wave.svg";
 
 const sampleOptions = [
-    <Option key={0} value={0}><img src={iconSineWave} alt="Sine"/></Option>,
-    <Option key={1} value={1}><img src={iconTriangleWave} alt="Triangle"/></Option>,
-    <Option key={2} value={2}><img src={iconSquareWave} alt="Saw"/></Option>,
-    <Option key={3} value={3}><img src={iconSawWave} alt="Saw"/></Option>,
-    <Option key={4} value={4}>Oth</Option>
+    <Option key={0} value={0}>
+        <img src={iconSineWave} alt="Sine" />
+    </Option>,
+    <Option key={1} value={1}>
+        <img src={iconTriangleWave} alt="Triangle" />
+    </Option>,
+    <Option key={2} value={2}>
+        <img src={iconSquareWave} alt="Saw" />
+    </Option>,
+    <Option key={3} value={3}>
+        <img src={iconSawWave} alt="Saw" />
+    </Option>,
+    <Option key={4} value={4}>
+        Oth
+    </Option>,
 ];
 
 function generateCodeSnippet(
@@ -76,30 +86,30 @@ type KnobComponentProps = {
     stretch?: boolean;
     style?: React.CSSProperties;
     className?: string;
-    size?: 'xsmall' | 'small' | 'normal' | 'large' | 'xlarge';
+    size?: "xsmall" | "small" | "normal" | "large" | "xlarge";
     color?: string;
-    onChange?: KnobProps['onChange'] | KnobSwitchProps['onChange'];
-    onClick?: KnobProps['onClick'] | KnobSwitchProps['onClick'];
+    onChange?: KnobProps["onChange"] | KnobSwitchProps["onChange"];
+    onClick?: KnobProps["onClick"] | KnobSwitchProps["onClick"];
 };
 
 function KnobComponent({
-                           value,
-                           min,
-                           max,
-                           label,
-                           bipolar,
-                           useMidiBipolar,
-                           enableOptions,
-                           roundness,
-                           thickness,
-                           stretch,
-                           onChange,
-                           onClick,
-                           style,
-                           className,
-                           size,
-                           color
-                       }: KnobComponentProps) {
+    value,
+    min,
+    max,
+    label,
+    bipolar,
+    useMidiBipolar,
+    enableOptions,
+    roundness,
+    thickness,
+    stretch,
+    onChange,
+    onClick,
+    style,
+    className,
+    size,
+    color,
+}: KnobComponentProps) {
     if (enableOptions) {
         return (
             <KnobSwitch
@@ -214,29 +224,15 @@ export default function KnobDemoPage() {
     const properties = [
         <div key="label" className="grid gap-2">
             <Label htmlFor="labelProp">Label</Label>
-            <Input
-                id="labelProp"
-                value={label}
-                onChange={(e) => setLabel(e.target.value)}
-            />
+            <Input id="labelProp" value={label} onChange={(e) => setLabel(e.target.value)} />
         </div>,
         <div key="min" className="grid gap-2">
             <Label htmlFor="minProp">Min</Label>
-            <Input
-                id="minProp"
-                type="number"
-                value={min}
-                onChange={(e) => setMin(Number(e.target.value))}
-            />
+            <Input id="minProp" type="number" value={min} onChange={(e) => setMin(Number(e.target.value))} />
         </div>,
         <div key="max" className="grid gap-2">
             <Label htmlFor="maxProp">Max</Label>
-            <Input
-                id="maxProp"
-                type="number"
-                value={max}
-                onChange={(e) => setMax(Number(e.target.value))}
-            />
+            <Input id="maxProp" type="number" value={max} onChange={(e) => setMax(Number(e.target.value))} />
         </div>,
         <div key="thickness" className="grid gap-2">
             <Label htmlFor="thicknessProp">Thickness</Label>
@@ -259,20 +255,13 @@ export default function KnobDemoPage() {
             />
         </div>,
         <div key="color" className="grid gap-2">
-            <ColorPicker
-                id="colorProp"
-                label="Color"
-                value={color}
-                onChange={setColor}
-            />
+            <ColorPicker id="colorProp" label="Color" value={color} onChange={setColor} />
         </div>,
         <div key="bipolar" className="flex items-center gap-2 pt-2">
-            <Checkbox
-                id="bipolarProp"
-                checked={bipolar}
-                onCheckedChange={(checked) => setBipolar(checked === true)}
-            />
-            <Label htmlFor="bipolarProp" className="cursor-pointer">Bipolar</Label>
+            <Checkbox id="bipolarProp" checked={bipolar} onCheckedChange={(checked) => setBipolar(checked === true)} />
+            <Label htmlFor="bipolarProp" className="cursor-pointer">
+                Bipolar
+            </Label>
         </div>,
         <div key="midiBipolar" className="flex items-center gap-2 pt-2">
             <Checkbox
@@ -281,7 +270,9 @@ export default function KnobDemoPage() {
                 disabled={!bipolar}
                 onCheckedChange={(checked) => setUseMidiBipolar(checked === true)}
             />
-            <Label htmlFor="midiBipolarProp" className="cursor-pointer">MIDI Bipolar Format</Label>
+            <Label htmlFor="midiBipolarProp" className="cursor-pointer">
+                MIDI Bipolar Format
+            </Label>
         </div>,
         <div key="options" className="flex items-center gap-2 pt-2">
             <Checkbox
@@ -289,36 +280,58 @@ export default function KnobDemoPage() {
                 checked={enableOptions}
                 onCheckedChange={(checked) => setEnableOptions(checked === true)}
             />
-            <Label htmlFor="enableOptionsProp" className="cursor-pointer">Options</Label>
-        </div>
+            <Label htmlFor="enableOptionsProp" className="cursor-pointer">
+                Options
+            </Label>
+        </div>,
     ];
 
     const examples = [
-        <Knob key="0" style={{cursor: "pointer"}}
-              min={0} max={100} value={42} label="Default"
-              color="#3399ff" // Blue
-              onClick={() => handleExampleClick(0)}
+        <Knob
+            key="0"
+            style={{ cursor: "pointer" }}
+            min={0}
+            max={100}
+            value={42}
+            label="Default"
+            color="#3399ff" // Blue
+            onClick={() => handleExampleClick(0)}
         />,
-        <Knob key="1" style={{cursor: "pointer"}}
-              min={0} bipolar={true} max={127} value={64} label="Bipolar"
-              color="#ff3366" // Pink
-              onClick={() => handleExampleClick(1)}
+        <Knob
+            key="1"
+            style={{ cursor: "pointer" }}
+            min={0}
+            bipolar={true}
+            max={127}
+            value={64}
+            label="Bipolar"
+            color="#ff3366" // Pink
+            onClick={() => handleExampleClick(1)}
         />,
-        <Knob key="2" style={{cursor: "pointer"}}
-              min={-1024} bipolar={true} max={1024} value={0} label="Bipolar0"
-              color="#33cc66" // Green
-              onClick={() => handleExampleClick(2)}
+        <Knob
+            key="2"
+            style={{ cursor: "pointer" }}
+            min={-1024}
+            bipolar={true}
+            max={1024}
+            value={0}
+            label="Bipolar0"
+            color="#33cc66" // Green
+            onClick={() => handleExampleClick(2)}
         />,
-        <KnobSwitch key="3" style={{cursor: "pointer"}}
-                    value={0} label="Enum"
-                    color="#9966ff" // Purple
-                    onClick={() => handleExampleClick(3)}
+        <KnobSwitch
+            key="3"
+            style={{ cursor: "pointer" }}
+            value={0}
+            label="Enum"
+            color="#9966ff" // Purple
+            onClick={() => handleExampleClick(3)}
         >
             {sampleOptions}
         </KnobSwitch>,
         <Knob
             key="4"
-            style={{cursor: "pointer"}}
+            style={{ cursor: "pointer" }}
             min={0}
             max={127}
             value={64}
@@ -327,11 +340,33 @@ export default function KnobDemoPage() {
             color="#ff9933" // Orange
             renderValue={midiBipolarFormatter}
             onClick={() => handleExampleClick(4)}
-        />
+        />,
     ];
 
-    const codeString = generateCodeSnippet(enableOptions, value, label, min, max, bipolar, useMidiBipolar, roundness, thickness, color);
-    const componentProps = {min, bipolar, useMidiBipolar, max, value, label, enableOptions, roundness, thickness, color};
+    const codeString = generateCodeSnippet(
+        enableOptions,
+        value,
+        label,
+        min,
+        max,
+        bipolar,
+        useMidiBipolar,
+        roundness,
+        thickness,
+        color
+    );
+    const componentProps = {
+        min,
+        bipolar,
+        useMidiBipolar,
+        max,
+        value,
+        label,
+        enableOptions,
+        roundness,
+        thickness,
+        color,
+    };
 
     return (
         <ControlSkeletonPage

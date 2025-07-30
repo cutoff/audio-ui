@@ -1,23 +1,24 @@
 "use client";
 
-import React, {useCallback, useMemo} from 'react';
-import classNames from 'classnames';
-import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
-import {BipolarControl, ExplicitRange} from "../types";
-import {sliderSizeMap} from "../utils/sizeMappings";
-import {generateColorVariants} from "../utils/colorUtils";
+import React, { useCallback, useMemo } from "react";
+import classNames from "classnames";
+import AdaptiveSvgComponent from "../support/AdaptiveSvgComponent";
+import { BipolarControl, ExplicitRange } from "../types";
+import { sliderSizeMap } from "../utils/sizeMappings";
+import { generateColorVariants } from "../utils/colorUtils";
 
 /**
  * Props for the Slider component
  */
-export type SliderProps = BipolarControl & ExplicitRange & {
-    /** Orientation of the slider
-     * @default 'vertical' */
-    orientation?: 'horizontal' | 'vertical';
-    /** Thickness of the slider in pixels
-     * @default 20 */
-    thickness?: number;
-};
+export type SliderProps = BipolarControl &
+    ExplicitRange & {
+        /** Orientation of the slider
+         * @default 'vertical' */
+        orientation?: "horizontal" | "vertical";
+        /** Thickness of the slider in pixels
+         * @default 20 */
+        thickness?: number;
+    };
 
 /**
  * Represents the dimensions and position of a rectangular zone within the SVG
@@ -116,13 +117,13 @@ const computeFilledZone = (
             // Horizontal: Fill from left to right
             return {
                 x: position,
-                w: size
+                w: size,
             };
         } else {
             // Vertical: Fill from bottom to top (inverted position)
             return {
                 y: position + (dimension - size),
-                h: size
+                h: size,
             };
         }
     }
@@ -140,13 +141,13 @@ const computeFilledZone = (
             // Horizontal: Fill from center to right
             return {
                 x: centerPoint,
-                w: bipolarSize
+                w: bipolarSize,
             };
         } else {
             // Vertical: Fill from center to top (inverted position)
             return {
                 y: position + (halfSize - bipolarSize),
-                h: bipolarSize
+                h: bipolarSize,
             };
         }
     } else {
@@ -162,18 +163,17 @@ const computeFilledZone = (
             // Horizontal: Fill from center to left (DJ crossfader style)
             return {
                 x: centerPoint - bipolarSize,
-                w: bipolarSize
+                w: bipolarSize,
             };
         } else {
             // Vertical: Fill from center to bottom
             return {
                 y: centerPoint,
-                h: bipolarSize
+                h: bipolarSize,
             };
         }
     }
 };
-
 
 // @ts-ignore
 /**
@@ -242,49 +242,49 @@ const computeFilledZone = (
  * ```
  */
 const Slider = ({
-                    orientation = 'vertical',
-                    min,
-                    max,
-                    bipolar = false,
-                    value,
-                    label,
-                    thickness = 20,
-                    stretch = false,
-                    className,
-                    style,
-                    onChange,
-                    roundness,
-                    size = 'normal',
-                    paramId: _paramId,
-                    onClick,
-                    onMouseDown,
-                    onMouseUp,
-                    onMouseEnter,
-                    onMouseLeave,
-                    color = "blue"
-                }: SliderProps) => {
+    orientation = "vertical",
+    min,
+    max,
+    bipolar = false,
+    value,
+    label,
+    thickness = 20,
+    stretch = false,
+    className,
+    style,
+    onChange,
+    roundness,
+    size = "normal",
+    paramId: _paramId,
+    onClick,
+    onMouseDown,
+    onMouseUp,
+    onMouseEnter,
+    onMouseLeave,
+    color = "blue",
+}: SliderProps) => {
     // Ensure thickness is non-negative
     const nonNegativeThickness = Math.max(0, thickness);
 
     // Calculate the dimensions of the slider's main zone based on orientation and thickness
     const mainZone = useMemo<Zone>(() => {
-        if (orientation === 'vertical') {
+        if (orientation === "vertical") {
             // Center the slider based on its thickness
-            const x = 50 - (nonNegativeThickness / 2);
+            const x = 50 - nonNegativeThickness / 2;
             return {
                 x,
                 y: 20,
                 w: nonNegativeThickness,
-                h: 330
+                h: 330,
             };
         } else {
             // For horizontal orientation
-            const y = 50 - (nonNegativeThickness / 2);
+            const y = 50 - nonNegativeThickness / 2;
             return {
                 x: 20,
                 y,
                 w: 330,
-                h: nonNegativeThickness
+                h: nonNegativeThickness,
             };
         }
     }, [nonNegativeThickness, orientation]);
@@ -292,16 +292,9 @@ const Slider = ({
     // Calculate the dimensions of the filled portion based on current value and orientation
     const filledZone = useMemo<FilledZone>(() => {
         const normalizedValue = Math.min(Math.max(value, min), max);
-        const normalizedCenter = bipolar ? (Math.floor((max - min + 1) / 2) + min) : undefined;
+        const normalizedCenter = bipolar ? Math.floor((max - min + 1) / 2) + min : undefined;
 
-        return computeFilledZone(
-            mainZone,
-            normalizedValue,
-            min,
-            max,
-            normalizedCenter,
-            orientation === 'horizontal'
-        );
+        return computeFilledZone(mainZone, normalizedValue, min, max, normalizedCenter, orientation === "horizontal");
     }, [min, max, value, bipolar, mainZone, orientation]);
 
     // Calculate corner radius based on roundness
@@ -315,52 +308,51 @@ const Slider = ({
         }
 
         // Use provided roundness or fall back to half the thickness for fully rounded corners
-        const dimension = orientation === 'vertical' ? mainZone.w : mainZone.h;
+        const dimension = orientation === "vertical" ? mainZone.w : mainZone.h;
         return nonNegativeRoundness !== undefined ? nonNegativeRoundness : dimension / 2;
     }, [mainZone, roundness, orientation]);
-    
+
     // Generate color variants using the centralized utility
     const colorVariants = useMemo(() => {
-        return generateColorVariants(color, 'transparency');
+        return generateColorVariants(color, "transparency");
     }, [color]);
 
     /**
      * Wheel event handler that adjusts the slider value if onChange is defined
      * and the event hasn't been prevented by a user handler
      */
-    const handleWheel = useCallback((e: WheelEvent) => {
-        // Only adjust the value if onChange is defined and the event hasn't been prevented
-        if (onChange && !e.defaultPrevented) {
-            const delta = e.deltaY;
-            onChange((currentValue: number) => {
-                return Math.max(min, Math.min(currentValue + delta, max));
-            });
-        }
-    }, [onChange, min, max]);
+    const handleWheel = useCallback(
+        (e: WheelEvent) => {
+            // Only adjust the value if onChange is defined and the event hasn't been prevented
+            if (onChange && !e.defaultPrevented) {
+                const delta = e.deltaY;
+                onChange((currentValue: number) => {
+                    return Math.max(min, Math.min(currentValue + delta, max));
+                });
+            }
+        },
+        [onChange, min, max]
+    );
 
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {
-        return classNames(
-            className,
-            'cutoffAudioKit',
-            onChange ? 'highlight' : ''
-        );
+        return classNames(className, "cutoffAudioKit", onChange ? "highlight" : "");
     }, [className, onChange]);
 
     // Get the preferred dimensions based on the size prop and orientation
-    const {width: preferredWidth, height: preferredHeight} = sliderSizeMap[size][orientation];
+    const { width: preferredWidth, height: preferredHeight } = sliderSizeMap[size][orientation];
 
     // Determine viewBox dimensions based on orientation
-    const viewBoxWidth = orientation === 'vertical' ? 100 : 400;
-    const viewBoxHeight = orientation === 'vertical' ? 400 : 100;
+    const viewBoxWidth = orientation === "vertical" ? 100 : 400;
+    const viewBoxHeight = orientation === "vertical" ? 400 : 100;
 
     // Determine minimum dimensions based on orientation
-    const minWidth = orientation === 'vertical' ? 20 : 60;
-    const minHeight = orientation === 'vertical' ? 60 : 20;
+    const minWidth = orientation === "vertical" ? 20 : 60;
+    const minHeight = orientation === "vertical" ? 60 : 20;
 
     // Determine label position based on orientation
-    const labelX = orientation === 'vertical' ? "50" : "200";
-    const labelY = orientation === 'vertical' ? "393" : "93";
+    const labelX = orientation === "vertical" ? "50" : "200";
+    const labelY = orientation === "vertical" ? "393" : "93";
 
     return (
         <AdaptiveSvgComponent
@@ -394,10 +386,10 @@ const Slider = ({
             {/* Foreground Rectangle */}
             <rect
                 style={{ fill: colorVariants.primary }}
-                x={orientation === 'horizontal' ? filledZone.x : mainZone.x}
-                y={orientation === 'vertical' ? filledZone.y : mainZone.y}
-                width={orientation === 'horizontal' ? filledZone.w : mainZone.w}
-                height={orientation === 'vertical' ? filledZone.h : mainZone.h}
+                x={orientation === "horizontal" ? filledZone.x : mainZone.x}
+                y={orientation === "vertical" ? filledZone.y : mainZone.y}
+                width={orientation === "horizontal" ? filledZone.w : mainZone.w}
+                height={orientation === "vertical" ? filledZone.h : mainZone.h}
                 rx={cornerRadius}
                 ry={cornerRadius}
             />

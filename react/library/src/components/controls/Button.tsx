@@ -110,9 +110,9 @@ function Button({
 
     // Generate color variants using the centralized utility
     const colorVariants = useMemo(() => {
-        return generateColorVariants(color, 'transparency');
+        return generateColorVariants(color, "transparency");
     }, [color]);
-    
+
     // Determine the button's appearance styles based on state
     const buttonStyles = useMemo(() => {
         return {

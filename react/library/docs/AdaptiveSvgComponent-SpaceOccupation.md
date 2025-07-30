@@ -145,17 +145,17 @@ In a CSS Grid container:
 
 1. The component respects its grid cell boundaries
 2. It can be positioned within the cell using `justifySelf` and `alignSelf` properties:
-   ```jsx
-   <AdaptiveSvgComponent
-       style={{
-           gridArea: "2 / 1 / span 2 / span 1",
-           justifySelf: "center",
-           alignSelf: "start"
-       }}
-       stretch={true}
-       {...otherProps}
-   />
-   ```
+    ```jsx
+    <AdaptiveSvgComponent
+        style={{
+            gridArea: "2 / 1 / span 2 / span 1",
+            justifySelf: "center",
+            alignSelf: "start",
+        }}
+        stretch={true}
+        {...otherProps}
+    />
+    ```
 3. With `stretch={true}`, it fills the available space in the grid cell while maintaining aspect ratio
 4. The component properly handles different grid cell sizes (e.g., spanning multiple rows/columns)
 
@@ -172,13 +172,13 @@ The container `div` uses these default styles:
 
 ```javascript
 const containerStyle = {
-    position: 'relative',
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
+    position: "relative",
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
     ...style, // Custom styles are merged
 };
 ```
@@ -192,11 +192,11 @@ The SVG element uses these styles:
 
 ```javascript
 const svgStyle = {
-    width: stretch ? '100%' : dimensions.width,
-    height: stretch ? '100%' : dimensions.height,
-    maxWidth: stretch ? '100%' : dimensions.width,
-    maxHeight: stretch ? '100%' : dimensions.height,
-    flexShrink: 0,  // Prevent unwanted shrinking
+    width: stretch ? "100%" : dimensions.width,
+    height: stretch ? "100%" : dimensions.height,
+    maxWidth: stretch ? "100%" : dimensions.width,
+    maxHeight: stretch ? "100%" : dimensions.height,
+    flexShrink: 0, // Prevent unwanted shrinking
 };
 ```
 

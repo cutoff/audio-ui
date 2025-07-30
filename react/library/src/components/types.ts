@@ -3,7 +3,7 @@ import React from "react";
 /**
  * Size options for control components
  */
-export type SizeType = 'xsmall' | 'small' | 'normal' | 'large' | 'xlarge';
+export type SizeType = "xsmall" | "small" | "normal" | "large" | "xlarge";
 
 /**
  * Interface for themable components
@@ -13,7 +13,7 @@ export type Themable = {
      * @default "blue"
      */
     color?: string;
-    
+
     /** Roundness for component corners/caps
      * @default Component-specific: Knob uses 12, Slider uses half width, Button uses 10px
      * A value of 0 means square corners/caps, while values > 0 create rounded corners/caps
@@ -36,7 +36,7 @@ export type Base = {
     onMouseEnter?: React.MouseEventHandler;
     /** Mouse leave event handler */
     onMouseLeave?: React.MouseEventHandler;
-}
+};
 
 export type AdaptativeSize = {
     /** Size of the component
@@ -51,46 +51,48 @@ export type AdaptativeSize = {
 };
 
 export type InteractiveControl = {
-
     /** Handler for value changes
      * @param value The new value or a function to update the previous value
      */
     onChange?: (value: number | ((prev: number) => number)) => void;
-}
+};
 
 export type ExplicitRange = {
     /** Minimum value of the component */
     min: number;
     /** Maximum value of the component */
     max: number;
-}
+};
 
 /**
  * Base interface for control components with value ranges
  * Extends Stretchable to include responsive sizing capabilities
  */
-export type Control = AdaptativeSize & InteractiveControl & Base & Themable & {
-    /** Label displayed below the component */
-    label?: string;
+export type Control = AdaptativeSize &
+    InteractiveControl &
+    Base &
+    Themable & {
+        /** Label displayed below the component */
+        label?: string;
 
-    /** Current value of the component */
-    value: number;
+        /** Current value of the component */
+        value: number;
 
-    /** Identifier for the parameter this control represents
-     * Used as the first argument in onChange callbacks
-     */
-    paramId?: string;
+        /** Identifier for the parameter this control represents
+         * Used as the first argument in onChange callbacks
+         */
+        paramId?: string;
 
-    /**
-     * Custom renderer for the value display
-     * If provided, this function will be used to render the value instead of the default formatter
-     * @param value The current value
-     * @param min The minimum value
-     * @param max The maximum value
-     * @returns A string representation of the value
-     */
-    renderValue?: (value: number, min: number, max: number) => string;
-};
+        /**
+         * Custom renderer for the value display
+         * If provided, this function will be used to render the value instead of the default formatter
+         * @param value The current value
+         * @param min The minimum value
+         * @param max The maximum value
+         * @returns A string representation of the value
+         */
+        renderValue?: (value: number, min: number, max: number) => string;
+    };
 
 /**
  * Interface for control components that support bipolar (centered) mode

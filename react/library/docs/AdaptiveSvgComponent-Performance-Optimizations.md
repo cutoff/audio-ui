@@ -23,13 +23,13 @@ The following optimizations have been implemented to improve the performance of 
 **Before:**
 
 ```typescript
-import { debounce } from 'lodash';
+import { debounce } from "lodash";
 ```
 
 **After:**
 
 ```typescript
-import debounce from 'lodash/debounce';
+import debounce from "lodash/debounce";
 ```
 
 **Benefits:**
@@ -56,8 +56,10 @@ const calculateDimensions = useCallback(() => {
 ```typescript
 const calculateDimensions = useCallback(() => {
     // ... calculation logic
-    if (prevDimensionsRef.current.width !== newDimensions.width || 
-        prevDimensionsRef.current.height !== newDimensions.height) {
+    if (
+        prevDimensionsRef.current.width !== newDimensions.width ||
+        prevDimensionsRef.current.height !== newDimensions.height
+    ) {
         prevDimensionsRef.current = { width: newDimensions.width, height: newDimensions.height };
         setDimensions(newDimensions);
     }
@@ -77,7 +79,7 @@ const calculateDimensions = useCallback(() => {
 ```typescript
 const [dimensions, setDimensions] = useState({
     width: preferredWidth,
-    height: preferredHeight
+    height: preferredHeight,
 });
 
 // ... later in the code
@@ -92,12 +94,14 @@ if (dimensions.width !== newDimensions.width || dimensions.height !== newDimensi
 const prevDimensionsRef = useRef({ width: preferredWidth, height: preferredHeight });
 const [dimensions, setDimensions] = useState({
     width: preferredWidth,
-    height: preferredHeight
+    height: preferredHeight,
 });
 
 // ... later in the code
-if (prevDimensionsRef.current.width !== newDimensions.width || 
-    prevDimensionsRef.current.height !== newDimensions.height) {
+if (
+    prevDimensionsRef.current.width !== newDimensions.width ||
+    prevDimensionsRef.current.height !== newDimensions.height
+) {
     prevDimensionsRef.current = { width: newDimensions.width, height: newDimensions.height };
     setDimensions(newDimensions);
 }
@@ -118,9 +122,12 @@ const containerStyle = useMemo<React.CSSProperties>(() => {
     // ... style calculation
 }, [style]);
 
-const svgStyle = useMemo<React.CSSProperties>(() => ({
-    // ... style properties
-}), [stretch, dimensions.width, dimensions.height]);
+const svgStyle = useMemo<React.CSSProperties>(
+    () => ({
+        // ... style properties
+    }),
+    [stretch, dimensions.width, dimensions.height]
+);
 ```
 
 **After:**
@@ -131,9 +138,12 @@ const containerStyle = useMemo<React.CSSProperties>(() => {
     // ... style calculation
 }, [style]);
 
-const svgStyle = useMemo<React.CSSProperties>(() => ({
-    // ... style properties
-}), [stretch, dimensions.width, dimensions.height]);
+const svgStyle = useMemo<React.CSSProperties>(
+    () => ({
+        // ... style properties
+    }),
+    [stretch, dimensions.width, dimensions.height]
+);
 ```
 
 **Benefits:**
@@ -155,7 +165,8 @@ export default React.memo(AdaptiveSvgComponent);
 ```typescript
 function arePropsEqual(prevProps: AdaptiveSvgComponentProps, nextProps: AdaptiveSvgComponentProps) {
     // Compare primitive props
-    if (prevProps.stretch !== nextProps.stretch ||
+    if (
+        prevProps.stretch !== nextProps.stretch ||
         prevProps.className !== nextProps.className ||
         prevProps.preferredWidth !== nextProps.preferredWidth ||
         prevProps.preferredHeight !== nextProps.preferredHeight ||
@@ -164,32 +175,34 @@ function arePropsEqual(prevProps: AdaptiveSvgComponentProps, nextProps: Adaptive
         prevProps.viewBoxWidth !== nextProps.viewBoxWidth ||
         prevProps.viewBoxHeight !== nextProps.viewBoxHeight ||
         prevProps.onClick !== nextProps.onClick ||
-        prevProps.onWheel !== nextProps.onWheel) {
+        prevProps.onWheel !== nextProps.onWheel
+    ) {
         return false;
     }
-    
+
     // Compare style objects
     if (prevProps.style && nextProps.style) {
         // Deep style comparison
         const prevStyleKeys = Object.keys(prevProps.style);
         const nextStyleKeys = Object.keys(nextProps.style);
-        
+
         if (prevStyleKeys.length !== nextStyleKeys.length) {
             return false;
         }
-        
+
         for (const key of prevStyleKeys) {
-            if (prevProps.style[key as keyof React.CSSProperties] !== 
-                nextProps.style[key as keyof React.CSSProperties]) {
+            if (
+                prevProps.style[key as keyof React.CSSProperties] !== nextProps.style[key as keyof React.CSSProperties]
+            ) {
                 return false;
             }
         }
     } else if (prevProps.style !== nextProps.style) {
         return false;
     }
-    
+
     // Missing: No explicit check for children changes
-    
+
     return true;
 }
 ```
@@ -199,7 +212,8 @@ function arePropsEqual(prevProps: AdaptiveSvgComponentProps, nextProps: Adaptive
 ```typescript
 function arePropsEqual(prevProps: AdaptiveSvgComponentProps, nextProps: AdaptiveSvgComponentProps) {
     // Compare primitive props
-    if (prevProps.stretch !== nextProps.stretch ||
+    if (
+        prevProps.stretch !== nextProps.stretch ||
         prevProps.className !== nextProps.className ||
         prevProps.preferredWidth !== nextProps.preferredWidth ||
         prevProps.preferredHeight !== nextProps.preferredHeight ||
@@ -208,36 +222,38 @@ function arePropsEqual(prevProps: AdaptiveSvgComponentProps, nextProps: Adaptive
         prevProps.viewBoxWidth !== nextProps.viewBoxWidth ||
         prevProps.viewBoxHeight !== nextProps.viewBoxHeight ||
         prevProps.onClick !== nextProps.onClick ||
-        prevProps.onWheel !== nextProps.onWheel) {
+        prevProps.onWheel !== nextProps.onWheel
+    ) {
         return false;
     }
-    
+
     // Compare style objects
     if (prevProps.style && nextProps.style) {
         // Deep style comparison
         const prevStyleKeys = Object.keys(prevProps.style);
         const nextStyleKeys = Object.keys(nextProps.style);
-        
+
         if (prevStyleKeys.length !== nextStyleKeys.length) {
             return false;
         }
-        
+
         for (const key of prevStyleKeys) {
-            if (prevProps.style[key as keyof React.CSSProperties] !== 
-                nextProps.style[key as keyof React.CSSProperties]) {
+            if (
+                prevProps.style[key as keyof React.CSSProperties] !== nextProps.style[key as keyof React.CSSProperties]
+            ) {
                 return false;
             }
         }
     } else if (prevProps.style !== nextProps.style) {
         return false;
     }
-    
+
     // Always check for changes in children to ensure re-renders when content changes
     // This is critical for components that display dynamic values through children
     if (prevProps.children !== nextProps.children) {
         return false;
     }
-    
+
     return true;
 }
 
@@ -292,12 +308,12 @@ const aspectRatio = aspectRatioRef.current;
 ```typescript
 useEffect(() => {
     const debouncedCalculate = debounce(calculateDimensions, 100);
-    
+
     const resizeObserver = new ResizeObserver(debouncedCalculate);
     if (containerRef.current) {
         resizeObserver.observe(containerRef.current);
     }
-    
+
     return () => {
         resizeObserver.disconnect();
         debouncedCalculate.cancel();
@@ -308,19 +324,17 @@ useEffect(() => {
 **After:**
 
 ```typescript
-const debouncedCalculate = useMemo(() => 
-    debounce(calculateDimensions, 100), 
-[calculateDimensions]);
+const debouncedCalculate = useMemo(() => debounce(calculateDimensions, 100), [calculateDimensions]);
 
 useEffect(() => {
     const resizeObserver = new ResizeObserver(debouncedCalculate);
     if (containerRef.current) {
         resizeObserver.observe(containerRef.current);
     }
-    
+
     // Initial calculation
     calculateDimensions();
-    
+
     return () => {
         resizeObserver.disconnect();
         debouncedCalculate.cancel();
@@ -344,7 +358,7 @@ useEffect(() => {
     if (containerRef.current) {
         resizeObserver.observe(containerRef.current);
     }
-    
+
     return () => {
         resizeObserver.disconnect();
         debouncedCalculate.cancel();
@@ -360,10 +374,10 @@ useEffect(() => {
     if (containerRef.current) {
         resizeObserver.observe(containerRef.current);
     }
-    
+
     // Initial calculation
     calculateDimensions();
-    
+
     return () => {
         resizeObserver.disconnect();
         debouncedCalculate.cancel();

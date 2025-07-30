@@ -1,13 +1,13 @@
 "use client";
 
-import React, {useCallback, useMemo} from 'react';
-import AdaptiveSvgComponent from '../support/AdaptiveSvgComponent';
-import classNames from 'classnames';
+import React, { useCallback, useMemo } from "react";
+import AdaptiveSvgComponent from "../support/AdaptiveSvgComponent";
+import classNames from "classnames";
 import "../../styles.css";
-import {BipolarControl, ExplicitRange} from "../types";
-import {knobSizeMap} from "../utils/sizeMappings";
-import {bipolarFormatter} from "../utils/valueFormatters";
-import {generateColorVariants} from "../utils/colorUtils";
+import { BipolarControl, ExplicitRange } from "../types";
+import { knobSizeMap } from "../utils/sizeMappings";
+import { bipolarFormatter } from "../utils/valueFormatters";
+import { generateColorVariants } from "../utils/colorUtils";
 
 /**
  * Angular constants for the knob's arc
@@ -20,14 +20,15 @@ const CENTER_ANGLE = 360;
 /**
  * Props for the Knob component
  */
-export type KnobProps = BipolarControl & ExplicitRange & {
-    /** Content to display inside the knob (replaces the value display) */
-    children?: React.ReactNode;
-    /** Thickness of the knob's stroke
-     * @default 12
-     */
-    thickness?: number;
-};
+export type KnobProps = BipolarControl &
+    ExplicitRange & {
+        /** Content to display inside the knob (replaces the value display) */
+        children?: React.ReactNode;
+        /** Thickness of the knob's stroke
+         * @default 12
+         */
+        thickness?: number;
+    };
 
 /**
  * Calculate SVG arc path
@@ -38,24 +39,20 @@ const calculateArcPath = (startAngle: number, endAngle: number, radius: number):
     }
     const start = polarToCartesian(50, 50, radius, endAngle);
     const end = polarToCartesian(50, 50, radius, startAngle);
-    const largeArcFlag = (endAngle - startAngle) <= 180 ? '0' : '1';
-    return [
-        'M', start.x, start.y,
-        'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y
-    ].join(' ');
+    const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+    return ["M", start.x, start.y, "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(" ");
 };
 
 /**
  * Convert polar coordinates to Cartesian
  */
 const polarToCartesian = (centerX: number, centerY: number, radius: number, angleInDegrees: number) => {
-    const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+    const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
     return {
-        x: centerX + (radius * Math.cos(angleInRadians)),
-        y: centerY + (radius * Math.sin(angleInRadians))
+        x: centerX + radius * Math.cos(angleInRadians),
+        y: centerY + radius * Math.sin(angleInRadians),
     };
 };
-
 
 /**
  * Knob component provides a circular control for value adjustment.
@@ -108,29 +105,28 @@ const polarToCartesian = (centerX: number, centerY: number, radius: number, angl
  * ```
  */
 function Knob({
-                  min,
-                  max,
-                  bipolar = false,
-                  value,
-                  label,
-                  children,
-                  stretch = false,
-                  className,
-                  style,
-                  onChange,
-                  roundness = 12,
-                  thickness = 12,
-                  size = 'normal',
-                  renderValue,
-                  paramId: _paramId,
-                  onClick,
-                  onMouseDown,
-                  onMouseUp,
-                  onMouseEnter,
-                  onMouseLeave,
-                  color = "blue"
-              }: KnobProps) {
-
+    min,
+    max,
+    bipolar = false,
+    value,
+    label,
+    children,
+    stretch = false,
+    className,
+    style,
+    onChange,
+    roundness = 12,
+    thickness = 12,
+    size = "normal",
+    renderValue,
+    paramId: _paramId,
+    onClick,
+    onMouseDown,
+    onMouseUp,
+    onMouseEnter,
+    onMouseLeave,
+    color = "blue",
+}: KnobProps) {
     const valueToAngle = useMemo(() => {
         return ((value - min) / (max - min)) * MAX_ARC_ANGLE + MAX_START_ANGLE;
     }, [value, min, max]);
@@ -141,11 +137,11 @@ function Knob({
     // Determine stroke linecap based on roundness (square if 0, round if > 0)
     // Ensure roundness is non-negative
     const nonNegativeRoundness = Math.max(0, roundness);
-    const strokeLinecap = nonNegativeRoundness === 0 ? 'square' : 'round';
-    
+    const strokeLinecap = nonNegativeRoundness === 0 ? "square" : "round";
+
     // Generate color variants using the centralized utility
     const colorVariants = useMemo(() => {
-        return generateColorVariants(color, 'transparency');
+        return generateColorVariants(color, "transparency");
     }, [color]);
 
     /**
@@ -153,36 +149,37 @@ function Knob({
      * If bipolar is true, returns the value prefixed by its sign (+ or -)
      * Otherwise, returns the number as a string
      */
-    const formatValueFn = useCallback((val: number): string => {
-        return bipolar ? bipolarFormatter(val) : val.toString();
-    }, [bipolar]);
+    const formatValueFn = useCallback(
+        (val: number): string => {
+            return bipolar ? bipolarFormatter(val) : val.toString();
+        },
+        [bipolar]
+    );
 
     /**
      * Wheel event handler that adjusts the knob value if onChange is defined
      * and the event hasn't been prevented by a user handler
      */
-    const handleWheel = useCallback((e: WheelEvent) => {
-        // Only adjust the value if onChange is defined and the event hasn't been prevented
-        if (onChange && !e.defaultPrevented) {
-            const delta = e.deltaY;
-            onChange((currentValue: number) => {
-                return Math.max(min, Math.min(currentValue + delta, max));
-            });
-        }
-    }, [onChange, min, max]);
+    const handleWheel = useCallback(
+        (e: WheelEvent) => {
+            // Only adjust the value if onChange is defined and the event hasn't been prevented
+            if (onChange && !e.defaultPrevented) {
+                const delta = e.deltaY;
+                onChange((currentValue: number) => {
+                    return Math.max(min, Math.min(currentValue + delta, max));
+                });
+            }
+        },
+        [onChange, min, max]
+    );
 
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {
-        return classNames(
-            className,
-            "cutoffAudioKit",
-            "componentContainer",
-            onChange ? "highlight" : ""
-        );
+        return classNames(className, "cutoffAudioKit", "componentContainer", onChange ? "highlight" : "");
     }, [className, onChange]);
 
     // Get the preferred width based on the size prop
-    const {width: preferredWidth, height: preferredHeight} = knobSizeMap[size];
+    const { width: preferredWidth, height: preferredHeight } = knobSizeMap[size];
 
     return (
         <AdaptiveSvgComponent
@@ -219,37 +216,44 @@ function Knob({
             />
 
             {/* Value Display */}
-            <foreignObject style={{cursor: "inherit"}} x="20" y="22" width="60" height="60">
+            <foreignObject style={{ cursor: "inherit" }} x="20" y="22" width="60" height="60">
                 <React.Fragment>
-                    <div style={{
-                        width: "100%",
-                        height: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "22px",
-                        maxWidth: '100%',
-                        maxHeight: '100%',
-                        fontWeight: "500",
-                        cursor: "inherit"
-                    }}>
-                        {React.isValidElement(children) && children.type === 'img' ? (
-                            <div style={{
-                                width: '100%',
-                                height: '100%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                padding: '10px',
-                                cursor: "inherit"
-                            }}>
+                    <div
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "22px",
+                            maxWidth: "100%",
+                            maxHeight: "100%",
+                            fontWeight: "500",
+                            cursor: "inherit",
+                        }}
+                    >
+                        {React.isValidElement(children) && children.type === "img" ? (
+                            <div
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    padding: "10px",
+                                    cursor: "inherit",
+                                }}
+                            >
                                 {React.cloneElement(children, {
                                     style: {
-                                        maxWidth: '100%',
-                                        maxHeight: '100%',
-                                        cursor: "inherit"
-                                    }
-                                } as React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>)}
+                                        maxWidth: "100%",
+                                        maxHeight: "100%",
+                                        cursor: "inherit",
+                                    },
+                                } as React.DetailedHTMLProps<
+                                    React.ImgHTMLAttributes<HTMLImageElement>,
+                                    HTMLImageElement
+                                >)}
                             </div>
                         ) : renderValue ? (
                             renderValue(value, min, max)
@@ -265,7 +269,7 @@ function Knob({
                 <text
                     style={{
                         cursor: "inherit",
-                        fill: "var(--text-color)" // Keep using the text color CSS variable
+                        fill: "var(--text-color)", // Keep using the text color CSS variable
                     }}
                     x="50"
                     y="110"

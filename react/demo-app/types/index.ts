@@ -3,5 +3,5 @@ export type PropertiesInputProps = {
     name: string;
     value: string | number | boolean;
     onChange: (value: any) => void;
-    type?: 'text' | 'number' | 'checkbox';
+    type?: "text" | "number" | "checkbox";
 };

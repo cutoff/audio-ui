@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import {useState} from "react";
-import {Button} from "@cutoff/audio-ui-react";
+import { useState } from "react";
+import { Button } from "@cutoff/audio-ui-react";
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {ColorPicker} from "@/components/ui/color-picker";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ColorPicker } from "@/components/ui/color-picker";
 
 export default function Page() {
     const [value, setValue] = useState(0);
@@ -58,44 +58,25 @@ export default function Page() {
         label,
         roundness,
         latch,
-        color
+        color,
     };
 
     const properties = [
         <div key="label" className="grid gap-2">
             <Label htmlFor="labelProp">Label</Label>
-            <Input
-                id="labelProp"
-                value={label}
-                onChange={(e) => setLabel(e.target.value)}
-            />
+            <Input id="labelProp" value={label} onChange={(e) => setLabel(e.target.value)} />
         </div>,
         <div key="min" className="grid gap-2">
             <Label htmlFor="minProp">Min</Label>
-            <Input
-                id="minProp"
-                type="number"
-                value={min}
-                onChange={(e) => setMin(Number(e.target.value))}
-            />
+            <Input id="minProp" type="number" value={min} onChange={(e) => setMin(Number(e.target.value))} />
         </div>,
         <div key="max" className="grid gap-2">
             <Label htmlFor="maxProp">Max</Label>
-            <Input
-                id="maxProp"
-                type="number"
-                value={max}
-                onChange={(e) => setMax(Number(e.target.value))}
-            />
+            <Input id="maxProp" type="number" value={max} onChange={(e) => setMax(Number(e.target.value))} />
         </div>,
         <div key="center" className="grid gap-2">
             <Label htmlFor="centerProp">Center</Label>
-            <Input
-                id="centerProp"
-                type="number"
-                value={center}
-                onChange={(e) => setCenter(Number(e.target.value))}
-            />
+            <Input id="centerProp" type="number" value={center} onChange={(e) => setCenter(Number(e.target.value))} />
         </div>,
         <div key="roundness" className="grid gap-2">
             <Label htmlFor="roundnessProp">Roundness</Label>
@@ -121,12 +102,7 @@ export default function Page() {
             </div>
         </div>,
         <div key="color" className="grid gap-2">
-            <ColorPicker
-                id="colorProp"
-                label="Color"
-                value={color}
-                onChange={setColor}
-            />
+            <ColorPicker id="colorProp" label="Color" value={color} onChange={setColor} />
         </div>,
     ];
 

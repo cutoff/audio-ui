@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import React, {useEffect, useState} from "react";
-import {isNoteOn, Keybed, noteNumToNote} from "@cutoff/audio-ui-react";
+import React, { useEffect, useState } from "react";
+import { isNoteOn, Keybed, noteNumToNote } from "@cutoff/audio-ui-react";
 import ComponentSkeletonPage from "@/components/ComponentSkeletonPage";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
-import {AlertTriangle} from "lucide-react";
-import {ColorPicker} from "@/components/ui/color-picker";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
+import { ColorPicker } from "@/components/ui/color-picker";
 
 // Define the NoteName type to match the one in the Keybed component
 type NoteName = "C" | "D" | "E" | "F" | "G" | "A" | "B";
@@ -30,7 +30,7 @@ export default function KeybedPage() {
   nbKeys={${nbKeys}} 
   startKey="${startKey}" 
   octaveShift={${octaveShift}} 
-  notesOn={[${notesOn.map(note => typeof note === 'string' ? `"${note}"` : note).join(', ')}]}
+  notesOn={[${notesOn.map((note) => (typeof note === "string" ? `"${note}"` : note)).join(", ")}]}
   color="${color}" 
 />`;
 
@@ -56,12 +56,9 @@ export default function KeybedPage() {
         </div>,
         <div key="startKey" className="grid gap-2">
             <Label htmlFor="startKeyProp">Start Key</Label>
-            <Select
-                value={startKey}
-                onValueChange={(value) => setStartKey(value as NoteName)}
-            >
+            <Select value={startKey} onValueChange={(value) => setStartKey(value as NoteName)}>
                 <SelectTrigger id="startKeyProp">
-                    <SelectValue placeholder="Select a start key"/>
+                    <SelectValue placeholder="Select a start key" />
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="C">C</SelectItem>
@@ -86,18 +83,13 @@ export default function KeybedPage() {
             />
         </div>,
         <div key="color" className="grid gap-2">
-            <ColorPicker
-                id="colorProp"
-                label="Color"
-                value={color}
-                onChange={setColor}
-            />
+            <ColorPicker id="colorProp" label="Color" value={color} onChange={setColor} />
         </div>,
     ];
 
     // Initialize WebMIDI
     useEffect(() => {
-        if (typeof navigator.requestMIDIAccess !== 'function') {
+        if (typeof navigator.requestMIDIAccess !== "function") {
             setWebMidiSupported(false);
             return;
         }
@@ -108,26 +100,28 @@ export default function KeybedPage() {
 
                 // Get all MIDI inputs
                 const inputs: WebMidi.MIDIInput[] = [];
-                midiAccess.inputs.forEach(input => {
+                midiAccess.inputs.forEach((input) => {
                     inputs.push(input);
                 });
 
                 setMidiInputs(inputs);
 
                 // Listen for state changes (device connect/disconnect)
-                midiAccess.addEventListener('statechange', (event) => {
+                midiAccess.addEventListener("statechange", (event) => {
                     const midiConnectionEvent = event as WebMidi.MIDIConnectionEvent;
-                    if (midiConnectionEvent.port.type === 'input') {
+                    if (midiConnectionEvent.port.type === "input") {
                         // Refresh the inputs list
                         const updatedInputs: WebMidi.MIDIInput[] = [];
-                        midiAccess.inputs.forEach(input => {
+                        midiAccess.inputs.forEach((input) => {
                             updatedInputs.push(input);
                         });
                         setMidiInputs(updatedInputs);
 
                         // If the currently selected input was disconnected, clear the selection
-                        if (midiConnectionEvent.port.state === 'disconnected' &&
-                            midiConnectionEvent.port.id === selectedInputId) {
+                        if (
+                            midiConnectionEvent.port.state === "disconnected" &&
+                            midiConnectionEvent.port.id === selectedInputId
+                        ) {
                             setSelectedInputId("");
                             setNotesOn([]);
                         }
@@ -145,8 +139,8 @@ export default function KeybedPage() {
     // Handle MIDI input selection
     useEffect(() => {
         // Clear previous listeners and notes
-        midiInputs.forEach(input => {
-            input.removeEventListener('midimessage', handleMidiMessage);
+        midiInputs.forEach((input) => {
+            input.removeEventListener("midimessage", handleMidiMessage);
         });
 
         // Only clear notes if we're changing inputs
@@ -156,16 +150,16 @@ export default function KeybedPage() {
 
         // Set up listener for the selected input
         if (selectedInputId) {
-            const selectedInput = midiInputs.find(input => input.id === selectedInputId);
+            const selectedInput = midiInputs.find((input) => input.id === selectedInputId);
             if (selectedInput) {
-                selectedInput.addEventListener('midimessage', handleMidiMessage);
+                selectedInput.addEventListener("midimessage", handleMidiMessage);
             }
         }
 
         // Cleanup function
         return () => {
-            midiInputs.forEach(input => {
-                input.removeEventListener('midimessage', handleMidiMessage);
+            midiInputs.forEach((input) => {
+                input.removeEventListener("midimessage", handleMidiMessage);
             });
         };
     }, [selectedInputId, midiInputs]);
@@ -175,10 +169,10 @@ export default function KeybedPage() {
         const data = event.data;
 
         // Note on message (status byte: 0x90)
-        if ((data[0] & 0xF0) === 0x90 && data[2] > 0) {
+        if ((data[0] & 0xf0) === 0x90 && data[2] > 0) {
             const midiNote = data[1];
 
-            setNotesOn(prev => {
+            setNotesOn((prev) => {
                 // Check if the note is already in the array (either as string or number)
                 if (!isNoteOn(midiNote, prev)) {
                     return [...prev, midiNote];
@@ -188,12 +182,12 @@ export default function KeybedPage() {
         }
 
         // Note off message (status byte: 0x80 or 0x90 with velocity 0)
-        if ((data[0] & 0xF0) === 0x80 || ((data[0] & 0xF0) === 0x90 && data[2] === 0)) {
+        if ((data[0] & 0xf0) === 0x80 || ((data[0] & 0xf0) === 0x90 && data[2] === 0)) {
             const midiNote = data[1];
 
-            setNotesOn(prev => {
+            setNotesOn((prev) => {
                 // Filter out the note (need to check both string and number representations)
-                return prev.filter(note => !isNoteOn(note, [midiNote]));
+                return prev.filter((note) => !isNoteOn(note, [midiNote]));
             });
         }
     };
@@ -214,30 +208,28 @@ export default function KeybedPage() {
                 <div className="flex flex-col gap-6">
                     {!webMidiSupported ? (
                         <Alert variant="destructive">
-                            <AlertTriangle className="h-4 w-4"/>
+                            <AlertTriangle className="h-4 w-4" />
                             <AlertTitle>WebMIDI Not Supported</AlertTitle>
                             <AlertDescription>
                                 Your browser does not support WebMIDI. Please use a browser that supports WebMIDI, such
-                                as Chrome, Edge, or Opera.
-                                Safari does not currently support WebMIDI.
+                                as Chrome, Edge, or Opera. Safari does not currently support WebMIDI.
                             </AlertDescription>
                         </Alert>
                     ) : (
                         <div>
                             <h2 className="text-xl md:text-2xl font-medium mb-4">MIDI Input</h2>
                             <label className="block text-sm font-medium mb-2">Select MIDI Input</label>
-                            <Select
-                                value={selectedInputId}
-                                onValueChange={setSelectedInputId}
-                            >
+                            <Select value={selectedInputId} onValueChange={setSelectedInputId}>
                                 <SelectTrigger className="w-full md:w-80">
-                                    <SelectValue placeholder="Select a MIDI input device"/>
+                                    <SelectValue placeholder="Select a MIDI input device" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {midiInputs.length === 0 ? (
-                                        <SelectItem value="none" disabled>No MIDI devices found</SelectItem>
+                                        <SelectItem value="none" disabled>
+                                            No MIDI devices found
+                                        </SelectItem>
                                     ) : (
-                                        midiInputs.map(input => (
+                                        midiInputs.map((input) => (
                                             <SelectItem key={input.id} value={input.id}>
                                                 {input.name || `MIDI Input ${input.id}`}
                                             </SelectItem>
@@ -296,8 +288,12 @@ export default function KeybedPage() {
 
                     <div className="text-sm text-muted-foreground">
                         <p>Connect a MIDI keyboard and select it from the dropdown to play notes.</p>
-                        <p className="mt-2">Active
-                            notes: {notesOn.map(note => typeof note === 'number' ? noteNumToNote(note) : note).join(', ') || 'None'}</p>
+                        <p className="mt-2">
+                            Active notes:{" "}
+                            {notesOn
+                                .map((note) => (typeof note === "number" ? noteNumToNote(note) : note))
+                                .join(", ") || "None"}
+                        </p>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 /**
  * Utility functions for color manipulation
- * 
+ *
  * This module provides simplified color manipulation functions that leverage
  * modern CSS capabilities instead of reimplementing color parsing logic.
  */
@@ -10,13 +10,13 @@
  * Used as fallbacks for luminosity variants of named colors
  */
 const namedColors: Record<string, string> = {
-    blue: 'hsl(204, 88%, 53%)',
-    orange: 'hsl(29, 100%, 50%)',
-    pink: 'hsl(332, 95%, 54%)',
-    green: 'hsl(160, 98%, 37%)',
-    purple: 'hsl(252, 100%, 67%)',
-    yellow: 'hsl(50, 100%, 50%)',
-    white: 'hsl(0, 0%, 100%)'
+    blue: "hsl(204, 88%, 53%)",
+    orange: "hsl(29, 100%, 50%)",
+    pink: "hsl(332, 95%, 54%)",
+    green: "hsl(160, 98%, 37%)",
+    purple: "hsl(252, 100%, 67%)",
+    yellow: "hsl(50, 100%, 50%)",
+    white: "hsl(0, 0%, 100%)",
 };
 
 /**
@@ -39,7 +39,7 @@ export function generateLuminosityVariant(baseColor: string, luminosityPercentag
             return `hsl(${h}, ${s}%, ${newL}%)`;
         }
     }
-    
+
     // For all other colors, use color-mix with black to darken
     // This is a simpler approach that works for any valid CSS color
     const darkening = 100 - luminosityPercentage;
@@ -69,17 +69,17 @@ export function generateHighlightColor(baseColor: string): string {
     if (lowerColor in namedColors) {
         baseColor = namedColors[lowerColor];
     }
-    
+
     // For highlight effects, we want a slightly brighter and more saturated color
     // Extract the HSL values if possible
     const hslMatch = baseColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
     if (hslMatch) {
         const h = parseInt(hslMatch[1], 10);
         const s = Math.min(100, parseInt(hslMatch[2], 10) + 10); // Increase saturation
-        const l = Math.min(70, parseInt(hslMatch[3], 10) + 10);  // Increase lightness but cap at 70%
+        const l = Math.min(70, parseInt(hslMatch[3], 10) + 10); // Increase lightness but cap at 70%
         return `hsl(${h}, ${s}%, ${l}%)`;
     }
-    
+
     // For other color formats, use a simple approach that works for any color
     return `color-mix(in srgb, ${baseColor} 80%, white 20%)`;
 }
@@ -90,7 +90,10 @@ export function generateHighlightColor(baseColor: string): string {
  * @param variant The variant type ('luminosity' or 'transparency')
  * @returns An object with primary, primary50, primary20, and highlight color values
  */
-export function generateColorVariants(baseColor: string, variant: 'luminosity' | 'transparency' = 'luminosity'): {
+export function generateColorVariants(
+    baseColor: string,
+    variant: "luminosity" | "transparency" = "luminosity"
+): {
     primary: string;
     primary50: string;
     primary20: string;
@@ -101,23 +104,23 @@ export function generateColorVariants(baseColor: string, variant: 'luminosity' |
     if (lowerColor in namedColors) {
         baseColor = namedColors[lowerColor];
     }
-    
+
     // Generate the highlight color
     const highlight = generateHighlightColor(baseColor);
-    
-    if (variant === 'luminosity') {
+
+    if (variant === "luminosity") {
         return {
             primary: baseColor,
             primary50: generateLuminosityVariant(baseColor, 50),
             primary20: generateLuminosityVariant(baseColor, 20),
-            highlight
+            highlight,
         };
     } else {
         return {
             primary: baseColor,
             primary50: generateTransparencyVariant(baseColor, 50),
             primary20: generateTransparencyVariant(baseColor, 20),
-            highlight
+            highlight,
         };
     }
 }

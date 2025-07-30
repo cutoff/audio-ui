@@ -10,12 +10,12 @@
 /**
  * Array of note names in chromatic order (C to B with sharps)
  */
-export const CHROMATIC_NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] as const;
+export const CHROMATIC_NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"] as const;
 
 /**
  * Array of white key note names in order (C to B)
  */
-export const WHITE_KEY_NAMES = ['C', 'D', 'E', 'F', 'G', 'A', 'B'] as const;
+export const WHITE_KEY_NAMES = ["C", "D", "E", "F", "G", "A", "B"] as const;
 
 /**
  * Mapping from white key index to chromatic offset
@@ -28,7 +28,13 @@ export const WHITE_KEY_TO_CHROMATIC = [0, 2, 4, 5, 7, 9, 11] as const;
  * Mapping from diatonic note names to chromatic indices
  */
 export const DIATONIC_TO_CHROMATIC: Record<string, number> = {
-    'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11
+    C: 0,
+    D: 2,
+    E: 4,
+    F: 5,
+    G: 7,
+    A: 9,
+    B: 11,
 };
 
 /**
@@ -97,7 +103,7 @@ export const noteToNoteNum = (note: string): number => {
     const [, noteName, , octave] = match;
 
     // Find the index of the noteName in the chromatic scale
-    const noteIndex = CHROMATIC_NOTES.findIndex(n => n === noteName);
+    const noteIndex = CHROMATIC_NOTES.findIndex((n) => n === noteName);
     if (noteIndex === -1) return -1;
 
     // Calculate MIDI note number: (octave + 1) * 12 + noteIndex
@@ -116,7 +122,7 @@ export const createNoteNumSet = (notesOn: (string | number)[]): Set<number> => {
     const noteNumSet = new Set<number>();
 
     for (const note of notesOn) {
-        if (typeof note === 'number') {
+        if (typeof note === "number") {
             // If the note is already a number, add it directly
             noteNumSet.add(note);
         } else {
@@ -146,7 +152,7 @@ export const isNoteOn = (noteInput: string | number, notesOn: (string | number)[
     const noteNumSet = createNoteNumSet(notesOn);
 
     // If noteInput is a string (note), convert it to a MIDI note number
-    if (typeof noteInput === 'string') {
+    if (typeof noteInput === "string") {
         const noteNum = noteToNoteNum(noteInput);
         return noteNum !== -1 && noteNumSet.has(noteNum);
     }

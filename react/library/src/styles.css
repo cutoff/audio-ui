@@ -1,5 +1,5 @@
 @import url("themes.css");
-@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap");
 
 :root {
     --text-color: hsl(0, 0%, 10%);
@@ -38,7 +38,8 @@ textarea input {
     font-size: var(--default-font-size);
 }
 
-svg text, svg foreignObject div {
+svg text,
+svg foreignObject div {
     -webkit-user-select: none;
     user-select: none;
     cursor: default;

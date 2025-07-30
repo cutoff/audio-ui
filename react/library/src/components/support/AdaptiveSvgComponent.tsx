@@ -1,10 +1,10 @@
 "use client";
 
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 // Import only the debounce function instead of the entire lodash library
 // This significantly reduces bundle size through tree-shaking
-import debounce from 'lodash/debounce';
-import {Base} from '../types';
+import debounce from "lodash/debounce";
+import { Base } from "../types";
 
 /**
  * Props for the AdaptiveSvgComponent
@@ -92,30 +92,30 @@ export type AdaptiveSvgComponentProps = Base & {
  * ```
  */
 function AdaptiveSvgComponent({
-                                  stretch = false,
-                                  className = '',
-                                  style = {},
-                                  children,
-                                  preferredWidth = 100,
-                                  preferredHeight = 100,
-                                  minWidth = 40,
-                                  minHeight = 40,
-                                  viewBoxWidth = 100,
-                                  viewBoxHeight = 100,
-                                  onWheel,
-                                  onClick,
-                                  onMouseDown,
-                                  onMouseUp,
-                                  onMouseEnter,
-                                  onMouseLeave,
-                              }: AdaptiveSvgComponentProps) {
+    stretch = false,
+    className = "",
+    style = {},
+    children,
+    preferredWidth = 100,
+    preferredHeight = 100,
+    minWidth = 40,
+    minHeight = 40,
+    viewBoxWidth = 100,
+    viewBoxHeight = 100,
+    onWheel,
+    onClick,
+    onMouseDown,
+    onMouseUp,
+    onMouseEnter,
+    onMouseLeave,
+}: AdaptiveSvgComponentProps) {
     const svgRef = useRef<SVGSVGElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     // Use useRef for the previous dimensions to avoid unnecessary re-renders
-    const prevDimensionsRef = useRef({width: preferredWidth, height: preferredHeight});
+    const prevDimensionsRef = useRef({ width: preferredWidth, height: preferredHeight });
     const [dimensions, setDimensions] = useState({
         width: preferredWidth,
-        height: preferredHeight
+        height: preferredHeight,
     });
 
     // Calculate aspect ratio once and store in a ref since it's derived from props and doesn't change
@@ -129,7 +129,7 @@ function AdaptiveSvgComponent({
     const calculateFixedDimensions = (availableWidth: number, availableHeight: number) => {
         const newWidth = Math.min(Math.max(preferredWidth, minWidth), availableWidth);
         const newHeight = Math.min(Math.max(preferredHeight, minHeight), availableHeight);
-        return {width: newWidth, height: newHeight};
+        return { width: newWidth, height: newHeight };
     };
 
     const calculateStretchedDimensions = (availableWidth: number, availableHeight: number) => {
@@ -185,8 +185,10 @@ function AdaptiveSvgComponent({
             : calculateFixedDimensions(availableWidth, availableHeight);
 
         // Only update state if dimensions have changed
-        if (prevDimensionsRef.current.width !== newDimensions.width ||
-            prevDimensionsRef.current.height !== newDimensions.height) {
+        if (
+            prevDimensionsRef.current.width !== newDimensions.width ||
+            prevDimensionsRef.current.height !== newDimensions.height
+        ) {
             prevDimensionsRef.current = newDimensions;
             setDimensions(newDimensions);
         }
@@ -197,15 +199,13 @@ function AdaptiveSvgComponent({
      * We use a 100ms delay to prevent flickering during rapid shrinking.
      * This is only used when the container is getting smaller.
      */
-    const debouncedShrinkCalculate = useMemo(() =>
-            debounce(calculateDimensions, 100),
-        [calculateDimensions]);
+    const debouncedShrinkCalculate = useMemo(() => debounce(calculateDimensions, 100), [calculateDimensions]);
 
     /**
      * Reference to track the container's previous dimensions.
      * This allows us to determine if the container is growing or shrinking.
      */
-    const containerSizeRef = useRef({width: 0, height: 0});
+    const containerSizeRef = useRef({ width: 0, height: 0 });
 
     /**
      * Asymmetric resize handler that responds differently to growth vs. shrinking:
@@ -215,29 +215,32 @@ function AdaptiveSvgComponent({
      * This approach eliminates lag when the container grows while maintaining
      * smooth behavior when it shrinks.
      */
-    const handleResize = useCallback((entries: ResizeObserverEntry[]) => {
-        if (!containerRef.current || entries.length === 0) return;
+    const handleResize = useCallback(
+        (entries: ResizeObserverEntry[]) => {
+            if (!containerRef.current || entries.length === 0) return;
 
-        const entry = entries[0];
-        const newWidth = entry.contentRect.width;
-        const newHeight = entry.contentRect.height;
-        const prevWidth = containerSizeRef.current.width;
-        const prevHeight = containerSizeRef.current.height;
+            const entry = entries[0];
+            const newWidth = entry.contentRect.width;
+            const newHeight = entry.contentRect.height;
+            const prevWidth = containerSizeRef.current.width;
+            const prevHeight = containerSizeRef.current.height;
 
-        // Update the stored size
-        containerSizeRef.current = {width: newWidth, height: newHeight};
+            // Update the stored size
+            containerSizeRef.current = { width: newWidth, height: newHeight };
 
-        // If container is growing in either dimension, calculate immediately
-        if (newWidth > prevWidth || newHeight > prevHeight) {
-            // Cancel any pending debounced calculations
-            debouncedShrinkCalculate.cancel();
-            // Calculate immediately
-            calculateDimensions();
-        } else {
-            // For shrinking or no change, use the debounced function
-            debouncedShrinkCalculate();
-        }
-    }, [calculateDimensions, debouncedShrinkCalculate]);
+            // If container is growing in either dimension, calculate immediately
+            if (newWidth > prevWidth || newHeight > prevHeight) {
+                // Cancel any pending debounced calculations
+                debouncedShrinkCalculate.cancel();
+                // Calculate immediately
+                calculateDimensions();
+            } else {
+                // For shrinking or no change, use the debounced function
+                debouncedShrinkCalculate();
+            }
+        },
+        [calculateDimensions, debouncedShrinkCalculate]
+    );
 
     // Set up resize observation
     useEffect(() => {
@@ -247,7 +250,7 @@ function AdaptiveSvgComponent({
             if (containerRef.current.clientWidth && containerRef.current.clientHeight) {
                 containerSizeRef.current = {
                     width: containerRef.current.clientWidth,
-                    height: containerRef.current.clientHeight
+                    height: containerRef.current.clientHeight,
                 };
             }
             resizeObserver.observe(containerRef.current);
@@ -272,7 +275,7 @@ function AdaptiveSvgComponent({
             if (onWheel) {
                 onWheel(e);
             }
-            
+
             // Only prevent default and stop propagation if the event hasn't been prevented by the user's handler
             if (!e.defaultPrevented) {
                 e.preventDefault();
@@ -280,35 +283,35 @@ function AdaptiveSvgComponent({
             }
         };
 
-        element.addEventListener('wheel', wheelHandler, {passive: false});
-        return () => element.removeEventListener('wheel', wheelHandler);
+        element.addEventListener("wheel", wheelHandler, { passive: false });
+        return () => element.removeEventListener("wheel", wheelHandler);
     }, [onWheel]);
 
     // Styles to ensure proper grid cell containment
     const containerStyle = useMemo<React.CSSProperties>(() => {
         // Extract alignment properties from style
-        const {alignSelf, justifySelf, ...restStyle} = style;
+        const { alignSelf, justifySelf, ...restStyle } = style;
 
         // Map grid alignment properties to flex alignment properties
-        let alignItems = 'center';
-        let justifyContent = 'center';
+        let alignItems = "center";
+        let justifyContent = "center";
 
         // Map alignSelf to alignItems
-        if (alignSelf === 'start') alignItems = 'flex-start';
-        else if (alignSelf === 'end') alignItems = 'flex-end';
-        else if (alignSelf === 'center') alignItems = 'center';
+        if (alignSelf === "start") alignItems = "flex-start";
+        else if (alignSelf === "end") alignItems = "flex-end";
+        else if (alignSelf === "center") alignItems = "center";
 
         // Map justifySelf to justifyContent
-        if (justifySelf === 'start') justifyContent = 'flex-start';
-        else if (justifySelf === 'end') justifyContent = 'flex-end';
-        else if (justifySelf === 'center') justifyContent = 'center';
+        if (justifySelf === "start") justifyContent = "flex-start";
+        else if (justifySelf === "end") justifyContent = "flex-end";
+        else if (justifySelf === "center") justifyContent = "center";
 
         // Base styles that apply to both stretch and non-stretch modes
         const baseStyles: React.CSSProperties = {
-            position: 'relative',
+            position: "relative",
             alignItems,
             justifyContent,
-            overflow: 'hidden',  // Prevent overflow
+            overflow: "hidden", // Prevent overflow
             ...restStyle,
         };
 
@@ -317,26 +320,29 @@ function AdaptiveSvgComponent({
             // When stretched, behave as a block element that takes full container space
             return {
                 ...baseStyles,
-                width: '100%',
-                height: '100%',
-                display: 'flex',
+                width: "100%",
+                height: "100%",
+                display: "flex",
             };
         } else {
             // When not stretched, behave as an inline element
             return {
                 ...baseStyles,
-                display: 'inline-flex',
+                display: "inline-flex",
             };
         }
     }, [style, stretch]);
 
-    const svgStyle = useMemo<React.CSSProperties>(() => ({
-        width: stretch ? 'auto' : dimensions.width,
-        height: stretch ? 'auto' : dimensions.height,
-        maxWidth: stretch ? '100%' : dimensions.width,
-        maxHeight: stretch ? '100%' : dimensions.height,
-        flexShrink: 0,  // Prevent unwanted shrinking
-    }), [stretch, dimensions.width, dimensions.height]);
+    const svgStyle = useMemo<React.CSSProperties>(
+        () => ({
+            width: stretch ? "auto" : dimensions.width,
+            height: stretch ? "auto" : dimensions.height,
+            maxWidth: stretch ? "100%" : dimensions.width,
+            maxHeight: stretch ? "100%" : dimensions.height,
+            flexShrink: 0, // Prevent unwanted shrinking
+        }),
+        [stretch, dimensions.width, dimensions.height]
+    );
 
     return (
         <div ref={containerRef} style={containerStyle} className={className}>
@@ -360,8 +366,8 @@ function AdaptiveSvgComponent({
 
 // Custom comparison function for React.memo to prevent unnecessary re-renders
 function arePropsEqual(prevProps: AdaptiveSvgComponentProps, nextProps: AdaptiveSvgComponentProps) {
-    const {style: prevStyle, children: prevChildren, ...prevRest} = prevProps;
-    const {style: nextStyle, children: nextChildren, ...nextRest} = nextProps;
+    const { style: prevStyle, children: prevChildren, ...prevRest } = prevProps;
+    const { style: nextStyle, children: nextChildren, ...nextRest } = nextProps;
 
     // Compare primitive props
     for (const key in prevRest) {
