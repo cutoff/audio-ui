@@ -24,15 +24,19 @@ const iconSquareWave = "/square-wave.svg";
 
 const sampleOptions = [
     <Option key={0} value={0}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={iconSineWave} alt="Sine" />
     </Option>,
     <Option key={1} value={1}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={iconTriangleWave} alt="Triangle" />
     </Option>,
     <Option key={2} value={2}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={iconSquareWave} alt="Saw" />
     </Option>,
     <Option key={3} value={3}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={iconSawWave} alt="Saw" />
     </Option>,
     <Option key={4} value={4}>
@@ -54,10 +58,14 @@ function generateCodeSnippet(
 ): string {
     if (enableOptions) {
         return `<Knob value={${value}} label='${label}' color='${color}'>
-    <Option value={0}><img src={iconSineWave} /></Option>
-    <Option value={1}><img src={iconTriangleWave} /></Option>
-    <Option value={2}><img src={iconSquareWave} /></Option>
-    <Option value={3}><img src={iconSawWave} /></Option>
+    <Option value={0}>{/* eslint-disable-next-line @next/next/no-img-element */}
+    <img src={iconSineWave} alt="Sine" /></Option>
+    <Option value={1}>{/* eslint-disable-next-line @next/next/no-img-element */}
+    <img src={iconTriangleWave} alt="Triangle" /></Option>
+    <Option value={2}>{/* eslint-disable-next-line @next/next/no-img-element */}
+    <img src={iconSquareWave} alt="Square" /></Option>
+    <Option value={3}>{/* eslint-disable-next-line @next/next/no-img-element */}
+    <img src={iconSawWave} alt="Saw" /></Option>
     <Option value={4}>Oth</Option>
 </Knob>
 `;

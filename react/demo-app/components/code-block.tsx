@@ -7,6 +7,11 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CheckIcon, CopyIcon } from "lucide-react";
 
+// Define a type for the syntax highlighter theme
+interface SyntaxHighlighterTheme {
+    [key: string]: React.CSSProperties | SyntaxHighlighterTheme;
+}
+
 interface CodeBlockProps {
     code: string;
     language?: string;
@@ -34,7 +39,7 @@ export const CodeBlock = ({
     const baseTheme = theme === "oneDark" ? oneDark : atomDark;
 
     // Create a modified theme with consistent styling and backgrounds
-    const modifiedTheme = {
+    const modifiedTheme: SyntaxHighlighterTheme = {
         ...baseTheme,
         'pre[class*="language-"]': {
             ...baseTheme['pre[class*="language-"]'],
@@ -53,16 +58,16 @@ export const CodeBlock = ({
 
     // Fix for oneDark line background issues
     if (theme === "oneDark") {
-        const themeAny = modifiedTheme as any;
-        themeAny[':not(pre) > code[class*="language-"]'] = {
-            ...themeAny[':not(pre) > code[class*="language-"]'],
+        // Add additional theme properties for oneDark
+        modifiedTheme[':not(pre) > code[class*="language-"]'] = {
+            ...(modifiedTheme[':not(pre) > code[class*="language-"]'] as React.CSSProperties),
             background: "transparent",
             backgroundColor: "transparent",
         };
 
         // Override line highlighting
-        themeAny[".token.operator"] = {
-            ...themeAny[".token.operator"],
+        modifiedTheme[".token.operator"] = {
+            ...(modifiedTheme[".token.operator"] as React.CSSProperties),
             background: "transparent",
             backgroundColor: "transparent",
         };

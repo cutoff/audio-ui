@@ -3,13 +3,19 @@
 import React from "react";
 import { CodeBlock } from "@/components/code-block";
 
+/** Type for components that can be rendered in the ComponentSkeletonPage */
+export type PageComponentProps = Record<string, unknown> & {
+    stretch?: boolean;
+    onChange?: (value: number) => void;
+};
+
 export type ComponentSkeletonPageProps = {
     /** Name of the component being demonstrated */
     componentName: string;
     /** Code example to display */
     codeSnippet: string;
     /** The component to render */
-    PageComponent: React.ComponentType<any>;
+    PageComponent: React.ComponentType<PageComponentProps>;
     /** Props to pass to the component */
     componentProps: Record<string, unknown>;
     /** Property controls to display */
