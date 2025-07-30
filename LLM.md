@@ -3,6 +3,12 @@
 This document provides essential information for LLMs working on the Audio UI project, a React component library for
 audio and MIDI applications.
 
+**IMPORTANT: Documentation File Structure**
+- This file (LLM.md) is the primary documentation file for LLMs.
+- CLAUDE.md and GEMINI.md are symbolic links to this file.
+- Always edit LLM.md directly. Never attempt to modify CLAUDE.md or GEMINI.md as they are just symbolic links.
+- Any changes made to LLM.md will automatically be reflected in CLAUDE.md and GEMINI.md.
+
 **IMPORTANT: This library has never been released.** There is no need to maintain backward compatibility with previous
 versions. All design decisions should prioritize clean, maintainable code over backward compatibility.
 
@@ -18,9 +24,9 @@ versions. All design decisions should prioritize clean, maintainable code over b
 
 If you encounter React version conflicts:
 
-1. Check `npm ls react @types/react` to identify version mismatches
+1. Check `pnpm ls react @types/react` to identify version mismatches
 2. Downgrade to React 18 compatible versions
-3. Run `npm run typecheck` to verify TypeScript compatibility
+3. Run `pnpm typecheck` to verify TypeScript compatibility
 4. Ensure all dependencies are compatible with React 18
 
 ## Project Structure
@@ -37,39 +43,39 @@ The project is organized as a monorepo with the following structure:
 
 ### Build and Test Commands
 
-The project has been updated to fix previous issues with npm scripts. You can now safely run the following commands:
+The project has been updated to fix previous issues with pnpm scripts. You can now safely run the following commands:
 
-- `npm run typecheck` - Run TypeScript type checking
-- `npm run build` - Build the library
-- `npm run test` - Run unit tests
-- `npm run clean` - Clean build artifacts
-- `npm run format` - Format code with Prettier
+- `pnpm typecheck` - Run TypeScript type checking
+- `pnpm build` - Build the library
+- `pnpm test` - Run unit tests
+- `pnpm clean` - Clean build artifacts
+- `pnpm format` - Format code with Prettier
 
 Because of some persisting issues, never run the development server for testing:
 
-- `npm run dev` (in react/demo-app directory) - Start the development server
+- `pnpm dev` (in react/demo-app directory) - Start the development server
 
 ### Setting Up the Project
 
 1. Install dependencies:
    ```bash
-   npm install
+   pnpm install
    ```
 
 2. Build the library:
    ```bash
-   npm run build
+   pnpm build
    ```
 
 3. Run the demo application:
    ```bash
    cd react/demo-app
-   npm run dev
+   pnpm dev
    ```
    
    Or run type checking:
    ```bash
-   npm run typecheck
+   pnpm typecheck
    ```
 
 ### Library Development
@@ -79,19 +85,19 @@ The library uses Vite for building and TypeScript for type checking:
 - Build the library:
   ```bash
   cd react/library
-  npm run build
+  pnpm build
   ```
 
 - Type check the library:
   ```bash
   cd react/library
-  npm run typecheck
+  pnpm typecheck
   ```
 
 - Link the library for local development:
   ```bash
   cd react/library
-  npm link
+  pnpm link
   ```
 
 ## Testing Information
@@ -102,16 +108,16 @@ You can now safely run tests with:
 
 ```bash
 cd react/library
-npm test
+pnpm test
 ```
 
 You can also use static analysis for additional code quality checks:
 
 ```bash
 cd react/library
-npm run typecheck
+pnpm typecheck
 # Use ESLint for code quality checks
-npm run lint
+pnpm lint
 ```
 
 ### Writing Tests
@@ -190,16 +196,16 @@ You can now safely run the demo application with:
 
 ```bash
 cd react/demo-app
-npm run dev
+pnpm dev
 ```
 
 You can also use static analysis for code quality checks:
 
 ```bash
 cd react/demo-app
-npm run typecheck
+pnpm typecheck
 # Use ESLint for code quality checks
-npm run lint
+pnpm lint
 ```
 
 ## LLM-Specific Development Guidelines
@@ -208,12 +214,12 @@ npm run lint
 
 When encountering TypeScript errors, follow this debugging sequence:
 
-1. **Check React versions**: Run `npm ls react @types/react` to identify version mismatches
+1. **Check React versions**: Run `pnpm ls react @types/react` to identify version mismatches
 2. **Verify package.json**: Ensure all React dependencies specify React 18 versions
 3. **Fix version conflicts**: Use
-   `npm install react@^18.3.1 react-dom@^18.3.1 @types/react@^18.3.23 @types/react-dom@^18.3.7`
-4. **Run type checks**: Execute `npm run typecheck` in both library and demo app
-5. **Build verification**: Run `npm run build` to ensure no compilation errors
+   `pnpm install react@^18.3.1 react-dom@^18.3.1 @types/react@^18.3.23 @types/react-dom@^18.3.7`
+4. **Run type checks**: Execute `pnpm typecheck` in both library and demo app
+5. **Build verification**: Run `pnpm build` to ensure no compilation errors
 
 ### Component Development Patterns
 
@@ -242,7 +248,7 @@ Components in this library follow these conventions:
 
 1. **Library build**: Uses Vite with TypeScript declaration generation
 2. **Demo app build**: Uses Next.js 15 with React 18 compatibility
-3. **Type checking**: Run `npm run typecheck` before commits
+3. **Type checking**: Run `pnpm typecheck` before commits
 4. **Linting**: Address ESLint warnings, especially TypeScript-related ones
 
 ### File Structure Guidelines
@@ -366,7 +372,7 @@ The project uses ESLint with TypeScript support. The configuration enforces most
 Always run ESLint before committing code:
 
 ```bash
-npm run lint
+pnpm lint
 ```
 
 ### Prettier Configuration
@@ -378,5 +384,5 @@ settings.
 Run Prettier to automatically format code:
 
 ```bash
-npm run format
+pnpm format
 ```

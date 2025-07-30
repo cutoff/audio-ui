@@ -28,10 +28,10 @@ The library provides the following audio-focused UI components:
 
 ```bash
 # Install the library (when published)
-npm install @cutoff/audio-ui-react
+pnpm add @cutoff/audio-ui-react
 
 # Install required peer dependencies
-npm install react@^18.2.0 react-dom@^18.2.0
+pnpm add react@^18.2.0 react-dom@^18.2.0
 ```
 
 ### Basic Usage
@@ -90,18 +90,18 @@ The project is organized as a monorepo with the following structure:
 
 1. Install dependencies:
    ```bash
-   npm install
+   pnpm install
    ```
 
 2. Build the library:
    ```bash
-   npm run build
+   pnpm build
    ```
 
 3. Run the demo application:
    ```bash
    cd react/demo-app
-   npm run dev
+   pnpm dev
    ```
 
 ### Library Development
@@ -111,19 +111,19 @@ The library uses Vite for building and TypeScript for type checking:
 - Build the library:
   ```bash
   cd react/library
-  npm run build
+  pnpm build
   ```
 
 - Type check the library:
   ```bash
   cd react/library
-  npm run typecheck
+  pnpm typecheck
   ```
 
 - Link the library for local development:
   ```bash
   cd react/library
-  npm link
+  pnpm link
   ```
 
 ## For Library Development
@@ -136,14 +136,14 @@ git clone <repository-url>
 cd audio-ui/react
 
 # Install dependencies
-npm install
+pnpm install
 
 # Build the library
-npm run build
+pnpm build
 
 # Run the demo application
 cd demo-app
-npm run dev
+pnpm dev
 ```
 
 ## ⚠️ Important: React Version Policy
@@ -173,7 +173,7 @@ Before making changes, verify React versions:
 
 ```bash
 # Check installed React versions
-npm ls react @types/react
+pnpm ls react @types/react
 
 # Should show React 18.x versions consistently
 ```
@@ -183,11 +183,11 @@ npm ls react @types/react
 ```bash
 # Make changes to library components
 cd react/library
-npm run build
+pnpm build
 
 # Test changes in demo app
 cd ../demo-app
-npm run dev
+pnpm dev
 ```
 
 ### 3. Type Checking
@@ -197,11 +197,11 @@ Always run TypeScript checks before committing:
 ```bash
 # Check library types
 cd react/library
-npm run typecheck
+pnpm typecheck
 
 # Check demo app types
 cd ../demo-app
-npx tsc --noEmit
+pnpm exec tsc --noEmit
 ```
 
 ### 4. Testing
@@ -209,7 +209,7 @@ npx tsc --noEmit
 ```bash
 # Run tests (when configured)
 cd react/library
-npm test
+pnpm test
 ```
 
 ## Troubleshooting
@@ -218,9 +218,9 @@ npm test
 
 If you encounter TypeScript errors related to React types:
 
-1. **Check versions**: `npm ls react @types/react`
+1. **Check versions**: `pnpm ls react @types/react`
 2. **Fix conflicts**: Install correct React 18 versions
-3. **Verify**: Run `npm run typecheck` in both library and demo app
+3. **Verify**: Run `pnpm typecheck` in both library and demo app
 
 ### Common Issues
 
@@ -235,6 +235,14 @@ If you encounter TypeScript errors related to React types:
 3. Ensure React 18 compatibility
 4. Run type checks and tests
 5. Submit a pull request
+
+### Documentation Guidelines
+
+- **Documentation Files**: 
+  - `LLM.md` is the primary documentation file for LLMs (AI assistants)
+  - `CLAUDE.md` and `GEMINI.md` are symbolic links to `LLM.md`
+  - Always edit `LLM.md` directly, never modify the symbolic link files
+  - Changes to `LLM.md` are automatically reflected in the linked files
 
 ## Architecture
 
