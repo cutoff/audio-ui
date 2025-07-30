@@ -1,6 +1,7 @@
 # project files
 .idea/
 *.iml
+.npmrc
 
 # TypeScript
 *.tsbuildinfo

@@ -1,0 +1,4 @@
+packages:
+  - react
+  - react/library
+  - react/demo-app

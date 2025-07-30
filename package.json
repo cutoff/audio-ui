@@ -5,11 +5,12 @@
   "author": "Renaud Denis <mail@renauddenis.com>",
   "license": "UNLICENSED",
   "scripts": {
-    "typecheck": "cd react && npm run typecheck",
-    "build": "cd react && npm run build",
-    "test": "cd react && npm run test",
-    "clean": "cd react && npm run clean",
-    "format": "cd react && npm run format"
+    "typecheck": "pnpm -r typecheck",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "clean": "pnpm -r exec -- rm -rf dist .next",
+    "format": "pnpm -r format"
   },
   "keywords": [
     "react",
