@@ -8,6 +8,7 @@ import { BipolarControl, ExplicitRange } from "../types";
 import { knobSizeMap } from "../utils/sizeMappings";
 import { bipolarFormatter } from "../utils/valueFormatters";
 import { generateColorVariants } from "../utils/colorUtils";
+import { useThemableProps } from "../providers/AudioUiProvider";
 
 /**
  * Angular constants for the knob's arc
@@ -115,7 +116,7 @@ function Knob({
     className,
     style,
     onChange,
-    roundness = 12,
+    roundness,
     thickness = 12,
     size = "normal",
     renderValue,
@@ -125,8 +126,14 @@ function Knob({
     onMouseUp,
     onMouseEnter,
     onMouseLeave,
-    color = "blue",
+    color,
 }: KnobProps) {
+    // Use the themable props hook to resolve color and roundness with proper fallbacks
+    const { resolvedColor, resolvedRoundness } = useThemableProps(
+        { color, roundness },
+        { color: "blue", roundness: 12 }
+    );
+
     const valueToAngle = useMemo(() => {
         return ((value - min) / (max - min)) * MAX_ARC_ANGLE + MAX_START_ANGLE;
     }, [value, min, max]);
@@ -136,13 +143,15 @@ function Knob({
 
     // Determine stroke linecap based on roundness (square if 0, round if > 0)
     // Ensure roundness is non-negative
-    const nonNegativeRoundness = Math.max(0, roundness);
+    // Default to 12 if resolvedRoundness is undefined
+    const roundnessValue = resolvedRoundness ?? 12;
+    const nonNegativeRoundness = Math.max(0, roundnessValue);
     const strokeLinecap = nonNegativeRoundness === 0 ? "square" : "round";
 
     // Generate color variants using the centralized utility
     const colorVariants = useMemo(() => {
-        return generateColorVariants(color, "transparency");
-    }, [color]);
+        return generateColorVariants(resolvedColor, "transparency");
+    }, [resolvedColor]);
 
     /**
      * Memoized function to format value based on bipolar mode

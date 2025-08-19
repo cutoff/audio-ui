@@ -13,9 +13,9 @@ export default function Page() {
     const [max, setMax] = useState(100);
     const [center, setCenter] = useState(50);
     const [label, setLabel] = useState("Momentary");
-    const [roundness, setRoundness] = useState(10);
+    const [roundness, setRoundness] = useState<number | undefined>(undefined);
     const [latch, setLatch] = useState(false);
-    const [color, setColor] = useState("#3399ff"); // Default blue color
+    const [color, setColor] = useState<string | undefined>(undefined); // Allow undefined to use theme values
 
     // Generate code snippet with all props
     const codeString = `<Button 
@@ -23,10 +23,8 @@ export default function Page() {
   max={${max}} 
   value={${value}} 
   center={${center}} 
-  label="${label}" 
-  roundness={${roundness}}
-  latch={${latch}}
-  color="${color}"
+  label="${label}"${roundness !== undefined ? `\n  roundness={${roundness}}` : ''}
+  latch={${latch}}${color !== undefined ? `\n  color="${color}"` : ''}
 />`;
 
     const handleExampleClick = (num: 0 | 1 | 2): void => {
@@ -37,6 +35,8 @@ export default function Page() {
                 setMax(100);
                 setCenter(50);
                 setLabel("Momentary");
+                setRoundness(undefined);
+                setColor(undefined);
                 setLatch(false);
                 break;
             case 1:
@@ -45,6 +45,8 @@ export default function Page() {
                 setMax(100);
                 setCenter(50);
                 setLabel("Latch");
+                setRoundness(10);
+                setColor("#ff3366"); // Pink
                 setLatch(true);
                 break;
         }
@@ -84,8 +86,11 @@ export default function Page() {
                 id="roundnessProp"
                 type="number"
                 min="0"
-                value={roundness}
-                onChange={(e) => setRoundness(Math.max(0, Number(e.target.value)))}
+                value={roundness !== undefined ? roundness : ""}
+                onChange={(e) => {
+                    const value = e.target.value === "" ? undefined : Math.max(0, Number(e.target.value));
+                    setRoundness(value);
+                }}
             />
         </div>,
         <div key="latch" className="grid gap-2">
@@ -114,7 +119,7 @@ export default function Page() {
             value={0}
             label="Momentary"
             latch={false}
-            color="#3399ff" // Blue
+            // Use undefined color and roundness to inherit from theme
             onChange={() => handleExampleClick(0)}
         />,
         <Button
@@ -124,6 +129,7 @@ export default function Page() {
             value={0}
             label="Latch"
             latch={true}
+            roundness={10}
             color="#ff3366" // Pink
             onChange={() => handleExampleClick(1)}
         />,

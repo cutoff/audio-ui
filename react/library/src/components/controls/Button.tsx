@@ -7,6 +7,7 @@ import "../../styles.css";
 import { Control, ExplicitRange } from "../types";
 import { buttonSizeMap } from "../utils/sizeMappings";
 import { generateColorVariants } from "../utils/colorUtils";
+import { useThemableProps } from "../providers/AudioUiProvider";
 
 /**
  * Props for the Button component
@@ -86,15 +87,21 @@ function Button({
     style,
     onChange,
     latch = false,
-    roundness = 10,
+    roundness,
     size = "normal",
     onClick,
     onMouseDown,
     onMouseUp,
     onMouseEnter,
     onMouseLeave,
-    color = "blue",
+    color,
 }: ButtonProps) {
+    // Use the themable props hook to resolve color and roundness with proper fallbacks
+    const { resolvedColor, resolvedRoundness } = useThemableProps(
+        { color, roundness },
+        { color: "blue", roundness: 10 }
+    );
+
     // Ref to track if the button is currently pressed (for momentary mode)
     const isPressedRef = useRef(false);
 
@@ -110,8 +117,8 @@ function Button({
 
     // Generate color variants using the centralized utility
     const colorVariants = useMemo(() => {
-        return generateColorVariants(color, "transparency");
-    }, [color]);
+        return generateColorVariants(resolvedColor, "transparency");
+    }, [resolvedColor]);
 
     // Determine the button's appearance styles based on state
     const buttonStyles = useMemo(() => {
@@ -123,9 +130,11 @@ function Button({
 
     // Calculate corner radius based on roundness (ensure non-negative)
     const cornerRadius = useMemo(() => {
-        const nonNegativeRoundness = Math.max(0, roundness); // Clamp to non-negative values
+        // Default to 10 if resolvedRoundness is undefined
+        const roundnessValue = resolvedRoundness ?? 10;
+        const nonNegativeRoundness = Math.max(0, roundnessValue); // Clamp to non-negative values
         return nonNegativeRoundness === 0 ? 0 : nonNegativeRoundness; // Use 0 for square corners, roundness for rounded corners
-    }, [roundness]);
+    }, [resolvedRoundness]);
 
     // Internal handler for mouse down events to toggle the button state or set to max value
     const handleInternalMouseDown = useCallback(

@@ -6,6 +6,7 @@ import AdaptiveSvgComponent from "../support/AdaptiveSvgComponent";
 import { BipolarControl, ExplicitRange } from "../types";
 import { sliderSizeMap } from "../utils/sizeMappings";
 import { generateColorVariants } from "../utils/colorUtils";
+import { useThemableProps } from "../providers/AudioUiProvider";
 
 /**
  * Props for the Slider component
@@ -261,8 +262,15 @@ const Slider = ({
     onMouseUp,
     onMouseEnter,
     onMouseLeave,
-    color = "blue",
+    color,
 }: SliderProps) => {
+    // Use the themable props hook to resolve color and roundness with proper fallbacks
+    // For Slider, the default roundness is dynamic based on dimensions, so we pass undefined
+    const { resolvedColor, resolvedRoundness } = useThemableProps(
+        { color, roundness },
+        { color: "blue", roundness: undefined }
+    );
+
     // Ensure thickness is non-negative
     const nonNegativeThickness = Math.max(0, thickness);
 
@@ -300,7 +308,7 @@ const Slider = ({
     // Calculate corner radius based on roundness
     const cornerRadius = useMemo(() => {
         // Ensure roundness is non-negative
-        const nonNegativeRoundness = roundness !== undefined ? Math.max(0, roundness) : undefined;
+        const nonNegativeRoundness = resolvedRoundness !== undefined ? Math.max(0, resolvedRoundness) : undefined;
 
         // If roundness is 0, use square caps (cornerRadius = 0)
         if (nonNegativeRoundness === 0) {
@@ -310,12 +318,12 @@ const Slider = ({
         // Use provided roundness or fall back to half the thickness for fully rounded corners
         const dimension = orientation === "vertical" ? mainZone.w : mainZone.h;
         return nonNegativeRoundness !== undefined ? nonNegativeRoundness : dimension / 2;
-    }, [mainZone, roundness, orientation]);
+    }, [mainZone, resolvedRoundness, orientation]);
 
     // Generate color variants using the centralized utility
     const colorVariants = useMemo(() => {
-        return generateColorVariants(color, "transparency");
-    }, [color]);
+        return generateColorVariants(resolvedColor, "transparency");
+    }, [resolvedColor]);
 
     /**
      * Wheel event handler that adjusts the slider value if onChange is defined

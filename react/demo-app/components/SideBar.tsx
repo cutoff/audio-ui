@@ -8,6 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
+import { audioUiThemeState } from "@/app/providers";
 
 // Define types for components and theme colors
 type Page = {
@@ -53,13 +56,25 @@ export default function SideBar() {
     const [currentTheme, setCurrentTheme] = useState("--theme-blue-primary");
     const [isOpen, setIsOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
-
-    // Function to change theme
+    const [roundnessValue, setRoundnessValue] = useState(12);
+    
+    // Function to change theme color
     const changeTheme = (themeCssVar: string) => {
         document.documentElement.style.setProperty("--primary-color", `var(${themeCssVar})`);
         document.documentElement.style.setProperty("--primary-color-50", `var(${themeCssVar}-50)`);
         document.documentElement.style.setProperty("--primary-color-20", `var(${themeCssVar}-20)`);
         setCurrentTheme(themeCssVar);
+        
+        // Get the color name from themeCssVar
+        const colorName = themeCssVar.replace("--theme-", "").replace("-primary", "");
+        // Update the audioUiThemeState
+        audioUiThemeState.current.setColor(colorName);
+    };
+    
+    // Function to change roundness
+    const changeRoundness = (value: number) => {
+        setRoundnessValue(value);
+        audioUiThemeState.current.setRoundness(value);
     };
 
     // Toggle between light and dark mode
@@ -175,6 +190,33 @@ export default function SideBar() {
                                 ))}
                             </SelectContent>
                         </Select>
+                    </div>
+                    
+                    {/* Roundness Selector */}
+                    <div className="flex flex-col gap-2 mb-4">
+                        <div className="flex items-center justify-between">
+                            <span className="text-sm text-sidebar-foreground flex items-center h-9 px-3 leading-none">
+                                Roundness
+                            </span>
+                            <Input
+                                type="number"
+                                value={roundnessValue}
+                                onChange={(e) => changeRoundness(Number(e.target.value))}
+                                min={0}
+                                max={50}
+                                className="w-[70px] h-9 bg-sidebar-accent border-sidebar-border"
+                            />
+                        </div>
+                        <div className="px-3">
+                            <Slider
+                                value={[roundnessValue]}
+                                onValueChange={(values) => changeRoundness(values[0])}
+                                min={0}
+                                max={50}
+                                step={1}
+                                className="w-full"
+                            />
+                        </div>
                     </div>
 
                     {/* Dark/Light Mode Switch */}

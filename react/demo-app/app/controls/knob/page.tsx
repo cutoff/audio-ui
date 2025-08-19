@@ -52,12 +52,12 @@ function generateCodeSnippet(
     max: number,
     bipolar: boolean,
     useMidiBipolar: boolean,
-    roundness: number,
+    roundness: number | undefined,
     thickness: number,
-    color: string
+    color: string | undefined
 ): string {
     if (enableOptions) {
-        return `<Knob value={${value}} label='${label}' color='${color}'>
+        return `<Knob value={${value}} label='${label}'${color !== undefined ? ` color='${color}'` : ''}>
     <Option value={0}>{/* eslint-disable-next-line @next/next/no-img-element */}
     <img src={iconSineWave} alt="Sine" /></Option>
     <Option value={1}>{/* eslint-disable-next-line @next/next/no-img-element */}
@@ -70,7 +70,16 @@ function generateCodeSnippet(
 </Knob>
 `;
     } else {
-        let props = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}} roundness={${roundness}} thickness={${thickness}} color='${color}'`;
+        let props = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}} thickness={${thickness}}`;
+        
+        // Add optional props only if they're defined
+        if (roundness !== undefined) {
+            props += ` roundness={${roundness}}`;
+        }
+        
+        if (color !== undefined) {
+            props += ` color='${color}'`;
+        }
 
         // Add renderValue prop if using MIDI bipolar formatter
         if (bipolar && useMidiBipolar) {
@@ -165,9 +174,9 @@ export default function KnobDemoPage() {
     const [bipolar, setBipolar] = useState(false);
     const [useMidiBipolar, setUseMidiBipolar] = useState(false);
     const [enableOptions, setEnableOptions] = useState(false);
-    const [roundness, setRoundness] = useState(12);
+    const [roundness, setRoundness] = useState<number | undefined>(undefined);
     const [thickness, setThickness] = useState(12);
-    const [color, setColor] = useState("#3399ff"); // Default blue color
+    const [color, setColor] = useState<string | undefined>(undefined); // Allow undefined to use theme values
 
     const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4): void => {
         switch (num) {
@@ -180,7 +189,8 @@ export default function KnobDemoPage() {
                 setUseMidiBipolar(false);
                 setEnableOptions(false);
                 setThickness(12);
-                setColor("#3399ff"); // Blue
+                setRoundness(undefined); // Use theme roundness
+                setColor(undefined); // Use theme color
                 break;
             case 1:
                 setValue(64);
@@ -191,6 +201,7 @@ export default function KnobDemoPage() {
                 setUseMidiBipolar(false);
                 setEnableOptions(false);
                 setThickness(12);
+                setRoundness(12);
                 setColor("#ff3366"); // Pink
                 break;
             case 2:
@@ -202,6 +213,7 @@ export default function KnobDemoPage() {
                 setUseMidiBipolar(false);
                 setEnableOptions(false);
                 setThickness(12);
+                setRoundness(12);
                 setColor("#33cc66"); // Green
                 break;
             case 3:
@@ -213,6 +225,7 @@ export default function KnobDemoPage() {
                 setUseMidiBipolar(false);
                 setEnableOptions(true);
                 setThickness(16);
+                setRoundness(12);
                 setColor("#9966ff"); // Purple
                 break;
             case 4:
@@ -224,6 +237,7 @@ export default function KnobDemoPage() {
                 setUseMidiBipolar(true);
                 setEnableOptions(false);
                 setThickness(12);
+                setRoundness(12);
                 setColor("#ff9933"); // Orange
                 break;
         }
@@ -258,8 +272,11 @@ export default function KnobDemoPage() {
                 id="roundnessProp"
                 type="number"
                 min="0"
-                value={roundness}
-                onChange={(e) => setRoundness(Math.max(0, Number(e.target.value)))}
+                value={roundness !== undefined ? roundness : ""}
+                onChange={(e) => {
+                    const value = e.target.value === "" ? undefined : Math.max(0, Number(e.target.value));
+                    setRoundness(value);
+                }}
             />
         </div>,
         <div key="color" className="grid gap-2">
@@ -302,7 +319,7 @@ export default function KnobDemoPage() {
             max={100}
             value={42}
             label="Default"
-            color="#3399ff" // Blue
+            // Use undefined color and roundness to inherit from theme
             onClick={() => handleExampleClick(0)}
         />,
         <Knob
@@ -313,6 +330,7 @@ export default function KnobDemoPage() {
             max={127}
             value={64}
             label="Bipolar"
+            roundness={12}
             color="#ff3366" // Pink
             onClick={() => handleExampleClick(1)}
         />,
@@ -324,6 +342,7 @@ export default function KnobDemoPage() {
             max={1024}
             value={0}
             label="Bipolar0"
+            roundness={12}
             color="#33cc66" // Green
             onClick={() => handleExampleClick(2)}
         />,
@@ -332,6 +351,7 @@ export default function KnobDemoPage() {
             style={{ cursor: "pointer" }}
             value={0}
             label="Enum"
+            roundness={12}
             color="#9966ff" // Purple
             onClick={() => handleExampleClick(3)}
         >
@@ -345,6 +365,7 @@ export default function KnobDemoPage() {
             value={64}
             label="MIDI Bipolar"
             bipolar={true}
+            roundness={12}
             color="#ff9933" // Orange
             renderValue={midiBipolarFormatter}
             onClick={() => handleExampleClick(4)}
