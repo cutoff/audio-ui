@@ -239,10 +239,10 @@ If you encounter TypeScript errors related to React types:
 ### Documentation Guidelines
 
 - **Documentation Files**: 
-  - `LLM.md` is the primary documentation file for LLMs (AI assistants)
-  - `CLAUDE.md` and `GEMINI.md` are symbolic links to `LLM.md`
-  - Always edit `LLM.md` directly, never modify the symbolic link files
-  - Changes to `LLM.md` are automatically reflected in the linked files
+  - `AGENTS.md` is the primary documentation file for LLMs (AI assistants)
+  - `CLAUDE.md` and `GEMINI.md` are symbolic links to `AGENTS.md`
+  - Always edit `AGENTS.md` directly, never modify the symbolic link files
+  - Changes to `AGENTS.md` are automatically reflected in the linked files
 
 ## Architecture
 

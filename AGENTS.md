@@ -4,10 +4,10 @@ This document provides essential information for LLMs working on the Audio UI pr
 audio and MIDI applications.
 
 **IMPORTANT: Documentation File Structure**
-- This file (LLM.md) is the primary documentation file for LLMs.
+- This file (AGENTS.md) is the primary documentation file for LLMs.
 - CLAUDE.md and GEMINI.md are symbolic links to this file.
-- Always edit LLM.md directly. Never attempt to modify CLAUDE.md or GEMINI.md as they are just symbolic links.
-- Any changes made to LLM.md will automatically be reflected in CLAUDE.md and GEMINI.md.
+- Always edit AGENTS.md directly. Never attempt to modify CLAUDE.md or GEMINI.md as they are just symbolic links.
+- Any changes made to AGENTS.md will automatically be reflected in CLAUDE.md and GEMINI.md.
 
 **IMPORTANT: This library has never been released.** There is no need to maintain backward compatibility with previous
 versions. All design decisions should prioritize clean, maintainable code over backward compatibility.
