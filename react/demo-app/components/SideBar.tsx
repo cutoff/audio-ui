@@ -63,20 +63,20 @@ export default function SideBar() {
     const [isOpen, setIsOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
     const [roundnessValue, setRoundnessValue] = useState(12);
-    
+
     // Function to change theme color
     const changeTheme = (themeCssVar: string) => {
         document.documentElement.style.setProperty("--primary-color", `var(${themeCssVar})`);
         document.documentElement.style.setProperty("--primary-color-50", `var(${themeCssVar}-50)`);
         document.documentElement.style.setProperty("--primary-color-20", `var(${themeCssVar}-20)`);
         setCurrentTheme(themeCssVar);
-        
+
         // Get the color name from themeCssVar
         const colorName = themeCssVar.replace("--theme-", "").replace("-primary", "");
         // Update the audioUiThemeState
         audioUiThemeState.current.setColor(colorName);
     };
-    
+
     // Function to change roundness
     const changeRoundness = (value: number) => {
         setRoundnessValue(value);
@@ -127,14 +127,16 @@ export default function SideBar() {
           ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
             >
-                <div className="flex-grow">
+                <div className="flex-shrink-0">
                     <Link
                         href="/"
                         className="block text-2xl font-bold mb-6 text-sidebar-primary hover:text-primary-color transition-colors"
                     >
                         AudioUI
                     </Link>
+                </div>
 
+                <div className="flex-grow overflow-y-auto">
                     <h2 className="text-xl font-medium mb-4 text-sidebar-primary">Controls</h2>
                     <nav className="space-y-2 mb-6">
                         {controls.map((page) => (
@@ -170,7 +172,7 @@ export default function SideBar() {
                     </nav>
 
                     <h2 className="text-xl font-medium mb-4 text-sidebar-primary">Examples</h2>
-                    <nav className="space-y-2">
+                    <nav className="space-y-2 mb-6">
                         {layouts.map((page) => (
                             <Link
                                 key={page.name}
@@ -188,7 +190,7 @@ export default function SideBar() {
                 </div>
 
                 {/* Theme Selector at the bottom of sidebar */}
-                <div className="mt-auto pt-4 border-t border-sidebar-border">
+                <div className="flex-shrink-0 mt-auto pt-4 border-t border-sidebar-border">
                     {/* Color Theme Selector */}
                     <div className="flex items-center justify-between gap-2 mb-4">
                         <span className="text-sm text-sidebar-foreground flex items-center h-9 px-3 leading-none">
@@ -214,7 +216,7 @@ export default function SideBar() {
                             </SelectContent>
                         </Select>
                     </div>
-                    
+
                     {/* Roundness Selector */}
                     <div className="flex flex-col gap-2 mb-4">
                         <div className="flex items-center justify-between">
