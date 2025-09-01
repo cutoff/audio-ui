@@ -39,6 +39,12 @@ const devices: Page[] = [
     // More device pages can be added here in the future
 ];
 
+// List of example pages
+const layouts: Page[] = [
+    { name: "Control Surface", path: "/examples/control-surface" },
+    // More example pages can be added here in the future
+];
+
 // Theme color options
 const themeColors: ThemeColor[] = [
     { color: "bg-blue-500", name: "Blue", cssVar: "--theme-blue-primary" },
@@ -147,8 +153,25 @@ export default function SideBar() {
                     </nav>
 
                     <h2 className="text-xl font-medium mb-4 text-sidebar-primary">Devices</h2>
-                    <nav className="space-y-2">
+                    <nav className="space-y-2 mb-6">
                         {devices.map((page) => (
+                            <Link
+                                key={page.name}
+                                href={page.path}
+                                className={`block px-3 py-2 rounded-md transition-colors ${
+                                    pathname === page.path
+                                        ? "bg-sidebar-selected-bg text-sidebar-selected-text border-l-4 border-primary-color"
+                                        : "hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-primary-foreground"
+                                }`}
+                            >
+                                {page.name}
+                            </Link>
+                        ))}
+                    </nav>
+
+                    <h2 className="text-xl font-medium mb-4 text-sidebar-primary">Examples</h2>
+                    <nav className="space-y-2">
+                        {layouts.map((page) => (
                             <Link
                                 key={page.name}
                                 href={page.path}
