@@ -386,3 +386,30 @@ Run Prettier to automatically format code:
 ```bash
 pnpm format
 ```
+
+
+
+## AdaptiveSvgComponent – CSS-based sizing (Sept 2025 update)
+
+The AdaptiveSvgComponent has been refactored to remove ResizeObserver and all JS-driven layout math. Sizing and fitting are now handled purely by CSS/SVG:
+
+- Container (outer div)
+  - display: flex (stretch=true) or inline-flex (stretch=false) to allow inner content alignment within grid/flex cells
+  - overflow: hidden to ensure no spillover
+  - container-type: inline-size for future container query support
+  - In fixed mode, the container sets a concrete width in px based on preferredWidth (respecting minWidth) and uses CSS aspect-ratio: viewBoxWidth / viewBoxHeight to derive height
+  - In stretch mode, the container fills its cell (width/height 100%) and acts as a flex box for inner alignment
+- Inner SVG
+  - viewBox is preserved per component shape
+  - preserveAspectRatio="xMidYMid meet"
+  - Fixed mode: width/height 100% to fill the container box defined by aspect-ratio
+  - Stretch mode: width/height auto with maxWidth/maxHeight 100% plus an aspect-ratio to maintain shape; the limiting axis is chosen by the browser
+- Alignment mapping for demo grid
+  - The component reads alignSelf/justifySelf from the style prop (as used by the demo grid) and maps these keywords (start | end | center) to flex alignItems/justifyContent on the container. This preserves the demo’s grid alignment semantics (start/end/center columns).
+- Min sizes
+  - minWidth/minHeight props are honored via CSS on the container so controls never become unusably small.
+
+Implications:
+- No JS measurements or debounce are needed; resizing is declarative and smooth.
+- Zoomable control surfaces are naturally supported: the browser picks the limiting axis (width or height) based on aspect ratio.
+- Event handling (e.g., wheel) remains unchanged and is managed on the SVG.
