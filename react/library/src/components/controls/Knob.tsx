@@ -230,9 +230,64 @@ function Knob({
                     d={calculateArcPath(bipolar ? CENTER_ANGLE : MAX_START_ANGLE, valueToAngle, 40)}
                 />
 
-                {/* Value Display */}
-                <foreignObject style={{ cursor: "inherit" }} x="20" y="22" width="60" height="60">
-                    <React.Fragment>
+
+            </SvgSurface>
+            <div
+                style={{
+                    position: "absolute",
+                    inset: 0,
+                    zIndex: 1,
+                    pointerEvents: "none",
+                    display: "flex",
+                    // Mirror AdaptiveContainer's demo-alignment mapping so the overlay aligns with the SVG box
+                    alignItems: ((): React.CSSProperties["alignItems"] => {
+                        const v = style?.alignSelf as unknown;
+                        return v === "start" ? "flex-start" : v === "end" ? "flex-end" : v === "center" ? "center" : "center";
+                    })(),
+                    justifyContent: ((): React.CSSProperties["justifyContent"] => {
+                        const v = style?.justifySelf as unknown;
+                        return v === "start" ? "flex-start" : v === "end" ? "flex-end" : v === "center" ? "center" : "center";
+                    })(),
+                }}
+            >
+                {/* overlayBox mirrors the SVG's sizing rules so percent coordinates map to the SVG box */}
+                <div
+                    style={{
+                        position: "relative",
+                        ...(stretch
+                            ? {
+                                  width: "auto",
+                                  height: "auto",
+                                  maxWidth: "100%",
+                                  maxHeight: "100%",
+                                  display: "block",
+                                  aspectRatio: "100 / 115",
+                              }
+                            : {
+                                  width: "100%",
+                                  height: "100%",
+                                  display: "block",
+                              }),
+                        // @ts-ignore - containerType isn't in React CSSProperties types yet
+                        containerType: "inline-size",
+                    }}
+                >
+                <div
+                    style={{
+                        position: "absolute",
+                        left: "20%",
+                        top: "calc(22 / 115 * 100%)",
+                        width: "60%",
+                        height: "calc(60 / 115 * 100%)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: 500,
+                        fontSize: "22cqw",
+                        color: "var(--text-color)",
+                    }}
+                >
+                    {React.isValidElement(children) && (children as any).type === "img" ? (
                         <div
                             style={{
                                 width: "100%",
@@ -240,62 +295,39 @@ function Knob({
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                fontSize: "22px",
-                                maxWidth: "100%",
-                                maxHeight: "100%",
-                                fontWeight: "500",
-                                cursor: "inherit",
+                                padding: "10px",
                             }}
                         >
-                            {React.isValidElement(children) && children.type === "img" ? (
-                                <div
-                                    style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        padding: "10px",
-                                        cursor: "inherit",
-                                    }}
-                                >
-                                    {React.cloneElement(children, {
-                                        style: {
-                                            maxWidth: "100%",
-                                            maxHeight: "100%",
-                                            cursor: "inherit",
-                                        },
-                                    } as React.DetailedHTMLProps<
-                                        React.ImgHTMLAttributes<HTMLImageElement>,
-                                        HTMLImageElement
-                                    >)}
-                                </div>
-                            ) : renderValue ? (
-                                renderValue(value, min, max)
-                            ) : (
-                                formatValueFn(value)
-                            )}
+                            {React.cloneElement(children as React.ReactElement, {
+                                style: {
+                                    maxWidth: "100%",
+                                    maxHeight: "100%",
+                                },
+                            } as any)}
                         </div>
-                    </React.Fragment>
-                </foreignObject>
-
-                {/* Label */}
+                    ) : renderValue ? (
+                        renderValue(value, min, max)
+                    ) : (
+                        formatValueFn(value)
+                    )}
+                </div>
                 {label && (
-                    <text
+                    <div
                         style={{
-                            cursor: "inherit",
-                            fill: "var(--text-color)", // Keep using the text color CSS variable
+                            position: "absolute",
+                            left: "50%",
+                            top: "calc(110 / 115 * 100%)",
+                            transform: "translate(-50%, -50%)",
+                            fontWeight: 500,
+                            fontSize: "18cqw",
+                            color: "var(--text-color)",
                         }}
-                        x="50"
-                        y="110"
-                        fontSize="18"
-                        fontWeight="500"
-                        textAnchor="middle"
                     >
                         {label}
-                    </text>
+                    </div>
                 )}
-            </SvgSurface>
+                </div>
+            </div>
         </AdaptiveContainer>
     );
 }
