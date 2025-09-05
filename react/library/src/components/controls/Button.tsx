@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import AdaptiveSvgComponent from "../support/AdaptiveSvgComponent";
 import classNames from "classnames";
+import AdaptiveContainer from "../support/AdaptiveContainer";
+import SvgSurface from "../support/SvgSurface";
 import "../../styles.css";
 import { Control, ExplicitRange } from "../types";
 import { buttonSizeMap } from "../utils/sizeMappings";
@@ -231,48 +232,52 @@ function Button({
         return classNames(className, "cutoffAudioKit", onChange ? "highlight" : "");
     }, [className, onChange]);
 
-    // Get the preferred dimensions based on the size prop
-    const { width: preferredWidth, height: preferredHeight } = buttonSizeMap[size];
+    // Get the preferred width based on the size prop
+    const { width: preferredWidth } = buttonSizeMap[size];
 
     return (
-        <AdaptiveSvgComponent
-            viewBoxWidth={100}
-            viewBoxHeight={100}
+        <AdaptiveContainer
+            aspectRatio="100 / 100"
             preferredWidth={preferredWidth}
-            preferredHeight={preferredHeight}
             minWidth={20}
             minHeight={40}
             stretch={stretch}
             className={componentClassNames}
             style={style}
-            onClick={onClick}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
         >
-            {/* Button Rectangle */}
-            <rect
-                style={{
-                    stroke: buttonStyles.stroke,
-                    fill: buttonStyles.fill,
-                }}
-                strokeWidth="5"
-                x={10}
-                y={10}
-                width={80}
-                height={40}
-                rx={cornerRadius}
-                ry={cornerRadius}
-            />
+            <SvgSurface
+                viewBoxWidth={100}
+                viewBoxHeight={100}
+                stretch={stretch}
+                onClick={onClick}
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+            >
+                {/* Button Rectangle */}
+                <rect
+                    style={{
+                        stroke: buttonStyles.stroke,
+                        fill: buttonStyles.fill,
+                    }}
+                    strokeWidth="5"
+                    x={10}
+                    y={10}
+                    width={80}
+                    height={40}
+                    rx={cornerRadius}
+                    ry={cornerRadius}
+                />
 
-            {/* Label Text */}
-            {label && (
-                <text className="fill-text" x="50" y="88" fontSize="30" fontWeight="500" textAnchor="middle">
-                    {label}
-                </text>
-            )}
-        </AdaptiveSvgComponent>
+                {/* Label Text */}
+                {label && (
+                    <text className="fill-text" x="50" y="88" fontSize="30" fontWeight="500" textAnchor="middle">
+                        {label}
+                    </text>
+                )}
+            </SvgSurface>
+        </AdaptiveContainer>
     );
 }
 

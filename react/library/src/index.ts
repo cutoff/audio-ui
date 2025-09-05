@@ -1,4 +1,3 @@
-export { default as AdaptiveSvgComponent } from "./components/support/AdaptiveSvgComponent";
 export { default as Option } from "./components/support/Option";
 
 export { default as Button } from "./components/controls/Button";
@@ -9,11 +8,7 @@ export { default as Slider } from "./components/controls/Slider";
 export { default as Keybed } from "./components/Keybed";
 
 // Export theme provider and hooks
-export { 
-    default as AudioUiProvider,
-    useAudioUiTheme,
-    useThemableProps,
-} from "./components/providers/AudioUiProvider";
+export { default as AudioUiProvider, useAudioUiTheme, useThemableProps } from "./components/providers/AudioUiProvider";
 export type { AudioUiProviderProps } from "./components/providers/AudioUiProvider";
 
 // Also export types for consuming applications

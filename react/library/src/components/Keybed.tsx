@@ -2,7 +2,8 @@
 
 import React, { useMemo } from "react";
 import classNames from "classnames";
-import AdaptiveSvgComponent from "./support/AdaptiveSvgComponent";
+import AdaptiveContainer from "./support/AdaptiveContainer";
+import SvgSurface from "./support/SvgSurface";
 import { AdaptativeSize, Base, Themable } from "./types";
 import { keybedSizeMap } from "./utils/sizeMappings";
 import { generateColorVariants } from "./utils/colorUtils";
@@ -325,33 +326,39 @@ function Keybed({
         return classNames(className, "cutoffAudioKit");
     }, [className]);
 
-    // Get the preferred dimensions based on the size prop
-    const { width: preferredWidth, height: preferredHeight } = keybedSizeMap[size];
+    // Get the preferred width based on the size prop
+    const { width: preferredWidth } = keybedSizeMap[size];
 
     return (
-        <AdaptiveSvgComponent
+        <AdaptiveContainer
             className={componentClassNames}
             style={style}
-            viewBoxWidth={keybedDimensions.width}
-            viewBoxHeight={keybedDimensions.whiteHeight}
+            aspectRatio={`${keybedDimensions.width} / ${keybedDimensions.whiteHeight}`}
             preferredWidth={preferredWidth}
-            preferredHeight={preferredHeight}
+            minWidth={40}
+            minHeight={40}
             stretch={stretch}
         >
-            <rect
-                style={{
-                    stroke: colorVariants.primary50,
-                    fill: "transparent",
-                }}
-                strokeWidth={keybedDimensions.outerStrokeWidth}
-                x={keybedDimensions.outerStrokeWidth / 2}
-                y={keybedDimensions.outerStrokeWidth / 2}
-                width={keybedDimensions.width - keybedDimensions.outerStrokeWidth}
-                height={keybedDimensions.whiteHeight - keybedDimensions.outerStrokeWidth}
-            />
-            {renderWhiteKeys}
-            {renderBlackKeys}
-        </AdaptiveSvgComponent>
+            <SvgSurface
+                viewBoxWidth={keybedDimensions.width}
+                viewBoxHeight={keybedDimensions.whiteHeight}
+                stretch={stretch}
+            >
+                <rect
+                    style={{
+                        stroke: colorVariants.primary50,
+                        fill: "transparent",
+                    }}
+                    strokeWidth={keybedDimensions.outerStrokeWidth}
+                    x={keybedDimensions.outerStrokeWidth / 2}
+                    y={keybedDimensions.outerStrokeWidth / 2}
+                    width={keybedDimensions.width - keybedDimensions.outerStrokeWidth}
+                    height={keybedDimensions.whiteHeight - keybedDimensions.outerStrokeWidth}
+                />
+                {renderWhiteKeys}
+                {renderBlackKeys}
+            </SvgSurface>
+        </AdaptiveContainer>
     );
 }
 

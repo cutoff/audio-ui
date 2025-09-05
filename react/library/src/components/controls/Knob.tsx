@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useCallback, useMemo } from "react";
-import AdaptiveSvgComponent from "../support/AdaptiveSvgComponent";
 import classNames from "classnames";
 import "../../styles.css";
 import { BipolarControl, ExplicitRange } from "../types";
@@ -9,6 +8,8 @@ import { knobSizeMap } from "../utils/sizeMappings";
 import { bipolarFormatter } from "../utils/valueFormatters";
 import { generateColorVariants } from "../utils/colorUtils";
 import { useThemableProps } from "../providers/AudioUiProvider";
+import AdaptiveContainer from "../support/AdaptiveContainer";
+import SvgSurface from "../support/SvgSurface";
 
 /**
  * Angular constants for the knob's arc
@@ -188,108 +189,114 @@ function Knob({
     }, [className, onChange]);
 
     // Get the preferred width based on the size prop
-    const { width: preferredWidth, height: preferredHeight } = knobSizeMap[size];
+    const { width: preferredWidth } = knobSizeMap[size];
 
     return (
-        <AdaptiveSvgComponent
+        <AdaptiveContainer
             stretch={stretch}
             className={componentClassNames}
             style={style}
-            viewBoxWidth={100}
-            viewBoxHeight={115}
+            aspectRatio="100 / 115"
             preferredWidth={preferredWidth}
-            preferredHeight={preferredHeight}
-            onWheel={handleWheel}
-            onClick={onClick}
-            onMouseDown={onMouseDown}
-            onMouseUp={onMouseUp}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
+            minWidth={40}
+            minHeight={40}
         >
-            {/* Background Arc */}
-            <path
-                style={{ stroke: colorVariants.primary50 }}
-                fill="none"
-                strokeWidth={strokeWidth}
-                strokeLinecap={strokeLinecap}
-                d={calculateArcPath(MAX_START_ANGLE, MAX_END_ANGLE, 40)}
-            />
+            <SvgSurface
+                viewBoxWidth={100}
+                viewBoxHeight={115}
+                stretch={stretch}
+                onWheel={handleWheel}
+                onClick={onClick}
+                onMouseDown={onMouseDown}
+                onMouseUp={onMouseUp}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+            >
+                {/* Background Arc */}
+                <path
+                    style={{ stroke: colorVariants.primary50 }}
+                    fill="none"
+                    strokeWidth={strokeWidth}
+                    strokeLinecap={strokeLinecap}
+                    d={calculateArcPath(MAX_START_ANGLE, MAX_END_ANGLE, 40)}
+                />
 
-            {/* Foreground Arc */}
-            <path
-                style={{ stroke: colorVariants.primary }}
-                fill="none"
-                strokeWidth={strokeWidth}
-                strokeLinecap={strokeLinecap}
-                d={calculateArcPath(bipolar ? CENTER_ANGLE : MAX_START_ANGLE, valueToAngle, 40)}
-            />
+                {/* Foreground Arc */}
+                <path
+                    style={{ stroke: colorVariants.primary }}
+                    fill="none"
+                    strokeWidth={strokeWidth}
+                    strokeLinecap={strokeLinecap}
+                    d={calculateArcPath(bipolar ? CENTER_ANGLE : MAX_START_ANGLE, valueToAngle, 40)}
+                />
 
-            {/* Value Display */}
-            <foreignObject style={{ cursor: "inherit" }} x="20" y="22" width="60" height="60">
-                <React.Fragment>
-                    <div
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: "22px",
-                            maxWidth: "100%",
-                            maxHeight: "100%",
-                            fontWeight: "500",
-                            cursor: "inherit",
-                        }}
-                    >
-                        {React.isValidElement(children) && children.type === "img" ? (
-                            <div
-                                style={{
-                                    width: "100%",
-                                    height: "100%",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    padding: "10px",
-                                    cursor: "inherit",
-                                }}
-                            >
-                                {React.cloneElement(children, {
-                                    style: {
-                                        maxWidth: "100%",
-                                        maxHeight: "100%",
+                {/* Value Display */}
+                <foreignObject style={{ cursor: "inherit" }} x="20" y="22" width="60" height="60">
+                    <React.Fragment>
+                        <div
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontSize: "22px",
+                                maxWidth: "100%",
+                                maxHeight: "100%",
+                                fontWeight: "500",
+                                cursor: "inherit",
+                            }}
+                        >
+                            {React.isValidElement(children) && children.type === "img" ? (
+                                <div
+                                    style={{
+                                        width: "100%",
+                                        height: "100%",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        padding: "10px",
                                         cursor: "inherit",
-                                    },
-                                } as React.DetailedHTMLProps<
-                                    React.ImgHTMLAttributes<HTMLImageElement>,
-                                    HTMLImageElement
-                                >)}
-                            </div>
-                        ) : renderValue ? (
-                            renderValue(value, min, max)
-                        ) : (
-                            formatValueFn(value)
-                        )}
-                    </div>
-                </React.Fragment>
-            </foreignObject>
+                                    }}
+                                >
+                                    {React.cloneElement(children, {
+                                        style: {
+                                            maxWidth: "100%",
+                                            maxHeight: "100%",
+                                            cursor: "inherit",
+                                        },
+                                    } as React.DetailedHTMLProps<
+                                        React.ImgHTMLAttributes<HTMLImageElement>,
+                                        HTMLImageElement
+                                    >)}
+                                </div>
+                            ) : renderValue ? (
+                                renderValue(value, min, max)
+                            ) : (
+                                formatValueFn(value)
+                            )}
+                        </div>
+                    </React.Fragment>
+                </foreignObject>
 
-            {/* Label */}
-            {label && (
-                <text
-                    style={{
-                        cursor: "inherit",
-                        fill: "var(--text-color)", // Keep using the text color CSS variable
-                    }}
-                    x="50"
-                    y="110"
-                    fontSize="18"
-                    fontWeight="500"
-                    textAnchor="middle"
-                >
-                    {label}
-                </text>
-            )}
-        </AdaptiveSvgComponent>
+                {/* Label */}
+                {label && (
+                    <text
+                        style={{
+                            cursor: "inherit",
+                            fill: "var(--text-color)", // Keep using the text color CSS variable
+                        }}
+                        x="50"
+                        y="110"
+                        fontSize="18"
+                        fontWeight="500"
+                        textAnchor="middle"
+                    >
+                        {label}
+                    </text>
+                )}
+            </SvgSurface>
+        </AdaptiveContainer>
     );
 }
 

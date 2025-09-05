@@ -2,11 +2,12 @@
 
 import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
-import AdaptiveSvgComponent from "../support/AdaptiveSvgComponent";
 import { BipolarControl, ExplicitRange } from "../types";
 import { sliderSizeMap } from "../utils/sizeMappings";
 import { generateColorVariants } from "../utils/colorUtils";
 import { useThemableProps } from "../providers/AudioUiProvider";
+import AdaptiveContainer from "../support/AdaptiveContainer";
+import SvgSurface from "../support/SvgSurface";
 
 /**
  * Props for the Slider component
@@ -348,7 +349,7 @@ const Slider = ({
     }, [className, onChange]);
 
     // Get the preferred dimensions based on the size prop and orientation
-    const { width: preferredWidth, height: preferredHeight } = sliderSizeMap[size][orientation];
+    const { width: preferredWidth } = sliderSizeMap[size][orientation];
 
     // Determine viewBox dimensions based on orientation
     const viewBoxWidth = orientation === "vertical" ? 100 : 400;
@@ -358,62 +359,64 @@ const Slider = ({
     const minWidth = orientation === "vertical" ? 20 : 60;
     const minHeight = orientation === "vertical" ? 60 : 20;
 
-    // Determine label position based on orientation
-    const labelX = orientation === "vertical" ? "50" : "200";
-    const labelY = orientation === "vertical" ? "393" : "93";
-
     return (
-        <AdaptiveSvgComponent
-            viewBoxWidth={viewBoxWidth}
-            viewBoxHeight={viewBoxHeight}
-            preferredWidth={preferredWidth}
-            preferredHeight={preferredHeight}
-            minWidth={minWidth}
-            minHeight={minHeight}
+        <AdaptiveContainer
             stretch={stretch}
             className={componentClassNames}
             style={style}
-            onWheel={handleWheel}
-            onClick={onClick}
-            onMouseDown={onMouseDown}
-            onMouseUp={onMouseUp}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
+            aspectRatio={`${viewBoxWidth} / ${viewBoxHeight}`}
+            preferredWidth={preferredWidth}
+            minWidth={minWidth}
+            minHeight={minHeight}
         >
-            {/* Background Rectangle */}
-            <rect
-                style={{ fill: colorVariants.primary50 }}
-                x={mainZone.x}
-                y={mainZone.y}
-                width={mainZone.w}
-                height={mainZone.h}
-                rx={cornerRadius}
-                ry={cornerRadius}
-            />
-
-            {/* Foreground Rectangle */}
-            <rect
-                style={{ fill: colorVariants.primary }}
-                x={orientation === "horizontal" ? filledZone.x : mainZone.x}
-                y={orientation === "vertical" ? filledZone.y : mainZone.y}
-                width={orientation === "horizontal" ? filledZone.w : mainZone.w}
-                height={orientation === "vertical" ? filledZone.h : mainZone.h}
-                rx={cornerRadius}
-                ry={cornerRadius}
-            />
-
-            {/* Label Text */}
-            <text
-                style={{ fill: "var(--text-color)" }} // Keep using the text color CSS variable
-                textAnchor="middle"
-                x={labelX}
-                y={labelY}
-                fontSize="30"
-                fontWeight="500"
+            <SvgSurface
+                viewBoxWidth={viewBoxWidth}
+                viewBoxHeight={viewBoxHeight}
+                stretch={stretch}
+                onWheel={handleWheel}
+                onClick={onClick}
+                onMouseDown={onMouseDown}
+                onMouseUp={onMouseUp}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
             >
-                {label}
-            </text>
-        </AdaptiveSvgComponent>
+                {/* Background Rectangle */}
+                <rect
+                    style={{ fill: colorVariants.primary50 }}
+                    x={mainZone.x}
+                    y={mainZone.y}
+                    width={mainZone.w}
+                    height={mainZone.h}
+                    rx={cornerRadius}
+                    ry={cornerRadius}
+                />
+
+                {/* Foreground Rectangle */}
+                <rect
+                    style={{ fill: colorVariants.primary }}
+                    x={orientation === "horizontal" ? filledZone.x : mainZone.x}
+                    y={orientation === "vertical" ? filledZone.y : mainZone.y}
+                    width={orientation === "horizontal" ? filledZone.w : mainZone.w}
+                    height={orientation === "vertical" ? filledZone.h : mainZone.h}
+                    rx={cornerRadius}
+                    ry={cornerRadius}
+                />
+
+                {/* Label Text */}
+                {label && (
+                    <text
+                        style={{ fill: "var(--text-color)" }} // Keep using the text color CSS variable
+                        textAnchor="middle"
+                        x={orientation === "vertical" ? "50" : "200"}
+                        y={orientation === "vertical" ? "393" : "93"}
+                        fontSize="30"
+                        fontWeight="500"
+                    >
+                        {label}
+                    </text>
+                )}
+            </SvgSurface>
+        </AdaptiveContainer>
     );
 };
 
