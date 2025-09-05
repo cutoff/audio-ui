@@ -237,6 +237,15 @@ Components in this library follow these conventions:
 2. **"ForwardRefExoticComponent" errors**: Indicates version mismatch between React types and runtime
 3. **"Property 'children' is missing"**: React 19 type definitions have different ReactPortal requirements
 
+### Important: Focus on Task-Related Issues Only
+
+When working on a specific task:
+
+- **Do not fix TypeScript errors unrelated to your current task**, even if detected by `pnpm typecheck`
+- Many TypeScript errors in the codebase are known, detected by the compiler, and deliberately ignored
+- Fixing unrelated TypeScript issues can distract from your main task and create unnecessary changes
+- Focus only on issues directly related to implementing the specific requirements in your current task
+
 ### Testing Requirements
 
 - Use Vitest for testing (integrated with Vite build system)
