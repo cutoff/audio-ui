@@ -275,110 +275,20 @@ When working on a specific task:
 - CSS is minimal and uses CSS custom properties for theming
 - Demo app uses Next.js optimization features
 
-## Coding Conventions (JetBrains Defaults)
+## Development Standards and Conventions
 
-This project follows JetBrains' default coding conventions for JavaScript and TypeScript. Adhering to these conventions
-ensures code consistency and readability across the project.
+This project follows JetBrains' standard development practices. We've organized these standards into reusable guides that can be applied across projects:
 
-### Formatting
+- [Coding Conventions](./agents/coding-conventions.md) - General formatting, naming, and code organization practices
+- [TypeScript Guidelines](./agents/typescript-guidelines.md) - TypeScript-specific best practices and patterns
+- [React Conventions](./agents/react-conventions.md) - React component patterns, hooks usage, and JSX standards
+- [Documentation Standards](./agents/documentation-standards.md) - JSDoc and other documentation requirements
 
-- **Indentation**: 4 spaces (not tabs)
-- **Line length**: Maximum 120 characters
-- **Braces**:
-    - Opening brace on the same line as the statement
-    - Closing brace aligned with the original statement
-- **Spacing**:
-    - Space after keywords (`if`, `for`, `while`, etc.)
-    - Space around operators (`+`, `-`, `=`, etc.)
-    - No space between function name and parentheses
-    - Space after commas in argument lists
-    - No space after property name and before colon in object literals, but space after colon: `{width: 50}`
-- **String literals**:
-    - Use double quotes (`"`) rather than single quotes (`'`) for string literals
-    - Use template literals (backticks) when string interpolation is needed or for multi-line strings
-- **Line breaks**:
-    - Line break after opening brace
-    - Line break before closing brace
-    - Line break after semicolons
-- **Semicolons**: Generally required at the end of statements
-    - Required in .ts files
-    - May be omitted in some .tsx files, particularly in the demo app
-- **Control structures**:
-    - Switch-case statements have cases indented inside the switch block
-    - Case blocks are further indented inside each case
-
-### Naming Conventions
-
-- **Variables and functions**: camelCase
-- **Classes and interfaces**: PascalCase
-- **Constants**: UPPER_SNAKE_CASE for true constants, camelCase for variables that won't be reassigned
-- **Private properties**: camelCase with no underscore prefix
-- **Type parameters**: PascalCase, typically single letters (T, K, V) or descriptive names with a 'T' suffix
-- **Enum members**: PascalCase
-- **File names**: Match the main export, typically PascalCase for components
-
-### Code Organization
-
-- **Imports**: Grouped and sorted:
-    1. React and React-related imports
-    2. Third-party library imports
-    3. Project imports (absolute paths)
-    4. Project imports (relative paths)
-    5. CSS/style imports
-- **Component structure**:
-    1. Type definitions and interfaces
-    2. JSDoc component documentation
-    3. Component function
-    4. Helper functions and hooks
-    5. Default export
-- **Props**: Destructured in function parameters with default values
-
-### TypeScript Specifics
-
-- **Type annotations**: Use explicit type annotations for function parameters and return types
-- **Interfaces vs Types**: Prefer interfaces for object shapes, types for unions/intersections
-- **Generics**: Use generics with constraints when appropriate
-- **Optional properties**: Use the `?` operator for optional properties
-- **Null handling**: Avoid `null`, prefer `undefined` for optional values
-- **Type assertions**: Use `as` syntax rather than angle brackets
-
-### JSDoc Comments
-
-- **Components**: Document with JSDoc comments including description, properties, and examples
-- **Functions**: Document parameters, return values, and thrown exceptions
-- **Properties**: Document with inline JSDoc comments in interface/type definitions
-- **Formatting**:
-    - JSDoc blocks start with `/**` on a separate line
-    - Each line within the block starts with ` * ` (space, asterisk, space)
-    - The closing `*/` is on a separate line
-    - Parameter descriptions use `@param {type} name - Description` format
-    - Return value descriptions use `@returns {type} Description` format
-    - Examples are enclosed in code blocks with the appropriate language tag
-    - Empty lines within JSDoc blocks have a ` *` (space, asterisk) without additional text
-- **Type documentation**:
-    - Type definitions have a brief description above the type declaration
-    - Interface properties have inline JSDoc comments explaining their purpose
-    - Enum values have explanatory comments when their meaning isn't obvious
-
-### React Specifics
-
-- **Functional components**: Use functional components with hooks, not class components
-- **Hooks**: Follow React hooks naming convention (`useXxx`)
-- **Event handlers**: Name with `handleXxx` pattern
-- **Props**: Define using TypeScript interfaces or types with JSDoc comments
-- **Default values**: Use parameter defaults, not `defaultProps`
-- **JSX formatting**:
-    - JSX attributes are aligned and indented when they span multiple lines
-    - JSX closing tags are aligned with their opening tags
-    - Self-closing tags have a space before the closing bracket: `<Component />`
-    - JSX expressions in curly braces have consistent spacing: `{condition ? (...) : (...)}`
-    - JSX conditional rendering uses parentheses for multi-line expressions
-    - Component props are destructured with multi-line formatting and proper indentation when there are many props
+These guides provide detailed information on our development standards. For project-specific configuration:
 
 ### ESLint Configuration
 
-The project uses ESLint with TypeScript support. The configuration enforces most of these conventions automatically.
-Always run ESLint before committing code:
+The project uses ESLint with TypeScript support. Always run ESLint before committing code:
 
 ```bash
 pnpm lint
@@ -386,9 +296,7 @@ pnpm lint
 
 ### Prettier Configuration
 
-The project uses Prettier with a JSON configuration file (`.prettierrc.json`). The configuration enforces the formatting
-conventions described in this document. See [PRETTIER.md](./PRETTIER.md) for detailed documentation of all Prettier
-settings.
+The project uses Prettier with a JSON configuration file (`.prettierrc.json`). See [PRETTIER.md](./PRETTIER.md) for detailed documentation of all Prettier settings.
 
 Run Prettier to automatically format code:
 
