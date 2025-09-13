@@ -24,13 +24,13 @@ const CENTER_ANGLE = 360;
  */
 export type KnobProps = BipolarControl &
     ExplicitRange & {
-    /** Content to display inside the knob (replaces the value display) */
-    children?: React.ReactNode;
-    /** Thickness of the knob's stroke
-     * @default 12
-     */
-    thickness?: number;
-};
+        /** Content to display inside the knob (replaces the value display) */
+        children?: React.ReactNode;
+        /** Thickness of the knob's stroke
+         * @default 12
+         */
+        thickness?: number;
+    };
 
 /**
  * Calculate SVG arc path
@@ -107,28 +107,28 @@ const polarToCartesian = (centerX: number, centerY: number, radius: number, angl
  * ```
  */
 function Knob({
-                  min,
-                  max,
-                  bipolar = false,
-                  value,
-                  label,
-                  children,
-                  stretch = false,
-                  className,
-                  style,
-                  onChange,
-                  roundness,
-                  thickness = 12,
-                  size = "normal",
-                  renderValue,
-                  paramId: _paramId,
-                  onClick,
-                  onMouseDown,
-                  onMouseUp,
-                  onMouseEnter,
-                  onMouseLeave,
-                  color,
-              }: KnobProps) {
+    min,
+    max,
+    bipolar = false,
+    value,
+    label,
+    children,
+    stretch = false,
+    className,
+    style,
+    onChange,
+    roundness,
+    thickness = 12,
+    size = "normal",
+    renderValue,
+    paramId: _paramId,
+    onClick,
+    onMouseDown,
+    onMouseUp,
+    onMouseEnter,
+    onMouseLeave,
+    color,
+}: KnobProps) {
     // Use the themable props hook to resolve color and roundness with proper fallbacks
     const { resolvedColor, resolvedRoundness } = useThemableProps(
         { color, roundness },
@@ -201,90 +201,86 @@ function Knob({
             minWidth={40}
             minHeight={40}
         >
-            <SvgSurface
-                viewBoxWidth={100}
-                viewBoxHeight={115}
-                stretch={stretch}
-                onWheel={handleWheel}
-                onClick={onClick}
-                onMouseDown={onMouseDown}
-                onMouseUp={onMouseUp}
-                onMouseEnter={onMouseEnter}
-                onMouseLeave={onMouseLeave}
-            >
-                {/* Background Arc */}
-                <path
-                    style={{ stroke: colorVariants.primary50 }}
-                    fill="none"
-                    strokeWidth={strokeWidth}
-                    strokeLinecap={strokeLinecap}
-                    d={calculateArcPath(MAX_START_ANGLE, MAX_END_ANGLE, 40)}
-                />
-
-                {/* Foreground Arc */}
-                <path
-                    style={{ stroke: colorVariants.primary }}
-                    fill="none"
-                    strokeWidth={strokeWidth}
-                    strokeLinecap={strokeLinecap}
-                    d={calculateArcPath(bipolar ? CENTER_ANGLE : MAX_START_ANGLE, valueToAngle, 40)}
-                />
-
-
-            </SvgSurface>
+            {/* Sizing wrapper that matches the SVG box in both modes */}
             <div
                 style={{
-                    position: "absolute",
-                    inset: 0,
-                    zIndex: 1,
-                    pointerEvents: "none",
-                    display: "flex",
-                    // Mirror AdaptiveContainer's demo-alignment mapping so the overlay aligns with the SVG box
-                    alignItems: ((): React.CSSProperties["alignItems"] => {
-                        const v = style?.alignSelf as unknown;
-                        return v === "start" ? "flex-start" : v === "end" ? "flex-end" : v === "center" ? "center" : "center";
-                    })(),
-                    justifyContent: ((): React.CSSProperties["justifyContent"] => {
-                        const v = style?.justifySelf as unknown;
-                        return v === "start" ? "flex-start" : v === "end" ? "flex-end" : v === "center" ? "center" : "center";
-                    })(),
+                    position: "relative",
+                    ...(stretch
+                        ? {
+                              width: "auto",
+                              height: "auto",
+                              maxWidth: "100%",
+                              maxHeight: "100%",
+                              display: "block",
+                              aspectRatio: "100 / 115",
+                          }
+                        : {
+                              width: "100%",
+                              height: "100%",
+                              display: "block",
+                          }),
                 }}
             >
-                {/* overlayBox mirrors the SVG's sizing rules so percent coordinates map to the SVG box */}
+                <SvgSurface
+                    viewBoxWidth={100}
+                    viewBoxHeight={115}
+                    stretch={false}
+                    // Fill the wrapper; wrapper itself handles stretch/fixed sizing
+                    style={{ width: "100%", height: "100%", display: "block" }}
+                    onWheel={handleWheel}
+                    onClick={onClick}
+                    onMouseDown={onMouseDown}
+                    onMouseUp={onMouseUp}
+                    onMouseEnter={onMouseEnter}
+                    onMouseLeave={onMouseLeave}
+                >
+                    {/* Background Arc */}
+                    <path
+                        style={{ stroke: colorVariants.primary50 }}
+                        fill="none"
+                        strokeWidth={strokeWidth}
+                        strokeLinecap={strokeLinecap}
+                        d={calculateArcPath(MAX_START_ANGLE, MAX_END_ANGLE, 40)}
+                    />
+
+                    {/* Foreground Arc */}
+                    <path
+                        style={{ stroke: colorVariants.primary }}
+                        fill="none"
+                        strokeWidth={strokeWidth}
+                        strokeLinecap={strokeLinecap}
+                        d={calculateArcPath(bipolar ? CENTER_ANGLE : MAX_START_ANGLE, valueToAngle, 40)}
+                    />
+                </SvgSurface>
+
+                {/* Overlay positioned relative to the wrapper (same box as SVG) */}
                 <div
                     style={{
-                        position: "relative",
-                        ...(stretch
-                            ? {
-                                width: "auto",
-                                height: "auto",
-                                maxWidth: "100%",
-                                maxHeight: "100%",
-                                display: "block",
-                                aspectRatio: "100 / 115",
-                            }
-                            : {
-                                width: "100%",
-                                height: "100%",
-                                display: "block",
-                            }),
-                        // @ts-ignore - containerType isn't in React CSSProperties types yet
+                        position: "absolute",
+                        inset: 0,
+                        zIndex: 1,
+                        pointerEvents: "none",
+                        // @ts-ignore - containerType not in types yet
                         containerType: "inline-size",
                     }}
                 >
                     <div
                         style={{
                             position: "absolute",
-                            left: "20%",
-                            top: "calc(22 / 115 * 100%)",
-                            width: "60%",
-                            height: "calc(60 / 115 * 100%)",
+                            left: "15%", /* Increased horizontal space by reducing left from 20% to 15% */
+                            top: "calc(20 / 115 * 100%)", /* Moved up slightly to create more vertical space */
+                            width: "70%", /* Increased width from 60% to 70% for more text space */
+                            height: "calc(55 / 115 * 100%)", /* Adjusted height to prevent overlap */
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             fontWeight: 500,
                             fontSize: "22cqw",
                             color: "var(--text-color)",
+                            textAlign: "center",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap", /* Prevent wrapping to maintain consistent height */
                         }}
                     >
                         {React.isValidElement(children) && (children as any).type === "img" ? (
@@ -298,12 +294,15 @@ function Knob({
                                     padding: "10px",
                                 }}
                             >
-                                {React.cloneElement(children as React.ReactElement, {
-                                    style: {
-                                        maxWidth: "100%",
-                                        maxHeight: "100%",
-                                    },
-                                } as any)}
+                                {React.cloneElement(
+                                    children as React.ReactElement,
+                                    {
+                                        style: {
+                                            maxWidth: "100%",
+                                            maxHeight: "100%",
+                                        },
+                                    } as any
+                                )}
                             </div>
                         ) : renderValue ? (
                             renderValue(value, min, max)
@@ -316,11 +315,16 @@ function Knob({
                             style={{
                                 position: "absolute",
                                 left: "50%",
-                                top: "calc(110 / 115 * 100%)",
+                                top: "calc(105 / 115 * 100%)", /* Slight adjustment to ensure consistent positioning */
                                 transform: "translate(-50%, -50%)",
                                 fontWeight: 500,
                                 fontSize: "18cqw",
                                 color: "var(--text-color)",
+                                maxWidth: "90%", /* Ensure label doesn't overflow container sides */
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap", /* Keep label on one line */
+                                textAlign: "center", /* Center text for partial visibility if truncated */
                             }}
                         >
                             {label}

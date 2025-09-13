@@ -2,38 +2,79 @@
 
 import React, { useMemo } from "react";
 import { Base } from "../types";
+import { createPropComparator } from "../../utils";
 
 /**
- * Props for the AdaptiveContainer
- * Extends Base to include common properties like className, style
+ * Props for the AdaptiveContainer component.
+ * Extends Base to include common properties like className and style.
+ * This component serves as a foundational layout container for audio UI components.
  */
 export type AdaptiveContainerProps = Base & {
-    /** Whether the component should stretch to fill its container while maintaining aspect ratio
-     * @default false */
+    /**
+     * Whether the component should stretch to fill its container.
+     * - When true, it fills the parent area but stays usable: respects minWidth/minHeight,
+     *   keeps content aligned with flex (center/start/end), works nicely with aspect-ratio,
+     *   and enables size-aware typography via container queries.
+     * - When false, it uses a predictable fixed pixel width (preferredWidth) while keeping
+     *   the given aspect ratio.
+     * @default false
+     */
     stretch?: boolean;
-    /** Content to render within the container */
+
+    /**
+     * Content to render within the container. Can be any React node,
+     * typically SVG-based components like SvgSurface.
+     */
     children: React.ReactNode;
-    /** Desired width when not stretching
-     * @default 100 */
+
+    /**
+     * Desired width in pixels when in fixed mode (stretch=false).
+     * Will be respected unless it would be smaller than minWidth.
+     * @default 100
+     */
     preferredWidth?: number;
-    /** Minimum width the component will maintain, even when container is smaller
-     * @default 40 */
+
+    /**
+     * Minimum width the component will maintain, even when container is smaller.
+     * Ensures controls remain usable regardless of container size.
+     * @default 40
+     */
     minWidth?: number;
-    /** Minimum height the component will maintain, even when container is smaller
-     * @default 40 */
+
+    /**
+     * Minimum height the component will maintain, even when container is smaller.
+     * Ensures controls remain usable regardless of container size.
+     * @default 40
+     */
     minHeight?: number;
-    /** Aspect ratio of the container, can be a string "width / height" or a number
-     * @default "1 / 1" */
+
+    /**
+     * Aspect ratio of the container, determining the height relative to width.
+     * Can be specified as a string "width / height" or a number (width-to-height ratio).
+     * @default "1 / 1" (square aspect ratio)
+     */
     aspectRatio?: `${number} / ${number}` | number;
 };
 
 /**
- * AdaptiveContainer provides consistent sizing and aspect ratio maintenance for audio control components.
+ * AdaptiveContainer is a small, CSS-only wrapper that helps its children size “just right”.
  *
- * Uses pure CSS for sizing:
- * - The container declares aspect-ratio and min/max constraints
- * - In stretch mode it fills its grid cell
- * - This component is agnostic to what's rendered inside (SVG, Canvas, or anything else)
+ * Two simple modes:
+ * - stretch=true: fill the parent cell, but do it safely:
+ *   - respects minWidth/minHeight so controls don’t shrink into unusable dots
+ *   - keeps content aligned (center/start/end) via flexbox
+ *   - works with aspect-ratio so shapes stay proportional
+ *   - enables container queries (e.g., cqw units) so text/icons scale with the component itself
+ * - stretch=false: use a predictable fixed pixel width (preferredWidth) and maintain the given aspect ratio.
+ *
+ * Why not just width: 100%; height: 100%?
+ * - No minimum size floor (things can collapse)
+ * - Harder to align content cleanly within a grid/flex cell
+ * - No component-scoped container queries for responsive typography
+ * - Easy to distort aspect ratios
+ *
+ * Typical usage:
+ * - Wrap SVG-based audio controls or small UI widgets for consistent sizing in grid/flex layouts.
  */
 function AdaptiveContainer({
     stretch = false,
@@ -45,57 +86,49 @@ function AdaptiveContainer({
     minHeight = 40,
     aspectRatio = "1 / 1",
 }: AdaptiveContainerProps) {
-    // Styles to ensure proper grid cell containment and CSS-driven sizing
+    // Compute dynamic container styles based on props and sizing mode
     const containerStyle = useMemo<React.CSSProperties>(() => {
         // Extract alignment-related props and map them to inner flex alignment so the demo grid works
-        const { alignSelf, justifySelf, ...restStyle } = style;
+        const { alignSelf, justifySelf, ...userStyle } = style;
 
-        // Map alignSelf/justifySelf keywords to flex alignment for inner content
-        const toFlexAlign = (v: unknown) =>
-            v === "start" ? "flex-start" : v === "end" ? "flex-end" : v === "center" ? "center" : undefined;
-
-        // Map from style
+        // Map grid alignment properties to flex container properties
         const alignItems = toFlexAlign(alignSelf) ?? "center";
         const justifyContent = toFlexAlign(justifySelf) ?? "center";
 
+        // Base styles applied to both stretch and fixed modes
         const baseStyles: React.CSSProperties = {
+            ...userStyle,
             position: "relative",
             overflow: "hidden",
-            display: stretch ? "flex" : "inline-flex",
             alignItems,
             justifyContent,
-            // @ts-ignore - TS doesn't yet know containerType inline style in React types
             containerType: "inline-size",
-            ...restStyle,
-        };
-
-        if (stretch) {
-            // Fill grid cell but keep inner content alignable via flex
-            return {
-                ...baseStyles,
-                width: "100%",
-                height: "100%",
-                maxWidth: "100%",
-                maxHeight: "100%",
-                minWidth,
-                minHeight,
-            };
-        }
-
-        // Fixed mode: enforce preferred width in pixels (respecting minWidth)
-        const widthPx = Math.max(preferredWidth, minWidth);
-        return {
-            ...baseStyles,
-            width: `${widthPx}px`,
-            // Maintain aspect ratio so height is derived from width
-            aspectRatio: typeof aspectRatio === "number" ? `${aspectRatio} / 1` : aspectRatio,
             minWidth,
             minHeight,
             maxWidth: "100%",
             maxHeight: "100%",
         };
+
+        if (stretch) {
+            // Stretch mode: Fill grid cell but keep inner content alignable via flex
+            return {
+                ...baseStyles,
+                display: "flex",
+                width: "100%",
+                height: "100%",
+            };
+        } else {
+            return {
+                ...baseStyles,
+                display: "inline-flex",
+                width: `${preferredWidth}px`,
+                // Maintain aspect ratio so height is derived from width
+                aspectRatio: typeof aspectRatio === "number" ? `${aspectRatio} / 1` : aspectRatio,
+            };
+        }
     }, [style, stretch, minWidth, minHeight, preferredWidth, aspectRatio]);
 
+    // Render a div with the computed styles containing the children
     return (
         <div style={containerStyle} className={className}>
             {children}
@@ -103,25 +136,24 @@ function AdaptiveContainer({
     );
 }
 
-// Custom comparison function for React.memo to prevent unnecessary re-renders
-function arePropsEqual(prevProps: AdaptiveContainerProps, nextProps: AdaptiveContainerProps) {
-    const { style: prevStyle, children: prevChildren, ...prevRest } = prevProps;
-    const { style: nextStyle, children: nextChildren, ...nextRest } = nextProps;
+// Helper function to map grid alignment values to flex alignment values
+// Transforms 'start', 'end', 'center' to 'flex-start', 'flex-end', 'center'
+// prettier-ignore
+const toFlexAlign = (v: unknown) =>
+    v === "start"
+        ? "flex-start"
+        : v === "end"
+            ? "flex-end"
+            : v === "center"
+                ? "center"
+                : undefined;
 
-    // Compare primitive props
-    for (const key in prevRest) {
-        if (prevRest[key as keyof typeof prevRest] !== nextRest[key as keyof typeof nextRest]) {
-            return false;
-        }
-    }
+// Create a prop comparator specifically for AdaptiveContainer
+// This ensures style objects are deeply compared and children are always checked for reference equality
+const compareAdaptiveContainerProps = createPropComparator<AdaptiveContainerProps>({
+    deepCompareProps: ["style"],
+    alwaysCompareProps: ["children"],
+});
 
-    // Compare style objects
-    if (JSON.stringify(prevStyle) !== JSON.stringify(nextStyle)) {
-        return false;
-    }
-
-    // Always check for changes in children to ensure re-renders when content changes
-    return prevChildren === nextChildren;
-}
-
-export default React.memo(AdaptiveContainer, arePropsEqual);
+// Export a memoized version of the component for better performance
+export default React.memo(AdaptiveContainer, compareAdaptiveContainerProps);
