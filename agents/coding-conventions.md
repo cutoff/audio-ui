@@ -36,7 +36,7 @@ using the configuration in `.prettierrc.json` at the project root.
 - **Control structures**:
     - Switch-case statements have cases indented inside the switch block
     - Case blocks are further indented inside each case
-    
+
 > **Note**: The project uses Prettier for automated code formatting. Run `pnpm prettier --write .` to format all files
 > according to these conventions. Prettier configuration is defined in `.prettierrc.json` at the project root.
 

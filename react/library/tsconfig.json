@@ -1,18 +1,18 @@
 {
-    "extends": "../tsconfig.json",
-    "compilerOptions": {
-        "outDir": "./dist",
-        "rootDir": "./src",
-        "declaration": true,
-        "declarationMap": true,
-        "sourceMap": true,
-        "useDefineForClassFields": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noImplicitReturns": true,
-        "noEmit": true
-    },
-    "include": ["src"],
-    "exclude": ["node_modules", "dist", "**/*.test.*"],
-    "references": [{ "path": "./tsconfig.node.json" }]
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "useDefineForClassFields": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noEmit": true
+  },
+  "include": [ "src" ],
+  "exclude": [ "node_modules", "dist", "**/*.test.*" ],
+  "references": [ { "path": "./tsconfig.node.json" } ]
 }

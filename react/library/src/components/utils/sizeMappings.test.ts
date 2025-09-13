@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { buttonSizeMap, knobSizeMap, keybedSizeMap, sliderSizeMap, getSizeForComponent } from "./sizeMappings";
+import { describe, expect, it } from "vitest";
+import { buttonSizeMap, getSizeForComponent, keybedSizeMap, knobSizeMap, sliderSizeMap } from "./sizeMappings";
 
 describe("sizeMappings", () => {
     it("provides expected dimensions for knob normal size", () => {

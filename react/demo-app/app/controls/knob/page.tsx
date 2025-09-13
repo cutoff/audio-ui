@@ -57,7 +57,7 @@ function generateCodeSnippet(
     color: string | undefined
 ): string {
     if (enableOptions) {
-        return `<Knob value={${value}} label='${label}'${color !== undefined ? ` color='${color}'` : ''}>
+        return `<Knob value={${value}} label='${label}'${color !== undefined ? ` color='${color}'` : ""}>
     <Option value={0}>{/* eslint-disable-next-line @next/next/no-img-element */}
     <img src={iconSineWave} alt="Sine" /></Option>
     <Option value={1}>{/* eslint-disable-next-line @next/next/no-img-element */}
@@ -71,12 +71,12 @@ function generateCodeSnippet(
 `;
     } else {
         let props = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}} thickness={${thickness}}`;
-        
+
         // Add optional props only if they're defined
         if (roundness !== undefined) {
             props += ` roundness={${roundness}}`;
         }
-        
+
         if (color !== undefined) {
             props += ` color='${color}'`;
         }

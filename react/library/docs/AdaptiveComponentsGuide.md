@@ -9,6 +9,7 @@ The Audio UI library has been refactored to use a three-layer architecture for b
 3. **Control components**: Handle control-specific logic and rendering text/labels using SVG text and foreignObject
 
 This separation allows for:
+
 - Cleaner code with better separation of concerns
 - More flexibility in rendering (SVG, Canvas, or other technologies)
 - Consistent component design with proper separation of layout from rendering
@@ -19,6 +20,7 @@ This separation allows for:
 ### AdaptiveContainer
 
 The `AdaptiveContainer` component is responsible for:
+
 - Controlling the sizing and aspect ratio of a component
 - Handling grid alignment and positioning
 - Providing a responsive container for content
@@ -59,6 +61,7 @@ type AdaptiveContainerProps = Base & {
 ### SvgSurface
 
 The `SvgSurface` component is responsible for:
+
 - Rendering an SVG element with proper viewBox and preserveAspectRatio
 - Handling SVG-specific events like wheel events
 - Applying appropriate styling for the SVG element
@@ -107,7 +110,7 @@ type SvgSurfaceProps = {
     onMouseDown={handleMouseDown}
     onMouseUp={handleMouseUp}
     className="my-svg-class"
-    style={{ cursor: "pointer" }}
+    style={{cursor: "pointer"}}
 >
     {/* SVG content like paths, rects, etc. */}
 </SvgSurface>
@@ -127,7 +130,7 @@ For simple labels, the SVG `<text>` element is used:
 
 ```jsx
 <text
-    style={{ fill: "var(--text-color)" }}
+    style={{fill: "var(--text-color)"}}
     x="50"
     y="110"
     fontSize="18"
@@ -187,17 +190,17 @@ To create a component with proper layout and SVG rendering:
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         className="control-surface"
-        style={{ cursor: "pointer" }}
+        style={{cursor: "pointer"}}
     >
         {/* SVG graphics content */}
         <path
-            style={{ stroke: "var(--primary-50)" }}
+            style={{stroke: "var(--primary-50)"}}
             fill="none"
             strokeWidth={12}
             strokeLinecap="round"
             d="M 60 20 A 40 40 0 1 1 20 60"
         />
-        
+
         {/* Value display using foreignObject */}
         <foreignObject x="20" y="22" width="60" height="60">
             <div
@@ -214,10 +217,10 @@ To create a component with proper layout and SVG rendering:
                 75
             </div>
         </foreignObject>
-        
+
         {/* Label using SVG text */}
         <text
-            style={{ fill: "var(--text-color)" }}
+            style={{fill: "var(--text-color)"}}
             x="50"
             y="110"
             fontSize="18"
@@ -257,6 +260,7 @@ Event handlers for wheel and mouse events are attached directly to the SvgSurfac
 ```
 
 The SvgSurface component automatically:
+
 - Attaches these handlers to the SVG element
 - Sets up non-passive wheel event listeners when needed
 - Prevents default behavior and propagation for wheel events

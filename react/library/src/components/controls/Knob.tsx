@@ -24,13 +24,13 @@ const CENTER_ANGLE = 360;
  */
 export type KnobProps = BipolarControl &
     ExplicitRange & {
-        /** Content to display inside the knob (replaces the value display) */
-        children?: React.ReactNode;
-        /** Thickness of the knob's stroke
-         * @default 12
-         */
-        thickness?: number;
-    };
+    /** Content to display inside the knob (replaces the value display) */
+    children?: React.ReactNode;
+    /** Thickness of the knob's stroke
+     * @default 12
+     */
+    thickness?: number;
+};
 
 /**
  * Calculate SVG arc path
@@ -107,28 +107,28 @@ const polarToCartesian = (centerX: number, centerY: number, radius: number, angl
  * ```
  */
 function Knob({
-    min,
-    max,
-    bipolar = false,
-    value,
-    label,
-    children,
-    stretch = false,
-    className,
-    style,
-    onChange,
-    roundness,
-    thickness = 12,
-    size = "normal",
-    renderValue,
-    paramId: _paramId,
-    onClick,
-    onMouseDown,
-    onMouseUp,
-    onMouseEnter,
-    onMouseLeave,
-    color,
-}: KnobProps) {
+                  min,
+                  max,
+                  bipolar = false,
+                  value,
+                  label,
+                  children,
+                  stretch = false,
+                  className,
+                  style,
+                  onChange,
+                  roundness,
+                  thickness = 12,
+                  size = "normal",
+                  renderValue,
+                  paramId: _paramId,
+                  onClick,
+                  onMouseDown,
+                  onMouseUp,
+                  onMouseEnter,
+                  onMouseLeave,
+                  color,
+              }: KnobProps) {
     // Use the themable props hook to resolve color and roundness with proper fallbacks
     const { resolvedColor, resolvedRoundness } = useThemableProps(
         { color, roundness },
@@ -256,76 +256,76 @@ function Knob({
                         position: "relative",
                         ...(stretch
                             ? {
-                                  width: "auto",
-                                  height: "auto",
-                                  maxWidth: "100%",
-                                  maxHeight: "100%",
-                                  display: "block",
-                                  aspectRatio: "100 / 115",
-                              }
+                                width: "auto",
+                                height: "auto",
+                                maxWidth: "100%",
+                                maxHeight: "100%",
+                                display: "block",
+                                aspectRatio: "100 / 115",
+                            }
                             : {
-                                  width: "100%",
-                                  height: "100%",
-                                  display: "block",
-                              }),
+                                width: "100%",
+                                height: "100%",
+                                display: "block",
+                            }),
                         // @ts-ignore - containerType isn't in React CSSProperties types yet
                         containerType: "inline-size",
                     }}
                 >
-                <div
-                    style={{
-                        position: "absolute",
-                        left: "20%",
-                        top: "calc(22 / 115 * 100%)",
-                        width: "60%",
-                        height: "calc(60 / 115 * 100%)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontWeight: 500,
-                        fontSize: "22cqw",
-                        color: "var(--text-color)",
-                    }}
-                >
-                    {React.isValidElement(children) && (children as any).type === "img" ? (
-                        <div
-                            style={{
-                                width: "100%",
-                                height: "100%",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                padding: "10px",
-                            }}
-                        >
-                            {React.cloneElement(children as React.ReactElement, {
-                                style: {
-                                    maxWidth: "100%",
-                                    maxHeight: "100%",
-                                },
-                            } as any)}
-                        </div>
-                    ) : renderValue ? (
-                        renderValue(value, min, max)
-                    ) : (
-                        formatValueFn(value)
-                    )}
-                </div>
-                {label && (
                     <div
                         style={{
                             position: "absolute",
-                            left: "50%",
-                            top: "calc(110 / 115 * 100%)",
-                            transform: "translate(-50%, -50%)",
+                            left: "20%",
+                            top: "calc(22 / 115 * 100%)",
+                            width: "60%",
+                            height: "calc(60 / 115 * 100%)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
                             fontWeight: 500,
-                            fontSize: "18cqw",
+                            fontSize: "22cqw",
                             color: "var(--text-color)",
                         }}
                     >
-                        {label}
+                        {React.isValidElement(children) && (children as any).type === "img" ? (
+                            <div
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    padding: "10px",
+                                }}
+                            >
+                                {React.cloneElement(children as React.ReactElement, {
+                                    style: {
+                                        maxWidth: "100%",
+                                        maxHeight: "100%",
+                                    },
+                                } as any)}
+                            </div>
+                        ) : renderValue ? (
+                            renderValue(value, min, max)
+                        ) : (
+                            formatValueFn(value)
+                        )}
                     </div>
-                )}
+                    {label && (
+                        <div
+                            style={{
+                                position: "absolute",
+                                left: "50%",
+                                top: "calc(110 / 115 * 100%)",
+                                transform: "translate(-50%, -50%)",
+                                fontWeight: 500,
+                                fontSize: "18cqw",
+                                color: "var(--text-color)",
+                            }}
+                        >
+                            {label}
+                        </div>
+                    )}
                 </div>
             </div>
         </AdaptiveContainer>

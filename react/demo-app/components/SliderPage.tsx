@@ -29,8 +29,8 @@ export default function SliderPage({ orientation }: SliderPageProps) {
   value={${value}} 
   label='${label}' 
   thickness={${thickness}} 
-  bipolar={${bipolar}}${roundness !== undefined ? `\n  roundness={${roundness}}` : ''} 
-  orientation='${orientation}'${color !== undefined ? `\n  color='${color}'` : ''}
+  bipolar={${bipolar}}${roundness !== undefined ? `\n  roundness={${roundness}}` : ""} 
+  orientation='${orientation}'${color !== undefined ? `\n  color='${color}'` : ""}
 />`;
 
     const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4): void => {

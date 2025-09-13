@@ -29,7 +29,7 @@ export type AdaptiveContainerProps = Base & {
 
 /**
  * AdaptiveContainer provides consistent sizing and aspect ratio maintenance for audio control components.
- * 
+ *
  * Uses pure CSS for sizing:
  * - The container declares aspect-ratio and min/max constraints
  * - In stretch mode it fills its grid cell
@@ -51,8 +51,9 @@ function AdaptiveContainer({
         const { alignSelf, justifySelf, ...restStyle } = style;
 
         // Map alignSelf/justifySelf keywords to flex alignment for inner content
-        const toFlexAlign = (v: unknown) => (v === "start" ? "flex-start" : v === "end" ? "flex-end" : v === "center" ? "center" : undefined);
-        
+        const toFlexAlign = (v: unknown) =>
+            v === "start" ? "flex-start" : v === "end" ? "flex-end" : v === "center" ? "center" : undefined;
+
         // Map from style
         const alignItems = toFlexAlign(alignSelf) ?? "center";
         const justifyContent = toFlexAlign(justifySelf) ?? "center";

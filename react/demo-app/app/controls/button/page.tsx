@@ -23,8 +23,8 @@ export default function Page() {
   max={${max}} 
   value={${value}} 
   center={${center}} 
-  label="${label}"${roundness !== undefined ? `\n  roundness={${roundness}}` : ''}
-  latch={${latch}}${color !== undefined ? `\n  color="${color}"` : ''}
+  label="${label}"${roundness !== undefined ? `\n  roundness={${roundness}}` : ""}
+  latch={${latch}}${color !== undefined ? `\n  color="${color}"` : ""}
 />`;
 
     const handleExampleClick = (num: 0 | 1 | 2): void => {

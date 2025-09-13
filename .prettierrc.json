@@ -12,10 +12,11 @@
   "endOfLine": "lf",
   "overrides": [
     {
-      "files": [ "*.tsx" ],
+      "files": [ "*.tsx", "*.ts", "*.jsx", "*.js" ],
       "options": {
         "jsxBracketSameLine": false,
-        "jsxSingleQuote": false
+        "jsxSingleQuote": false,
+        "bracketSpacing": true
       }
     }
   ]

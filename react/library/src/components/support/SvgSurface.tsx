@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 
 /**
  * Props for the SvgSurface component
@@ -41,7 +41,7 @@ export type SvgSurfaceProps = {
 /**
  * SvgSurface renders an SVG element with proper viewBox and aspect ratio handling.
  * It handles wheel and mouse events, and applies appropriate styling for the SVG element.
- * 
+ *
  * This component should be used inside AdaptiveContainer for optimal layout and sizing.
  */
 function SvgSurface({
@@ -83,25 +83,24 @@ function SvgSurface({
 
     // SVG-specific styling based on stretch mode
     const svgStyle = useMemo<React.CSSProperties>(
-        () => (
+        () =>
             stretch
                 ? {
-                    // In stretch mode, allow the SVG to fit inside the container and be aligned via flex
-                    width: "auto",
-                    height: "auto",
-                    maxWidth: "100%",
-                    maxHeight: "100%",
-                    display: "block",
-                    // Keep the intrinsic ratio based on viewBox
-                    aspectRatio: `${viewBoxWidth} / ${viewBoxHeight}`,
-                }
+                      // In stretch mode, allow the SVG to fit inside the container and be aligned via flex
+                      width: "auto",
+                      height: "auto",
+                      maxWidth: "100%",
+                      maxHeight: "100%",
+                      display: "block",
+                      // Keep the intrinsic ratio based on viewBox
+                      aspectRatio: `${viewBoxWidth} / ${viewBoxHeight}`,
+                  }
                 : {
-                    // In fixed mode, the container defines exact box; let SVG fill it fully
-                    width: "100%",
-                    height: "100%",
-                    display: "block",
-                }
-        ),
+                      // In fixed mode, the container defines exact box; let SVG fill it fully
+                      width: "100%",
+                      height: "100%",
+                      display: "block",
+                  },
         [stretch, viewBoxWidth, viewBoxHeight]
     );
 

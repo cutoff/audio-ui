@@ -4,26 +4,27 @@ This document provides examples of how to use the new `color` property with the 
 
 ## Basic Usage
 
-All components now accept a `color` property that can be any valid CSS color value. If not specified, the default color is "blue".
+All components now accept a `color` property that can be any valid CSS color value. If not specified, the default color
+is "blue".
 
 ```tsx
 // Using the default blue color
-<Button value={75} label="Power" />
+<Button value={75} label="Power"/>
 
 // Using a named color
-<Knob value={50} label="Volume" color="green" />
+<Knob value={50} label="Volume" color="green"/>
 
 // Using a hex color
-<Slider value={25} label="Filter" color="#FF5500" />
+<Slider value={25} label="Filter" color="#FF5500"/>
 
 // Using RGB
-<Button value={100} label="Mode" color="rgb(120, 80, 200)" />
+<Button value={100} label="Mode" color="rgb(120, 80, 200)"/>
 
 // Using HSL
 <KnobSwitch value="sine" label="Waveform" color="hsl(280, 80%, 60%)">
-  <KnobSwitch.Option value="sine">Sine</KnobSwitch.Option>
-  <KnobSwitch.Option value="square">Square</KnobSwitch.Option>
-  <KnobSwitch.Option value="saw">Saw</KnobSwitch.Option>
+    <KnobSwitch.Option value="sine">Sine</KnobSwitch.Option>
+    <KnobSwitch.Option value="square">Square</KnobSwitch.Option>
+    <KnobSwitch.Option value="saw">Saw</KnobSwitch.Option>
 </KnobSwitch>
 ```
 
@@ -41,7 +42,7 @@ function AnimatedButton() {
         setColor((prevColor) => (prevColor === "blue" ? "red" : "blue"));
     };
 
-    return <Button value={75} label="Toggle" color={color} onClick={toggleColor} />;
+    return <Button value={75} label="Toggle" color={color} onClick={toggleColor}/>;
 }
 ```
 
@@ -53,15 +54,14 @@ You can add CSS transitions to make color changes smooth:
 /* In your CSS */
 .animated-component rect,
 .animated-component path {
-    transition:
-        fill 0.3s ease,
-        stroke 0.3s ease;
+    transition: fill 0.3s ease,
+    stroke 0.3s ease;
 }
 ```
 
 ```tsx
 // In your component
-<Button className="animated-component" value={75} label="Smooth" color={color} />
+<Button className="animated-component" value={75} label="Smooth" color={color}/>
 ```
 
 ### Using Animation Libraries
@@ -70,8 +70,8 @@ You can use animation libraries like Framer Motion or React Spring for more comp
 
 ```tsx
 // Using Framer Motion
-import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import {motion} from "framer-motion";
+import {useState, useEffect} from "react";
 
 function RainbowKnob() {
     const [hue, setHue] = useState(0);
@@ -84,7 +84,7 @@ function RainbowKnob() {
         return () => clearInterval(interval);
     }, []);
 
-    return <Knob value={50} label="Rainbow" color={`hsl(${hue}, 80%, 50%)`} />;
+    return <Knob value={50} label="Rainbow" color={`hsl(${hue}, 80%, 50%)`}/>;
 }
 ```
 
@@ -95,31 +95,31 @@ The `color` property can be combined with other properties to create more comple
 ```tsx
 // Combining color with other properties
 <Button
-  value={75}
-  label="Power"
-  color="green"
-  roundness={0}  // Square corners
-  size="large"
-  stretch={true}
+    value={75}
+    label="Power"
+    color="green"
+    roundness={0}  // Square corners
+    size="large"
+    stretch={true}
 />
 
 <Knob
-  value={50}
-  label="Volume"
-  color="purple"
-  thickness={20}  // Thicker stroke
-  bipolar={true}  // Bipolar mode
+    value={50}
+    label="Volume"
+    color="purple"
+    thickness={20}  // Thicker stroke
+    bipolar={true}  // Bipolar mode
 />
 
 <KnobSwitch
-  label="Filter Type"
-  value="lowpass"
-  color="orange"
-  onChange={value => handleChange(value)}
+    label="Filter Type"
+    value="lowpass"
+    color="orange"
+    onChange={value => handleChange(value)}
 >
-  <KnobSwitch.Option value="lowpass">LP</KnobSwitch.Option>
-  <KnobSwitch.Option value="highpass">HP</KnobSwitch.Option>
-  <KnobSwitch.Option value="bandpass">BP</KnobSwitch.Option>
+    <KnobSwitch.Option value="lowpass">LP</KnobSwitch.Option>
+    <KnobSwitch.Option value="highpass">HP</KnobSwitch.Option>
+    <KnobSwitch.Option value="bandpass">BP</KnobSwitch.Option>
 </KnobSwitch>
 ```
 
@@ -134,7 +134,7 @@ function DynamicColorKnob() {
     // Color changes from blue (0) to red (100)
     const dynamicColor = `hsl(${240 - value * 2.4}, 80%, 50%)`;
 
-    return <Knob value={value} min={0} max={100} label="Dynamic" color={dynamicColor} onChange={setValue} />;
+    return <Knob value={value} min={0} max={100} label="Dynamic" color={dynamicColor} onChange={setValue}/>;
 }
 ```
 
@@ -149,8 +149,8 @@ function ThemedControls() {
 
     return (
         <div className="controls-panel">
-            <Knob value={75} label="Volume" color={themeColor} />
-            <Button value={100} label="Power" color={themeColor} />
+            <Knob value={75} label="Volume" color={themeColor}/>
+            <Button value={100} label="Power" color={themeColor}/>
             <KnobSwitch value="sine" label="Wave" color={themeColor}>
                 <KnobSwitch.Option value="sine">Sine</KnobSwitch.Option>
                 <KnobSwitch.Option value="square">Square</KnobSwitch.Option>
@@ -171,9 +171,13 @@ function ThemedControls() {
 
 ### Keybed Component
 
-The Keybed component uses luminosity-based color variations instead of transparency to prevent visual overlap issues between pressed white keys and surrounding black keys. This is implemented using the `generateLuminosityVariant` function from the `colorUtils.ts` utility file.
+The Keybed component uses luminosity-based color variations instead of transparency to prevent visual overlap issues
+between pressed white keys and surrounding black keys. This is implemented using the `generateLuminosityVariant`
+function from the `colorUtils.ts` utility file.
 
-When a white key is pressed, it uses the primary color, while black keys use darker variants of the same color. This ensures that there's no visual overlap between adjacent keys, providing a clearer visual representation of the pressed keys.
+When a white key is pressed, it uses the primary color, while black keys use darker variants of the same color. This
+ensures that there's no visual overlap between adjacent keys, providing a clearer visual representation of the pressed
+keys.
 
 ### Color Utilities
 
@@ -191,4 +195,5 @@ export function generateLuminosityVariant(baseColor: string, luminosityPercentag
 }
 ```
 
-This function can be used by other components if needed to generate luminosity-based color variations instead of using transparency.
+This function can be used by other components if needed to generate luminosity-based color variations instead of using
+transparency.
