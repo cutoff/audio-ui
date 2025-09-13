@@ -1,0 +1,5 @@
+# Ignore shadcn generated UI components
+components/ui/**
+
+# Ignore public files
+**/public/**

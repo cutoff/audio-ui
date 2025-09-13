@@ -1,0 +1,9 @@
+# Ignore built files
+**/dist/**
+**/build/**
+
+# Ignore coverage reports
+**/coverage/**
+
+# Ignore node_modules
+**/node_modules/**

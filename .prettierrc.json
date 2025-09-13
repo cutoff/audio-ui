@@ -12,15 +12,10 @@
   "endOfLine": "lf",
   "overrides": [
     {
-      "files": ["*.ts"],
+      "files": [ "*.tsx" ],
       "options": {
-        "semi": true
-      }
-    },
-    {
-      "files": ["*.tsx"],
-      "options": {
-        "semi": true
+        "jsxBracketSameLine": false,
+        "jsxSingleQuote": false
       }
     }
   ]

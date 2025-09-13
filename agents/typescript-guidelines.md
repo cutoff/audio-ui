@@ -1,8 +1,10 @@
 # TypeScript Guidelines
 
-This document outlines best practices and recommendations for TypeScript development. Following these guidelines ensures type safety, code quality, and maintainability across projects.
+This document outlines best practices and recommendations for TypeScript development. Following these guidelines ensures
+type safety, code quality, and maintainability across projects.
 
 ## Version History
+
 *For maintenance purposes only*
 
 - Version 1.0 - 2025-09-13: Initial version

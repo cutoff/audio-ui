@@ -1,9 +1,11 @@
 # Coding Conventions (JetBrains Defaults)
 
-This document outlines JetBrains' default coding conventions for JavaScript and TypeScript. Adhering to these conventions
-ensures code consistency and readability across projects.
+This document outlines JetBrains' default coding conventions for JavaScript and TypeScript. Adhering to these
+conventions ensures code consistency and readability across projects. These conventions are enforced by Prettier
+using the configuration in `.prettierrc.json` at the project root.
 
 ## Version History
+
 *For maintenance purposes only*
 
 - Version 1.0 - 2025-09-13: Initial version
@@ -28,12 +30,15 @@ ensures code consistency and readability across projects.
     - Line break after opening brace
     - Line break before closing brace
     - Line break after semicolons
-- **Semicolons**: Generally required at the end of statements
-    - Required in .ts files
-    - May be omitted in some .tsx files, particularly in React applications
+- **Semicolons**: Required at the end of statements in all files (.ts, .tsx, .js, .jsx)
+- **Trailing commas**: Use ES5 trailing comma style (trailing commas where valid in ES5)
+- **Arrow functions**: Always use parentheses around arrow function parameters
 - **Control structures**:
     - Switch-case statements have cases indented inside the switch block
     - Case blocks are further indented inside each case
+    
+> **Note**: The project uses Prettier for automated code formatting. Run `pnpm prettier --write .` to format all files
+> according to these conventions. Prettier configuration is defined in `.prettierrc.json` at the project root.
 
 ## Naming Conventions
 

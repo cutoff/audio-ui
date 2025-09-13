@@ -1,8 +1,10 @@
 # React Development Conventions
 
-This document outlines best practices and conventions for React development. Following these guidelines ensures consistency, maintainability, and performance across React projects.
+This document outlines best practices and conventions for React development. Following these guidelines ensures
+consistency, maintainability, and performance across React projects.
 
 ## Version History
+
 *For maintenance purposes only*
 
 - Version 1.0 - 2025-09-13: Initial version
@@ -32,8 +34,8 @@ Components should follow these patterns:
 
 - Follow React hooks naming convention (`useXxx`)
 - Follow the rules of hooks:
-  - Only call hooks at the top level
-  - Only call hooks from React function components or custom hooks
+    - Only call hooks at the top level
+    - Only call hooks from React function components or custom hooks
 - Create custom hooks to extract reusable logic
 - Use memoization hooks (`useMemo`, `useCallback`) when appropriate for performance optimization
 
@@ -53,26 +55,30 @@ Components should follow these patterns:
 - TSX conditional rendering uses parentheses for multi-line expressions
 - Component props are destructured with multi-line formatting and proper indentation when there are many props
 
+> **Note**: All TSX/JSX formatting is enforced by Prettier according to the project's `.prettierrc.json` configuration.
+> This includes special handling for .tsx files as specified in the Prettier configuration's "overrides" section.
+
 Example of properly formatted TSX:
+
 ```tsx
-function ComplexComponent({ 
-    label, 
-    onClick, 
-    size = "medium", 
-    disabled = false 
-}: ComplexComponentProps): JSX.Element {
+function ComplexComponent({
+                              label,
+                              onClick,
+                              size = "medium",
+                              disabled = false
+                          }: ComplexComponentProps): JSX.Element {
     const handleClick = (): void => {
         if (!disabled) {
             onClick();
         }
     };
-    
+
     return (
         <div className="container">
             {label && (
                 <span className="label">{label}</span>
             )}
-            <button 
+            <button
                 className={`button button--${size}`}
                 disabled={disabled}
                 onClick={handleClick}

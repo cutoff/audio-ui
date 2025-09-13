@@ -1,8 +1,10 @@
 # Documentation Standards
 
-This document outlines best practices for code documentation using JSDoc and other documentation tools. Following these standards ensures code is well-documented, maintainable, and accessible to all developers.
+This document outlines best practices for code documentation using JSDoc and other documentation tools. Following these
+standards ensures code is well-documented, maintainable, and accessible to all developers.
 
 ## Version History
+
 *For maintenance purposes only*
 
 - Version 1.0 - 2025-09-13: Initial version
@@ -38,25 +40,25 @@ This document outlines best practices for code documentation using JSDoc and oth
 ```tsx
 /**
  * A button component with customizable appearance.
- * 
+ *
  * @example
  * <Button label="Click me" onClick={() => console.log('Clicked!')} />
  */
 function Button({
-    label = "Button",
-    onClick,
-    disabled = false
-}: ButtonProps): JSX.Element {
+                    label = "Button",
+                    onClick,
+                    disabled = false
+                }: ButtonProps): JSX.Element {
     // Use arrow function for event handler
     const handleClick = (): void => {
         if (!disabled && onClick) {
             onClick();
         }
     };
-    
+
     // Component implementation
     return (
-        <button 
+        <button
             className="button"
             onClick={handleClick}
             disabled={disabled}
@@ -72,11 +74,11 @@ function Button({
 ```typescript
 /**
  * Formats a number as a percentage string.
- * 
+ *
  * @param {number} value - The value to format (0-1)
  * @param {number} [decimals=0] - Number of decimal places
  * @returns {string} The formatted percentage string
- * 
+ *
  * @example
  * formatPercent(0.5); // "50%"
  * formatPercent(0.5, 1); // "50.0%"
@@ -95,13 +97,13 @@ function formatPercent(value: number, decimals: number = 0): string {
 interface ButtonProps {
     /** The text to display on the button */
     label?: string;
-    
+
     /** Called when the button is clicked */
     onClick?: () => void;
-    
+
     /** The button's visual appearance */
     variant?: "primary" | "secondary" | "danger";
-    
+
     /** Whether the button is disabled */
     disabled?: boolean;
 }
@@ -110,12 +112,12 @@ interface ButtonProps {
 ## README Documentation
 
 - Project READMEs should include:
-  - Project overview and purpose
-  - Installation instructions
-  - Usage examples
-  - API documentation
-  - Contributing guidelines
-  - License information
+    - Project overview and purpose
+    - Installation instructions
+    - Usage examples
+    - API documentation
+    - Contributing guidelines
+    - License information
 
 ## Inline Comments
 
