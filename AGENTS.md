@@ -215,6 +215,15 @@ pnpm typecheck
 pnpm lint
 ```
 
+#### UI Components
+- We use **shadcn** for UI components
+- Any missing component should be added using:
+  ```bash
+  pnpm dlx shadcn@latest add [component]
+  ```
+- Do not create custom components when a shadcn component can be used instead
+
+
 ## LLM-Specific Development Guidelines
 
 ### Version Compatibility Troubleshooting
