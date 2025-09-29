@@ -339,3 +339,24 @@ Implications:
 - Zoomable control surfaces are naturally supported: the browser picks the limiting axis (width or height) based on
   aspect ratio.
 - Event handling (e.g., wheel) remains unchanged and is managed on the SVG.
+
+
+## AdaptiveBox — SVG+Label Layout (Sept 2025)
+
+AdaptiveBox replaces the older AdaptiveContainer + SvgSurface pair. The layout and sizing are handled purely by CSS/SVG and support two display modes:
+
+- scaleToFit: contain-fit scaling that preserves the combined aspect ratio of [SVG + label] and letterboxes the non‑limiting axis.
+- fill: fills the wrapper area while preserving the SVG/label vertical proportions; the SVG drawing may distort to occupy the full width (preserveAspectRatio: none).
+
+Key features:
+- Wrapper exposes container query units (cqw/cqh) via container-type: size
+- Aspect-preserving scaler with aspect-ratio and width: min(100%, calc(100cqh * W / (H + L)))
+- Two-row grid for SVG + label with proportional rows (H vs L)
+- Independent alignment: scaler alignment (start/center/end) and label justification
+- Label modes: visible, hidden (reserves space), none (no space, aspect W/H)
+- Overlay support via absolutely positioned sibling covering the SVG area
+
+See the full specification for implementation details, examples, and API mapping:
+- react/library/docs/adaptive-box-layout.md
+
+Note: AdaptiveBox must remain React 18 compatible (see React Version Policy above).
