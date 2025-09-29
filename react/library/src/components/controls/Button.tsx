@@ -232,7 +232,7 @@ function Button({
     }, [className, onChange]);
 
     // Get the preferred width based on the size prop
-    const { width: preferredWidth } = buttonSizeMap[size];
+    const { width: preferredWidth, height: preferredHeight } = buttonSizeMap[size];
 
     return (
         <AdaptiveBox
@@ -240,14 +240,15 @@ function Button({
             className={componentClassNames}
             style={{
                 ...(style ?? {}),
-                ...(stretch ? {} : { width: `${preferredWidth}px` }),
+                ...(stretch ? {} : { width: `${preferredWidth}px`, height: `${preferredHeight}px` }),
             }}
+            labelHeightUnits={30}
             minWidth={20}
             minHeight={40}
         >
             <AdaptiveBox.Svg
                 viewBoxWidth={100}
-                viewBoxHeight={100}
+                viewBoxHeight={60}
                 onClick={onClick}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
@@ -268,7 +269,6 @@ function Button({
                     rx={cornerRadius}
                     ry={cornerRadius}
                 />
-
             </AdaptiveBox.Svg>
             {label && <AdaptiveBox.Label align="center">{label}</AdaptiveBox.Label>}
         </AdaptiveBox>

@@ -348,15 +348,17 @@ const Slider = ({
     }, [className, onChange]);
 
     // Get the preferred dimensions based on the size prop and orientation
-    const { width: preferredWidth } = sliderSizeMap[size][orientation];
+    const { width: preferredWidth, height: preferredHeight } = sliderSizeMap[size][orientation];
 
     // Determine viewBox dimensions based on orientation
-    const viewBoxWidth = orientation === "vertical" ? 100 : 400;
-    const viewBoxHeight = orientation === "vertical" ? 400 : 100;
+    const viewBoxWidth = orientation === "vertical" ? 100 : 370;
+    const viewBoxHeight = orientation === "vertical" ? 370 : 100;
 
     // Determine minimum dimensions based on orientation
     const minWidth = orientation === "vertical" ? 20 : 60;
     const minHeight = orientation === "vertical" ? 60 : 20;
+
+    const labelHeightUnits = orientation === "vertical" ? 40 : 40;
 
     return (
         <AdaptiveBox
@@ -364,8 +366,9 @@ const Slider = ({
             className={componentClassNames}
             style={{
                 ...(style ?? {}),
-                ...(stretch ? {} : { width: `${preferredWidth}px` }),
+                ...(stretch ? {} : { width: `${preferredWidth}px`, height: `${preferredHeight}px` }),
             }}
+            labelHeightUnits={labelHeightUnits}
             minWidth={minWidth}
             minHeight={minHeight}
         >
@@ -400,7 +403,6 @@ const Slider = ({
                     rx={cornerRadius}
                     ry={cornerRadius}
                 />
-
             </AdaptiveBox.Svg>
             {label && <AdaptiveBox.Label align="center">{label}</AdaptiveBox.Label>}
         </AdaptiveBox>

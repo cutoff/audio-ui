@@ -188,7 +188,7 @@ function Knob({
     }, [className, onChange]);
 
     // Get the preferred width based on the size prop
-    const { width: preferredWidth } = knobSizeMap[size];
+    const { width: preferredWidth, height: preferredHeight } = knobSizeMap[size];
 
     return (
         <AdaptiveBox
@@ -196,15 +196,16 @@ function Knob({
             className={componentClassNames}
             style={{
                 ...(style ?? {}),
-                ...(stretch ? {} : { width: `${preferredWidth}px` }),
+                ...(stretch ? {} : { width: `${preferredWidth}px`, height: `${preferredHeight}px` }),
             }}
+            labelHeightUnits={20}
             minWidth={40}
             minHeight={40}
         >
             <>
                 <AdaptiveBox.Svg
                     viewBoxWidth={100}
-                    viewBoxHeight={115}
+                    viewBoxHeight={100}
                     onWheel={handleWheel}
                     onClick={onClick}
                     onMouseDown={onMouseDown}

@@ -326,7 +326,7 @@ function Keybed({
     }, [className]);
 
     // Get the preferred width based on the size prop
-    const { width: preferredWidth } = keybedSizeMap[size];
+    const { width: preferredWidth, height: preferredHeight } = keybedSizeMap[size];
 
     return (
         <AdaptiveBox
@@ -334,15 +334,12 @@ function Keybed({
             className={componentClassNames}
             style={{
                 ...(style ?? {}),
-                ...(stretch ? {} : { width: `${preferredWidth}px` }),
+                ...(stretch ? {} : { width: `${preferredWidth}px`, height: `${preferredHeight}px` }),
             }}
             minWidth={40}
             minHeight={40}
         >
-            <AdaptiveBox.Svg
-                viewBoxWidth={keybedDimensions.width}
-                viewBoxHeight={keybedDimensions.whiteHeight}
-            >
+            <AdaptiveBox.Svg viewBoxWidth={keybedDimensions.width} viewBoxHeight={keybedDimensions.whiteHeight}>
                 <rect
                     style={{
                         stroke: colorVariants.primary50,
