@@ -229,41 +229,10 @@ function Knob({
                         strokeLinecap={strokeLinecap}
                         d={calculateArcPath(bipolar ? CENTER_ANGLE : MAX_START_ANGLE, valueToAngle, 40)}
                     />
-                </AdaptiveBox.Svg>
 
-                {/* Overlay positioned relative to the scaler (same box as SVG) */}
-                <div
-                    style={{
-                        position: "absolute",
-                        inset: 0,
-                        zIndex: 1,
-                        // Constrain overlay to the SVG row when a label is present
-                        gridRow: label ? "1 / 2" : undefined,
-                        pointerEvents: "none",
-                        // @ts-ignore - containerType not in types yet
-                        containerType: "inline-size",
-                    }}
-                >
-                    <div
-                        style={{
-                            position: "absolute",
-                            left: "15%",
-                            top: "calc(20 / 115 * 100%)",
-                            width: "70%",
-                            height: "calc(55 / 115 * 100%)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontWeight: 500,
-                            fontSize: "22cqw",
-                            color: "var(--text-color)",
-                            textAlign: "center",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                        }}
-                    >
-                        {React.isValidElement(children) && (children as any).type === "img" ? (
+                    {/* Value Display */}
+                    <foreignObject style={{ cursor: "inherit" }} x="20" y="22" width="60" height="60">
+                        <React.Fragment>
                             <div
                                 style={{
                                     width: "100%",
@@ -271,26 +240,46 @@ function Knob({
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    padding: "10px",
+                                    fontSize: "22px",
+                                    maxWidth: "100%",
+                                    maxHeight: "100%",
+                                    fontWeight: "500",
+                                    cursor: "inherit",
                                 }}
                             >
-                                {React.cloneElement(
-                                    children as React.ReactElement,
-                                    {
-                                        style: {
-                                            maxWidth: "100%",
-                                            maxHeight: "100%",
-                                        },
-                                    } as any
+                                {React.isValidElement(children) && children.type === "img" ? (
+                                    <div
+                                        style={{
+                                            width: "100%",
+                                            height: "100%",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            padding: "10px",
+                                            cursor: "inherit",
+                                        }}
+                                    >
+                                        {React.cloneElement(children, {
+                                            style: {
+                                                maxWidth: "100%",
+                                                maxHeight: "100%",
+                                                cursor: "inherit",
+                                            },
+                                        } as React.DetailedHTMLProps<
+                                            React.ImgHTMLAttributes<HTMLImageElement>,
+                                            HTMLImageElement
+                                        >)}
+                                    </div>
+                                ) : renderValue ? (
+                                    renderValue(value, min, max)
+                                ) : (
+                                    formatValueFn(value)
                                 )}
                             </div>
-                        ) : renderValue ? (
-                            renderValue(value, min, max)
-                        ) : (
-                            formatValueFn(value)
-                        )}
-                    </div>
-                </div>
+                        </React.Fragment>
+                    </foreignObject>
+                </AdaptiveBox.Svg>
+
                 {label && <AdaptiveBox.Label align="center">{label}</AdaptiveBox.Label>}
             </>
         </AdaptiveBox>
