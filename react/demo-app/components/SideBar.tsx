@@ -5,9 +5,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Menu, Moon, Sun, X } from "lucide-react";
+import { Menu, Moon, Sun, X, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { audioUiThemeState } from "@/app/providers";
@@ -86,9 +85,11 @@ export default function SideBar() {
         audioUiThemeState.current.setRoundness(value);
     };
 
-    // Toggle between light and dark mode
-    const toggleDarkMode = (checked: boolean) => {
-        setTheme(checked ? "dark" : "light");
+    // Toggle theme between light, dark, and system
+    const toggleTheme = () => {
+        if (theme === "light") setTheme("dark");
+        else if (theme === "dark") setTheme("system");
+        else setTheme("light");
     };
 
     // Set initial theme when component mounts
@@ -264,17 +265,24 @@ export default function SideBar() {
                         </div>
                     </div>
 
-                    {/* Dark/Light Mode Switch */}
+                    {/* Theme Mode Toggle */}
                     {mounted && (
                         <div className="flex items-center justify-between gap-2">
                             <span className="text-sm text-sidebar-foreground flex items-center h-9 px-3 leading-none">
                                 Mode
                             </span>
-                            <div className="flex items-center gap-2">
-                                <Sun className="h-4 w-4 text-sidebar-foreground" />
-                                <Switch checked={theme === "dark"} onCheckedChange={toggleDarkMode} />
-                                <Moon className="h-4 w-4 text-sidebar-foreground" />
-                            </div>
+                            <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                onClick={toggleTheme}
+                                title={`Current theme: ${theme}`}
+                                className="h-9 w-9"
+                            >
+                                {theme === "light" && <Sun className="h-[1.1rem] w-[1.1rem] transition-all" />}
+                                {theme === "dark" && <Moon className="h-[1.1rem] w-[1.1rem] transition-all" />}
+                                {(!theme || theme === "system") && <Monitor className="h-[1.1rem] w-[1.1rem] transition-all" />}
+                                <span className="sr-only">Toggle theme</span>
+                            </Button>
                         </div>
                     )}
                 </div>

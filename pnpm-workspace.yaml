@@ -4,4 +4,6 @@ packages:
   - react/demo-app
 
 onlyBuiltDependencies:
+  - '@swc/core'
+  - esbuild
   - sharp

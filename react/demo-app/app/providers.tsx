@@ -45,7 +45,7 @@ function ThemeConnector({ children }: { children: React.ReactNode }) {
 
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
             <AudioUiProvider initialColor="var(--primary-color)" initialRoundness={12}>
                 <ThemeConnector>{children}</ThemeConnector>
             </AudioUiProvider>
