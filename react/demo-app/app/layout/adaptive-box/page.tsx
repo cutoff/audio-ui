@@ -19,7 +19,7 @@ export default function AdaptiveBoxDemoPage() {
                 labelHeightUnits,
             }) => (
                 <AdaptiveBox
-                    className="border-2 border-gray-700"
+                    className="border-2 border-primary-20"
                     displayMode={displayMode}
                     labelMode={labelMode}
                     labelHeightUnits={labelHeightUnits}
@@ -37,7 +37,7 @@ export default function AdaptiveBoxDemoPage() {
                                     cx={svgViewBoxWidth / 2}
                                     cy={svgViewBoxHeight / 2}
                                     r={Math.min(svgViewBoxWidth, svgViewBoxHeight) / 2}
-                                    fill="#666666"
+                                    className="fill-primary-50"
                                 />
                             )}
                             {shape === "vertical" && (
@@ -46,7 +46,7 @@ export default function AdaptiveBoxDemoPage() {
                                     y={0}
                                     width={svgViewBoxWidth * 0.5}
                                     height={svgViewBoxHeight}
-                                    fill="#666666"
+                                    className="fill-primary-50"
                                 />
                             )}
                             {shape === "horizontal" && (
@@ -55,12 +55,27 @@ export default function AdaptiveBoxDemoPage() {
                                     y={svgViewBoxHeight * 0.25}
                                     width={svgViewBoxWidth}
                                     height={svgViewBoxHeight * 0.5}
-                                    fill="#666666"
+                                    className="fill-primary-50"
                                 />
                             )}
+                            {/* Centered SVG text */}
+                            <text
+                                x={svgViewBoxWidth / 2}
+                                y={svgViewBoxHeight / 2}
+                                textAnchor="middle"
+                                dominantBaseline="middle"
+                                className="fill-primary"
+                                style={{
+                                    fontFamily: "var(--font-oxanium)",
+                                    fontSize: `${Math.min(svgViewBoxWidth, svgViewBoxHeight) * 0.2}px`,
+                                }}
+                            >
+                                SVG
+                            </text>
                         </AdaptiveBox.Svg>
                         {labelMode !== "none" && (
                             <AdaptiveBox.Label
+                                className="text-primary"
                                 style={{ fontFamily: "var(--font-oxanium)" }}
                                 position={labelPosition}
                                 align={labelAlign}
