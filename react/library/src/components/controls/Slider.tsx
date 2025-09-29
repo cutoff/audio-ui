@@ -6,8 +6,7 @@ import { BipolarControl, ExplicitRange } from "../types";
 import { sliderSizeMap } from "../utils/sizeMappings";
 import { generateColorVariants } from "../utils/colorUtils";
 import { useThemableProps } from "../providers/AudioUiProvider";
-import AdaptiveContainer from "../support/AdaptiveContainer";
-import SvgSurface from "../support/SvgSurface";
+import AdaptiveBox from "../support/AdaptiveBox";
 
 /**
  * Props for the Slider component
@@ -360,19 +359,19 @@ const Slider = ({
     const minHeight = orientation === "vertical" ? 60 : 20;
 
     return (
-        <AdaptiveContainer
-            stretch={stretch}
+        <AdaptiveBox
+            displayMode="scaleToFit"
             className={componentClassNames}
-            style={style}
-            aspectRatio={`${viewBoxWidth} / ${viewBoxHeight}`}
-            preferredWidth={preferredWidth}
+            style={{
+                ...(style ?? {}),
+                ...(stretch ? {} : { width: `${preferredWidth}px` }),
+            }}
             minWidth={minWidth}
             minHeight={minHeight}
         >
-            <SvgSurface
+            <AdaptiveBox.Svg
                 viewBoxWidth={viewBoxWidth}
                 viewBoxHeight={viewBoxHeight}
-                stretch={stretch}
                 onWheel={handleWheel}
                 onClick={onClick}
                 onMouseDown={onMouseDown}
@@ -405,7 +404,7 @@ const Slider = ({
                 {/* Label Text */}
                 {label && (
                     <text
-                        style={{ fill: "var(--text-color)" }} // Keep using the text color CSS variable
+                        style={{ fill: "var(--text-color)" }}
                         textAnchor="middle"
                         x={orientation === "vertical" ? "50" : "200"}
                         y={orientation === "vertical" ? "393" : "93"}
@@ -415,8 +414,8 @@ const Slider = ({
                         {label}
                     </text>
                 )}
-            </SvgSurface>
-        </AdaptiveContainer>
+            </AdaptiveBox.Svg>
+        </AdaptiveBox>
     );
 };
 

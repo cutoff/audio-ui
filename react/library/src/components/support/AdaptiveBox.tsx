@@ -63,7 +63,7 @@ export function AdaptiveBox({
     labelHeightUnits,
     minWidth,
     minHeight,
-    debug = true,
+    debug = false,
     children,
 }: AdaptiveBoxProps) {
     // Internal state populated by subcomponents

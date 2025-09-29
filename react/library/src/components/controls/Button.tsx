@@ -2,8 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import classNames from "classnames";
-import AdaptiveContainer from "../support/AdaptiveContainer";
-import SvgSurface from "../support/SvgSurface";
+import AdaptiveBox from "../support/AdaptiveBox";
 import "../../styles.css";
 import { Control, ExplicitRange } from "../types";
 import { buttonSizeMap } from "../utils/sizeMappings";
@@ -236,19 +235,19 @@ function Button({
     const { width: preferredWidth } = buttonSizeMap[size];
 
     return (
-        <AdaptiveContainer
-            aspectRatio="100 / 100"
-            preferredWidth={preferredWidth}
+        <AdaptiveBox
+            displayMode="scaleToFit"
+            className={componentClassNames}
+            style={{
+                ...(style ?? {}),
+                ...(stretch ? {} : { width: `${preferredWidth}px` }),
+            }}
             minWidth={20}
             minHeight={40}
-            stretch={stretch}
-            className={componentClassNames}
-            style={style}
         >
-            <SvgSurface
+            <AdaptiveBox.Svg
                 viewBoxWidth={100}
                 viewBoxHeight={100}
-                stretch={stretch}
                 onClick={onClick}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
@@ -276,8 +275,8 @@ function Button({
                         {label}
                     </text>
                 )}
-            </SvgSurface>
-        </AdaptiveContainer>
+            </AdaptiveBox.Svg>
+        </AdaptiveBox>
     );
 }
 

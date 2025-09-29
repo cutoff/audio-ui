@@ -8,8 +8,7 @@ import { knobSizeMap } from "../utils/sizeMappings";
 import { bipolarFormatter } from "../utils/valueFormatters";
 import { generateColorVariants } from "../utils/colorUtils";
 import { useThemableProps } from "../providers/AudioUiProvider";
-import AdaptiveContainer from "../support/AdaptiveContainer";
-import SvgSurface from "../support/SvgSurface";
+import AdaptiveBox from "../support/AdaptiveBox";
 
 /**
  * Angular constants for the knob's arc
@@ -192,41 +191,20 @@ function Knob({
     const { width: preferredWidth } = knobSizeMap[size];
 
     return (
-        <AdaptiveContainer
-            stretch={stretch}
+        <AdaptiveBox
+            displayMode="scaleToFit"
             className={componentClassNames}
-            style={style}
-            aspectRatio="100 / 115"
-            preferredWidth={preferredWidth}
+            style={{
+                ...(style ?? {}),
+                ...(stretch ? {} : { width: `${preferredWidth}px` }),
+            }}
             minWidth={40}
             minHeight={40}
         >
-            {/* Sizing wrapper that matches the SVG box in both modes */}
-            <div
-                style={{
-                    position: "relative",
-                    ...(stretch
-                        ? {
-                              width: "auto",
-                              height: "auto",
-                              maxWidth: "100%",
-                              maxHeight: "100%",
-                              display: "block",
-                              aspectRatio: "100 / 115",
-                          }
-                        : {
-                              width: "100%",
-                              height: "100%",
-                              display: "block",
-                          }),
-                }}
-            >
-                <SvgSurface
+            <>
+                <AdaptiveBox.Svg
                     viewBoxWidth={100}
                     viewBoxHeight={115}
-                    stretch={false}
-                    // Fill the wrapper; wrapper itself handles stretch/fixed sizing
-                    style={{ width: "100%", height: "100%", display: "block" }}
                     onWheel={handleWheel}
                     onClick={onClick}
                     onMouseDown={onMouseDown}
@@ -251,9 +229,9 @@ function Knob({
                         strokeLinecap={strokeLinecap}
                         d={calculateArcPath(bipolar ? CENTER_ANGLE : MAX_START_ANGLE, valueToAngle, 40)}
                     />
-                </SvgSurface>
+                </AdaptiveBox.Svg>
 
-                {/* Overlay positioned relative to the wrapper (same box as SVG) */}
+                {/* Overlay positioned relative to the scaler (same box as SVG) */}
                 <div
                     style={{
                         position: "absolute",
@@ -267,10 +245,10 @@ function Knob({
                     <div
                         style={{
                             position: "absolute",
-                            left: "15%", /* Increased horizontal space by reducing left from 20% to 15% */
-                            top: "calc(20 / 115 * 100%)", /* Moved up slightly to create more vertical space */
-                            width: "70%", /* Increased width from 60% to 70% for more text space */
-                            height: "calc(55 / 115 * 100%)", /* Adjusted height to prevent overlap */
+                            left: "15%",
+                            top: "calc(20 / 115 * 100%)",
+                            width: "70%",
+                            height: "calc(55 / 115 * 100%)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -280,7 +258,7 @@ function Knob({
                             textAlign: "center",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
-                            whiteSpace: "nowrap", /* Prevent wrapping to maintain consistent height */
+                            whiteSpace: "nowrap",
                         }}
                     >
                         {React.isValidElement(children) && (children as any).type === "img" ? (
@@ -315,24 +293,24 @@ function Knob({
                             style={{
                                 position: "absolute",
                                 left: "50%",
-                                top: "calc(105 / 115 * 100%)", /* Slight adjustment to ensure consistent positioning */
+                                top: "calc(105 / 115 * 100%)",
                                 transform: "translate(-50%, -50%)",
                                 fontWeight: 500,
                                 fontSize: "18cqw",
                                 color: "var(--text-color)",
-                                maxWidth: "90%", /* Ensure label doesn't overflow container sides */
+                                maxWidth: "90%",
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
-                                whiteSpace: "nowrap", /* Keep label on one line */
-                                textAlign: "center", /* Center text for partial visibility if truncated */
+                                whiteSpace: "nowrap",
+                                textAlign: "center",
                             }}
                         >
                             {label}
                         </div>
                     )}
                 </div>
-            </div>
-        </AdaptiveContainer>
+            </>
+        </AdaptiveBox>
     );
 }
 

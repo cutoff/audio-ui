@@ -2,8 +2,7 @@
 
 import React, { useMemo } from "react";
 import classNames from "classnames";
-import AdaptiveContainer from "./support/AdaptiveContainer";
-import SvgSurface from "./support/SvgSurface";
+import AdaptiveBox from "./support/AdaptiveBox";
 import { AdaptativeSize, Base, Themable } from "./types";
 import { keybedSizeMap } from "./utils/sizeMappings";
 import { generateColorVariants } from "./utils/colorUtils";
@@ -330,19 +329,19 @@ function Keybed({
     const { width: preferredWidth } = keybedSizeMap[size];
 
     return (
-        <AdaptiveContainer
+        <AdaptiveBox
+            displayMode="scaleToFit"
             className={componentClassNames}
-            style={style}
-            aspectRatio={`${keybedDimensions.width} / ${keybedDimensions.whiteHeight}`}
-            preferredWidth={preferredWidth}
+            style={{
+                ...(style ?? {}),
+                ...(stretch ? {} : { width: `${preferredWidth}px` }),
+            }}
             minWidth={40}
             minHeight={40}
-            stretch={stretch}
         >
-            <SvgSurface
+            <AdaptiveBox.Svg
                 viewBoxWidth={keybedDimensions.width}
                 viewBoxHeight={keybedDimensions.whiteHeight}
-                stretch={stretch}
             >
                 <rect
                     style={{
@@ -357,8 +356,8 @@ function Keybed({
                 />
                 {renderWhiteKeys}
                 {renderBlackKeys}
-            </SvgSurface>
-        </AdaptiveContainer>
+            </AdaptiveBox.Svg>
+        </AdaptiveBox>
     );
 }
 
