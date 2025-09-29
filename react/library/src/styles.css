@@ -114,3 +114,16 @@ svg foreignObject div {
 .fill-transparent {
     fill: transparent;
 }
+
+/* Border utilities */
+.border-primary { border-color: var(--primary-color); }
+.border-primary-50 { border-color: var(--primary-color-50); }
+.border-primary-20 { border-color: var(--primary-color-20); }
+
+/* Back-compat alias for demo markup */
+.border-primary-color { border-color: var(--primary-color); }
+
+/* Text color utilities */
+.text-primary { color: var(--primary-color); }
+.text-primary-50 { color: var(--primary-color-50); }
+.text-primary-20 { color: var(--primary-color-20); }

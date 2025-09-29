@@ -5,6 +5,39 @@
     --theme-default-primary-50: hsl(0, 0%, 25%); /* darker accent for outlines/shadows */
     --theme-default-primary-20: hsl(0, 0%, 40%);
 
+    /* Adjusted light-mode tones for named themes; dark-mode tokens remain unchanged */
+    --theme-blue-primary: hsl(204, 88%, 52%);
+    --theme-blue-primary-50: hsl(204, 80%, 34%);
+    --theme-blue-primary-20: hsl(204, 70%, 22%);
+
+    --theme-orange-primary: hsl(29, 100%, 48%);
+    --theme-orange-primary-50: hsl(29, 90%, 32%);
+    --theme-orange-primary-20: hsl(29, 80%, 20%);
+
+    --theme-pink-primary: hsl(332, 92%, 52%);
+    --theme-pink-primary-50: hsl(332, 80%, 34%);
+    --theme-pink-primary-20: hsl(332, 72%, 22%);
+
+    --theme-green-primary: hsl(160, 95%, 44%);
+    --theme-green-primary-50: hsl(160, 85%, 30%);
+    --theme-green-primary-20: hsl(160, 75%, 20%);
+
+    --theme-purple-primary: hsl(252, 96%, 54%);
+    --theme-purple-primary-50: hsl(252, 85%, 36%);
+    --theme-purple-primary-20: hsl(252, 75%, 24%);
+
+    --theme-yellow-primary: hsl(50, 100%, 50%);
+    --theme-yellow-primary-50: hsl(50, 90%, 35%);
+    --theme-yellow-primary-20: hsl(50, 80%, 24%);
+}
+
+/* Dark mode overrides (adaptive accents) */
+.dark {
+    /* Default theme — near-white ink in dark mode */
+    --theme-default-primary: hsl(0, 0%, 96%);
+    --theme-default-primary-50: hsl(0, 0%, 70%);
+    --theme-default-primary-20: hsl(0, 0%, 50%);
+
     --theme-orange-primary: hsl(29, 100%, 50%);
     --theme-orange-primary-50: hsl(29, 100%, 23%);
     --theme-orange-primary-20: hsl(29, 100%, 10%);
@@ -17,10 +50,6 @@
     --theme-pink-primary-50: hsl(332, 95%, 25%);
     --theme-pink-primary-20: hsl(332, 95%, 10%);
 
-    --theme-white-primary: hsl(0, 0%, 100%);
-    --theme-white-primary-50: hsl(0, 0%, 50%);
-    --theme-white-primary-20: hsl(0, 0%, 25%);
-
     --theme-green-primary: hsl(160, 98%, 37%);
     --theme-green-primary-50: hsl(160, 98%, 20%);
     --theme-green-primary-20: hsl(160, 98%, 10%);
@@ -32,11 +61,5 @@
     --theme-yellow-primary: hsl(50, 100%, 50%);
     --theme-yellow-primary-50: hsl(50, 100%, 23%);
     --theme-yellow-primary-20: hsl(50, 100%, 10%);
-}
 
-/* Dark mode override for the default theme (shadcn-like) */
-.dark {
-    --theme-default-primary: hsl(0, 0%, 96%);   /* near-white */
-    --theme-default-primary-50: hsl(0, 0%, 70%);
-    --theme-default-primary-20: hsl(0, 0%, 50%);
 }

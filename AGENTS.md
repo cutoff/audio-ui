@@ -366,3 +366,17 @@ See the full specification for implementation details, examples, and API mapping
 - react/library/docs/adaptive-box-layout.md
 
 Note: AdaptiveBox must remain React 18 compatible (see React Version Policy above).
+
+
+
+## Theme utilities and adaptive named themes (Sept 2025)
+
+- The library exposes CSS variables for theming and now includes scheme-adaptive named themes (blue, orange, pink, green, purple, yellow). Each named theme has .dark overrides in react/library/src/themes.css that keep the hue but adjust tone/saturation for dark mode.
+- The separate "white" theme has been removed; use the adaptive default theme for near-white accents in dark mode.
+- Default mapping: components consume --primary-color, --primary-color-50, --primary-color-20. By default, these map to the adaptive “default” theme tokens (near-black in light mode, near-white in dark mode).
+- Utility classes available in react/library/src/styles.css:
+  - Stroke/fill: .stroke-primary, .stroke-primary-50, .stroke-primary-20, .fill-primary, .fill-primary-50, .fill-primary-20
+  - Border: .border-primary, .border-primary-50, .border-primary-20 (plus a back-compat alias .border-primary-color used by the demo)
+  - Text: .text-primary, .text-primary-50, .text-primary-20
+- Recommendation: prefer .border-primary (over the alias) and use the CSS variables for custom styling.
+- Provider defaults: AudioUiProvider defaults color to var(--primary-color), and useThemableProps falls back to var(--primary-color) so components automatically inherit the active CSS theme without extra wiring.

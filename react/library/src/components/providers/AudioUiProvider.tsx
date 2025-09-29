@@ -19,7 +19,7 @@ interface ThemeContextType extends Themable {
 
 // Create context with default values
 const ThemeContext = createContext<ThemeContextType>({
-    color: "blue",
+    color: "var(--primary-color)",
     roundness: 12,
     setColor: () => {},
     setRoundness: () => {},
@@ -56,7 +56,7 @@ export interface AudioUiProviderProps {
  * </AudioUiProvider>
  * ```
  */
-export function AudioUiProvider({ children, initialColor = "blue", initialRoundness = 12 }: AudioUiProviderProps) {
+export function AudioUiProvider({ children, initialColor = "var(--primary-color)", initialRoundness = 12 }: AudioUiProviderProps) {
     const [color, setColor] = useState<string>(initialColor);
     const [roundness, setRoundness] = useState<number>(initialRoundness);
 
@@ -116,8 +116,8 @@ export function useThemableProps(
 ): { resolvedColor: string; resolvedRoundness: number | undefined } {
     const themeContext = useAudioUiTheme();
 
-    // Since defaultValues.color could be undefined, provide a final fallback to "blue"
-    const resolvedColor = props.color ?? themeContext.color ?? defaultValues.color ?? "blue";
+    // Since defaultValues.color could be undefined, provide a final fallback to the current theme token
+    const resolvedColor = props.color ?? themeContext.color ?? defaultValues.color ?? "var(--primary-color)";
 
     // resolvedRoundness can be undefined if it's meant to be calculated dynamically
     const resolvedRoundness = props.roundness ?? themeContext.roundness ?? defaultValues.roundness;
