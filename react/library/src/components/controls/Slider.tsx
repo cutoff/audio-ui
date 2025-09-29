@@ -401,20 +401,8 @@ const Slider = ({
                     ry={cornerRadius}
                 />
 
-                {/* Label Text */}
-                {label && (
-                    <text
-                        style={{ fill: "var(--text-color)" }}
-                        textAnchor="middle"
-                        x={orientation === "vertical" ? "50" : "200"}
-                        y={orientation === "vertical" ? "393" : "93"}
-                        fontSize="30"
-                        fontWeight="500"
-                    >
-                        {label}
-                    </text>
-                )}
             </AdaptiveBox.Svg>
+            {label && <AdaptiveBox.Label align="center">{label}</AdaptiveBox.Label>}
         </AdaptiveBox>
     );
 };

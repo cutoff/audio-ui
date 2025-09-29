@@ -269,13 +269,8 @@ function Button({
                     ry={cornerRadius}
                 />
 
-                {/* Label Text */}
-                {label && (
-                    <text className="fill-text" x="50" y="88" fontSize="30" fontWeight="500" textAnchor="middle">
-                        {label}
-                    </text>
-                )}
             </AdaptiveBox.Svg>
+            {label && <AdaptiveBox.Label align="center">{label}</AdaptiveBox.Label>}
         </AdaptiveBox>
     );
 }

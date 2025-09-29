@@ -237,6 +237,8 @@ function Knob({
                         position: "absolute",
                         inset: 0,
                         zIndex: 1,
+                        // Constrain overlay to the SVG row when a label is present
+                        gridRow: label ? "1 / 2" : undefined,
                         pointerEvents: "none",
                         // @ts-ignore - containerType not in types yet
                         containerType: "inline-size",
@@ -288,27 +290,8 @@ function Knob({
                             formatValueFn(value)
                         )}
                     </div>
-                    {label && (
-                        <div
-                            style={{
-                                position: "absolute",
-                                left: "50%",
-                                top: "calc(105 / 115 * 100%)",
-                                transform: "translate(-50%, -50%)",
-                                fontWeight: 500,
-                                fontSize: "18cqw",
-                                color: "var(--text-color)",
-                                maxWidth: "90%",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                                textAlign: "center",
-                            }}
-                        >
-                            {label}
-                        </div>
-                    )}
                 </div>
+                {label && <AdaptiveBox.Label align="center">{label}</AdaptiveBox.Label>}
             </>
         </AdaptiveBox>
     );
