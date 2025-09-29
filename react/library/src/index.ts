@@ -6,6 +6,7 @@ export { default as KnobSwitch } from "./components/controls/KnobSwitch";
 export { default as Slider } from "./components/controls/Slider";
 
 export { default as Keybed } from "./components/Keybed";
+export { default as AdaptiveBox } from "./components/support/AdaptiveBox";
 
 // Export theme provider and hooks
 export { default as AudioUiProvider, useAudioUiTheme, useThemableProps } from "./components/providers/AudioUiProvider";

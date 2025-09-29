@@ -222,6 +222,7 @@ pnpm lint
   pnpm dlx shadcn@latest add [component]
   ```
 - Do not create custom components when a shadcn component can be used instead
+- Do not alter shadcn components unless told explicitly
 
 
 ## LLM-Specific Development Guidelines
