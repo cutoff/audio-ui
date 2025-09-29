@@ -145,7 +145,7 @@ export default function Controls(props: ControlsProps) {
             type="single"
             value={shape}
             onValueChange={(val) => val && onShapeChange(val as ShapeValue)}
-            className="w-full flex"
+            className="w-full flex gap-0"
             variant="outline"
           >
             <ToggleGroupItem value="square" aria-label="Square" className="control-toggle-item">
@@ -172,7 +172,7 @@ export default function Controls(props: ControlsProps) {
             type="single"
             value={displayMode}
             onValueChange={(val) => val && onDisplayModeChange(val as DisplayModeValue)}
-            className="w-full flex"
+            className="w-full flex gap-0"
             variant="outline"
           >
             <ToggleGroupItem value="scaleToFit" aria-label="Scale to fit" className="control-toggle-item">
@@ -198,7 +198,7 @@ export default function Controls(props: ControlsProps) {
               type="single"
               value={asVAlign}
               onValueChange={(val) => val && onAsVAlignChange(val as FlexAlignValue)}
-              className="w-full flex"
+              className="w-full flex gap-0"
               variant="outline"
             >
               <ToggleGroupItem value="start" aria-label="Align top" className="control-toggle-item">
@@ -225,7 +225,7 @@ export default function Controls(props: ControlsProps) {
               type="single"
               value={asHAlign}
               onValueChange={(val) => val && onAsHAlignChange(val as FlexAlignValue)}
-              className="w-full flex"
+              className="w-full flex gap-0"
               variant="outline"
             >
               <ToggleGroupItem value="start" aria-label="Align left" className="control-toggle-item">
@@ -257,7 +257,7 @@ export default function Controls(props: ControlsProps) {
             type="single"
             value={labelMode}
             onValueChange={(val) => val && onLabelModeChange(val as LabelModeValue)}
-            className="w-full flex"
+            className="w-full flex gap-0"
             variant="outline"
           >
             <ToggleGroupItem value="none" aria-label="No label" className="control-toggle-item">
@@ -295,7 +295,7 @@ export default function Controls(props: ControlsProps) {
               type="single"
               value={labelPosition}
               onValueChange={(val) => val && onLabelPositionChange(val as LabelPositionValue)}
-              className="w-full flex"
+              className="w-full flex gap-0"
               variant="outline"
             >
               <ToggleGroupItem value="above" aria-label="Label above" className="control-toggle-item">
@@ -318,7 +318,7 @@ export default function Controls(props: ControlsProps) {
               type="single"
               value={labelAlign}
               onValueChange={(val) => val && onLabelAlignChange(val as FlexAlignValue)}
-              className="w-full flex"
+              className="w-full flex gap-0"
               variant="outline"
             >
               <ToggleGroupItem value="start" aria-label="Label left" className="control-toggle-item">
