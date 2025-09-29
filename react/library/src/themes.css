@@ -1,4 +1,10 @@
 :root {
+    /* Default theme — adaptive like shadcn: dark ink on light, light ink on dark */
+    /* Light mode defaults (overridden in .dark below) */
+    --theme-default-primary: hsl(0, 0%, 10%);   /* near-black */
+    --theme-default-primary-50: hsl(0, 0%, 25%); /* darker accent for outlines/shadows */
+    --theme-default-primary-20: hsl(0, 0%, 40%);
+
     --theme-orange-primary: hsl(29, 100%, 50%);
     --theme-orange-primary-50: hsl(29, 100%, 23%);
     --theme-orange-primary-20: hsl(29, 100%, 10%);
@@ -26,4 +32,11 @@
     --theme-yellow-primary: hsl(50, 100%, 50%);
     --theme-yellow-primary-50: hsl(50, 100%, 23%);
     --theme-yellow-primary-20: hsl(50, 100%, 10%);
+}
+
+/* Dark mode override for the default theme (shadcn-like) */
+.dark {
+    --theme-default-primary: hsl(0, 0%, 96%);   /* near-white */
+    --theme-default-primary-50: hsl(0, 0%, 70%);
+    --theme-default-primary-20: hsl(0, 0%, 50%);
 }

@@ -185,6 +185,12 @@ The project uses a combination of:
 2. Inline styles for layout and positioning
 3. CSS Grid for component layout
 
+#### Default Theme (shadcn-like)
+- By default, the library uses an adaptive "default" theme whose primary color is black-ish in light mode and white-ish in dark mode.
+- Implementation: CSS variables in react/library/src/themes.css define `--theme-default-primary`, `--theme-default-primary-50`, and `--theme-default-primary-20` with `.dark` overrides. `react/library/src/styles.css` maps `--primary-color*` to these variables in `:root` so all components inherit them by default.
+- How to switch theme: override `--primary-color*`, or remap them to any of the named theme variables (e.g., `--theme-blue-primary`) in your app CSS.
+- Dark mode control: add/remove the `dark` class on a root element to toggle between light and dark mode.
+
 ### Demo Application
 
 The demo application is built with Next.js and showcases the components in the library. To add a new component demo:

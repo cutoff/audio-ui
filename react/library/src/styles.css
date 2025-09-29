@@ -5,9 +5,10 @@
     --text-color: hsl(0, 0%, 10%);
     --bg-color: hsl(0, 0%, 7%);
 
-    --primary-color: var(--theme-blue-primary);
-    --primary-color-50: var(--theme-blue-primary-50);
-    --primary-color-20: var(--theme-blue-primary-20);
+    /* Default theme mapping (shadcn-like adaptive default) */
+    --primary-color: var(--theme-default-primary);
+    --primary-color-50: var(--theme-default-primary-50);
+    --primary-color-20: var(--theme-default-primary-20);
 
     --default-font-family: "Oxanium", sans-serif;
     --default-font-size: 14px;

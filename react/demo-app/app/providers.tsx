@@ -14,7 +14,7 @@ export type AudioUiThemeState = {
 
 // Create a default state with no-op setters
 export const defaultAudioUiTheme: AudioUiThemeState = {
-    color: "blue",
+    color: "var(--primary-color)",
     roundness: 12,
     setColor: () => {},
     setRoundness: () => {},
@@ -46,7 +46,7 @@ function ThemeConnector({ children }: { children: React.ReactNode }) {
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-            <AudioUiProvider initialColor="blue" initialRoundness={12}>
+            <AudioUiProvider initialColor="var(--primary-color)" initialRoundness={12}>
                 <ThemeConnector>{children}</ThemeConnector>
             </AudioUiProvider>
         </ThemeProvider>

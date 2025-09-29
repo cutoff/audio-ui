@@ -47,6 +47,7 @@ const layouts: Page[] = [
 
 // Theme color options
 const themeColors: ThemeColor[] = [
+    { color: "bg-zinc-900 dark:bg-zinc-50", name: "Default (Adaptive)", cssVar: "--theme-default-primary" },
     { color: "bg-blue-500", name: "Blue", cssVar: "--theme-blue-primary" },
     { color: "bg-orange-500", name: "Orange", cssVar: "--theme-orange-primary" },
     { color: "bg-pink-500", name: "Pink", cssVar: "--theme-pink-primary" },
@@ -59,7 +60,7 @@ const themeColors: ThemeColor[] = [
 export default function SideBar() {
     const pathname = usePathname();
     const { theme, setTheme } = useTheme();
-    const [currentTheme, setCurrentTheme] = useState("--theme-blue-primary");
+    const [currentTheme, setCurrentTheme] = useState("--theme-default-primary");
     const [isOpen, setIsOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
     const [roundnessValue, setRoundnessValue] = useState(12);
@@ -71,10 +72,8 @@ export default function SideBar() {
         document.documentElement.style.setProperty("--primary-color-20", `var(${themeCssVar}-20)`);
         setCurrentTheme(themeCssVar);
 
-        // Get the color name from themeCssVar
-        const colorName = themeCssVar.replace("--theme-", "").replace("-primary", "");
-        // Update the audioUiThemeState
-        audioUiThemeState.current.setColor(colorName);
+        // Ensure inline-colored components derive from the current primary CSS variable
+        audioUiThemeState.current.setColor("var(--primary-color)");
     };
 
     // Function to change roundness
@@ -90,8 +89,8 @@ export default function SideBar() {
 
     // Set initial theme when component mounts
     useEffect(() => {
-        // Blue is the default theme in styles.css, but we set it explicitly to ensure consistency
-        changeTheme("--theme-blue-primary");
+        // Use the new adaptive default theme by default
+        changeTheme("--theme-default-primary");
         // Set mounted to true after component mounts to avoid hydration issues
         setMounted(true);
     }, []);
