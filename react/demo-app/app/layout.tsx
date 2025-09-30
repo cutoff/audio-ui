@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" suppressHydrationWarning>
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+            <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
                 <Providers>
                     <div className="flex flex-col md:flex-row min-h-screen">
                         {/* SideBar will be client-side rendered */}

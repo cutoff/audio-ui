@@ -1,5 +1,4 @@
 @import url("themes.css");
-@import url("https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap");
 
 :root {
     --text-color: hsl(0, 0%, 10%);
@@ -10,7 +9,6 @@
     --primary-color-50: var(--theme-default-primary-50);
     --primary-color-20: var(--theme-default-primary-20);
 
-    --default-font-family: "Oxanium", sans-serif;
     --default-font-size: 14px;
 }
 

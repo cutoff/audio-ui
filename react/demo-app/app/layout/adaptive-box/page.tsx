@@ -66,7 +66,6 @@ export default function AdaptiveBoxDemoPage() {
                                 dominantBaseline="middle"
                                 className="fill-primary"
                                 style={{
-                                    fontFamily: "var(--font-oxanium)",
                                     fontSize: `${Math.min(svgViewBoxWidth, svgViewBoxHeight) * 0.2}px`,
                                 }}
                             >
@@ -74,12 +73,7 @@ export default function AdaptiveBoxDemoPage() {
                             </text>
                         </AdaptiveBox.Svg>
                         {labelMode !== "none" && (
-                            <AdaptiveBox.Label
-                                className="text-primary"
-                                style={{ fontFamily: "var(--font-oxanium)" }}
-                                position={labelPosition}
-                                align={labelAlign}
-                            >
+                            <AdaptiveBox.Label className="text-primary" position={labelPosition} align={labelAlign}>
                                 Label
                             </AdaptiveBox.Label>
                         )}

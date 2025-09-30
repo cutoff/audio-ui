@@ -91,7 +91,7 @@ export const CodeBlock = ({
             {/* Code container */}
             <div
                 className={cn(
-                    "w-full rounded-md overflow-hidden border",
+                    "w-full rounded-md overflow-hidden border font-mono",
                     "dark:border-zinc-700/50 dark:bg-zinc-900/90",
                     "border-zinc-300/70 bg-zinc-100/90",
                     className
