@@ -59,6 +59,12 @@ function SvgKnob({
     // Use the thickness prop for stroke width (ensure non-negative)
     const strokeWidth = Math.max(0, thickness);
 
+    // Calculate radius to make stroke expand inward
+    // The outer edge stays at radius 50, and the stroke grows inward as thickness increases
+    const radius = useMemo(() => {
+        return 50 - strokeWidth / 2;
+    }, [strokeWidth]);
+
     // Determine stroke linecap based on roundness (square if 0, round if > 0)
     const strokeLinecap = useMemo(() => {
         const nonNegativeRoundness = Math.max(0, roundness);
@@ -76,7 +82,7 @@ function SvgKnob({
                 fill="none"
                 strokeWidth={strokeWidth}
                 strokeLinecap={strokeLinecap}
-                d={calculateArcPath(MAX_START_ANGLE, MAX_END_ANGLE, 40)}
+                d={calculateArcPath(MAX_START_ANGLE, MAX_END_ANGLE, radius)}
             />
 
             {/* Foreground Arc */}
@@ -85,7 +91,7 @@ function SvgKnob({
                 fill="none"
                 strokeWidth={strokeWidth}
                 strokeLinecap={strokeLinecap}
-                d={calculateArcPath(bipolar ? CENTER_ANGLE : MAX_START_ANGLE, valueToAngle, 40)}
+                d={calculateArcPath(bipolar ? CENTER_ANGLE : MAX_START_ANGLE, valueToAngle, radius)}
             />
 
             {/* Value Display */}
