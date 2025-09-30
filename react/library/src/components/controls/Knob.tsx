@@ -6,17 +6,9 @@ import "../../styles.css";
 import { BipolarControl, ExplicitRange } from "../types";
 import { knobSizeMap } from "../utils/sizeMappings";
 import { bipolarFormatter } from "../utils/valueFormatters";
-import { generateColorVariants } from "../utils/colorUtils";
 import { useThemableProps } from "../providers/AudioUiProvider";
 import AdaptiveBox from "../support/AdaptiveBox";
-
-/**
- * Angular constants for the knob's arc
- */
-const MAX_START_ANGLE = 220;
-const MAX_END_ANGLE = 500;
-const MAX_ARC_ANGLE = MAX_END_ANGLE - MAX_START_ANGLE;
-const CENTER_ANGLE = 360;
+import SvgKnob from "../svg/SvgKnob";
 
 /**
  * Props for the Knob component
@@ -30,30 +22,6 @@ export type KnobProps = BipolarControl &
          */
         thickness?: number;
     };
-
-/**
- * Calculate SVG arc path
- */
-const calculateArcPath = (startAngle: number, endAngle: number, radius: number): string => {
-    if (startAngle > endAngle) {
-        [startAngle, endAngle] = [endAngle, startAngle];
-    }
-    const start = polarToCartesian(50, 50, radius, endAngle);
-    const end = polarToCartesian(50, 50, radius, startAngle);
-    const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
-    return ["M", start.x, start.y, "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(" ");
-};
-
-/**
- * Convert polar coordinates to Cartesian
- */
-const polarToCartesian = (centerX: number, centerY: number, radius: number, angleInDegrees: number) => {
-    const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
-    return {
-        x: centerX + radius * Math.cos(angleInRadians),
-        y: centerY + radius * Math.sin(angleInRadians),
-    };
-};
 
 /**
  * Knob component provides a circular control for value adjustment.
@@ -134,24 +102,10 @@ function Knob({
         { color: "blue", roundness: 12 }
     );
 
-    const valueToAngle = useMemo(() => {
-        return ((value - min) / (max - min)) * MAX_ARC_ANGLE + MAX_START_ANGLE;
+    // Calculate normalized value (0 to 1)
+    const normalizedValue = useMemo(() => {
+        return (value - min) / (max - min);
     }, [value, min, max]);
-
-    // Use the thickness prop for stroke width (ensure non-negative)
-    const strokeWidth = Math.max(0, thickness);
-
-    // Determine stroke linecap based on roundness (square if 0, round if > 0)
-    // Ensure roundness is non-negative
-    // Default to 12 if resolvedRoundness is undefined
-    const roundnessValue = resolvedRoundness ?? 12;
-    const nonNegativeRoundness = Math.max(0, roundnessValue);
-    const strokeLinecap = nonNegativeRoundness === 0 ? "square" : "round";
-
-    // Generate color variants using the centralized utility
-    const colorVariants = useMemo(() => {
-        return generateColorVariants(resolvedColor, "transparency");
-    }, [resolvedColor]);
 
     /**
      * Memoized function to format value based on bipolar mode
@@ -190,6 +144,39 @@ function Knob({
     // Get the preferred width based on the size prop
     const { width: preferredWidth, height: preferredHeight } = knobSizeMap[size];
 
+    // Prepare the content to display inside the knob
+    const knobContent = useMemo(() => {
+        if (React.isValidElement(children) && children.type === "img") {
+            return (
+                <div
+                    style={{
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: "10px",
+                        cursor: "inherit",
+                    }}
+                >
+                    {React.cloneElement(children, {
+                        style: {
+                            maxWidth: "100%",
+                            maxHeight: "100%",
+                            cursor: "inherit",
+                        },
+                    } as React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>)}
+                </div>
+            );
+        } else if (renderValue) {
+            return renderValue(value, min, max);
+        } else if (children) {
+            return children;
+        } else {
+            return formatValueFn(value);
+        }
+    }, [children, renderValue, value, min, max, formatValueFn]);
+
     return (
         <AdaptiveBox
             displayMode="scaleToFit"
@@ -204,8 +191,8 @@ function Knob({
         >
             <>
                 <AdaptiveBox.Svg
-                    viewBoxWidth={100}
-                    viewBoxHeight={100}
+                    viewBoxWidth={SvgKnob.viewBox.width}
+                    viewBoxHeight={SvgKnob.viewBox.height}
                     onWheel={handleWheel}
                     onClick={onClick}
                     onMouseDown={onMouseDown}
@@ -213,72 +200,15 @@ function Knob({
                     onMouseEnter={onMouseEnter}
                     onMouseLeave={onMouseLeave}
                 >
-                    {/* Background Arc */}
-                    <path
-                        style={{ stroke: colorVariants.primary50 }}
-                        fill="none"
-                        strokeWidth={strokeWidth}
-                        strokeLinecap={strokeLinecap}
-                        d={calculateArcPath(MAX_START_ANGLE, MAX_END_ANGLE, 40)}
-                    />
-
-                    {/* Foreground Arc */}
-                    <path
-                        style={{ stroke: colorVariants.primary }}
-                        fill="none"
-                        strokeWidth={strokeWidth}
-                        strokeLinecap={strokeLinecap}
-                        d={calculateArcPath(bipolar ? CENTER_ANGLE : MAX_START_ANGLE, valueToAngle, 40)}
-                    />
-
-                    {/* Value Display */}
-                    <foreignObject style={{ cursor: "inherit" }} x="20" y="22" width="60" height="60">
-                        <React.Fragment>
-                            <div
-                                style={{
-                                    width: "100%",
-                                    height: "100%",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    fontSize: "22px",
-                                    maxWidth: "100%",
-                                    maxHeight: "100%",
-                                    fontWeight: "500",
-                                    cursor: "inherit",
-                                }}
-                            >
-                                {React.isValidElement(children) && children.type === "img" ? (
-                                    <div
-                                        style={{
-                                            width: "100%",
-                                            height: "100%",
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            padding: "10px",
-                                            cursor: "inherit",
-                                        }}
-                                    >
-                                        {React.cloneElement(children, {
-                                            style: {
-                                                maxWidth: "100%",
-                                                maxHeight: "100%",
-                                                cursor: "inherit",
-                                            },
-                                        } as React.DetailedHTMLProps<
-                                            React.ImgHTMLAttributes<HTMLImageElement>,
-                                            HTMLImageElement
-                                        >)}
-                                    </div>
-                                ) : renderValue ? (
-                                    renderValue(value, min, max)
-                                ) : (
-                                    formatValueFn(value)
-                                )}
-                            </div>
-                        </React.Fragment>
-                    </foreignObject>
+                    <SvgKnob
+                        normalizedValue={normalizedValue}
+                        bipolar={bipolar}
+                        thickness={thickness}
+                        roundness={resolvedRoundness ?? 12}
+                        color={resolvedColor}
+                    >
+                        {knobContent}
+                    </SvgKnob>
                 </AdaptiveBox.Svg>
 
                 {label && <AdaptiveBox.Label align="center">{label}</AdaptiveBox.Label>}

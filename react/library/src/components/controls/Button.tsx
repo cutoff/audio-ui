@@ -6,8 +6,8 @@ import AdaptiveBox from "../support/AdaptiveBox";
 import "../../styles.css";
 import { Control, ExplicitRange } from "../types";
 import { buttonSizeMap } from "../utils/sizeMappings";
-import { generateColorVariants } from "../utils/colorUtils";
 import { useThemableProps } from "../providers/AudioUiProvider";
+import SvgButton from "../svg/SvgButton";
 
 /**
  * Props for the Button component
@@ -105,36 +105,20 @@ function Button({
     // Ref to track if the button is currently pressed (for momentary mode)
     const isPressedRef = useRef(false);
 
-    // Calculate the center value based on min and max
+    // Calculate normalized value (0 to 1)
+    const normalizedValue = useMemo(() => {
+        return (value - min) / (max - min);
+    }, [value, min, max]);
+
+    // Calculate the center value based on min and max for threshold calculation
     const actualCenter = useMemo(() => {
         return Math.floor((max - min + 1) / 2) + min;
     }, [min, max]);
 
-    // Determine if the button is in the "on" state
-    const isOn = useMemo(() => {
-        return value > actualCenter;
-    }, [value, actualCenter]);
-
-    // Generate color variants using the centralized utility
-    const colorVariants = useMemo(() => {
-        return generateColorVariants(resolvedColor, "transparency");
-    }, [resolvedColor]);
-
-    // Determine the button's appearance styles based on state
-    const buttonStyles = useMemo(() => {
-        return {
-            stroke: isOn ? colorVariants.primary50 : colorVariants.primary20,
-            fill: isOn ? colorVariants.primary : colorVariants.primary50,
-        };
-    }, [isOn, colorVariants]);
-
-    // Calculate corner radius based on roundness (ensure non-negative)
-    const cornerRadius = useMemo(() => {
-        // Default to 10 if resolvedRoundness is undefined
-        const roundnessValue = resolvedRoundness ?? 10;
-        const nonNegativeRoundness = Math.max(0, roundnessValue); // Clamp to non-negative values
-        return nonNegativeRoundness === 0 ? 0 : nonNegativeRoundness; // Use 0 for square corners, roundness for rounded corners
-    }, [resolvedRoundness]);
+    // Calculate normalized threshold (0.5 corresponds to actualCenter)
+    const normalizedThreshold = useMemo(() => {
+        return (actualCenter - min) / (max - min);
+    }, [actualCenter, min, max]);
 
     // Internal handler for mouse down events to toggle the button state or set to max value
     const handleInternalMouseDown = useCallback(
@@ -143,6 +127,7 @@ function Button({
             if (onChange) {
                 if (latch) {
                     // For latch buttons, toggle between min and max values
+                    const isOn = value > actualCenter;
                     const newValue = isOn ? min : max;
                     onChange(newValue);
                 } else {
@@ -152,7 +137,7 @@ function Button({
                 }
             }
         },
-        [onChange, latch, isOn, min, max]
+        [onChange, latch, value, actualCenter, min, max]
     );
 
     // Internal handler for mouse up event for both latch and non-latch buttons
@@ -247,27 +232,19 @@ function Button({
             minHeight={40}
         >
             <AdaptiveBox.Svg
-                viewBoxWidth={100}
-                viewBoxHeight={60}
+                viewBoxWidth={SvgButton.viewBox.width}
+                viewBoxHeight={SvgButton.viewBox.height}
                 onClick={onClick}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
             >
-                {/* Button Rectangle */}
-                <rect
-                    style={{
-                        stroke: buttonStyles.stroke,
-                        fill: buttonStyles.fill,
-                    }}
-                    strokeWidth="5"
-                    x={10}
-                    y={10}
-                    width={80}
-                    height={40}
-                    rx={cornerRadius}
-                    ry={cornerRadius}
+                <SvgButton
+                    normalizedValue={normalizedValue}
+                    threshold={normalizedThreshold}
+                    roundness={resolvedRoundness ?? 10}
+                    color={resolvedColor}
                 />
             </AdaptiveBox.Svg>
             {label && <AdaptiveBox.Label align="center">{label}</AdaptiveBox.Label>}

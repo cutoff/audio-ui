@@ -174,7 +174,10 @@ Components follow these patterns:
 
 1. Props are defined using TypeScript interfaces or types with JSDoc comments
 2. Default values are provided using parameter defaults
-3. Components use functional style with hooks
+3. Components use function declarations (not arrow functions) with hooks
+   - Use `function ComponentName() {}` for React components
+   - Use arrow functions for event handlers and internal functions
+   - See [React Conventions](./agents/react-conventions.md) for detailed examples
 4. Styling is applied using CSS classes and inline styles
 
 ### CSS Styling

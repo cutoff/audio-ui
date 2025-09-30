@@ -5,6 +5,11 @@ export { default as Knob } from "./components/controls/Knob";
 export { default as KnobSwitch } from "./components/controls/KnobSwitch";
 export { default as Slider } from "./components/controls/Slider";
 
+// Export SVG presentation components
+export { default as SvgButton } from "./components/svg/SvgButton";
+export { default as SvgKnob } from "./components/svg/SvgKnob";
+export { default as SvgSlider } from "./components/svg/SvgSlider";
+
 export { default as Keybed } from "./components/Keybed";
 export { default as AdaptiveBox } from "./components/support/AdaptiveBox";
 
@@ -18,6 +23,11 @@ export type { KnobProps } from "./components/controls/Knob";
 export type { SliderProps } from "./components/controls/Slider";
 export type { ButtonProps } from "./components/controls/Button";
 export type { KeybedProps } from "./components/Keybed";
+
+// Export SVG component types
+export type { SvgButtonProps } from "./components/svg/SvgButton";
+export type { SvgKnobProps } from "./components/svg/SvgKnob";
+export type { SvgSliderProps } from "./components/svg/SvgSlider";
 
 // Export common types
 export type { SizeType, AdaptativeSize, Control, BipolarControl, Themable } from "./components/types";
