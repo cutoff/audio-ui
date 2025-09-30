@@ -16,6 +16,7 @@ import {
     WHITE_KEY_TO_CHROMATIC,
 } from "./utils/noteUtils";
 import "../styles.css";
+import { useThemableProps } from "./providers/AudioUiProvider";
 
 /**
  * Type definition for note names (C to B)
@@ -118,7 +119,7 @@ function Keybed({
     style = {},
     className = "",
     size = "normal",
-    color = "blue",
+    color,
 }: KeybedProps) {
     // Ensure nbKeys is within valid range (1-128)
     const validNbKeys = Math.max(1, Math.min(128, nbKeys));
@@ -185,9 +186,12 @@ function Keybed({
         };
     }, [validNbKeys, startKey]);
 
+    // Use the themable props hook to resolve color and roundness with proper fallbacks
+    const { resolvedColor } = useThemableProps({ color }, { color: "blue" });
+
     // Generate color variants using the centralized utility
     const colorVariants = useMemo(() => {
-        return generateColorVariants(color, "luminosity");
+        return generateColorVariants(resolvedColor, "luminosity");
     }, [color]);
 
     // Memoize the active notes set for efficient lookups

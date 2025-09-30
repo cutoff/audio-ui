@@ -107,7 +107,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
     onMouseLeave,
     size = "normal",
     paramId,
-    color = "blue",
+    color,
 }) => {
     const options = React.Children.toArray(children);
 
