@@ -2,8 +2,8 @@
     /* Default theme — adaptive like shadcn: dark ink on light, light ink on dark */
     /* Light mode defaults (overridden in .dark below) */
     --theme-default-primary: hsl(0, 0%, 10%);   /* near-black */
-    --theme-default-primary-50: hsl(0, 0%, 25%); /* darker accent for outlines/shadows */
-    --theme-default-primary-20: hsl(0, 0%, 40%);
+    --theme-default-primary-50: hsl(0, 0%, 70%); /* lighter accent for fills */
+    --theme-default-primary-20: hsl(0, 0%, 85%); /* very light for borders */
 
     /* Adjusted light-mode tones for named themes; dark-mode tokens remain unchanged */
     --theme-blue-primary: hsl(204, 88%, 52%);
