@@ -177,7 +177,7 @@ Components follow these patterns:
 3. Components use function declarations (not arrow functions) with hooks
    - Use `function ComponentName() {}` for React components
    - Use arrow functions for event handlers and internal functions
-   - See [React Conventions](./agents/react-conventions.md) for detailed examples
+   - See [React Conventions](agents/react-conventions-1.0.md) for detailed examples
 4. Styling is applied using CSS classes and inline styles
 
 ### CSS Styling
@@ -300,10 +300,10 @@ When working on a specific task:
 This project follows JetBrains' standard development practices. We've organized these standards into reusable guides
 that can be applied across projects:
 
-- [Coding Conventions](./agents/coding-conventions.md) - General formatting, naming, and code organization practices
-- [TypeScript Guidelines](./agents/typescript-guidelines.md) - TypeScript-specific best practices and patterns
-- [React Conventions](./agents/react-conventions.md) - React component patterns, hooks usage, and JSX standards
-- [Documentation Standards](./agents/documentation-standards.md) - JSDoc and other documentation requirements
+- [Coding Conventions](agents/coding-conventions-1.0.md) - General formatting, naming, and code organization practices
+- [TypeScript Guidelines](agents/typescript-guidelines-1.0.md) - TypeScript-specific best practices and patterns
+- [React Conventions](agents/react-conventions-1.0.md) - React component patterns, hooks usage, and JSX standards
+- [Documentation Standards](agents/documentation-standards-1.0.md) - JSDoc and other documentation requirements
 
 These guides provide detailed information on our development standards. For project-specific configuration:
 
