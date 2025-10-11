@@ -1,7 +1,4 @@
-# Audio UI Development Guide for LLMs
-
-This document provides essential information for LLMs working on the Audio UI project, a React component library for
-audio and MIDI applications.
+**Version**: 2.0 | **Meta**: React component library for audio and MIDI applications; no BC needed (never released); monorepo structure with library and demo-app.
 
 **IMPORTANT: Documentation File Structure**
 
@@ -10,386 +7,98 @@ audio and MIDI applications.
 - Always edit AGENTS.md directly. Never attempt to modify CLAUDE.md or GEMINI.md as they are just symbolic links.
 - Any changes made to AGENTS.md will automatically be reflected in CLAUDE.md and GEMINI.md.
 
-**IMPORTANT: This library has never been released.** There is no need to maintain backward compatibility with previous
-versions. All design decisions should prioritize clean, maintainable code over backward compatibility.
+**IMPORTANT: This library has never been released.** No need for BC; prioritize clean code.
 
-## CRITICAL: React Version Policy
+## Quick Rules Summary for Agents (Load This First)
 
-**This project MUST maintain React 18 compatibility.**
-
-- **Library**: Uses React 18 as peer dependency (`react: ^18.2.0`, `react-dom: ^18.2.0`)
-- **Demo App**: Uses React 18 as direct dependency (`react: ^18.3.1`, `react-dom: ^18.3.1`)
-- **TypeScript Types**: Uses `@types/react: ^18.3.23` and `@types/react-dom: ^18.3.7`
-
-**NEVER upgrade to React 19 or higher without explicit approval.**
-
-If you encounter React version conflicts:
-
-1. Check `pnpm ls react @types/react` to identify version mismatches
-2. Downgrade to React 18 compatible versions
-3. Run `pnpm typecheck` to verify TypeScript compatibility
-4. Ensure all dependencies are compatible with React 18
+| Category | Rule/Details |
+|----------|--------------|
+| React | React 18 compatibility; library as peer deps (`^18.2.0`), demo as direct (`^18.3.1`); never upgrade to 19 |
+| TypeScript | Strict mode; handle all errors; prefix unused params with _; `@types/react:^18.3.23` |
+| Package Manager | pnpm |
+| UI Components | Use shadcn/ui; add with `pnpm dlx shadcn@latest add [component]`; no custom if shadcn available; no alter |
+| Testing | Vitest; files `.test.tsx` alongside; mock deps; React 18 compat |
+| Build | Library: Vite with TS decl; demo: Next.js 15; run `pnpm build/typecheck` |
+| Dev Server | Never run `pnpm dev` in demo-app for testing |
+| Theming | CSS vars; default adaptive (black light, white dark); utility classes .stroke-primary etc.; named themes blue etc. |
+| Components | Function declarations; props with JSDoc; default params; SVG for graphics |
+| Perf | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveSvgComponent CSS-only) |
+| Library Exports | From react/library/src/index.ts |
+| Demo Routing | Next.js app router; app/[route]/page.tsx |
 
 ## Project Structure
 
-The project is organized as a monorepo with the following structure:
+- `react/library/`: Component library; src/, dist/; Vite build; React 18 peer
+- `react/demo-app/`: Next.js demo; showcases components; app/components for pages (inferred)
+- `agents/`: Shared conventions (coding-conventions-2.0.md, typescript-guidelines-2.0.md, react-conventions-2.0.md, documentation-standards-2.0.md)
+- `react/library/docs/`: Specialized tech docs (e.g., adaptive-box-layout.md)
+- Sub-AGENTS.md: Optional extensions for details
 
-- `react/` - Contains the React implementation
-    - `library/` - The component library (React 18 peer dependencies)
-        - `src/` - Source code for the components
-        - `dist/` - Built output (generated)
-    - `demo-app/` - Next.js application for demonstrating the components (React 18 direct dependencies)
+## Agent Workflow Template
 
-## Build/Configuration Instructions
+1. Load root AGENTS.md.
+2. Read sub-AGENTS.md for specifics (library/demo).
+3. Consult `agents/` for conventions.
+4. Use tools: `pnpm typecheck/build/test`; edit code; run diagnostics.
+5. Test in demo app.
+6. Update docs if needed.
 
-### Build and Test Commands
+## Version Compatibility Troubleshooting
 
-The project has been updated to fix previous issues with pnpm scripts. You can now safely run the following commands:
-
-- `pnpm typecheck` - Run TypeScript type checking
-- `pnpm build` - Build the library
-- `pnpm test` - Run unit tests
-- `pnpm clean` - Clean build artifacts
-- `pnpm format` - Format code with Prettier
-
-Because of some persisting issues, never run the development server for testing:
-
-- `pnpm dev` (in react/demo-app directory) - Start the development server
-
-### Setting Up the Project
-
-1. Install dependencies:
-   ```bash
-   pnpm install
-   ```
-
-2. Build the library:
-   ```bash
-   pnpm build
-   ```
-
-3. Run the demo application:
-   ```bash
-   cd react/demo-app
-   pnpm dev
-   ```
+When TS errors:
 
-   Or run type checking:
-   ```bash
-   pnpm typecheck
-   ```
-
-### Library Development
+1. Check versions: `pnpm ls react @types/react`
+2. Downgrade to React 18: `pnpm install react@^18.3.1 react-dom@^18.3.1 @types/react@^18.3.23 @types/react-dom@^18.3.7`
+3. `pnpm typecheck` both
+4. `pnpm build`
 
-The library uses Vite for building and TypeScript for type checking:
+## Common Issues
 
-- Build the library:
-  ```bash
-  cd react/library
-  pnpm build
-  ```
+- "ReactNode" conflicts: React 19 types mixed with 18
+- "ForwardRefExoticComponent": Version mismatch
+- "Property 'children' missing": React 19 Portal reqs
 
-- Type check the library:
-  ```bash
-  cd react/library
-  pnpm typecheck
-  ```
+## Task Focus
 
-- Link the library for local development:
-  ```bash
-  cd react/library
-  pnpm link
-  ```
+Do not fix unrelated TS errors; many known and ignored; focus on current task.
 
-## Testing Information
+## AdaptiveSvgComponent (Sept 2025 update)
 
-### Running Tests
+- CSS-based sizing; no ResizeObserver/JS
+- Container: flex; overflow hidden; container-type inline-size
+- Fixed: width px; aspect-ratio; SVG 100%
+- Stretch: fill 100%; SVG auto max100% + aspect-ratio
+- Alignment: map alignSelf/justifySelf to flex
+- Min sizes: CSS on container
 
-You can now safely run tests with:
+Implications: No JS; smooth; zoomable; event handling unchanged.
 
-```bash
-cd react/library
-pnpm test
-```
+## AdaptiveBox (Sept 2025)
 
-You can also use static analysis for additional code quality checks:
+- Replaces AdaptiveContainer + SvgSurface; CSS/SVG
+- Modes: scaleToFit (contain, aspect, letterbox); fill (preserve vert, distort SVG width)
+- Features: container query cqw/cqh; scaler calc; two-row grid; align start/center/end; label modes visible/hidden/none; overlay sibling
+- See react/library/docs/adaptive-box-layout.md
+- React 18 compat
 
-```bash
-cd react/library
-pnpm typecheck
-# Use ESLint for code quality checks
-pnpm lint
-```
+## Theme Utilities (Sept 2025)
 
-### Writing Tests
+- CSS vars for theming; adaptive named themes (blue, orange, pink, green, purple, yellow); .dark hue adjust
+- White theme removed; default near-white accents
+- Mapping: --primary-color to default (black-ish light, white-ish dark)
+- Classes: .stroke/fill/border/text -primary, -50, -20; prefer .border-primary
+- Provider: AudioUiProvider defaults color; useThemableProps fallback
 
-Tests should be placed alongside the components they test with a `.test.tsx` extension. Here's an example test for the
-Button component:
-
-```tsx
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import Button from './Button';
+## ESLint/Prettier
 
-describe('Button Component', () => {
-  test('renders with default props', () => {
-    render(<Button />);
-    // The button should be rendered with default styling
-    const buttonElement = document.querySelector('rect');
-    expect(buttonElement).toBeInTheDocument();
-    expect(buttonElement).toHaveClass('stroke-primary-20');
-    expect(buttonElement).toHaveClass('fill-primary-50');
-  });
-
-  test('renders with custom label', () => {
-    render(<Button label="Test Button" />);
-    // The button should display the provided label
-    expect(screen.getByText('Test Button')).toBeInTheDocument();
-  });
+- ESLint: TS support; run `pnpm lint`
+- Prettier: .prettierrc.json; run `pnpm format`
 
-  test('changes appearance when value is above center', () => {
-    render(<Button value={75} center={50} />);
-    // The button should have the "on" styling
-    const buttonElement = document.querySelector('rect');
-    expect(buttonElement).toHaveClass('stroke-primary-50');
-    expect(buttonElement).toHaveClass('fill-primary');
-  });
-});
-```
+## Maintenance Guidelines
 
-## Additional Development Information
+Agents docs are living documentation; update continuously for agent efficiency. Shared `agents/` updated externally; edit AGENTS.md for project changes. Create/manage subs for modular focus.
 
-### TypeScript Configuration
+## Sub-File Summaries
 
-The project uses strict TypeScript configuration with the following settings:
-
-- `strict: true` - Enables all strict type checking options
-- `noUnusedLocals: true` - Reports errors on unused locals
-- `noUnusedParameters: true` - Reports errors on unused parameters
-- `noImplicitReturns: true` - Reports error when not all code paths in function return a value
-
-### Component Structure
-
-Components follow these patterns:
-
-1. Props are defined using TypeScript interfaces or types with JSDoc comments
-2. Default values are provided using parameter defaults
-3. Components use function declarations (not arrow functions) with hooks
-   - Use `function ComponentName() {}` for React components
-   - Use arrow functions for event handlers and internal functions
-   - See [React Conventions](agents/react-conventions-1.0.md) for detailed examples
-4. Styling is applied using CSS classes and inline styles
-
-### CSS Styling
-
-The project uses a combination of:
-
-1. CSS classes for theming (primary colors, text colors)
-2. Inline styles for layout and positioning
-3. CSS Grid for component layout
-
-#### Default Theme (shadcn-like)
-- By default, the library uses an adaptive "default" theme whose primary color is black-ish in light mode and white-ish in dark mode.
-- Implementation: CSS variables in react/library/src/themes.css define `--theme-default-primary`, `--theme-default-primary-50`, and `--theme-default-primary-20` with `.dark` overrides. `react/library/src/styles.css` maps `--primary-color*` to these variables in `:root` so all components inherit them by default.
-- How to switch theme: override `--primary-color*`, or remap them to any of the named theme variables (e.g., `--theme-blue-primary`) in your app CSS.
-- Dark mode control: add/remove the `dark` class on a root element to toggle between light and dark mode.
-
-### Demo Application
-
-The demo application is built with Next.js and showcases the components in the library. To add a new component demo:
-
-1. Create a new page in the `react/demo-app/app/components/` directory
-2. Import and use the component from the library
-3. Add examples and documentation
-
-You can now safely run the demo application with:
-
-```bash
-cd react/demo-app
-pnpm dev
-```
-
-You can also use static analysis for code quality checks:
-
-```bash
-cd react/demo-app
-pnpm typecheck
-# Use ESLint for code quality checks
-pnpm lint
-```
-
-#### UI Components
-- We use **shadcn** for UI components
-- Any missing component should be added using:
-  ```bash
-  pnpm dlx shadcn@latest add [component]
-  ```
-- Do not create custom components when a shadcn component can be used instead
-- Do not alter shadcn components unless told explicitly
-
-
-## LLM-Specific Development Guidelines
-
-### Version Compatibility Troubleshooting
-
-When encountering TypeScript errors, follow this debugging sequence:
-
-1. **Check React versions**: Run `pnpm ls react @types/react` to identify version mismatches
-2. **Verify package.json**: Ensure all React dependencies specify React 18 versions
-3. **Fix version conflicts**: Use
-   `pnpm install react@^18.3.1 react-dom@^18.3.1 @types/react@^18.3.23 @types/react-dom@^18.3.7`
-4. **Run type checks**: Execute `pnpm typecheck` in both library and demo app
-5. **Build verification**: Run `pnpm build` to ensure no compilation errors
-
-### Component Development Patterns
-
-Components in this library follow these conventions:
-
-- **Props interfaces**: Define with JSDoc comments for documentation
-- **Default values**: Use parameter defaults, not `defaultProps`
-- **Functional components**: Use hooks, avoid class components
-- **TypeScript**: Strict mode enabled, handle all type errors
-- **Unused parameters**: Prefix with underscore (e.g., `_props`) to avoid TS errors
-
-### Common Issues and Solutions
-
-1. **"ReactNode" type conflicts**: Usually caused by React 19 types mixed with React 18 runtime
-2. **"ForwardRefExoticComponent" errors**: Indicates version mismatch between React types and runtime
-3. **"Property 'children' is missing"**: React 19 type definitions have different ReactPortal requirements
-
-### Important: Focus on Task-Related Issues Only
-
-When working on a specific task:
-
-- **Do not fix TypeScript errors unrelated to your current task**, even if detected by `pnpm typecheck`
-- Many TypeScript errors in the codebase are known, detected by the compiler, and deliberately ignored
-- Fixing unrelated TypeScript issues can distract from your main task and create unnecessary changes
-- Focus only on issues directly related to implementing the specific requirements in your current task
-
-### Testing Requirements
-
-- Use Vitest for testing (integrated with Vite build system)
-- Test files: `*.test.tsx` or `*.test.ts` alongside components
-- Mock external dependencies using Vitest's mocking capabilities
-- Ensure tests pass with React 18 compatibility
-
-### Build Process
-
-1. **Library build**: Uses Vite with TypeScript declaration generation
-2. **Demo app build**: Uses Next.js 15 with React 18 compatibility
-3. **Type checking**: Run `pnpm typecheck` before commits
-4. **Linting**: Address ESLint warnings, especially TypeScript-related ones
-
-### File Structure Guidelines
-
-- Components in `react/library/src/components/`
-- Export all components from `react/library/src/index.ts`
-- Demo pages in `react/demo-app/app/components/[component-name]/page.tsx`
-- Shared UI components in `react/demo-app/components/ui/`
-- Specialized technical documentation in `react/library/docs/` (intended for contributors)
-
-### Performance Considerations
-
-- Library is built as ES modules for tree-shaking
-- Components use SVG for scalable graphics
-- CSS is minimal and uses CSS custom properties for theming
-- Demo app uses Next.js optimization features
-
-## Development Standards and Conventions
-
-This project follows JetBrains' standard development practices. We've organized these standards into reusable guides
-that can be applied across projects:
-
-- [Coding Conventions](agents/coding-conventions-1.0.md) - General formatting, naming, and code organization practices
-- [TypeScript Guidelines](agents/typescript-guidelines-1.0.md) - TypeScript-specific best practices and patterns
-- [React Conventions](agents/react-conventions-1.0.md) - React component patterns, hooks usage, and JSX standards
-- [Documentation Standards](agents/documentation-standards-1.0.md) - JSDoc and other documentation requirements
-
-These guides provide detailed information on our development standards. For project-specific configuration:
-
-### ESLint Configuration
-
-The project uses ESLint with TypeScript support. Always run ESLint before committing code:
-
-```bash
-pnpm lint
-```
-
-### Prettier Configuration
-
-The project uses Prettier with a JSON configuration file (`.prettierrc.json`). See [PRETTIER.md](./PRETTIER.md) for
-detailed documentation of all Prettier settings.
-
-Run Prettier to automatically format code:
-
-```bash
-pnpm format
-```
-
-## AdaptiveSvgComponent – CSS-based sizing (Sept 2025 update)
-
-The AdaptiveSvgComponent has been refactored to remove ResizeObserver and all JS-driven layout math. Sizing and fitting
-are now handled purely by CSS/SVG:
-
-- Container (outer div)
-    - display: flex (stretch=true) or inline-flex (stretch=false) to allow inner content alignment within grid/flex
-      cells
-    - overflow: hidden to ensure no spillover
-    - container-type: inline-size for future container query support
-    - In fixed mode, the container sets a concrete width in px based on preferredWidth (respecting minWidth) and uses
-      CSS aspect-ratio: viewBoxWidth / viewBoxHeight to derive height
-    - In stretch mode, the container fills its cell (width/height 100%) and acts as a flex box for inner alignment
-- Inner SVG
-    - viewBox is preserved per component shape
-    - preserveAspectRatio="xMidYMid meet"
-    - Fixed mode: width/height 100% to fill the container box defined by aspect-ratio
-    - Stretch mode: width/height auto with maxWidth/maxHeight 100% plus an aspect-ratio to maintain shape; the limiting
-      axis is chosen by the browser
-- Alignment mapping for demo grid
-    - The component reads alignSelf/justifySelf from the style prop (as used by the demo grid) and maps these keywords (
-      start | end | center) to flex alignItems/justifyContent on the container. This preserves the demo’s grid alignment
-      semantics (start/end/center columns).
-- Min sizes
-    - minWidth/minHeight props are honored via CSS on the container so controls never become unusably small.
-
-Implications:
-
-- No JS measurements or debounce are needed; resizing is declarative and smooth.
-- Zoomable control surfaces are naturally supported: the browser picks the limiting axis (width or height) based on
-  aspect ratio.
-- Event handling (e.g., wheel) remains unchanged and is managed on the SVG.
-
-
-## AdaptiveBox — SVG+Label Layout (Sept 2025)
-
-AdaptiveBox replaces the older AdaptiveContainer + SvgSurface pair. The layout and sizing are handled purely by CSS/SVG and support two display modes:
-
-- scaleToFit: contain-fit scaling that preserves the combined aspect ratio of [SVG + label] and letterboxes the non‑limiting axis.
-- fill: fills the wrapper area while preserving the SVG/label vertical proportions; the SVG drawing may distort to occupy the full width (preserveAspectRatio: none).
-
-Key features:
-- Wrapper exposes container query units (cqw/cqh) via container-type: size
-- Aspect-preserving scaler with aspect-ratio and width: min(100%, calc(100cqh * W / (H + L)))
-- Two-row grid for SVG + label with proportional rows (H vs L)
-- Independent alignment: scaler alignment (start/center/end) and label justification
-- Label modes: visible, hidden (reserves space), none (no space, aspect W/H)
-- Overlay support via absolutely positioned sibling covering the SVG area
-
-See the full specification for implementation details, examples, and API mapping:
-- react/library/docs/adaptive-box-layout.md
-
-Note: AdaptiveBox must remain React 18 compatible (see React Version Policy above).
-
-
-
-## Theme utilities and adaptive named themes (Sept 2025)
-
-- The library exposes CSS variables for theming and now includes scheme-adaptive named themes (blue, orange, pink, green, purple, yellow). Each named theme has .dark overrides in react/library/src/themes.css that keep the hue but adjust tone/saturation for dark mode.
-- The separate "white" theme has been removed; use the adaptive default theme for near-white accents in dark mode.
-- Default mapping: components consume --primary-color, --primary-color-50, --primary-color-20. By default, these map to the adaptive “default” theme tokens (near-black in light mode, near-white in dark mode).
-- Utility classes available in react/library/src/styles.css:
-  - Stroke/fill: .stroke-primary, .stroke-primary-50, .stroke-primary-20, .fill-primary, .fill-primary-50, .fill-primary-20
-  - Border: .border-primary, .border-primary-50, .border-primary-20 (plus a back-compat alias .border-primary-color used by the demo)
-  - Text: .text-primary, .text-primary-50, .text-primary-20
-- Recommendation: prefer .border-primary (over the alias) and use the CSS variables for custom styling.
-- Provider defaults: AudioUiProvider defaults color to var(--primary-color), and useThemableProps falls back to var(--primary-color) so components automatically inherit the active CSS theme without extra wiring.
+- `./react/library/AGENTS.md`: Library specifics (exports, build, env); created.
+- `./react/demo-app/AGENTS.md`: Demo app details (routing, integrations, env); created.
