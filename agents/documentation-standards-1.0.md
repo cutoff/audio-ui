@@ -5,7 +5,7 @@ standards ensures code is well-documented, maintainable, and accessible to all d
 
 ## Version History
 
-*For maintenance purposes only*
+_For maintenance purposes only_
 
 - Version 1.0 - 2025-09-13: Initial version
 
@@ -20,7 +20,7 @@ standards ensures code is well-documented, maintainable, and accessible to all d
 ### JSDoc Formatting
 
 - JSDoc blocks start with `/**` on a separate line
-- Each line within the block starts with ` * ` (space, asterisk, space)
+- Each line within the block starts with `*` (space, asterisk, space)
 - The closing `*/` is on a separate line
 - Parameter descriptions use `@param {type} name - Description` format
 - Return value descriptions use `@returns {type} Description` format
@@ -44,11 +44,7 @@ standards ensures code is well-documented, maintainable, and accessible to all d
  * @example
  * <Button label="Click me" onClick={() => console.log('Clicked!')} />
  */
-function Button({
-                    label = "Button",
-                    onClick,
-                    disabled = false
-                }: ButtonProps): JSX.Element {
+function Button({ label = "Button", onClick, disabled = false }: ButtonProps): JSX.Element {
     // Use arrow function for event handler
     const handleClick = (): void => {
         if (!disabled && onClick) {
@@ -58,11 +54,7 @@ function Button({
 
     // Component implementation
     return (
-        <button
-            className="button"
-            onClick={handleClick}
-            disabled={disabled}
-        >
+        <button className="button" onClick={handleClick} disabled={disabled}>
             {label}
         </button>
     );

@@ -5,7 +5,7 @@ consistency, maintainability, and performance across React projects.
 
 ## Version History
 
-*For maintenance purposes only*
+_For maintenance purposes only_
 
 - Version 1.0 - 2025-09-13: Initial version
 
@@ -18,17 +18,17 @@ Components should follow these patterns:
 3. Provide default values using parameter defaults, not `defaultProps`
 4. Use proper naming conventions for components (PascalCase) and hooks (camelCase with `use` prefix)
 5. Use function declarations for React components, but arrow functions for event handlers and internal functions
-   ```tsx
-   function MyComponent({ prop1, prop2 = defaultValue }: MyComponentProps): JSX.Element {
-       // Use arrow functions for event handlers
-       const handleClick = (): void => {
-           console.log(prop1);
-       };
-       
-       // Component implementation
-       return <div onClick={handleClick}>{prop1}</div>;
-   }
-   ```
+    ```tsx
+    function MyComponent({ prop1, prop2 = defaultValue }: MyComponentProps): JSX.Element {
+        // Use arrow functions for event handlers
+        const handleClick = (): void => {
+            console.log(prop1);
+        };
+
+        // Component implementation
+        return <div onClick={handleClick}>{prop1}</div>;
+    }
+    ```
 
 ## Hooks
 
@@ -55,18 +55,13 @@ Components should follow these patterns:
 - TSX conditional rendering uses parentheses for multi-line expressions
 - Component props are destructured with multi-line formatting and proper indentation when there are many props
 
-> **Note**: All TSX/JSX formatting is enforced by Prettier according to the project's `.prettierrc.json` configuration.
-> This includes special handling for .tsx files as specified in the Prettier configuration's "overrides" section.
+> **Note**: TSX/JSX formatting is handled by Prettier and Tailwind CSS class sorting via `prettier-plugin-tailwindcss`.
+> Refer to `.prettierrc.json` for the project's standard formatting options.
 
 Example of properly formatted TSX:
 
 ```tsx
-function ComplexComponent({
-                              label,
-                              onClick,
-                              size = "medium",
-                              disabled = false
-                          }: ComplexComponentProps): JSX.Element {
+function ComplexComponent({ label, onClick, size = "medium", disabled = false }: ComplexComponentProps): JSX.Element {
     const handleClick = (): void => {
         if (!disabled) {
             onClick();
@@ -75,14 +70,8 @@ function ComplexComponent({
 
     return (
         <div className="container">
-            {label && (
-                <span className="label">{label}</span>
-            )}
-            <button
-                className={`button button--${size}`}
-                disabled={disabled}
-                onClick={handleClick}
-            >
+            {label && <span className="label">{label}</span>}
+            <button className={`button button--${size}`} disabled={disabled} onClick={handleClick}>
                 {label || "Click me"}
             </button>
         </div>

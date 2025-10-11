@@ -1,13 +1,15 @@
 # Coding Conventions (JetBrains Defaults)
 
 This document outlines JetBrains' default coding conventions for JavaScript and TypeScript. Adhering to these
-conventions ensures code consistency and readability across projects. These conventions are enforced by Prettier
-using the configuration in `.prettierrc.json` at the project root.
+conventions ensures code consistency and readability across projects. Prettier is configured with explicit project-wide
+formatting options (see `.prettierrc.json`) and Tailwind CSS class sorting; the conventions below remain the source of truth
+for any rules not enforced automatically.
 
 ## Version History
 
-*For maintenance purposes only*
+_For maintenance purposes only_
 
+- Version 1.1 - 2025-10-09: Added class-based patterns, dependency injection conventions, and exception handling guidelines
 - Version 1.0 - 2025-09-13: Initial version
 
 ## Formatting
@@ -37,8 +39,9 @@ using the configuration in `.prettierrc.json` at the project root.
     - Switch-case statements have cases indented inside the switch block
     - Case blocks are further indented inside each case
 
-> **Note**: The project uses Prettier for automated code formatting. Run `pnpm prettier --write .` to format all files
-> according to these conventions. Prettier configuration is defined in `.prettierrc.json` at the project root.
+> **Note**: The project uses Prettier for automated formatting and Tailwind CSS class sorting via `prettier-plugin-tailwindcss`.
+> Run `pnpm format` to format all files. The Prettier configuration in `.prettierrc.json` defines the standard project formatting.
+> Follow this document for any conventions not covered by Prettier.
 
 ## Naming Conventions
 
@@ -48,7 +51,9 @@ using the configuration in `.prettierrc.json` at the project root.
 - **Private properties**: camelCase with no underscore prefix
 - **Type parameters**: PascalCase, typically single letters (T, K, V) or descriptive names with a 'T' suffix
 - **Enum members**: PascalCase
-- **File names**: Match the main export, typically PascalCase for components
+- **File names**: Match the main export, typically PascalCase for components and classes
+- **Interfaces**: PascalCase without "I" prefix (e.g., `EmailService`, not `IEmailService`)
+- **Error classes**: PascalCase following pattern `<Domain>Error` (e.g., `EmailServiceError`)
 
 ## Code Organization
 
@@ -65,3 +70,18 @@ using the configuration in `.prettierrc.json` at the project root.
     4. Helper functions and hooks
     5. Default export
 - **Props**: Destructured in function parameters with default values
+
+## Class-Based Patterns
+
+- **Constructor injection**: Dependencies injected via constructor parameters (e.g., `constructor(private dao: WaitlistDao)`)
+- **Private properties**: Use private fields for injected dependencies and internal state
+- **Method naming**: Public methods for business operations (camelCase), private methods for internal logic
+- **Interface implementation**: Explicitly implement interfaces with `implements` clause
+- **Exception handling**: Throw custom error classes instead of returning error objects
+- **Class organization**:
+    1. Interface definition (if separate file)
+    2. Class declaration with implements
+    3. Constructor with dependency injection
+    4. Public business methods
+    5. Private helper methods
+- **Dependency injection**: Prefer constructor injection over setter injection or manual wiring
