@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Exo_2, Geist_Mono } from "next/font/google";
 import "@cutoff/audio-ui-react/style.css";
 import "./globals.css";
 import { Providers } from "@/app/providers";
 import SideBar from "@/components/SideBar";
 
-const geistSans = Geist({
-    variable: "--font-geist-sans",
+const sansFont = Exo_2({
+    variable: "--font-sans",
+    weight: ['400', '500', '600', '700'],
     subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
+const monoFont = Geist_Mono({
+    variable: "--font-mono",
     subsets: ["latin"],
 });
 
@@ -27,7 +28,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" suppressHydrationWarning>
-            <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
+            <body className={`${sansFont.variable} ${monoFont.variable} font-sans antialiased`}>
                 <Providers>
                     <div className="flex flex-col md:flex-row min-h-screen">
                         {/* SideBar will be client-side rendered */}
