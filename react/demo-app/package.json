@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "type": "module",
   "scripts": {
+    "preinstall": "cd ../library && pnpm build",
     "clean": "trash node_modules .next",
     "dev": "next dev",
     "build": "next build",
@@ -15,7 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@cutoff/audio-ui-react": "workspace:*",
+    "@cutoff/audio-ui-react": "file:../library",
     "@radix-ui/react-checkbox": "^1.3.3",
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-dialog": "^1.1.15",

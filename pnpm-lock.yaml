@@ -36,7 +36,7 @@ importers:
   react/demo-app:
     dependencies:
       '@cutoff/audio-ui-react':
-        specifier: workspace:*
+        specifier: file:../library
         version: link:../library
       '@radix-ui/react-checkbox':
         specifier: ^1.3.3
