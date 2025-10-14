@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo } from "react";
 import { generateColorVariants } from "../utils/colorUtils";
 import { computeFilledZone, Zone } from "../utils/svgHelpers";

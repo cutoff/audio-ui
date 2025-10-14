@@ -13,6 +13,7 @@
 
 | Category | Rule/Details |
 |----------|--------------|
+| Performance Mandate | **Critical Priority.** Audio apps have heavy runtime constraints (e.g., avoiding UI stutters, ensuring low-latency response). Prioritize performance in all decisions: minimal re-renders, no JS for layout/sizing, efficient event handling. |
 | React | React 18 compatibility; library as peer deps (`^18.2.0`), demo as direct (`^18.3.1`); never upgrade to 19 |
 | TypeScript | Strict mode; handle all errors; prefix unused params with _; `@types/react:^18.3.23` |
 | Package Manager | pnpm |
@@ -25,6 +26,16 @@
 | Perf | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveSvgComponent CSS-only) |
 | Library Exports | From react/library/src/index.ts |
 | Demo Routing | Next.js app router; app/[route]/page.tsx |
+
+## Rendering Strategy
+
+-   **`react/library` (Component Library):** **Client Components ONLY.**
+    -   **Rule:** Every component must have the `"use client";` directive at the top of the file.
+    -   **Reason:** Library components are interactive (knobs, sliders) and rely on client-side hooks and browser events. This ensures they work in any host application (CSR, SSR, SSG).
+
+-   **`react/demo-app` (Demo Application):** **Server Components by default; Client Components for interactivity.**
+    -   **Rule:** Pages (`app/**/page.tsx`) should be Server Components (default, no directive). They are pre-rendered at build time (SSG) for performance.
+    -   **Implementation:** To show interactive demos, import the library's Client Components into the Server Component pages. Next.js will handle the client-side hydration automatically. Pages that require hooks for demo controls (e.g., state for knobs) must use the `"use client";` directive.
 
 ## Project Structure
 

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useMemo } from "react";
 import { generateColorVariants } from "../utils/colorUtils";
 import { calculateArcPath } from "../utils/svgHelpers";

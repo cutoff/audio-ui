@@ -1,3 +1,5 @@
+"use client";
+
 export type OptionProps = {
     /** Value associated with this option */
     value?: any;

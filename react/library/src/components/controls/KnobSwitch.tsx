@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Knob from "./Knob";
 import { AdaptativeSize, Base, InteractiveControl, Themable } from "../types";
