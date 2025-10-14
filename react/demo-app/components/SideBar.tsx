@@ -136,7 +136,7 @@ export default function SideBar() {
                         href="/"
                         className="block text-2xl font-bold mb-6 text-sidebar-primary hover:text-primary-color transition-colors"
                     >
-                        AudioUI
+                        AudioUI Playground
                     </Link>
                 </div>
 
@@ -271,9 +271,9 @@ export default function SideBar() {
                             <span className="text-sm text-sidebar-foreground flex items-center h-9 px-3 leading-none">
                                 Mode
                             </span>
-                            <Button 
-                                variant="ghost" 
-                                size="icon" 
+                            <Button
+                                variant="ghost"
+                                size="icon"
                                 onClick={toggleTheme}
                                 title={`Current theme: ${theme}`}
                                 className="h-9 w-9"

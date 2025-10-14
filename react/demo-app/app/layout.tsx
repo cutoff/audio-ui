@@ -17,8 +17,8 @@ const monoFont = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "Audio UI Demo",
-    description: "Demo application for Audio UI components",
+    title: "AudioUI Playground",
+    description: "Interactive playground for AudioUI components",
 };
 
 export default function RootLayout({
