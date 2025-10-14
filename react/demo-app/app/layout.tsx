@@ -35,8 +35,7 @@ export default function RootLayout({
                         <SideBar />
                         <div className="flex-1 pt-16 md:pt-0">{children}</div>
                     </div>
-                </Providers>
-            </body>
+                </Providers>            </body>
         </html>
     );
 }
