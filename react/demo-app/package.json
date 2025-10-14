@@ -8,9 +8,9 @@
   "type": "module",
   "scripts": {
     "clean": "rm -rf node_modules .next",
-    "dev": "next dev --turbo",
+    "dev": "next dev --turbo -p 3009",
     "build": "next build --turbo",
-    "start": "next start",
+    "start": "next start -p 3009",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },

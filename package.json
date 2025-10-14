@@ -9,6 +9,7 @@
         "dev": "turbo dev",
         "typecheck": "turbo typecheck",
         "build": "turbo build",
+        "start": "turbo start",
         "test": "turbo test",
         "lint": "turbo lint",
         "clean": "turbo clean",
