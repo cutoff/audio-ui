@@ -1,24 +1,29 @@
 {
-  "name": "@cutoff/audio-ui",
-  "version": "1.0.0",
-  "private": true,
-  "author": "Renaud Denis <mail@renauddenis.com>",
-  "license": "UNLICENSED",
-  "scripts": {
-    "typecheck": "pnpm -r typecheck",
-    "build": "pnpm -r build",
-    "test": "pnpm -r test",
-    "lint": "pnpm -r lint",
-    "clean": "pnpm -r exec -- rm -rf dist .next",
-    "format": "pnpm -r format"
-  },
-  "keywords": [
-    "react",
-    "audio",
-    "midi",
-    "components"
-  ],
-  "workspaces": [
-    "react"
-  ]
+    "name": "@cutoff/audio-ui",
+    "version": "1.0.0",
+    "private": true,
+    "author": "Renaud Denis <mail@renauddenis.com>",
+    "license": "UNLICENSED",
+    "packageManager": "pnpm@10.16.0",
+    "scripts": {
+        "dev": "turbo dev",
+        "typecheck": "turbo typecheck",
+        "build": "turbo build",
+        "test": "turbo test",
+        "lint": "turbo lint",
+        "clean": "turbo clean",
+        "format": "turbo format"
+    },
+    "keywords": [
+        "react",
+        "audio",
+        "midi",
+        "components"
+    ],
+    "workspaces": [
+        "react"
+    ],
+    "dependencies": {
+        "turbo": "^2.5.8"
+    }
 }

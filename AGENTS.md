@@ -19,8 +19,8 @@
 | Package Manager | pnpm |
 | UI Components | Use shadcn/ui; add with `pnpm dlx shadcn@latest add [component]`; no custom if shadcn available; no alter |
 | Testing | Vitest; files `.test.tsx` alongside; mock deps; React 18 compat |
-| Build | Library: Vite with TS decl; demo: Next.js 15; run `pnpm build/typecheck` |
-| Dev Server | Never run `pnpm dev` in demo-app for testing |
+| Build | Library: Vite with TS decl; demo: Next.js 15 with Turbopack; run `pnpm build && pnpm typecheck` |
+| Dev Server | Run `pnpm dev` at root for development; never in demo-app for testing |
 | Theming | CSS vars; default adaptive (black light, white dark); utility classes .stroke-primary etc.; named themes blue etc. |
 | Components | Function declarations; props with JSDoc; default params; SVG for graphics |
 | Perf | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveSvgComponent CSS-only) |

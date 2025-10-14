@@ -19,7 +19,7 @@
     "dist"
   ],
   "scripts": {
-    "clean": "trash node_modules dist",
+    "clean": "rm -rf node_modules dist",
     "build": "pnpm exec vite build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

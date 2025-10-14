@@ -38,6 +38,10 @@ jobs:
       - name: Lint
         run: pnpm lint # Runs lint across all packages (defined in root package.json)
 
+      # Run type checking
+      - name: Typecheck
+        run: pnpm typecheck
+
       # Build all packages
       - name: Build
         run: pnpm build # Runs build across all packages (Vite and Next.js)
