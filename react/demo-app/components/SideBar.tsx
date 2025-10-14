@@ -1,5 +1,6 @@
 "use client";
 
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -59,6 +60,8 @@ const themeColors: ThemeColor[] = [
     { color: "bg-purple-500", name: "Purple", cssVar: "--theme-purple-primary" },
     { color: "bg-yellow-500", name: "Yellow", cssVar: "--theme-yellow-primary" },
 ];
+
+
 
 export default function SideBar() {
     const pathname = usePathname();
@@ -134,7 +137,7 @@ export default function SideBar() {
                 <div className="flex-shrink-0">
                     <Link
                         href="/"
-                        className="block text-2xl font-bold mb-6 text-sidebar-primary hover:text-primary-color transition-colors"
+                        className="block text-2xl font-inter font-bold mb-6 text-sidebar-primary hover:text-primary-color transition-colors"
                     >
                         AudioUI Playground
                     </Link>

@@ -1,19 +1,24 @@
 import type { Metadata } from "next";
-import { Exo_2, Geist_Mono } from "next/font/google";
-import "@cutoff/audio-ui-react/style.css";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/app/providers";
 import SideBar from "@/components/SideBar";
 
-const sansFont = Exo_2({
-    variable: "--font-sans",
-    weight: ['400', '500', '600', '700'],
+const sansFont = Geist({
+    variable: "--font-geist-sans",
+    weight: ['400', '500', '600'],
     subsets: ["latin"],
 });
 
 const monoFont = Geist_Mono({
-    variable: "--font-mono",
+    variable: "--font-geist-mono",
     subsets: ["latin"],
+});
+
+const interFont = Inter({
+    variable: "--font-inter",
+    subsets: ["latin"],
+    weight: ["700"],
 });
 
 export const metadata: Metadata = {
@@ -28,7 +33,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" suppressHydrationWarning>
-            <body className={`${sansFont.variable} ${monoFont.variable} font-sans antialiased`}>
+            <body className={`${sansFont.variable} ${monoFont.variable} ${interFont.variable} font-sans antialiased`}>
                 <Providers>
                     <div className="flex flex-col md:flex-row min-h-screen">
                         {/* SideBar will be client-side rendered */}
