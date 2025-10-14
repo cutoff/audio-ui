@@ -401,6 +401,7 @@ export default function KnobDemoPage() {
         <ControlSkeletonPage
             componentName="Knob"
             codeSnippet={codeString}
+            // @ts-ignore
             PageComponent={KnobComponent}
             componentProps={componentProps}
             properties={properties}

@@ -18,7 +18,7 @@ export default function KeybedPage() {
     const [startKey, setStartKey] = useState<NoteName>("C");
     const [octaveShift, setOctaveShift] = useState<number>(0);
     const [notesOn, setNotesOn] = useState<(string | number)[]>(["C4", 64, 67]);
-    const [color, setColor] = useState<string>("#3399ff"); // Default blue color
+    const [color, setColor] = useState<string | undefined>("#3399ff"); // Default blue color
 
     // MIDI related state
     const [midiInputs, setMidiInputs] = useState<WebMidi.MIDIInput[]>([]);
@@ -26,12 +26,12 @@ export default function KeybedPage() {
     const [webMidiSupported, setWebMidiSupported] = useState<boolean>(true);
 
     // Generate code snippet with dynamic notesOn array
-    const codeString = `<Keybed 
-  nbKeys={${nbKeys}} 
-  startKey="${startKey}" 
-  octaveShift={${octaveShift}} 
+    const codeString = `<Keybed
+  nbKeys={${nbKeys}}
+  startKey="${startKey}"
+  octaveShift={${octaveShift}}
   notesOn={[${notesOn.map((note) => (typeof note === "string" ? `"${note}"` : note)).join(", ")}]}
-  color="${color}" 
+  color="${color}"
 />`;
 
     const componentProps = {

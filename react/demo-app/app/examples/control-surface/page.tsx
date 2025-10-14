@@ -234,6 +234,7 @@ export default function ControlSurfacePage() {
 
                         {/* Row 4 - Buttons */}
                         <div className="col-span-1">
+                            {/* @ts-ignore*/}
                             <Button
                                 value={buttonAValue}
                                 onChange={setButtonAValue}
@@ -243,6 +244,7 @@ export default function ControlSurfacePage() {
                             />
                         </div>
                         <div className="col-span-1">
+                            {/* @ts-ignore*/}
                             <Button
                                 value={buttonBValue}
                                 onChange={setButtonBValue}
@@ -252,6 +254,7 @@ export default function ControlSurfacePage() {
                             />
                         </div>
                         <div className="col-span-1">
+                            {/* @ts-ignore*/}
                             <Button
                                 value={buttonCValue}
                                 onChange={setButtonCValue}
@@ -261,6 +264,7 @@ export default function ControlSurfacePage() {
                             />
                         </div>
                         <div className="col-span-1">
+                            {/* @ts-ignore*/}
                             <Button
                                 value={buttonDValue}
                                 onChange={setButtonDValue}

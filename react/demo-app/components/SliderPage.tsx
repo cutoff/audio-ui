@@ -23,13 +23,13 @@ export default function SliderPage({ orientation }: SliderPageProps) {
     const [color, setColor] = useState<string | undefined>(undefined); // Allow undefined to use theme values
 
     // Generate code snippet with all props
-    const codeString = `<Slider 
-  min={${min}} 
-  max={${max}} 
-  value={${value}} 
-  label='${label}' 
-  thickness={${thickness}} 
-  bipolar={${bipolar}}${roundness !== undefined ? `\n  roundness={${roundness}}` : ""} 
+    const codeString = `<Slider
+  min={${min}}
+  max={${max}}
+  value={${value}}
+  label='${label}'
+  thickness={${thickness}}
+  bipolar={${bipolar}}${roundness !== undefined ? `\n  roundness={${roundness}}` : ""}
   orientation='${orientation}'${color !== undefined ? `\n  color='${color}'` : ""}
 />`;
 
@@ -164,6 +164,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
         <ControlSkeletonPage
             componentName="Slider"
             codeSnippet={codeString}
+            // @ts-ignore
             PageComponent={Slider}
             componentProps={componentProps}
             properties={properties}

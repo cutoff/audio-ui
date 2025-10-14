@@ -18,11 +18,11 @@ export default function Page() {
     const [color, setColor] = useState<string | undefined>(undefined); // Allow undefined to use theme values
 
     // Generate code snippet with all props
-    const codeString = `<Button 
-  min={${min}} 
-  max={${max}} 
-  value={${value}} 
-  center={${center}} 
+    const codeString = `<Button
+  min={${min}}
+  max={${max}}
+  value={${value}}
+  center={${center}}
   label="${label}"${roundness !== undefined ? `\n  roundness={${roundness}}` : ""}
   latch={${latch}}${color !== undefined ? `\n  color="${color}"` : ""}
 />`;
@@ -139,6 +139,7 @@ export default function Page() {
         <ControlSkeletonPage
             componentName="Button"
             codeSnippet={codeString}
+            // @ts-ignore
             PageComponent={Button}
             componentProps={componentProps}
             properties={properties}
