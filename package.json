@@ -4,7 +4,7 @@
     "private": true,
     "author": "Renaud Denis <mail@renauddenis.com>",
     "license": "UNLICENSED",
-    "packageManager": "pnpm@10.16.0",
+    "packageManager": "pnpm@10.20.0",
     "scripts": {
         "dev": "turbo dev",
         "typecheck": "turbo typecheck",
