@@ -1,4 +1,4 @@
-**Version**: 2.0 | **Meta**: Extends root AGENTS.md for demo app details (routing, theming, integrations, env).
+**Version**: 2.0 | **Meta**: Extends root AGENTS.md for playground app details (routing, theming, integrations, env). This app is an internal playground, not the final public documentation.
 
 ## Quick Setup Summary (Load This First)
 
@@ -24,7 +24,7 @@
 
 ## Workflow Patterns (Bullets)
 
-- Add new demo: Create app/[route]/[component]/page.tsx; import from @cutoff/audio-ui-react; add examples with props; use shadcn for UI
+- Add new playground page: Create app/[route]/[component]/page.tsx; import from @cutoff/audio-ui-react; add examples with props; use shadcn for UI
 - Theming: next-themes in providers; toggle dark mode
 - Testing demos: Run pnpm dev; validate components from library
 - Building: pnpm build for prod; Next.js optimization
@@ -32,7 +32,7 @@
 
 ## Agent Note
 
-Validate components imported from library; ensure demo showcases accurately; refer to root for library build; use `thinking` for complex integrations.
+Validate components imported from library; ensure playground showcases accurately; refer to root for library build; use `thinking` for complex integrations. Final, developer-oriented documentation with live components exists in a separate website monorepo (Next.js + MDX).
 
 ## Shared Conventions
 

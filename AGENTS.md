@@ -33,9 +33,15 @@
     -   **Rule:** Every component must have the `"use client";` directive at the top of the file.
     -   **Reason:** Library components are interactive (knobs, sliders) and rely on client-side hooks and browser events. This ensures they work in any host application (CSR, SSR, SSG).
 
--   **`react/demo-app` (Demo Application):** **Server Components by default; Client Components for interactivity.**
+-   **`react/demo-app` (Playground Application):** **Server Components by default; Client Components for interactivity.**
+    -   **Purpose:** Internal playground for rapid iteration, visual validation, and manual testing. Not the final documentation site.
     -   **Rule:** Pages (`app/**/page.tsx`) should be Server Components (default, no directive). They are pre-rendered at build time (SSG) for performance.
     -   **Implementation:** To show interactive demos, import the library's Client Components into the Server Component pages. Next.js will handle the client-side hydration automatically. Pages that require hooks for demo controls (e.g., state for knobs) must use the `"use client";` directive.
+
+## Documentation Strategy (Web Monorepo)
+
+- Final public documentation lives in a separate website monorepo (Next.js) with MDX-based, developer-oriented docs that embed live components.
+- This repo's `react/demo-app` is a playground, not the docs source. Keep playground focused on iteration and testing; mirror finalized examples into the docs site when stable.
 
 ## Project Structure
 
