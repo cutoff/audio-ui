@@ -164,7 +164,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
         <ControlSkeletonPage
             componentName="Slider"
             codeSnippet={codeString}
-            // @ts-ignore
+            // @ts-expect-error demo-only: forcing controlled value transition for example
             PageComponent={Slider}
             componentProps={componentProps}
             properties={properties}

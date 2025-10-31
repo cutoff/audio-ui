@@ -139,7 +139,7 @@ export default function Page() {
         <ControlSkeletonPage
             componentName="Button"
             codeSnippet={codeString}
-            // @ts-ignore
+            // @ts-expect-error demo-only: intentionally passing non-standard value shape for showcase
             PageComponent={Button}
             componentProps={componentProps}
             properties={properties}

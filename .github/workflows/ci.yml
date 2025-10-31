@@ -1,51 +1,52 @@
 name: CI
+
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI: true
+  NEXT_TELEMETRY_DISABLED: 1
+
 jobs:
-  build-and-test:
+  quality:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [ 20 ] # Use a Node.js version compatible with your project
-
+        node-version: [18, 20]
     steps:
-      # Checkout the repository
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Install pnpm
-      - name: Install pnpm
+      - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10 # Use the latest stable pnpm version (adjust as needed)
+          version: 10.20.0
 
-      # Set up Node.js with pnpm caching
-      - name: Set up Node.js
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm' # Cache pnpm store for faster installs
+          cache: 'pnpm'
 
-      # Install dependencies
+      - name: Cache Turbo build artifacts
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml', 'turbo.json') }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-${{ matrix.node-version }}-
+
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile # Ensures exact versions from pnpm-lock.yaml
+        run: pnpm install --frozen-lockfile
 
-      # Run linting (optional)
-      - name: Lint
-        run: pnpm lint # Runs lint across all packages (defined in root package.json)
-
-      # Run type checking
-      - name: Typecheck
-        run: pnpm typecheck
-
-      # Build all packages
-      - name: Build
-        run: pnpm build # Runs build across all packages (Vite and Next.js)
-
-      # Run tests (optional)
-      - name: Test
-        run: pnpm test # Runs tests across all packages
+      - name: Run quality pipeline (typecheck, build, lint, test)
+        run: pnpm turbo run typecheck build lint test --cache-dir=.turbo --continue --no-daemon
+ 

@@ -401,7 +401,7 @@ export default function KnobDemoPage() {
         <ControlSkeletonPage
             componentName="Knob"
             codeSnippet={codeString}
-            // @ts-ignore
+            // @ts-expect-error demo-only: simulating out-of-range value to showcase clamping behavior
             PageComponent={KnobComponent}
             componentProps={componentProps}
             properties={properties}
