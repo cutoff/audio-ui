@@ -109,6 +109,15 @@ Implications: No JS; smooth; zoomable; event handling unchanged.
 
 Agents docs are living documentation; update continuously for agent efficiency. Shared `agents/` updated externally; edit AGENTS.md for project changes. Create/manage subs for modular focus.
 
+## Licensing & Distribution
+
+- License Model: Tylium Evolutive License Framework (see `license/LICENSE.md`), with accompanying `SLA.md` and `CLA.md` in `license/`.
+- Compatibility: A GPL-3.0 variant is available in `license/LICENSE-GPL3.md` for open-source alignment when needed; Tylium terms govern unless explicitly stated otherwise in releases.
+- Source Availability: Full source code is public.
+- Distribution: Packages and releases are distributed through classical channels (e.g., public Git hosting for source; package registries/artifacts for builds where applicable).
+- Contributor Guidance: Contributors agree to the Contributor License Agreement (`license/CLA.md`) and grant rights consistent with the Tylium framework and any companion open-source terms in use for a given release.
+- Operational Note: Package manifests may show UNLICENSED during development; the authoritative license is this section and the `license/` documents until publication artifacts include SPDX identifiers.
+
 ## Sub-File Summaries
 
 - `./react/library/AGENTS.md`: Library specifics (exports, build, env); created.
