@@ -19,6 +19,7 @@ export default function KeybedPage() {
     const [octaveShift, setOctaveShift] = useState<number>(0);
     const [notesOn, setNotesOn] = useState<(string | number)[]>(["C4", 64, 67]);
     const [color, setColor] = useState<string | undefined>("#3399ff"); // Default blue color
+    const [roundness, setRoundness] = useState<number | undefined>(undefined);
 
     // MIDI related state
     const [midiInputs, setMidiInputs] = useState<WebMidi.MIDIInput[]>([]);
@@ -30,7 +31,9 @@ export default function KeybedPage() {
   nbKeys={${nbKeys}}
   startKey="${startKey}"
   octaveShift={${octaveShift}}
-  notesOn={[${notesOn.map((note) => (typeof note === "string" ? `"${note}"` : note)).join(", ")}]}
+  notesOn={[${notesOn.map((note) => (typeof note === "string" ? `"${note}"` : note)).join(", ")}]}${
+        roundness !== undefined ? `\n  roundness={${roundness}}` : ""
+    }
   color="${color}"
 />`;
 
@@ -40,6 +43,7 @@ export default function KeybedPage() {
         octaveShift,
         notesOn,
         color,
+        roundness,
     };
 
     const properties = [
@@ -84,6 +88,21 @@ export default function KeybedPage() {
         </div>,
         <div key="color" className="grid gap-2">
             <ColorPicker id="colorProp" label="Color" value={color} onChange={setColor} />
+        </div>,
+        <div key="roundness" className="grid gap-2">
+            <Label htmlFor="roundnessProp">Roundness (optional)</Label>
+            <Input
+                id="roundnessProp"
+                type="number"
+                min="0"
+                max="50"
+                value={roundness ?? ""}
+                placeholder="theme"
+                onChange={(e) => {
+                    const nextValue = e.target.value === "" ? undefined : Math.max(0, Math.min(50, Number(e.target.value)));
+                    setRoundness(nextValue);
+                }}
+            />
         </div>,
     ];
 
@@ -250,6 +269,7 @@ export default function KeybedPage() {
                                 notesOn={notesOn}
                                 size="xsmall"
                                 color="#3399ff" // Blue
+                                roundness={roundness}
                             />
                             <Keybed
                                 nbKeys={nbKeys}
@@ -258,6 +278,7 @@ export default function KeybedPage() {
                                 notesOn={notesOn}
                                 size="small"
                                 color="#ff3366" // Pink
+                                roundness={roundness}
                             />
                             <Keybed
                                 nbKeys={nbKeys}
@@ -266,6 +287,7 @@ export default function KeybedPage() {
                                 notesOn={notesOn}
                                 size="normal"
                                 color="#33cc66" // Green
+                                roundness={roundness}
                             />
                             <Keybed
                                 nbKeys={nbKeys}
@@ -274,6 +296,7 @@ export default function KeybedPage() {
                                 notesOn={notesOn}
                                 size="large"
                                 color="#9966ff" // Purple
+                                roundness={roundness}
                             />
                             <Keybed
                                 nbKeys={nbKeys}
@@ -282,6 +305,7 @@ export default function KeybedPage() {
                                 notesOn={notesOn}
                                 size="xlarge"
                                 color="#ff9933" // Orange
+                                roundness={roundness}
                             />
                         </div>
                     </div>

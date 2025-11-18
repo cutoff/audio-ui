@@ -110,30 +110,35 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
     size = "normal",
     paramId,
     color,
+    roundness,
 }) => {
-    const options = React.Children.toArray(children);
+    const optionEls = React.Children.toArray(children).filter(React.isValidElement) as React.ReactElement<KnobSwitchOptionProps>[];
+    const maxIndex = Math.max(0, optionEls.length - 1);
 
     // Determine the index of the selected option
     const selectedIndex = React.useMemo(() => {
+        if (optionEls.length === 0) return 0;
         if (value !== undefined) {
-            const index = options.findIndex((option) => React.isValidElement(option) && option.props.value === value);
-            return Math.max(0, Math.min(index, options.length - 1));
+            const index = optionEls.findIndex((option) => option.props.value === value);
+            return Math.max(0, Math.min(index === -1 ? 0 : index, maxIndex));
         } else {
-            const selectedOption = options.find((option) => React.isValidElement(option) && option.props.selected);
-            return selectedOption ? options.indexOf(selectedOption) : 0;
+            const selectedOption = optionEls.find((option) => option.props.selected);
+            const idx = selectedOption ? optionEls.indexOf(selectedOption) : 0;
+            return Math.max(0, Math.min(idx, maxIndex));
         }
-    }, [value, options]);
+    }, [value, optionEls, maxIndex]);
 
     // Use the value of the selected option as the label, if available
     const selectedLabel = React.useMemo(() => {
-        const option = options[selectedIndex];
-        return React.isValidElement(option) ? option.props.children : label;
-    }, [selectedIndex, options, label]);
+        if (optionEls.length === 0) return label;
+        const option = optionEls[selectedIndex];
+        return option?.props?.children ?? label;
+    }, [selectedIndex, optionEls, label]);
 
     return (
         <Knob
             min={0}
-            max={options.length - 1}
+            max={maxIndex}
             value={selectedIndex}
             label={label}
             style={style}
@@ -148,6 +153,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             size={size}
             paramId={paramId}
             color={color}
+            roundness={roundness}
         >
             {selectedLabel}
         </Knob>

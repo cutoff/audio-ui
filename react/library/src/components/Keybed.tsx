@@ -120,6 +120,7 @@ function Keybed({
     className = "",
     size = "normal",
     color,
+    roundness,
 }: KeybedProps) {
     // Ensure nbKeys is within valid range (1-128)
     const validNbKeys = Math.max(1, Math.min(128, nbKeys));
@@ -187,12 +188,12 @@ function Keybed({
     }, [validNbKeys, startKey]);
 
     // Use the themable props hook to resolve color and roundness with proper fallbacks
-    const { resolvedColor } = useThemableProps({ color }, { color: "blue" });
+    const { resolvedColor, resolvedRoundness } = useThemableProps({ color, roundness }, { color: "blue", roundness: 0 });
 
     // Generate color variants using the centralized utility
     const colorVariants = useMemo(() => {
         return generateColorVariants(resolvedColor, "luminosity");
-    }, [color]);
+    }, [resolvedColor]);
 
     // Memoize the active notes set for efficient lookups
     const activeNoteNumSet = useMemo(() => {
@@ -257,10 +258,11 @@ function Keybed({
                     y={0}
                     width={whiteWidth}
                     height={whiteHeight}
+                    rx={resolvedRoundness}
                 />
             );
         });
-    }, [keybedDimensions, octaveShift, notesOn, startKey, isNoteActive]);
+    }, [keybedDimensions, octaveShift, notesOn, startKey, isNoteActive, resolvedRoundness]);
 
     // Memoize black keys rendering
     const renderBlackKeys = useMemo(() => {
@@ -319,10 +321,11 @@ function Keybed({
                     y={0}
                     width={blackWidth}
                     height={blackHeight}
+                    rx={resolvedRoundness}
                 />
             );
         }).filter(Boolean);
-    }, [keybedDimensions, octaveShift, notesOn, startKey, isNoteActive, correctBlackPass]);
+    }, [keybedDimensions, octaveShift, notesOn, startKey, isNoteActive, correctBlackPass, resolvedRoundness]);
 
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {
@@ -344,17 +347,6 @@ function Keybed({
             minHeight={40}
         >
             <AdaptiveBox.Svg viewBoxWidth={keybedDimensions.width} viewBoxHeight={keybedDimensions.whiteHeight}>
-                <rect
-                    style={{
-                        stroke: colorVariants.primary50,
-                        fill: "transparent",
-                    }}
-                    strokeWidth={keybedDimensions.outerStrokeWidth}
-                    x={keybedDimensions.outerStrokeWidth / 2}
-                    y={keybedDimensions.outerStrokeWidth / 2}
-                    width={keybedDimensions.width - keybedDimensions.outerStrokeWidth}
-                    height={keybedDimensions.whiteHeight - keybedDimensions.outerStrokeWidth}
-                />
                 {renderWhiteKeys}
                 {renderBlackKeys}
             </AdaptiveBox.Svg>
