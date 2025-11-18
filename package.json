@@ -5,6 +5,13 @@
     "author": "Renaud Denis <mail@renauddenis.com> (https://renauddenis.com)",
     "license": "GPL-3.0-only",
     "homepage": "https://audioui.dev",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/CutoffAudio/audio-ui.git"
+    },
+    "bugs": {
+        "url": "https://github.com/CutoffAudio/audio-ui/issues"
+    },
     "packageManager": "pnpm@10.20.0",
     "scripts": {
         "dev": "turbo dev",

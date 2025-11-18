@@ -6,6 +6,14 @@
   "author": "Renaud Denis <mail@renauddenis.com> (https://renauddenis.com)",
   "license": "GPL-3.0-only",
   "homepage": "https://audioui.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CutoffAudio/audio-ui.git",
+    "directory": "react/playground-app"
+  },
+  "bugs": {
+    "url": "https://github.com/CutoffAudio/audio-ui/issues"
+  },
   "type": "module",
   "scripts": {
     "clean": "rm -rf node_modules .next",
