@@ -28,3 +28,6 @@ yarn.lock
 **/LICENSE*
 LICENSE*
 license/
+
+# Shadcn Components
+react/playground-app/components/ui

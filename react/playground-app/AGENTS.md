@@ -2,13 +2,13 @@
 
 ## Quick Setup Summary (Load This First)
 
-| Category | Details |
-|----------|---------|
-| Scripts | `pnpm dev`, `pnpm build`, `pnpm typecheck`, `pnpm lint` |
-| Env Vars | None |
-| Routing | Next.js app router; pages in app/[route]/page.tsx; categories: examples, controls, devices |
-| Theming | next-themes for theme switching; add/remove 'dark' class on root; shadcn-like |
-| Integrations | Import library components for showcases; Radix via shadcn; forms, routing |
+| Category     | Details                                                                                    |
+| ------------ | ------------------------------------------------------------------------------------------ |
+| Scripts      | `pnpm dev`, `pnpm build`, `pnpm typecheck`, `pnpm lint`                                    |
+| Env Vars     | None                                                                                       |
+| Routing      | Next.js app router; pages in app/[route]/page.tsx; categories: examples, controls, devices |
+| Theming      | next-themes for theme switching; add/remove 'dark' class on root; shadcn-like              |
+| Integrations | Import library components for showcases; Radix via shadcn; forms, routing                  |
 
 ## Key File Structure
 
@@ -16,7 +16,8 @@
 - `app/page.tsx`: Home page
 - `app/[route]/page.tsx`: Demo pages (e.g., app/controls/button/page.tsx for Button demo)
 - `app/providers.tsx`: Context providers (theme, etc.)
-- `components/ui/`: shadcn components
+- `components/ui/`: **shadcn components ONLY** - do not add custom components here
+- `components/`: Custom playground components (e.g., ColorPickerField, ComponentSkeletonPage)
 - `lib/`: Utils (e.g., cn for clsx)
 - `hooks/`: Custom hooks
 - `types/`: TypeScript types
@@ -29,6 +30,7 @@
 - Testing demos: Run pnpm dev; validate components from library
 - Building: pnpm build for prod; Next.js optimization
 - UI: Use shadcn; add if missing with `pnpm dlx shadcn@latest add [component]`; no alter unless told
+- Component organization: shadcn components go in `components/ui/`; custom playground components go in `components/` (not in `components/ui/`)
 
 ## Agent Note
 

@@ -8,141 +8,140 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
-import { ColorPickerField } from "@/components/ui/ColorPickerField";
+import { ColorPickerField } from "@/components/ColorPickerField";
 import { Checkbox } from "@/components/ui/checkbox";
 
 // Define the NoteName type to match the one in the Keybed component
 type NoteName = "C" | "D" | "E" | "F" | "G" | "A" | "B";
 
 const DemoKeybed = React.memo(
-  ({
-    nbKeys,
-    startKey,
-    octaveShift,
-    notesOn,
-    size,
-    color,
-    roundness,
-  }: {
-    nbKeys: number;
-    startKey: NoteName;
-    octaveShift: number;
-    notesOn: (string | number)[];
-    size: "xsmall" | "small" | "normal" | "large" | "xlarge";
-    color?: string;
-    roundness?: number;
-  }) => (
-    <Keybed
-      nbKeys={nbKeys}
-      startKey={startKey}
-      octaveShift={octaveShift}
-      notesOn={notesOn}
-      size={size}
-      color={color}
-      roundness={roundness}
-    />
-  )
+    ({
+        nbKeys,
+        startKey,
+        octaveShift,
+        notesOn,
+        size,
+        color,
+        roundness,
+    }: {
+        nbKeys: number;
+        startKey: NoteName;
+        octaveShift: number;
+        notesOn: (string | number)[];
+        size: "xsmall" | "small" | "normal" | "large" | "xlarge";
+        color?: string;
+        roundness?: number;
+    }) => (
+        <Keybed
+            nbKeys={nbKeys}
+            startKey={startKey}
+            octaveShift={octaveShift}
+            notesOn={notesOn}
+            size={size}
+            color={color}
+            roundness={roundness}
+        />
+    )
 );
 DemoKeybed.displayName = "DemoKeybed";
 
 export default function KeybedPage() {
-  const [nbKeys, setNbKeys] = useState<number>(61);
-  const [startKey, setStartKey] = useState<NoteName>("C");
-  const [octaveShift, setOctaveShift] = useState<number>(0);
-  const [notesOn, setNotesOn] = useState<(string | number)[]>(["C4", 64, 67]);
-  const [color, setColor] = useState<string | undefined>(undefined);
-  const [roundness, setRoundness] = useState<number | undefined>(undefined);
-  const [stretch, setStretch] = useState(true);
+    const [nbKeys, setNbKeys] = useState<number>(61);
+    const [startKey, setStartKey] = useState<NoteName>("C");
+    const [octaveShift, setOctaveShift] = useState<number>(0);
+    const [notesOn, setNotesOn] = useState<(string | number)[]>(["C4", 64, 67]);
+    const [color, setColor] = useState<string | undefined>(undefined);
+    const [roundness, setRoundness] = useState<number | undefined>(undefined);
+    const [stretch, setStretch] = useState(true);
 
-  // MIDI related state
-  const [midiInputs, setMidiInputs] = useState<WebMidi.MIDIInput[]>([]);
-  const [selectedInputId, setSelectedInputId] = useState<string>("");
-  const [webMidiSupported, setWebMidiSupported] = useState<boolean>(true);
+    // MIDI related state
+    const [midiInputs, setMidiInputs] = useState<WebMidi.MIDIInput[]>([]);
+    const [selectedInputId, setSelectedInputId] = useState<string>("");
+    const [webMidiSupported, setWebMidiSupported] = useState<boolean>(true);
 
-
-  // Generate code snippet with dynamic notesOn array
-  const codeString = `<Keybed
+    // Generate code snippet with dynamic notesOn array
+    const codeString = `<Keybed
   nbKeys={${nbKeys}}
   startKey="${startKey}"
   octaveShift={${octaveShift}}
   notesOn={[${notesOn.map((note) => (typeof note === "string" ? `"${note}"` : note)).join(", ")}]}${
-    roundness !== undefined ? `\n  roundness={${roundness}}` : ""
+      roundness !== undefined ? `\n  roundness={${roundness}}` : ""
   }${color !== undefined ? `\n  color="${color}"` : ""}
 />`;
 
-  const componentProps = {
-    nbKeys,
-    startKey,
-    octaveShift,
-    notesOn,
-    color,
-    roundness,
-    stretch,
-  };
+    const componentProps = {
+        nbKeys,
+        startKey,
+        octaveShift,
+        notesOn,
+        color,
+        roundness,
+        stretch,
+    };
 
-  const properties = [
-    <div key="nbKeys" className="grid gap-2">
-      <Label htmlFor="nbKeysProp">Number of Keys (1-128)</Label>
-      <Input
-        id="nbKeysProp"
-        type="number"
-        min="1"
-        max="128"
-        value={nbKeys}
-        onChange={(e) => setNbKeys(Math.max(1, Math.min(128, Number(e.target.value))))}
-      />
-    </div>,
-    <div key="startKey" className="grid gap-2">
-      <Label htmlFor="startKeyProp">Start Key</Label>
-      <Select value={startKey} onValueChange={(value) => setStartKey(value as NoteName)}>
-        <SelectTrigger id="startKeyProp">
-          <SelectValue placeholder="Select a start key" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="C">C</SelectItem>
-          <SelectItem value="D">D</SelectItem>
-          <SelectItem value="E">E</SelectItem>
-          <SelectItem value="F">F</SelectItem>
-          <SelectItem value="G">G</SelectItem>
-          <SelectItem value="A">A</SelectItem>
-          <SelectItem value="B">B</SelectItem>
-        </SelectContent>
-      </Select>
-    </div>,
-    <div key="octaveShift" className="grid gap-2">
-      <Label htmlFor="octaveShiftProp">Octave Shift</Label>
-      <Input
-        id="octaveShiftProp"
-        type="number"
-        min="-3"
-        max="3"
-        value={octaveShift}
-        onChange={(e) => setOctaveShift(Math.max(-3, Math.min(3, Number(e.target.value))))}
-      />
-    </div>,
-    <div key="color" className="grid gap-2">
-      <ColorPickerField id="colorProp" label="Color" value={color} onChange={setColor} />
-    </div>,
-    <div key="roundness" className="grid gap-2">
-      <Label htmlFor="roundnessProp">Roundness (optional)</Label>
-      <Input
-        id="roundnessProp"
-        type="number"
-        min="0"
-        max="50"
-        value={roundness ?? ""}
-        placeholder="theme"
-        onChange={(e) => {
-          const nextValue = e.target.value === "" ? undefined : Math.max(0, Math.min(50, Number(e.target.value)));
-          setRoundness(nextValue);
-        }}
-      />
-    </div>,
-  ];
+    const properties = [
+        <div key="nbKeys" className="grid gap-2">
+            <Label htmlFor="nbKeysProp">Number of Keys (1-128)</Label>
+            <Input
+                id="nbKeysProp"
+                type="number"
+                min="1"
+                max="128"
+                value={nbKeys}
+                onChange={(e) => setNbKeys(Math.max(1, Math.min(128, Number(e.target.value))))}
+            />
+        </div>,
+        <div key="startKey" className="grid gap-2">
+            <Label htmlFor="startKeyProp">Start Key</Label>
+            <Select value={startKey} onValueChange={(value) => setStartKey(value as NoteName)}>
+                <SelectTrigger id="startKeyProp">
+                    <SelectValue placeholder="Select a start key" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="C">C</SelectItem>
+                    <SelectItem value="D">D</SelectItem>
+                    <SelectItem value="E">E</SelectItem>
+                    <SelectItem value="F">F</SelectItem>
+                    <SelectItem value="G">G</SelectItem>
+                    <SelectItem value="A">A</SelectItem>
+                    <SelectItem value="B">B</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>,
+        <div key="octaveShift" className="grid gap-2">
+            <Label htmlFor="octaveShiftProp">Octave Shift</Label>
+            <Input
+                id="octaveShiftProp"
+                type="number"
+                min="-3"
+                max="3"
+                value={octaveShift}
+                onChange={(e) => setOctaveShift(Math.max(-3, Math.min(3, Number(e.target.value))))}
+            />
+        </div>,
+        <div key="color" className="grid gap-2">
+            <ColorPickerField id="colorProp" label="Color" value={color} onChange={setColor} />
+        </div>,
+        <div key="roundness" className="grid gap-2">
+            <Label htmlFor="roundnessProp">Roundness (optional)</Label>
+            <Input
+                id="roundnessProp"
+                type="number"
+                min="0"
+                max="50"
+                value={roundness ?? ""}
+                placeholder="theme"
+                onChange={(e) => {
+                    const nextValue =
+                        e.target.value === "" ? undefined : Math.max(0, Math.min(50, Number(e.target.value)));
+                    setRoundness(nextValue);
+                }}
+            />
+        </div>,
+    ];
 
-
-  // Initialize WebMIDI
-  useEffect(() => {
+    // Initialize WebMIDI
+    useEffect(() => {
         if (typeof navigator.requestMIDIAccess !== "function") {
             setWebMidiSupported(false);
             return;

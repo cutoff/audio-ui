@@ -5,7 +5,7 @@ import { Button } from "@cutoff/audio-ui-react";
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ColorPickerField } from "@/components/ui/ColorPickerField";
+import { ColorPickerField } from "@/components/ColorPickerField";
 
 export default function Page() {
     const [value, setValue] = useState(0);

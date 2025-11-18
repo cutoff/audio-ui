@@ -7,7 +7,7 @@ import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ColorPickerField } from "@/components/ui/ColorPickerField";
+import { ColorPickerField } from "@/components/ColorPickerField";
 
 // Define a simple MIDI bipolar formatter function for the demo
 // This will be replaced by the library's midiBipolarFormatter when it's available
