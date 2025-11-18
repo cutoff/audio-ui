@@ -17,7 +17,7 @@ For proprietary/commercial applications where you do not wish to open source you
 -   Includes professional support (SLA).
 -   Allows usage in closed-source products.
 
-For commercial inquiries, please contact: `legal@tylium.io`
+**Commercial licenses can be acquired at [https://audioui.dev](https://audioui.dev)**
 
 ---
 

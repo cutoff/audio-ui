@@ -252,6 +252,8 @@ This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**
 
 A commercial license is available for proprietary use cases that are incompatible with the GPLv3. This license removes the copyleft restrictions and includes a Service Level Agreement (SLA) for professional support.
 
+**Commercial licenses can be acquired at [https://audioui.dev](https://audioui.dev)**
+
 For complete details on the dual-licensing model and commercial terms, please see the documents in the `license/` directory.
 
 ---

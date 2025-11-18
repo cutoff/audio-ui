@@ -1,6 +1,6 @@
 {
     "name": "@cutoff/audio-ui",
-    "version": "1.0.0",
+    "version": "1.0.0-dp.1",
     "private": true,
     "author": "Renaud Denis <mail@renauddenis.com>",
     "license": "GPL-3.0-only",

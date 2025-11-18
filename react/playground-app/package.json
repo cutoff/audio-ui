@@ -2,7 +2,7 @@
   "name": "@cutoff/audio-ui-react-playground-app",
   "description": "Demo Application",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.0-dp.1",
   "author": "Renaud Denis <mail@renauddenis.com>",
   "license": "GPL-3.0-only",
   "type": "module",
