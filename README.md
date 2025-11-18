@@ -244,6 +244,18 @@ If you encounter TypeScript errors related to React types:
     - Always edit `AGENTS.md` directly, never modify the symbolic link files
     - Changes to `AGENTS.md` are automatically reflected in the linked files
 
+## Licensing
+
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**. The full license text is available in the `LICENSE.md` file in the root of this repository.
+
+### Commercial Licensing
+
+A commercial license is available for proprietary use cases that are incompatible with the GPLv3. This license removes the copyleft restrictions and includes a Service Level Agreement (SLA) for professional support.
+
+For complete details on the dual-licensing model and commercial terms, please see the documents in the `license/` directory.
+
+---
+
 ## Architecture
 
 ### Library Structure

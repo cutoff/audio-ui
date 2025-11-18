@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "author": "Renaud Denis <mail@renauddenis.com>",
-    "license": "UNLICENSED",
+    "license": "GPL-3.0-only",
     "packageManager": "pnpm@10.20.0",
     "scripts": {
         "dev": "turbo dev",
