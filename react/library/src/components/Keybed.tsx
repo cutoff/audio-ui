@@ -262,7 +262,7 @@ function Keybed({
                 />
             );
         });
-    }, [keybedDimensions, octaveShift, notesOn, startKey, isNoteActive, resolvedRoundness]);
+    }, [keybedDimensions, octaveShift, notesOn, startKey, isNoteActive, resolvedRoundness, colorVariants]);
 
     // Memoize black keys rendering
     const renderBlackKeys = useMemo(() => {
@@ -325,7 +325,16 @@ function Keybed({
                 />
             );
         }).filter(Boolean);
-    }, [keybedDimensions, octaveShift, notesOn, startKey, isNoteActive, correctBlackPass, resolvedRoundness]);
+    }, [
+        keybedDimensions,
+        octaveShift,
+        notesOn,
+        startKey,
+        isNoteActive,
+        correctBlackPass,
+        resolvedRoundness,
+        colorVariants,
+    ]);
 
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {

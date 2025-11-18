@@ -9,105 +9,170 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 import { ColorPickerField } from "@/components/ui/ColorPickerField";
+import { Checkbox } from "@/components/ui/checkbox";
 
 // Define the NoteName type to match the one in the Keybed component
 type NoteName = "C" | "D" | "E" | "F" | "G" | "A" | "B";
 
+const DemoKeybed = React.memo(
+  ({
+    nbKeys,
+    startKey,
+    octaveShift,
+    notesOn,
+    size,
+    color,
+    roundness,
+  }: {
+    nbKeys: number;
+    startKey: NoteName;
+    octaveShift: number;
+    notesOn: (string | number)[];
+    size: "xsmall" | "small" | "normal" | "large" | "xlarge";
+    color?: string;
+    roundness?: number;
+  }) => (
+    <Keybed
+      nbKeys={nbKeys}
+      startKey={startKey}
+      octaveShift={octaveShift}
+      notesOn={notesOn}
+      size={size}
+      color={color}
+      roundness={roundness}
+    />
+  )
+);
+DemoKeybed.displayName = "DemoKeybed";
+
 export default function KeybedPage() {
-    const [nbKeys, setNbKeys] = useState<number>(61);
-    const [startKey, setStartKey] = useState<NoteName>("C");
-    const [octaveShift, setOctaveShift] = useState<number>(0);
-    const [notesOn, setNotesOn] = useState<(string | number)[]>(["C4", 64, 67]);
-    const [color, setColor] = useState<string | undefined>("#3399ff"); // Default blue color
-    const [roundness, setRoundness] = useState<number | undefined>(undefined);
+  const [nbKeys, setNbKeys] = useState<number>(61);
+  const [startKey, setStartKey] = useState<NoteName>("C");
+  const [octaveShift, setOctaveShift] = useState<number>(0);
+  const [notesOn, setNotesOn] = useState<(string | number)[]>(["C4", 64, 67]);
+  const [color, setColor] = useState<string | undefined>(undefined);
+  const [roundness, setRoundness] = useState<number | undefined>(undefined);
+  const [stretch, setStretch] = useState(true);
 
-    // MIDI related state
-    const [midiInputs, setMidiInputs] = useState<WebMidi.MIDIInput[]>([]);
-    const [selectedInputId, setSelectedInputId] = useState<string>("");
-    const [webMidiSupported, setWebMidiSupported] = useState<boolean>(true);
+  // MIDI related state
+  const [midiInputs, setMidiInputs] = useState<WebMidi.MIDIInput[]>([]);
+  const [selectedInputId, setSelectedInputId] = useState<string>("");
+  const [webMidiSupported, setWebMidiSupported] = useState<boolean>(true);
 
-    // Generate code snippet with dynamic notesOn array
-    const codeString = `<Keybed
+  const handleExampleClick = (num: 0 | 1 | 2): void => {
+    switch (num) {
+      case 0:
+        setNbKeys(61);
+        setStartKey("C");
+        setOctaveShift(0);
+        setColor(undefined);
+        setRoundness(undefined);
+        break;
+      case 1:
+        setNbKeys(88);
+        setStartKey("A");
+        setOctaveShift(0);
+        setColor("#ff3366"); // Pink
+        setRoundness(4);
+        break;
+      case 2:
+        setNbKeys(25);
+        setStartKey("C");
+        setOctaveShift(0);
+        setColor("#33cc66"); // Green
+        setRoundness(8);
+        break;
+    }
+  };
+
+  // Generate code snippet with dynamic notesOn array
+  const codeString = `<Keybed
   nbKeys={${nbKeys}}
   startKey="${startKey}"
   octaveShift={${octaveShift}}
   notesOn={[${notesOn.map((note) => (typeof note === "string" ? `"${note}"` : note)).join(", ")}]}${
-        roundness !== undefined ? `\n  roundness={${roundness}}` : ""
-    }
-  color="${color}"
+    roundness !== undefined ? `\n  roundness={${roundness}}` : ""
+  }${color !== undefined ? `\n  color="${color}"` : ""}
 />`;
 
-    const componentProps = {
-        nbKeys,
-        startKey,
-        octaveShift,
-        notesOn,
-        color,
-        roundness,
-    };
+  const componentProps = {
+    nbKeys,
+    startKey,
+    octaveShift,
+    notesOn,
+    color,
+    roundness,
+    stretch,
+  };
 
-    const properties = [
-        <div key="nbKeys" className="grid gap-2">
-            <Label htmlFor="nbKeysProp">Number of Keys (1-128)</Label>
-            <Input
-                id="nbKeysProp"
-                type="number"
-                min="1"
-                max="128"
-                value={nbKeys}
-                onChange={(e) => setNbKeys(Math.max(1, Math.min(128, Number(e.target.value))))}
-            />
-        </div>,
-        <div key="startKey" className="grid gap-2">
-            <Label htmlFor="startKeyProp">Start Key</Label>
-            <Select value={startKey} onValueChange={(value) => setStartKey(value as NoteName)}>
-                <SelectTrigger id="startKeyProp">
-                    <SelectValue placeholder="Select a start key" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="C">C</SelectItem>
-                    <SelectItem value="D">D</SelectItem>
-                    <SelectItem value="E">E</SelectItem>
-                    <SelectItem value="F">F</SelectItem>
-                    <SelectItem value="G">G</SelectItem>
-                    <SelectItem value="A">A</SelectItem>
-                    <SelectItem value="B">B</SelectItem>
-                </SelectContent>
-            </Select>
-        </div>,
-        <div key="octaveShift" className="grid gap-2">
-            <Label htmlFor="octaveShiftProp">Octave Shift</Label>
-            <Input
-                id="octaveShiftProp"
-                type="number"
-                min="-3"
-                max="3"
-                value={octaveShift}
-                onChange={(e) => setOctaveShift(Math.max(-3, Math.min(3, Number(e.target.value))))}
-            />
-        </div>,
-        <div key="color" className="grid gap-2">
-            <ColorPickerField id="colorProp" label="Color" value={color} onChange={setColor} />
-        </div>,
-        <div key="roundness" className="grid gap-2">
-            <Label htmlFor="roundnessProp">Roundness (optional)</Label>
-            <Input
-                id="roundnessProp"
-                type="number"
-                min="0"
-                max="50"
-                value={roundness ?? ""}
-                placeholder="theme"
-                onChange={(e) => {
-                    const nextValue = e.target.value === "" ? undefined : Math.max(0, Math.min(50, Number(e.target.value)));
-                    setRoundness(nextValue);
-                }}
-            />
-        </div>,
-    ];
+  const properties = [
+    <div key="nbKeys" className="grid gap-2">
+      <Label htmlFor="nbKeysProp">Number of Keys (1-128)</Label>
+      <Input
+        id="nbKeysProp"
+        type="number"
+        min="1"
+        max="128"
+        value={nbKeys}
+        onChange={(e) => setNbKeys(Math.max(1, Math.min(128, Number(e.target.value))))}
+      />
+    </div>,
+    <div key="startKey" className="grid gap-2">
+      <Label htmlFor="startKeyProp">Start Key</Label>
+      <Select value={startKey} onValueChange={(value) => setStartKey(value as NoteName)}>
+        <SelectTrigger id="startKeyProp">
+          <SelectValue placeholder="Select a start key" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="C">C</SelectItem>
+          <SelectItem value="D">D</SelectItem>
+          <SelectItem value="E">E</SelectItem>
+          <SelectItem value="F">F</SelectItem>
+          <SelectItem value="G">G</SelectItem>
+          <SelectItem value="A">A</SelectItem>
+          <SelectItem value="B">B</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>,
+    <div key="octaveShift" className="grid gap-2">
+      <Label htmlFor="octaveShiftProp">Octave Shift</Label>
+      <Input
+        id="octaveShiftProp"
+        type="number"
+        min="-3"
+        max="3"
+        value={octaveShift}
+        onChange={(e) => setOctaveShift(Math.max(-3, Math.min(3, Number(e.target.value))))}
+      />
+    </div>,
+    <div key="color" className="grid gap-2">
+      <ColorPickerField id="colorProp" label="Color" value={color} onChange={setColor} />
+    </div>,
+    <div key="roundness" className="grid gap-2">
+      <Label htmlFor="roundnessProp">Roundness (optional)</Label>
+      <Input
+        id="roundnessProp"
+        type="number"
+        min="0"
+        max="50"
+        value={roundness ?? ""}
+        placeholder="theme"
+        onChange={(e) => {
+          const nextValue = e.target.value === "" ? undefined : Math.max(0, Math.min(50, Number(e.target.value)));
+          setRoundness(nextValue);
+        }}
+      />
+    </div>,
+  ];
 
-    // Initialize WebMIDI
-    useEffect(() => {
+  const examples = [
+    <Keybed key="0" nbKeys={61} startKey="C" onClick={() => handleExampleClick(0)} />,
+    <Keybed key="1" nbKeys={88} startKey="A" color="#ff3366" roundness={4} onClick={() => handleExampleClick(1)} />,
+    <Keybed key="2" nbKeys={25} startKey="C" color="#33cc66" roundness={8} onClick={() => handleExampleClick(2)} />,
+  ];
+
+  // Initialize WebMIDI
+  useEffect(() => {
         if (typeof navigator.requestMIDIAccess !== "function") {
             setWebMidiSupported(false);
             return;
@@ -220,6 +285,7 @@ export default function KeybedPage() {
                 PageComponent={Keybed}
                 componentProps={componentProps}
                 properties={properties}
+                examples={examples}
             />
 
             {/* Right Column - Original Keybed Page Content */}
@@ -262,49 +328,49 @@ export default function KeybedPage() {
                     <div>
                         <h2 className="text-xl md:text-2xl font-medium mb-4">Keybed Sizes</h2>
                         <div className="flex flex-col flex-wrap gap-4 mb-6">
-                            <Keybed
+                            <DemoKeybed
                                 nbKeys={nbKeys}
                                 startKey={startKey}
                                 octaveShift={octaveShift}
                                 notesOn={notesOn}
                                 size="xsmall"
-                                color="#3399ff" // Blue
+                                color={color || "#3399ff"} // Blue
                                 roundness={roundness}
                             />
-                            <Keybed
+                            <DemoKeybed
                                 nbKeys={nbKeys}
                                 startKey={startKey}
                                 octaveShift={octaveShift}
                                 notesOn={notesOn}
                                 size="small"
-                                color="#ff3366" // Pink
+                                color={color || "#ff3366"} // Pink
                                 roundness={roundness}
                             />
-                            <Keybed
+                            <DemoKeybed
                                 nbKeys={nbKeys}
                                 startKey={startKey}
                                 octaveShift={octaveShift}
                                 notesOn={notesOn}
                                 size="normal"
-                                color="#33cc66" // Green
+                                color={color || "#33cc66"} // Green
                                 roundness={roundness}
                             />
-                            <Keybed
+                            <DemoKeybed
                                 nbKeys={nbKeys}
                                 startKey={startKey}
                                 octaveShift={octaveShift}
                                 notesOn={notesOn}
                                 size="large"
-                                color="#9966ff" // Purple
+                                color={color || "#9966ff"} // Purple
                                 roundness={roundness}
                             />
-                            <Keybed
+                            <DemoKeybed
                                 nbKeys={nbKeys}
                                 startKey={startKey}
                                 octaveShift={octaveShift}
                                 notesOn={notesOn}
                                 size="xlarge"
-                                color="#ff9933" // Orange
+                                color={color || "#ff9933"} // Orange
                                 roundness={roundness}
                             />
                         </div>
