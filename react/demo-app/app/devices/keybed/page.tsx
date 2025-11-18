@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
-import { ColorPicker } from "@/components/ui/color-picker";
+import { ColorPickerField } from "@/components/ui/ColorPickerField";
 
 // Define the NoteName type to match the one in the Keybed component
 type NoteName = "C" | "D" | "E" | "F" | "G" | "A" | "B";
@@ -87,7 +87,7 @@ export default function KeybedPage() {
             />
         </div>,
         <div key="color" className="grid gap-2">
-            <ColorPicker id="colorProp" label="Color" value={color} onChange={setColor} />
+            <ColorPickerField id="colorProp" label="Color" value={color} onChange={setColor} />
         </div>,
         <div key="roundness" className="grid gap-2">
             <Label htmlFor="roundnessProp">Roundness (optional)</Label>

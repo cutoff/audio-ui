@@ -6,7 +6,7 @@ import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ColorPicker } from "@/components/ui/color-picker";
+import { ColorPickerField } from "@/components/ui/ColorPickerField";
 
 export type SliderPageProps = {
     orientation: "horizontal" | "vertical";
@@ -113,7 +113,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
             </Label>
         </div>,
         <div key="color" className="grid gap-2">
-            <ColorPicker id="colorProp" label="Color" value={color} onChange={setColor} />
+            <ColorPickerField id="colorProp" label="Color" value={color} onChange={setColor} />
         </div>,
     ];
 

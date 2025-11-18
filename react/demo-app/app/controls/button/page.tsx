@@ -5,7 +5,7 @@ import { Button } from "@cutoff/audio-ui-react";
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ColorPicker } from "@/components/ui/color-picker";
+import { ColorPickerField } from "@/components/ui/ColorPickerField";
 
 export default function Page() {
     const [value, setValue] = useState(0);
@@ -107,7 +107,7 @@ export default function Page() {
             </div>
         </div>,
         <div key="color" className="grid gap-2">
-            <ColorPicker id="colorProp" label="Color" value={color} onChange={setColor} />
+            <ColorPickerField id="colorProp" label="Color" value={color} onChange={setColor} />
         </div>,
     ];
 

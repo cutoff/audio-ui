@@ -86,12 +86,16 @@ export const ColorPicker = ({
   // Update color when controlled value changes
   useEffect(() => {
     if (value) {
-      const color = Color.rgb(value).rgb().object();
-
-      setHue(color.r);
-      setSaturation(color.g);
-      setLightness(color.b);
-      setAlpha(color.a);
+      try {
+        const color = Color(value);
+        const [h, s, l] = color.hsl().array();
+        setHue(h);
+        setSaturation(s);
+        setLightness(l);
+        setAlpha(color.alpha() * 100);
+      } catch (e) {
+        // ignore invalid color string
+      }
     }
   }, [value]);
 

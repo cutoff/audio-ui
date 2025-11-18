@@ -7,7 +7,7 @@ import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ColorPicker } from "@/components/ui/color-picker";
+import { ColorPickerField } from "@/components/ui/ColorPickerField";
 
 // Define a simple MIDI bipolar formatter function for the demo
 // This will be replaced by the library's midiBipolarFormatter when it's available
@@ -280,7 +280,7 @@ export default function KnobDemoPage() {
             />
         </div>,
         <div key="color" className="grid gap-2">
-            <ColorPicker id="colorProp" label="Color" value={color} onChange={setColor} />
+            <ColorPickerField id="colorProp" label="Color" value={color} onChange={setColor} />
         </div>,
         <div key="bipolar" className="flex items-center gap-2 pt-2">
             <Checkbox id="bipolarProp" checked={bipolar} onCheckedChange={(checked) => setBipolar(checked === true)} />
