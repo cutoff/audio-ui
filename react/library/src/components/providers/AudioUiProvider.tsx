@@ -1,26 +1,26 @@
 "use client";
 
-import { createContext, ReactNode, useContext, useMemo, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
 import { Themable } from "../types";
+import { getAdaptiveDefaultColor, isDarkMode } from "../utils/colorUtils";
 
 /**
- * Theme context type extending Themable with setter functions
+ * Theme context type with setter functions
  */
-interface ThemeContextType extends Themable {
-    /**
-     * Set the primary color
-     */
+interface ThemeContextType {
+    color: string | undefined;
+    roundness: number;
+    isDarkMode: boolean;
     setColor: (color: string) => void;
-    /**
-     * Set the roundness value
-     */
     setRoundness: (roundness: number) => void;
 }
 
 // Create context with default values
+// Note: color will be resolved to adaptive default if not provided
 const ThemeContext = createContext<ThemeContextType>({
-    color: "var(--primary-color)",
+    color: undefined,
     roundness: 12,
+    isDarkMode: false,
     setColor: () => {},
     setRoundness: () => {},
 });
@@ -34,8 +34,8 @@ export interface AudioUiProviderProps {
      */
     children: ReactNode;
     /**
-     * Initial color value
-     * @default "blue"
+     * Initial color value (any valid CSS color value)
+     * @default undefined (uses adaptive default: white in dark mode, black in light mode)
      */
     initialColor?: string;
     /**
@@ -56,9 +56,45 @@ export interface AudioUiProviderProps {
  * </AudioUiProvider>
  * ```
  */
-export function AudioUiProvider({ children, initialColor = "var(--primary-color)", initialRoundness = 12 }: AudioUiProviderProps) {
-    const [color, setColor] = useState<string>(initialColor);
+export function AudioUiProvider({ children, initialColor, initialRoundness = 12 }: AudioUiProviderProps) {
+    const [color, setColor] = useState<string | undefined>(initialColor);
     const [roundness, setRoundness] = useState<number>(initialRoundness);
+
+    // Track color mode at provider level - shared across all components
+    // This prevents creating multiple MutationObservers and MediaQueryList listeners
+    const [isDarkModeState, setIsDarkModeState] = useState(() => {
+        if (typeof window === "undefined") return false;
+        return isDarkMode();
+    });
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+
+        // Function to check and update mode
+        const checkMode = () => {
+            setIsDarkModeState(isDarkMode());
+        };
+
+        // Check mode on mount
+        checkMode();
+
+        // Listen for class changes on document element (shared observer for all components)
+        const observer = new MutationObserver(checkMode);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["class"],
+        });
+
+        // Listen for system preference changes (shared listener for all components)
+        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+        const handleChange = () => checkMode();
+        mediaQuery.addEventListener("change", handleChange);
+
+        return () => {
+            observer.disconnect();
+            mediaQuery.removeEventListener("change", handleChange);
+        };
+    }, []);
 
     // Memoize the context value to prevent unnecessary re-renders
     const contextValue = useMemo(
@@ -67,8 +103,9 @@ export function AudioUiProvider({ children, initialColor = "var(--primary-color)
             roundness,
             setColor,
             setRoundness,
+            isDarkMode: isDarkModeState, // Expose mode to consumers
         }),
-        [color, roundness]
+        [color, roundness, isDarkModeState]
     );
 
     return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
@@ -97,6 +134,10 @@ export function useAudioUiTheme() {
  * 1. Use component prop if provided
  * 2. Use theme context value if available
  * 3. Fall back to the provided default value
+ * 4. Final fallback to adaptive default (white in dark mode, black in light mode)
+ *
+ * This hook automatically re-renders components when color mode or theme color changes
+ * via the shared context (no per-component observers).
  *
  * @param props The component props that may include themable properties
  * @param defaultValues Default values to use as final fallback
@@ -106,7 +147,7 @@ export function useAudioUiTheme() {
  * ```tsx
  * const { resolvedColor, resolvedRoundness } = useThemableProps(
  *   { color, roundness },
- *   { color: "blue", roundness: 12 }
+ *   { color: undefined, roundness: 12 }
  * );
  * ```
  */
@@ -116,11 +157,16 @@ export function useThemableProps(
 ): { resolvedColor: string; resolvedRoundness: number | undefined } {
     const themeContext = useAudioUiTheme();
 
-    // Since defaultValues.color could be undefined, provide a final fallback to the current theme token
-    const resolvedColor = props.color ?? themeContext.color ?? defaultValues.color ?? "var(--primary-color)";
+    // Memoize resolved color to prevent unnecessary recalculations
+    // Only recompute when inputs actually change
+    const resolvedColor = useMemo(() => {
+        return props.color ?? themeContext.color ?? defaultValues.color ?? getAdaptiveDefaultColor();
+    }, [props.color, themeContext.color, defaultValues.color, themeContext.isDarkMode]);
 
-    // resolvedRoundness can be undefined if it's meant to be calculated dynamically
-    const resolvedRoundness = props.roundness ?? themeContext.roundness ?? defaultValues.roundness;
+    // Memoize resolved roundness
+    const resolvedRoundness = useMemo(() => {
+        return props.roundness ?? themeContext.roundness ?? defaultValues.roundness;
+    }, [props.roundness, themeContext.roundness, defaultValues.roundness]);
 
     return { resolvedColor, resolvedRoundness };
 }

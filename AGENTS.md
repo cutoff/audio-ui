@@ -106,6 +106,7 @@ Implications: No JS; smooth; zoomable; event handling unchanged.
 -   Mapping: --primary-color to default (black-ish light, white-ish dark)
 -   Classes: .stroke/fill/border/text -primary, -50, -20; prefer .border-primary
 -   Provider: AudioUiProvider defaults color; useThemableProps fallback
+-   **Comprehensive Documentation**: See `react/library/docs/color-system.md` for complete color system architecture, and `react/playground-app/docs/color-integration.md` for playground integration details
 
 ## ESLint/Prettier
 
@@ -133,3 +134,15 @@ Agents docs are living documentation; update continuously for agent efficiency. 
 
 -   `./react/library/AGENTS.md`: Library specifics (exports, build, env); created.
 -   `./react/playground-app/AGENTS.md`: Playground app details (routing, integrations, env); created.
+
+## Documentation Files
+
+### Library Documentation
+
+-   `react/library/docs/color-system.md`: Comprehensive color system documentation covering CSS theme variables, color utilities, component color resolution, theme provider system, and usage examples.
+-   `react/library/docs/color-property-examples.md`: Practical examples of using the `color` property with components, including animations and dynamic colors.
+-   `react/library/docs/adaptive-box-layout.md`: AdaptiveBox component layout system documentation.
+
+### Playground Documentation
+
+-   `react/playground-app/docs/color-integration.md`: How the playground app integrates with the library's color system, including provider setup, sidebar theme controls, and CSS integration.

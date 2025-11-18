@@ -1,14 +1,15 @@
 # Color Property Usage Examples
 
-This document provides examples of how to use the new `color` property with the Audio UI components.
+> **Note**: For comprehensive documentation on the color system architecture, theme variables, color utilities, and playground integration, see [Color System Documentation](./color-system.md).
+
+This document provides practical examples of how to use the `color` property with the Audio UI components.
 
 ## Basic Usage
 
-All components now accept a `color` property that can be any valid CSS color value. If not specified, the default color
-is "blue".
+All components accept a `color` property that can be any valid CSS color value. If not specified, components use the theme color from `AudioUiProvider`, or fall back to the adaptive default (white in dark mode, black in light mode).
 
 ```tsx
-// Using the default blue color
+// Using adaptive default (inherits from theme or uses adaptive default)
 <Button value={75} label="Power"/>
 
 // Using a named color
@@ -21,11 +22,11 @@ is "blue".
 <Button value={100} label="Mode" color="rgb(120, 80, 200)"/>
 
 // Using HSL
-<KnobSwitch value="sine" label="Waveform" color="hsl(280, 80%, 60%)">
-    <KnobSwitch.Option value="sine">Sine</KnobSwitch.Option>
-    <KnobSwitch.Option value="square">Square</KnobSwitch.Option>
-    <KnobSwitch.Option value="saw">Saw</KnobSwitch.Option>
-</KnobSwitch>
+<Knob value={50} label="Volume" color="hsl(280, 80%, 60%)"/>
+
+// Using predefined theme color
+import { themeColors } from '@cutoff/audio-ui-react';
+<Button value={75} label="Power" color={themeColors.blue}/>
 ```
 
 ## Color Animation

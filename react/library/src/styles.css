@@ -3,32 +3,13 @@
 :root {
     --text-color: hsl(0, 0%, 10%);
     --bg-color: hsl(0, 0%, 7%);
-
-    /* Default theme mapping (shadcn-like adaptive default) */
-    --primary-color: var(--theme-default-primary);
-    --primary-color-50: var(--theme-default-primary-50);
-    --primary-color-20: var(--theme-default-primary-20);
-
     --default-font-size: 14px;
+    /* --primary-color is optional - users can set it if they want to use utility classes */
 }
 
 /* Dark mode text color */
 .dark {
     --text-color: hsl(0, 0%, 96%);
-
-    /*color: var(--text-color);*/
-    /*background-color: var(--bg-color);*/
-
-    /*font-family: var(--default-font-family);*/
-    /*font-size: var(--default-font-size);*/
-    /*line-height: 24px;*/
-    /*font-weight: 400;*/
-
-    /*font-synthesis: none;*/
-    /*text-rendering: optimizeLegibility;*/
-    /*-webkit-font-smoothing: subpixel-antialiased;*/
-    /*-moz-osx-font-smoothing: grayscale;*/
-    /*-webkit-text-size-adjust: 100%;*/
 }
 
 textarea input {
@@ -51,7 +32,6 @@ svg foreignObject div {
 }
 
 .componentContainer {
-    /*background-color: #ffffff20;*/
     height: auto;
     max-width: 100%;
     max-height: 100%;
@@ -63,34 +43,28 @@ svg foreignObject div {
 
 .highlight {
     will-change: filter;
-    transition: filter 300ms;
-    /*cursor: url(assets/cursor-vscroll.png), ns-resize;*/
+    /* Fast transition for realtime audio UI - instant feedback preferred */
+    transition: filter 50ms linear;
+    cursor: pointer;
 }
 
 .highlight:hover {
-    filter: brightness(125%) hue-rotate(10deg) drop-shadow(0 0 1ex var(--primary-color-50));
+    /* Optimized hover effect for edition mode */
+    /* Brightness and contrast boost for better visibility */
+    filter: brightness(1.15) contrast(1.05) 
+            /* Subtle glow using primary color if available, otherwise adaptive text color */
+            drop-shadow(0 0 0.5em color-mix(in srgb, var(--primary-color, var(--text-color)) 35%, transparent));
 }
 
 /* Prevent blur effect from affecting text elements */
-.highlight:hover text {
+.highlight:hover text,
+.highlight:hover foreignObject {
     filter: none;
 }
 
-/* Ensure consistent blur effect between light and dark modes */
-.dark .highlight:hover {
-    filter: brightness(125%) hue-rotate(10deg) drop-shadow(0 0 1ex var(--primary-color-50));
-}
-
+/* Base utility classes - only work if --primary-color is set by user */
 .stroke-primary {
     stroke: var(--primary-color);
-}
-
-.stroke-primary-50 {
-    stroke: var(--primary-color-50);
-}
-
-.stroke-primary-20 {
-    stroke: var(--primary-color-20);
 }
 
 .fill-text {
@@ -101,27 +75,21 @@ svg foreignObject div {
     fill: var(--primary-color);
 }
 
-.fill-primary-50 {
-    fill: var(--primary-color-50);
-}
-
-.fill-primary-20 {
-    fill: var(--primary-color-20);
-}
-
 .fill-transparent {
     fill: transparent;
 }
 
 /* Border utilities */
-.border-primary { border-color: var(--primary-color); }
-.border-primary-50 { border-color: var(--primary-color-50); }
-.border-primary-20 { border-color: var(--primary-color-20); }
+.border-primary {
+    border-color: var(--primary-color);
+}
 
 /* Back-compat alias for demo markup */
-.border-primary-color { border-color: var(--primary-color); }
+.border-primary-color {
+    border-color: var(--primary-color);
+}
 
 /* Text color utilities */
-.text-primary { color: var(--primary-color); }
-.text-primary-50 { color: var(--primary-color-50); }
-.text-primary-20 { color: var(--primary-color-20); }
+.text-primary {
+    color: var(--primary-color);
+}

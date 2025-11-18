@@ -1,65 +1,33 @@
 :root {
+    /* Predefined theme colors - just the primary color */
+    /* Variants (primary50, primary20) are computed automatically by components */
+    
     /* Default theme — adaptive like shadcn: dark ink on light, light ink on dark */
-    /* Light mode defaults (overridden in .dark below) */
-    --theme-default-primary: hsl(0, 0%, 10%);   /* near-black */
-    --theme-default-primary-50: hsl(0, 0%, 70%); /* lighter accent for fills */
-    --theme-default-primary-20: hsl(0, 0%, 85%); /* very light for borders */
-
-    /* Adjusted light-mode tones for named themes; dark-mode tokens remain unchanged */
-    --theme-blue-primary: hsl(204, 88%, 52%);
-    --theme-blue-primary-50: hsl(204, 80%, 34%);
-    --theme-blue-primary-20: hsl(204, 70%, 22%);
-
-    --theme-orange-primary: hsl(29, 100%, 48%);
-    --theme-orange-primary-50: hsl(29, 90%, 32%);
-    --theme-orange-primary-20: hsl(29, 80%, 20%);
-
-    --theme-pink-primary: hsl(332, 92%, 52%);
-    --theme-pink-primary-50: hsl(332, 80%, 34%);
-    --theme-pink-primary-20: hsl(332, 72%, 22%);
-
-    --theme-green-primary: hsl(160, 95%, 44%);
-    --theme-green-primary-50: hsl(160, 85%, 30%);
-    --theme-green-primary-20: hsl(160, 75%, 20%);
-
-    --theme-purple-primary: hsl(252, 96%, 54%);
-    --theme-purple-primary-50: hsl(252, 85%, 36%);
-    --theme-purple-primary-20: hsl(252, 75%, 24%);
-
-    --theme-yellow-primary: hsl(50, 100%, 50%);
-    --theme-yellow-primary-50: hsl(50, 90%, 35%);
-    --theme-yellow-primary-20: hsl(50, 80%, 24%);
+    --theme-default: hsl(0, 0%, 10%); /* Light mode: near-black */
+    /* CSS variable for adaptive default - resolves correctly on both server and client */
+    --adaptive-default-color: var(--theme-default);
+    
+    /* Named color themes */
+    --theme-blue: hsl(204, 88%, 52%);
+    --theme-orange: hsl(29, 100%, 48%);
+    --theme-pink: hsl(332, 92%, 52%);
+    --theme-green: hsl(160, 95%, 44%);
+    --theme-purple: hsl(252, 96%, 54%);
+    --theme-yellow: hsl(50, 100%, 50%);
 }
 
-/* Dark mode overrides (adaptive accents) */
+/* Dark mode overrides */
 .dark {
     /* Default theme — near-white ink in dark mode */
-    --theme-default-primary: hsl(0, 0%, 96%);
-    --theme-default-primary-50: hsl(0, 0%, 70%);
-    --theme-default-primary-20: hsl(0, 0%, 50%);
-
-    --theme-orange-primary: hsl(29, 100%, 50%);
-    --theme-orange-primary-50: hsl(29, 100%, 23%);
-    --theme-orange-primary-20: hsl(29, 100%, 10%);
-
-    --theme-blue-primary: hsl(204, 88%, 53%);
-    --theme-blue-primary-50: hsl(204, 88%, 25%);
-    --theme-blue-primary-20: hsl(204, 88%, 10%);
-
-    --theme-pink-primary: hsl(332, 95%, 54%);
-    --theme-pink-primary-50: hsl(332, 95%, 25%);
-    --theme-pink-primary-20: hsl(332, 95%, 10%);
-
-    --theme-green-primary: hsl(160, 98%, 37%);
-    --theme-green-primary-50: hsl(160, 98%, 20%);
-    --theme-green-primary-20: hsl(160, 98%, 10%);
-
-    --theme-purple-primary: hsl(252, 100%, 67%);
-    --theme-purple-primary-50: hsl(252, 100%, 30%);
-    --theme-purple-primary-20: hsl(252, 100%, 10%);
-
-    --theme-yellow-primary: hsl(50, 100%, 50%);
-    --theme-yellow-primary-50: hsl(50, 100%, 23%);
-    --theme-yellow-primary-20: hsl(50, 100%, 10%);
-
+    --theme-default: hsl(0, 0%, 96%);
+    /* Adaptive default updates automatically via CSS variable */
+    --adaptive-default-color: var(--theme-default);
+    
+    /* Named color themes (can have dark mode variants if needed) */
+    --theme-blue: hsl(204, 88%, 53%);
+    --theme-orange: hsl(29, 100%, 50%);
+    --theme-pink: hsl(332, 95%, 54%);
+    --theme-green: hsl(160, 98%, 37%);
+    --theme-purple: hsl(252, 100%, 67%);
+    --theme-yellow: hsl(50, 100%, 50%);
 }

@@ -8,6 +8,7 @@
 /**
  * Named colors mapping to their HSL values
  * Used as fallbacks for luminosity variants of named colors
+ * Keys are lowercase for O(1) lookup performance
  */
 const namedColors: Record<string, string> = {
     blue: "hsl(204, 88%, 53%)",
@@ -20,17 +21,44 @@ const namedColors: Record<string, string> = {
 };
 
 /**
+ * Pre-compiled regex for HSL parsing (reused to avoid recompilation)
+ */
+const HSL_REGEX = /hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/;
+
+/**
+ * Detects if the current document is in dark mode
+ * @returns true if dark mode is active, false otherwise
+ */
+export function isDarkMode(): boolean {
+    if (typeof window === "undefined") return false;
+    return (
+        document.documentElement.classList.contains("dark") || window.matchMedia("(prefers-color-scheme: dark)").matches
+    );
+}
+
+/**
+ * Gets the adaptive default color (white in dark mode, black in light mode)
+ * Uses a CSS variable to ensure SSR and client render the same value, avoiding hydration mismatches
+ * @returns A CSS color value that adapts to the current color scheme
+ */
+export function getAdaptiveDefaultColor(): string {
+    // Use CSS variable so server and client render the same string
+    // The browser will resolve it correctly based on .dark class
+    return "var(--adaptive-default-color)";
+}
+
+/**
  * Generates a luminosity-based variant of a color
  * @param baseColor The base color (any valid CSS color value)
  * @param luminosityPercentage The percentage of the original luminosity (0-100)
  * @returns A CSS color value with adjusted luminosity
  */
 export function generateLuminosityVariant(baseColor: string, luminosityPercentage: number): string {
-    // Handle named colors with known HSL values
-    const lowerColor = baseColor.toLowerCase();
-    if (lowerColor in namedColors) {
+    // Handle named colors with known HSL values (O(1) lookup)
+    const namedColor = namedColors[baseColor.toLowerCase()];
+    if (namedColor) {
         // Extract the HSL values and adjust luminosity
-        const hslMatch = namedColors[lowerColor].match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+        const hslMatch = namedColor.match(HSL_REGEX);
         if (hslMatch) {
             const h = hslMatch[1];
             const s = hslMatch[2];
@@ -64,15 +92,15 @@ export function generateTransparencyVariant(baseColor: string, opacityPercentage
  * @returns A CSS color value optimized for highlight effects
  */
 export function generateHighlightColor(baseColor: string): string {
-    // Handle special case for named colors to ensure consistent results
-    const lowerColor = baseColor.toLowerCase();
-    if (lowerColor in namedColors) {
-        baseColor = namedColors[lowerColor];
+    // Handle special case for named colors to ensure consistent results (O(1) lookup)
+    const namedColor = namedColors[baseColor.toLowerCase()];
+    if (namedColor) {
+        baseColor = namedColor;
     }
 
     // For highlight effects, we want a slightly brighter and more saturated color
-    // Extract the HSL values if possible
-    const hslMatch = baseColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+    // Extract the HSL values if possible (using pre-compiled regex)
+    const hslMatch = baseColor.match(HSL_REGEX);
     if (hslMatch) {
         const h = parseInt(hslMatch[1], 10);
         const s = Math.min(100, parseInt(hslMatch[2], 10) + 10); // Increase saturation
@@ -99,27 +127,25 @@ export function generateColorVariants(
     primary20: string;
     highlight: string;
 } {
-    // Handle special case for named colors to ensure consistent results
-    const lowerColor = baseColor.toLowerCase();
-    if (lowerColor in namedColors) {
-        baseColor = namedColors[lowerColor];
-    }
+    // Handle special case for named colors to ensure consistent results (O(1) lookup)
+    const namedColor = namedColors[baseColor.toLowerCase()];
+    const normalizedColor = namedColor ?? baseColor;
 
-    // Generate the highlight color
-    const highlight = generateHighlightColor(baseColor);
+    // Generate the highlight color (reuse normalized color)
+    const highlight = generateHighlightColor(normalizedColor);
 
     if (variant === "luminosity") {
         return {
-            primary: baseColor,
-            primary50: generateLuminosityVariant(baseColor, 50),
-            primary20: generateLuminosityVariant(baseColor, 20),
+            primary: normalizedColor,
+            primary50: generateLuminosityVariant(normalizedColor, 50),
+            primary20: generateLuminosityVariant(normalizedColor, 20),
             highlight,
         };
     } else {
         return {
-            primary: baseColor,
-            primary50: generateTransparencyVariant(baseColor, 50),
-            primary20: generateTransparencyVariant(baseColor, 20),
+            primary: normalizedColor,
+            primary50: generateTransparencyVariant(normalizedColor, 50),
+            primary20: generateTransparencyVariant(normalizedColor, 20),
             highlight,
         };
     }

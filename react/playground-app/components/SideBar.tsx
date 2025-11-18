@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { audioUiThemeState } from "@/app/providers";
+import { themeColors } from "@cutoff/audio-ui-react";
 
 // Define types for components and theme colors
 type Page = {
@@ -19,9 +20,9 @@ type Page = {
 };
 
 type ThemeColor = {
-    color: string;
+    color: string; // Tailwind class for display
     name: string;
-    cssVar: string;
+    value: string; // CSS color value to use
 };
 
 // List of components to display in the sidebar
@@ -51,14 +52,14 @@ const layoutPages: Page[] = [
 ];
 
 // Theme color options
-const themeColors: ThemeColor[] = [
-    { color: "bg-zinc-900 dark:bg-zinc-50", name: "Default (Adaptive)", cssVar: "--theme-default-primary" },
-    { color: "bg-blue-500", name: "Blue", cssVar: "--theme-blue-primary" },
-    { color: "bg-orange-500", name: "Orange", cssVar: "--theme-orange-primary" },
-    { color: "bg-pink-500", name: "Pink", cssVar: "--theme-pink-primary" },
-    { color: "bg-green-500", name: "Green", cssVar: "--theme-green-primary" },
-    { color: "bg-purple-500", name: "Purple", cssVar: "--theme-purple-primary" },
-    { color: "bg-yellow-500", name: "Yellow", cssVar: "--theme-yellow-primary" },
+const themeColorOptions: ThemeColor[] = [
+    { color: "bg-zinc-900 dark:bg-zinc-50", name: "Default (Adaptive)", value: themeColors.default },
+    { color: "bg-blue-500", name: "Blue", value: themeColors.blue },
+    { color: "bg-orange-500", name: "Orange", value: themeColors.orange },
+    { color: "bg-pink-500", name: "Pink", value: themeColors.pink },
+    { color: "bg-green-500", name: "Green", value: themeColors.green },
+    { color: "bg-purple-500", name: "Purple", value: themeColors.purple },
+    { color: "bg-yellow-500", name: "Yellow", value: themeColors.yellow },
 ];
 
 
@@ -66,20 +67,15 @@ const themeColors: ThemeColor[] = [
 export default function SideBar() {
     const pathname = usePathname();
     const { theme, setTheme } = useTheme();
-    const [currentTheme, setCurrentTheme] = useState("--theme-default-primary");
+    const [currentTheme, setCurrentTheme] = useState<string>(themeColors.default);
     const [isOpen, setIsOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
     const [roundnessValue, setRoundnessValue] = useState(12);
 
-    // Function to change theme color
-    const changeTheme = (themeCssVar: string) => {
-        document.documentElement.style.setProperty("--primary-color", `var(${themeCssVar})`);
-        document.documentElement.style.setProperty("--primary-color-50", `var(${themeCssVar}-50)`);
-        document.documentElement.style.setProperty("--primary-color-20", `var(${themeCssVar}-20)`);
-        setCurrentTheme(themeCssVar);
-
-        // Ensure inline-colored components derive from the current primary CSS variable
-        audioUiThemeState.current.setColor("var(--primary-color)");
+    // Function to change theme color - just set the color value, variants are computed automatically
+    const changeTheme = (themeColor: string) => {
+        setCurrentTheme(themeColor);
+        audioUiThemeState.current.setColor(themeColor);
     };
 
     // Function to change roundness
@@ -97,8 +93,8 @@ export default function SideBar() {
 
     // Set initial theme when component mounts
     useEffect(() => {
-        // Use the new adaptive default theme by default
-        changeTheme("--theme-default-primary");
+        // Use the adaptive default theme by default
+        changeTheme(themeColors.default);
         // Set mounted to true after component mounts to avoid hydration issues
         setMounted(true);
     }, []);
@@ -225,10 +221,10 @@ export default function SideBar() {
                                 <SelectValue placeholder="Select theme" />
                             </SelectTrigger>
                             <SelectContent>
-                                {themeColors.map((themeColor) => (
+                                {themeColorOptions.map((themeColor) => (
                                     <SelectItem
-                                        key={themeColor.cssVar}
-                                        value={themeColor.cssVar}
+                                        key={themeColor.value}
+                                        value={themeColor.value}
                                         className="inline-flex items-center"
                                     >
                                         <div

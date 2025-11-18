@@ -52,3 +52,6 @@ export {
     isNoteOn,
     createNoteNumSet,
 } from "./components/utils/noteUtils";
+
+// Export theme colors
+export { themeColors, themeColorsDirect } from "./themeColors";

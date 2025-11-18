@@ -114,7 +114,7 @@ const Slider = ({
     // For Slider, the default roundness is dynamic based on dimensions, so we pass undefined
     const { resolvedColor, resolvedRoundness } = useThemableProps(
         { color, roundness },
-        { color: "blue", roundness: undefined }
+        { color: undefined, roundness: undefined }
     );
 
     // Calculate normalized value (0 to 1)

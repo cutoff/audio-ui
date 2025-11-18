@@ -99,7 +99,7 @@ function Button({
     // Use the themable props hook to resolve color and roundness with proper fallbacks
     const { resolvedColor, resolvedRoundness } = useThemableProps(
         { color, roundness },
-        { color: "blue", roundness: 10 }
+        { color: undefined, roundness: 10 }
     );
 
     // Ref to track if the button is currently pressed (for momentary mode)

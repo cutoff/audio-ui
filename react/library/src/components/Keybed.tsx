@@ -191,7 +191,7 @@ function Keybed({
     }, [validNbKeys, startKey]);
 
     // Use the themable props hook to resolve color and roundness with proper fallbacks
-    const defaultThemableProps = useMemo(() => ({ color: "blue", roundness: 0 }), []);
+    const defaultThemableProps = useMemo(() => ({ color: undefined, roundness: 0 }), []);
     const { resolvedColor, resolvedRoundness } = useThemableProps({ color, roundness }, defaultThemableProps);
 
     // Generate color variants using the centralized utility

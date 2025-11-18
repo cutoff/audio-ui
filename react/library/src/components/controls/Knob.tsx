@@ -99,7 +99,7 @@ function Knob({
     // Use the themable props hook to resolve color and roundness with proper fallbacks
     const { resolvedColor, resolvedRoundness } = useThemableProps(
         { color, roundness },
-        { color: "blue", roundness: 12 }
+        { color: undefined, roundness: 12 }
     );
 
     // Calculate normalized value (0 to 1)
