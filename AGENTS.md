@@ -1,4 +1,4 @@
-**Version**: 2.0 | **Meta**: React component library for audio and MIDI applications; no BC needed (never released); monorepo structure with library and demo-app.
+**Version**: 2.0 | **Meta**: React component library for audio and MIDI applications; no BC needed (never released); monorepo structure with library and playground-app.
 
 **IMPORTANT: Documentation File Structure**
 
@@ -20,7 +20,7 @@
 | UI Components       | Use shadcn/ui; add with `pnpm dlx shadcn@latest add [component]`; no custom if shadcn available; no alter                                                                                                                                     |
 | Testing             | Vitest; files `.test.tsx` alongside; mock deps; React 18 compat                                                                                                                                                                               |
 | Build               | Library: Vite with TS decl; demo: Next.js 15 with Turbopack; run `pnpm build && pnpm typecheck`                                                                                                                                               |
-| Dev Server          | Run `pnpm dev` at root for development; never in demo-app for testing                                                                                                                                                                         |
+| Dev Server          | Run `pnpm dev` at root for development; never in playground-app for testing                                                                                                                                                                         |
 | Theming             | CSS vars; default adaptive (black light, white dark); utility classes .stroke-primary etc.; named themes blue etc.                                                                                                                            |
 | Components          | Function declarations; props with JSDoc; default params; SVG for graphics                                                                                                                                                                     |
 | Perf                | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveSvgComponent CSS-only)                                                                                                                                                              |
@@ -34,7 +34,7 @@
     -   **Rule:** Every component must have the `"use client";` directive at the top of the file.
     -   **Reason:** Library components are interactive (knobs, sliders) and rely on client-side hooks and browser events. This ensures they work in any host application (CSR, SSR, SSG).
 
--   **`react/demo-app` (Playground Application):** **Server Components by default; Client Components for interactivity.**
+-   **`react/playground-app` (Playground Application):** **Server Components by default; Client Components for interactivity.**
     -   **Purpose:** Internal playground for rapid iteration, visual validation, and manual testing. Not the final documentation site.
     -   **Rule:** Pages (`app/**/page.tsx`) should be Server Components (default, no directive). They are pre-rendered at build time (SSG) for performance.
     -   **Implementation:** To show interactive demos, import the library's Client Components into the Server Component pages. Next.js will handle the client-side hydration automatically. Pages that require hooks for demo controls (e.g., state for knobs) must use the `"use client";` directive.
@@ -42,12 +42,12 @@
 ## Documentation Strategy (Web Monorepo)
 
 -   Final public documentation lives in a separate website monorepo (Next.js) with MDX-based, developer-oriented docs that embed live components.
--   This repo's `react/demo-app` is a playground, not the docs source. Keep playground focused on iteration and testing; mirror finalized examples into the docs site when stable.
+-   This repo's `react/playground-app` is a playground, not the docs source. Keep playground focused on iteration and testing; mirror finalized examples into the docs site when stable.
 
 ## Project Structure
 
 -   `react/library/`: Component library; src/, dist/; Vite build; React 18 peer
--   `react/demo-app/`: Next.js demo; showcases components; app/components for pages (inferred)
+-   `react/playground-app/`: Next.js playground; showcases components; app/components for pages (inferred)
 -   `agents/`: Shared conventions (coding-conventions-2.0.md, typescript-guidelines-2.0.md, react-conventions-2.0.md, documentation-standards-2.0.md)
 -   `react/library/docs/`: Specialized tech docs (e.g., adaptive-box-layout.md)
 -   Sub-AGENTS.md: Optional extensions for details
@@ -55,10 +55,10 @@
 ## Agent Workflow Template
 
 1. Load root AGENTS.md.
-2. Read sub-AGENTS.md for specifics (library/demo).
+2. Read sub-AGENTS.md for specifics (library/playground).
 3. Consult `agents/` for conventions.
 4. Use tools: `pnpm typecheck/build/test`; edit code; run diagnostics.
-5. Test in demo app.
+5. Test in playground app.
 6. Update docs if needed.
 
 ## Version Compatibility Troubleshooting
@@ -132,4 +132,4 @@ Agents docs are living documentation; update continuously for agent efficiency. 
 ## Sub-File Summaries
 
 -   `./react/library/AGENTS.md`: Library specifics (exports, build, env); created.
--   `./react/demo-app/AGENTS.md`: Demo app details (routing, integrations, env); created.
+-   `./react/playground-app/AGENTS.md`: Playground app details (routing, integrations, env); created.

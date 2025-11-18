@@ -82,7 +82,7 @@ The project is organized as a monorepo with the following structure:
     - `library/` - The component library
         - `src/` - Source code for the components
         - `dist/` - Built output (generated)
-    - `demo-app/` - Next.js application for demonstrating the components
+    - `playground-app/` - Next.js application for demonstrating the components
 
 ## Build/Configuration Instructions
 
@@ -98,9 +98,9 @@ The project is organized as a monorepo with the following structure:
    pnpm build
    ```
 
-3. Run the demo application:
+3. Run the playground application:
    ```bash
-   cd react/demo-app
+   cd react/playground-app
    pnpm dev
    ```
 
@@ -141,8 +141,8 @@ pnpm install
 # Build the library
 pnpm build
 
-# Run the demo application
-cd demo-app
+# Run the playground application
+cd playground-app
 pnpm dev
 ```
 
@@ -185,8 +185,8 @@ pnpm ls react @types/react
 cd react/library
 pnpm build
 
-# Test changes in demo app
-cd ../demo-app
+# Test changes in playground app
+cd ../playground-app
 pnpm dev
 ```
 
@@ -199,8 +199,8 @@ Always run TypeScript checks before committing:
 cd react/library
 pnpm typecheck
 
-# Check demo app types
-cd ../demo-app
+# Check playground app types
+cd ../playground-app
 pnpm exec tsc --noEmit
 ```
 
@@ -253,11 +253,11 @@ If you encounter TypeScript errors related to React types:
 - **Styling**: CSS and theme files in `src/styles.css` and `src/themes.css`
 - **Types**: TypeScript definitions alongside components
 
-### Demo App Structure
+### Playground App Structure
 
 - **Pages**: Component demos in `app/components/[component]/page.tsx`
 - **Shared UI**: Reusable demo components in `components/ui/`
-- **Styling**: Tailwind CSS for demo app specific styling
+- **Styling**: Tailwind CSS for playground app specific styling
 
 ## Performance
 

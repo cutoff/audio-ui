@@ -21,8 +21,8 @@ npm install
 # Build the library
 npm run build
 
-# Start the demo application
-cd demo-app
+# Start the playground application
+cd playground-app
 npm run dev
 ```
 
@@ -38,7 +38,7 @@ react/
 │   │   └── themes.css    # Theme definitions
 │   ├── dist/             # Built output
 │   └── package.json
-└── demo-app/          # Next.js demo application
+└── playground-app/          # Next.js playground application
     ├── app/
     │   └── components/   # Demo pages
     ├── components/       # Demo UI components
@@ -70,7 +70,7 @@ npm link
 
 ```bash
 # Navigate to demo app directory
-cd react/demo-app
+cd react/playground-app
 
 # Install dependencies
 npm install
@@ -112,7 +112,7 @@ npm run typecheck      # Type checking only
 ### Demo App Build
 
 ```bash
-cd react/demo-app
+cd react/playground-app
 npm run build          # Build Next.js app
 npm run start          # Start production server
 ```
@@ -123,7 +123,7 @@ npm run start          # Start production server
 
 1. Create component file in `library/src/components/`
 2. Export from `library/src/index.ts`
-3. Add demo page in `demo-app/app/components/[component-name]/page.tsx`
+3. Add demo page in `playground-app/app/components/[component-name]/page.tsx`
 4. Update library build and test
 
 ### Component Guidelines
@@ -161,11 +161,11 @@ npm ls react @types/react
 npm run typecheck  # Shows detailed error information
 ```
 
-**Demo app not updating**: Rebuild library first
+**Playground app not updating**: Rebuild library first
 
 ```bash
 cd react/library && npm run build
-cd ../demo-app && npm run dev
+cd ../playground-app && npm run dev
 ```
 
 ## Contributing
