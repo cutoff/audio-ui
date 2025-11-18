@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useCallback } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "./support/AdaptiveBox";
 import { AdaptativeSize, Base, Themable } from "./types";
@@ -164,6 +164,8 @@ function Keybed({
         const outerStrokeWidth = 2;
         const innerStrokeWidth = 2;
 
+        const halfInnerStrokeWidth = innerStrokeWidth / 2;
+
         // Calculate total width
         const width = nbWhite * whiteWidth;
 
@@ -184,11 +186,13 @@ function Keybed({
             innerStrokeWidth,
             width,
             blackPass,
+            halfInnerStrokeWidth,
         };
     }, [validNbKeys, startKey]);
 
     // Use the themable props hook to resolve color and roundness with proper fallbacks
-    const { resolvedColor, resolvedRoundness } = useThemableProps({ color, roundness }, { color: "blue", roundness: 0 });
+    const defaultThemableProps = useMemo(() => ({ color: "blue", roundness: 0 }), []);
+    const { resolvedColor, resolvedRoundness } = useThemableProps({ color, roundness }, defaultThemableProps);
 
     // Generate color variants using the centralized utility
     const colorVariants = useMemo(() => {
@@ -212,17 +216,19 @@ function Keybed({
     }, [startKey]);
 
     // Create a memoized function to check if a note is active
-    const isNoteActive = useMemo(() => {
-        return (note: string) => {
+    const isNoteActive = useCallback(
+        (note: string) => {
             // If it's a string note, convert to MIDI note number and check if it's in the set
             const noteNum = noteToNoteNum(note);
             return noteNum !== -1 && activeNoteNumSet.has(noteNum);
-        };
-    }, [activeNoteNumSet]);
+        },
+        [activeNoteNumSet]
+    );
 
     // Memoize white keys rendering
     const renderWhiteKeys = useMemo(() => {
-        const { nbWhite, startKeyIndex, startOctave, whiteWidth, whiteHeight, innerStrokeWidth } = keybedDimensions;
+        const { nbWhite, startKeyIndex, startOctave, whiteWidth, whiteHeight, innerStrokeWidth, halfInnerStrokeWidth } =
+            keybedDimensions;
 
         // Get the chromatic index of the start key
         const startKeyChromatic = DIATONIC_TO_CHROMATIC[startKey];
@@ -254,15 +260,15 @@ function Keybed({
                         fill: isNoteActive(currentWhiteNote) ? colorVariants.primary : "transparent",
                     }}
                     strokeWidth={innerStrokeWidth}
-                    x={index * whiteWidth}
-                    y={0}
+                    x={index * whiteWidth + halfInnerStrokeWidth}
+                    y={halfInnerStrokeWidth}
                     width={whiteWidth}
                     height={whiteHeight}
-                    rx={resolvedRoundness}
+                    rx={resolvedRoundness ?? 0}
                 />
             );
         });
-    }, [keybedDimensions, octaveShift, notesOn, startKey, isNoteActive, resolvedRoundness, colorVariants]);
+    }, [keybedDimensions, octaveShift, isNoteActive, resolvedRoundness, colorVariants]);
 
     // Memoize black keys rendering
     const renderBlackKeys = useMemo(() => {
@@ -275,6 +281,7 @@ function Keybed({
             blackXShift,
             blackHeight,
             innerStrokeWidth,
+            halfInnerStrokeWidth,
         } = keybedDimensions;
 
         // Get the chromatic index of the start key
@@ -317,24 +324,15 @@ function Keybed({
                         fill: isNoteActive(currentBlackNote) ? colorVariants.primary : colorVariants.primary50,
                     }}
                     strokeWidth={innerStrokeWidth}
-                    x={index * whiteWidth + blackXShift}
-                    y={0}
+                    x={index * whiteWidth + blackXShift + halfInnerStrokeWidth}
+                    y={halfInnerStrokeWidth}
                     width={blackWidth}
                     height={blackHeight}
-                    rx={resolvedRoundness}
+                    rx={resolvedRoundness ?? 0}
                 />
             );
         }).filter(Boolean);
-    }, [
-        keybedDimensions,
-        octaveShift,
-        notesOn,
-        startKey,
-        isNoteActive,
-        correctBlackPass,
-        resolvedRoundness,
-        colorVariants,
-    ]);
+    }, [keybedDimensions, octaveShift, isNoteActive, correctBlackPass, resolvedRoundness, colorVariants]);
 
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {
@@ -344,18 +342,26 @@ function Keybed({
     // Get the preferred width based on the size prop
     const { width: preferredWidth, height: preferredHeight } = keybedSizeMap[size];
 
+    const adaptiveBoxStyle = useMemo(
+        () => ({
+            ...(style ?? {}),
+            ...(stretch ? {} : { width: `${preferredWidth}px`, height: `${preferredHeight}px` }),
+        }),
+        [style, stretch, preferredWidth, preferredHeight]
+    );
+
     return (
         <AdaptiveBox
             displayMode="scaleToFit"
             className={componentClassNames}
-            style={{
-                ...(style ?? {}),
-                ...(stretch ? {} : { width: `${preferredWidth}px`, height: `${preferredHeight}px` }),
-            }}
+            style={adaptiveBoxStyle}
             minWidth={40}
             minHeight={40}
         >
-            <AdaptiveBox.Svg viewBoxWidth={keybedDimensions.width} viewBoxHeight={keybedDimensions.whiteHeight}>
+            <AdaptiveBox.Svg
+                viewBoxWidth={keybedDimensions.width + keybedDimensions.innerStrokeWidth}
+                viewBoxHeight={keybedDimensions.whiteHeight + keybedDimensions.innerStrokeWidth}
+            >
                 {renderWhiteKeys}
                 {renderBlackKeys}
             </AdaptiveBox.Svg>

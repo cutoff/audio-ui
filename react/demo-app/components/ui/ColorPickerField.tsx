@@ -36,7 +36,7 @@ export function ColorPickerField({
   label,
   id,
 }: ColorPickerFieldProps) {
-  const [color, setColor] = React.useState<Color | undefined>(
+  const [color, setColor] = React.useState<ReturnType<typeof Color> | undefined>(
     value ? Color(value) : undefined
   );
 
@@ -104,7 +104,7 @@ export function ColorPickerField({
             <ColorPicker
               value={value}
               defaultValue={"#000000"}
-              onChange={handleColorChange}
+              onChange={handleColorChange as any}
             >
               <div className="flex flex-col gap-4">
                 <ColorPickerSelection className="h-36 w-full" />

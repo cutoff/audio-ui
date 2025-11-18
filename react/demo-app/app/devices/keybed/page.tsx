@@ -59,31 +59,6 @@ export default function KeybedPage() {
   const [selectedInputId, setSelectedInputId] = useState<string>("");
   const [webMidiSupported, setWebMidiSupported] = useState<boolean>(true);
 
-  const handleExampleClick = (num: 0 | 1 | 2): void => {
-    switch (num) {
-      case 0:
-        setNbKeys(61);
-        setStartKey("C");
-        setOctaveShift(0);
-        setColor(undefined);
-        setRoundness(undefined);
-        break;
-      case 1:
-        setNbKeys(88);
-        setStartKey("A");
-        setOctaveShift(0);
-        setColor("#ff3366"); // Pink
-        setRoundness(4);
-        break;
-      case 2:
-        setNbKeys(25);
-        setStartKey("C");
-        setOctaveShift(0);
-        setColor("#33cc66"); // Green
-        setRoundness(8);
-        break;
-    }
-  };
 
   // Generate code snippet with dynamic notesOn array
   const codeString = `<Keybed
@@ -165,11 +140,6 @@ export default function KeybedPage() {
     </div>,
   ];
 
-  const examples = [
-    <Keybed key="0" nbKeys={61} startKey="C" onClick={() => handleExampleClick(0)} />,
-    <Keybed key="1" nbKeys={88} startKey="A" color="#ff3366" roundness={4} onClick={() => handleExampleClick(1)} />,
-    <Keybed key="2" nbKeys={25} startKey="C" color="#33cc66" roundness={8} onClick={() => handleExampleClick(2)} />,
-  ];
 
   // Initialize WebMIDI
   useEffect(() => {
@@ -285,7 +255,6 @@ export default function KeybedPage() {
                 PageComponent={Keybed}
                 componentProps={componentProps}
                 properties={properties}
-                examples={examples}
             />
 
             {/* Right Column - Original Keybed Page Content */}
