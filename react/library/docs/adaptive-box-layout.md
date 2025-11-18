@@ -1,12 +1,11 @@
 # AdaptiveBox Layout Specification
 
-This document specifies the pure layout model used by AdaptiveBox — the replacement for the previous AdaptiveContainer + SvgSurface pairing. It focuses on the atomic unit composed of an SVG drawing area plus an optional label, and the CSS technique that achieves contain-style scaling with optional alignment controls.
+This document specifies the pure layout model used by AdaptiveBox. It focuses on the atomic unit composed of an SVG drawing area plus an optional label, and the CSS technique that achieves contain-style scaling with optional alignment controls.
 
-Status: Current (Sept 2025)
 Compatibility: React 18 (library peer dependency)
 
 Key points
-- AdaptiveBox replaced AdaptiveContainer and SvgSurface. Do not use those older abstractions.
+- AdaptiveBox is the current layout component for SVG-based controls with labels.
 - Layout and sizing are driven by CSS/SVG only (no ResizeObserver or JS layout math).
 - The inner unit (SVG + label) can either scale to fit (contain) or fill the wrapper.
 - Alignment of the scalable unit within its wrapper and the label’s own horizontal alignment are independent.

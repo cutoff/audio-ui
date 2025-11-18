@@ -1,4 +1,4 @@
-**Version**: 2.0 | **Meta**: React component library for audio and MIDI applications; no BC needed (never released); monorepo structure with library and playground-app.
+**Version**: 2.0 | **Meta**: React component library for audio and MIDI applications (never released); monorepo structure with library and playground-app.
 
 **IMPORTANT: Documentation File Structure**
 
@@ -7,14 +7,16 @@
 -   Always edit AGENTS.md directly. Never attempt to modify CLAUDE.md or GEMINI.md as they are just symbolic links.
 -   Any changes made to AGENTS.md will automatically be reflected in CLAUDE.md and GEMINI.md.
 
-**IMPORTANT: This library has never been released.** No need for BC; prioritize clean code.
+**IMPORTANT: This library has never been released.** 
+
+**No Backward Compatibility Required**: Since the project has never been released, there is no need to maintain backward compatibility, migration notes, or update guides. Always prioritize clean, modern code and best practices. Do not include migration notes, backward compatibility warnings, or "what changed" sections in documentation.
 
 ## Quick Rules Summary for Agents (Load This First)
 
 | Category            | Rule/Details                                                                                                                                                                                                                                  |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Performance Mandate | **Critical Priority.** Audio apps have heavy runtime constraints (e.g., avoiding UI stutters, ensuring low-latency response). Prioritize performance in all decisions: minimal re-renders, no JS for layout/sizing, efficient event handling. |
-| React               | React 18 compatibility; library as peer deps (`^18.2.0`), demo as direct (`^18.3.1`); never upgrade to 19                                                                                                                                     |
+| React               | React 18 only; library as peer deps (`^18.2.0`), demo as direct (`^18.3.1`); never upgrade to 19                                                                                                                                     |
 | TypeScript          | Strict mode; handle all errors; prefix unused params with \_; `@types/react:^18.3.23`                                                                                                                                                         |
 | Package Manager     | pnpm                                                                                                                                                                                                                                          |
 | UI Components       | Use shadcn/ui; add with `pnpm dlx shadcn@latest add [component]`; no custom if shadcn available; no alter                                                                                                                                     |
@@ -23,7 +25,7 @@
 | Dev Server          | Run `pnpm dev` at root for development; never in playground-app for testing                                                                                                                                                                         |
 | Theming             | CSS vars; default adaptive (black light, white dark); utility classes .stroke-primary etc.; named themes blue etc.                                                                                                                            |
 | Components          | Function declarations; props with JSDoc; default params; SVG for graphics                                                                                                                                                                     |
-| Perf                | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveSvgComponent CSS-only)                                                                                                                                                              |
+| Perf                | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveBox CSS-only)                                                                                                                                                              |
 | Library Exports     | From react/library/src/index.ts                                                                                                                                                                                                               |
 | Demo Routing        | Next.js app router; app/[route]/page.tsx                                                                                                                                                                                                      |
 
@@ -61,12 +63,14 @@
 5. Test in playground app.
 6. Update docs if needed.
 
-## Version Compatibility Troubleshooting
+## React Version Compatibility
 
-When TS errors:
+**React 18 Only**: The library uses React 18 as a peer dependency. Never upgrade to React 19.
+
+When TypeScript errors occur related to React types:
 
 1. Check versions: `pnpm ls react @types/react`
-2. Downgrade to React 18: `pnpm install react@^18.3.1 react-dom@^18.3.1 @types/react@^18.3.23 @types/react-dom@^18.3.7`
+2. Ensure React 18: `pnpm install react@^18.3.1 react-dom@^18.3.1 @types/react@^18.3.23 @types/react-dom@^18.3.7`
 3. `pnpm typecheck` both
 4. `pnpm build`
 
@@ -80,29 +84,18 @@ When TS errors:
 
 Do not fix unrelated TS errors; many known and ignored; focus on current task.
 
-## AdaptiveSvgComponent (Sept 2025 update)
+## AdaptiveBox Component
 
--   CSS-based sizing; no ResizeObserver/JS
--   Container: flex; overflow hidden; container-type inline-size
--   Fixed: width px; aspect-ratio; SVG 100%
--   Stretch: fill 100%; SVG auto max100% + aspect-ratio
--   Alignment: map alignSelf/justifySelf to flex
--   Min sizes: CSS on container
-
-Implications: No JS; smooth; zoomable; event handling unchanged.
-
-## AdaptiveBox (Sept 2025)
-
--   Replaces AdaptiveContainer + SvgSurface; CSS/SVG
+-   CSS/SVG-based layout system for SVG controls with labels
 -   Modes: scaleToFit (contain, aspect, letterbox); fill (preserve vert, distort SVG width)
 -   Features: container query cqw/cqh; scaler calc; two-row grid; align start/center/end; label modes visible/hidden/none; overlay sibling
--   See react/library/docs/adaptive-box-layout.md
--   React 18 compat
+-   See react/library/docs/adaptive-box-layout.md for complete specification
+-   React 18 compatible
 
-## Theme Utilities (Sept 2025)
+## Theme System
 
 -   CSS vars for theming; adaptive named themes (blue, orange, pink, green, purple, yellow); .dark hue adjust
--   White theme removed; default near-white accents
+-   Default adaptive theme (black-ish light, white-ish dark)
 -   Mapping: --primary-color to default (black-ish light, white-ish dark)
 -   Classes: .stroke/fill/border/text -primary, -50, -20; prefer .border-primary
 -   Provider: AudioUiProvider defaults color; useThemableProps fallback
@@ -120,6 +113,18 @@ Agents docs are living documentation; update continuously for agent efficiency. 
 ### CI
 
 -   GitHub Actions workflow `.github/workflows/ci.yml` runs on push/PR to `main` (Node 18/20 matrix): install, typecheck, build, lint, and tests across the monorepo using pnpm and Turbo with caching and concurrency control.
+
+## Development Guidelines
+
+### Code Organization
+
+- **Maintain clean separation** between agent instructions (AGENTS.md) and human documentation (README.md)
+- **Keep instructions dense and optimized for AI processing** - prioritize clarity and efficiency for LLM consumption over human readability
+
+### File Management
+
+- **Only modify AGENTS.md directly** - symbolic links (CLAUDE.md, GEMINI.md) should not be edited
+- **Update AGENTS.md to reflect current project state after each interaction** - ensure documentation stays synchronized with code changes
 
 ## Licensing & Distribution
 
