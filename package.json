@@ -2,8 +2,9 @@
     "name": "@cutoff/audio-ui",
     "version": "1.0.0-dp.1",
     "private": true,
-    "author": "Renaud Denis <mail@renauddenis.com>",
+    "author": "Renaud Denis <mail@renauddenis.com> (https://renauddenis.com)",
     "license": "GPL-3.0-only",
+    "homepage": "https://audioui.dev",
     "packageManager": "pnpm@10.20.0",
     "scripts": {
         "dev": "turbo dev",

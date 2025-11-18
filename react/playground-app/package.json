@@ -3,8 +3,9 @@
   "description": "Demo Application",
   "private": true,
   "version": "1.0.0-dp.1",
-  "author": "Renaud Denis <mail@renauddenis.com>",
+  "author": "Renaud Denis <mail@renauddenis.com> (https://renauddenis.com)",
   "license": "GPL-3.0-only",
+  "homepage": "https://audioui.dev",
   "type": "module",
   "scripts": {
     "clean": "rm -rf node_modules .next",
