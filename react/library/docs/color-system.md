@@ -144,17 +144,18 @@ The adaptive default color uses a CSS variable to ensure consistent server-side 
 
 ```css
 :root {
-    --theme-default: hsl(0, 0%, 10%); /* Light mode: near-black */
-    --adaptive-default-color: var(--theme-default);
+  --theme-default: hsl(0, 0%, 10%); /* Light mode: near-black */
+  --adaptive-default-color: var(--theme-default);
 }
 
 .dark {
-    --theme-default: hsl(0, 0%, 96%); /* Dark mode: near-white */
-    --adaptive-default-color: var(--theme-default);
+  --theme-default: hsl(0, 0%, 96%); /* Dark mode: near-white */
+  --adaptive-default-color: var(--theme-default);
 }
 ```
 
 This approach:
+
 - Prevents hydration mismatches (server and client render the same string)
 - Allows browser to resolve the color based on `.dark` class
 - Ensures components automatically adapt to mode changes
@@ -204,12 +205,14 @@ Returns the adaptive default color as a CSS variable.
 
 **Location**: `react/library/src/components/utils/colorUtils.ts`
 
-**Returns**: 
+**Returns**:
+
 - `"var(--adaptive-default-color)"` - CSS variable that resolves to white in dark mode, black in light mode
 
 **Usage**:
+
 ```typescript
-import { getAdaptiveDefaultColor } from '@cutoff/audio-ui-react';
+import { getAdaptiveDefaultColor } from "@cutoff/audio-ui-react";
 
 const defaultColor = getAdaptiveDefaultColor();
 // Returns: "var(--adaptive-default-color)"
@@ -224,36 +227,41 @@ The core utility function that generates color variants from a base color. Optim
 **Location**: `react/library/src/components/utils/colorUtils.ts`
 
 **Signature**:
+
 ```typescript
 function generateColorVariants(
-    baseColor: string,
-    variant: "luminosity" | "transparency" = "luminosity"
+  baseColor: string,
+  variant: "luminosity" | "transparency" = "luminosity"
 ): {
-    primary: string;
-    primary50: string;
-    primary20: string;
-    highlight: string;
-}
+  primary: string;
+  primary50: string;
+  primary20: string;
+  highlight: string;
+};
 ```
 
 **Parameters**:
+
 - `baseColor`: Any valid CSS color value (named color, hex, rgb, hsl, CSS variable)
 - `variant`: Method for generating variants
   - `"luminosity"`: Adjusts brightness (darker variants) - used by Keybed
   - `"transparency"`: Adjusts opacity (semi-transparent variants) - used by Knob, Button, Slider
 
 **Returns**:
+
 - `primary`: The base color (normalized to HSL for named colors)
 - `primary50`: 50% variant (50% luminosity or 50% opacity)
 - `primary20`: 20% variant (20% luminosity or 20% opacity)
 - `highlight`: Brighter variant for hover effects
 
 **Performance Optimizations**:
+
 - Pre-compiled regex pattern (no recompilation per call)
 - O(1) hash map lookup for named colors
 - Normalized color computed once and reused
 
 **Example**:
+
 ```typescript
 const variants = generateColorVariants("blue", "transparency");
 // Returns:
@@ -281,40 +289,38 @@ Components resolve colors using the following priority (highest to lowest):
 **Location**: `react/library/src/components/providers/AudioUiProvider.tsx`
 
 **Usage**:
+
 ```typescript
 const { resolvedColor, resolvedRoundness } = useThemableProps(
-    { color, roundness },           // Component props
-    { color: undefined, roundness: 12 } // Default values
+  { color, roundness }, // Component props
+  { color: undefined, roundness: 12 } // Default values
 );
 ```
 
 **Implementation**:
+
 ```typescript
 export function useThemableProps(
-    props: Partial<Themable>,
-    defaultValues: Partial<Themable>
+  props: Partial<Themable>,
+  defaultValues: Partial<Themable>
 ): { resolvedColor: string; resolvedRoundness: number | undefined } {
-    const themeContext = useAudioUiTheme();
+  const themeContext = useAudioUiTheme();
 
-    // Memoized resolution - only recomputes when inputs change
-    const resolvedColor = useMemo(() => {
-        return props.color ?? 
-               themeContext.color ?? 
-               defaultValues.color ?? 
-               getAdaptiveDefaultColor();
-    }, [props.color, themeContext.color, defaultValues.color, themeContext.isDarkMode]);
+  // Memoized resolution - only recomputes when inputs change
+  const resolvedColor = useMemo(() => {
+    return props.color ?? themeContext.color ?? defaultValues.color ?? getAdaptiveDefaultColor();
+  }, [props.color, themeContext.color, defaultValues.color, themeContext.isDarkMode]);
 
-    const resolvedRoundness = useMemo(() => {
-        return props.roundness ?? 
-               themeContext.roundness ?? 
-               defaultValues.roundness;
-    }, [props.roundness, themeContext.roundness, defaultValues.roundness]);
+  const resolvedRoundness = useMemo(() => {
+    return props.roundness ?? themeContext.roundness ?? defaultValues.roundness;
+  }, [props.roundness, themeContext.roundness, defaultValues.roundness]);
 
-    return { resolvedColor, resolvedRoundness };
+  return { resolvedColor, resolvedRoundness };
 }
 ```
 
 **Key Features**:
+
 - **Memoized**: Only recomputes when inputs actually change
 - **Mode-aware**: Includes `isDarkMode` in dependencies to react to mode changes
 - **Performance**: Prevents unnecessary recalculations on every render
@@ -330,13 +336,13 @@ function MyComponent({ color, roundness, ...otherProps }: MyComponentProps) {
         { color, roundness },
         { color: undefined, roundness: 12 } // undefined uses adaptive default
     );
-    
+
     // 2. Generate color variants (memoized per component)
     const colorVariants = useMemo(
         () => generateColorVariants(resolvedColor, "transparency"),
         [resolvedColor]
     );
-    
+
     // 3. Use variants in SVG rendering
     return (
         <SvgComponent
@@ -356,33 +362,37 @@ function MyComponent({ color, roundness, ...otherProps }: MyComponentProps) {
 Provides React context for global theme management with **shared color mode tracking** (performance optimization).
 
 **Props**:
+
 ```typescript
 interface AudioUiProviderProps {
-    children: ReactNode;
-    initialColor?: string;      // Default: undefined (uses adaptive default)
-    initialRoundness?: number;  // Default: 12
+  children: ReactNode;
+  initialColor?: string; // Default: undefined (uses adaptive default)
+  initialRoundness?: number; // Default: 12
 }
 ```
 
 **Usage**:
+
 ```tsx
 <AudioUiProvider initialColor="purple" initialRoundness={8}>
-    <App />
+  <App />
 </AudioUiProvider>
 ```
 
 **Context Value**:
+
 ```typescript
 interface ThemeContextType {
-    color: string | undefined;
-    roundness: number;
-    isDarkMode: boolean;  // Exposed for component reactivity
-    setColor: (color: string) => void;
-    setRoundness: (roundness: number) => void;
+  color: string | undefined;
+  roundness: number;
+  isDarkMode: boolean; // Exposed for component reactivity
+  setColor: (color: string) => void;
+  setRoundness: (roundness: number) => void;
 }
 ```
 
 **Performance Features**:
+
 - **Shared mode tracking**: Single `MutationObserver` and `MediaQueryList` listener for all components (not per-component)
 - **Memoized context value**: Prevents unnecessary re-renders
 - **Automatic mode detection**: Tracks `.dark` class changes and system preferences
@@ -418,6 +428,7 @@ import { themeColors } from '@cutoff/audio-ui-react';
 ```
 
 **Available colors**:
+
 - `themeColors.default` - `"var(--theme-default)"`
 - `themeColors.blue` - `"var(--theme-blue)"`
 - `themeColors.orange` - `"var(--theme-orange)"`
@@ -431,7 +442,7 @@ import { themeColors } from '@cutoff/audio-ui-react';
 Direct HSL values for when CSS variables aren't available:
 
 ```typescript
-import { themeColorsDirect } from '@cutoff/audio-ui-react';
+import { themeColorsDirect } from "@cutoff/audio-ui-react";
 
 // Access light/dark mode values directly
 const blueLight = themeColorsDirect.blue.light;
@@ -495,19 +506,19 @@ import { themeColors } from '@cutoff/audio-ui-react';
 ### Dynamic Theme Switching
 
 ```tsx
-import { themeColors } from '@cutoff/audio-ui-react';
+import { themeColors } from "@cutoff/audio-ui-react";
 
 function App() {
-    const { setColor } = useAudioUiTheme();
-    
-    return (
-        <div>
-            <button onClick={() => setColor(themeColors.blue)}>Blue Theme</button>
-            <button onClick={() => setColor(themeColors.orange)}>Orange Theme</button>
-            <button onClick={() => setColor("#FF3366")}>Custom Color</button>
-            <Knob value={50} label="Volume" /> {/* Uses current theme */}
-        </div>
-    );
+  const { setColor } = useAudioUiTheme();
+
+  return (
+    <div>
+      <button onClick={() => setColor(themeColors.blue)}>Blue Theme</button>
+      <button onClick={() => setColor(themeColors.orange)}>Orange Theme</button>
+      <button onClick={() => setColor("#FF3366")}>Custom Color</button>
+      <Knob value={50} label="Volume" /> {/* Uses current theme */}
+    </div>
+  );
 }
 ```
 
@@ -593,11 +604,11 @@ The color system is optimized for realtime audio UIs with the following features
 
 ### Expected Performance Impact
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| Observers | O(n) components | O(1) shared | ~98% reduction |
-| Color Resolution | Every render | Memoized | Only on input change |
-| String Operations | Multiple regex compiles | Pre-compiled | Faster execution |
+| Metric            | Before                  | After        | Improvement          |
+| ----------------- | ----------------------- | ------------ | -------------------- |
+| Observers         | O(n) components         | O(1) shared  | ~98% reduction       |
+| Color Resolution  | Every render            | Memoized     | Only on input change |
+| String Operations | Multiple regex compiles | Pre-compiled | Faster execution     |
 
 ## Best Practices
 
@@ -614,6 +625,7 @@ The color system is optimized for realtime audio UIs with the following features
 ### Color Format Support
 
 The system supports all valid CSS color formats:
+
 - Named colors: `"blue"`, `"red"`, `"transparent"`
 - Hex: `"#FF5500"`, `"#F50"`
 - RGB: `"rgb(255, 85, 0)"`, `"rgba(255, 85, 0, 0.5)"`

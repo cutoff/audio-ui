@@ -51,9 +51,9 @@ svg foreignObject div {
 .highlight:hover {
     /* Optimized hover effect for edition mode */
     /* Brightness and contrast boost for better visibility */
-    filter: brightness(1.15) contrast(1.05) 
-            /* Subtle glow using primary color if available, otherwise adaptive text color */
-            drop-shadow(0 0 0.5em color-mix(in srgb, var(--primary-color, var(--text-color)) 35%, transparent));
+    filter: brightness(1.15) contrast(1.05)
+        /* Subtle glow using primary color if available, otherwise adaptive text color */
+        drop-shadow(0 0 0.5em color-mix(in srgb, var(--primary-color, var(--text-color)) 35%, transparent));
 }
 
 /* Prevent blur effect from affecting text elements */

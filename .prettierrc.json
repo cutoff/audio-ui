@@ -1,23 +1,31 @@
 {
-  "tabWidth": 4,
-  "useTabs": false,
-  "printWidth": 120,
-  "bracketSameLine": false,
-  "bracketSpacing": true,
-  "singleQuote": false,
-  "jsxSingleQuote": false,
-  "semi": true,
-  "trailingComma": "es5",
-  "arrowParens": "always",
-  "endOfLine": "lf",
-  "overrides": [
-    {
-      "files": [ "*.tsx", "*.ts", "*.jsx", "*.js" ],
-      "options": {
-        "jsxBracketSameLine": false,
-        "jsxSingleQuote": false,
-        "bracketSpacing": true
-      }
-    }
-  ]
+    "tabWidth": 4,
+    "proseWrap": "always",
+    "useTabs": false,
+    "printWidth": 120,
+    "bracketSameLine": false,
+    "bracketSpacing": true,
+    "singleQuote": false,
+    "jsxSingleQuote": false,
+    "semi": true,
+    "trailingComma": "es5",
+    "arrowParens": "always",
+    "endOfLine": "lf",
+    "overrides": [
+        {
+            "files": ["*.tsx", "*.ts", "*.jsx", "*.js"],
+            "options": {
+                "jsxBracketSameLine": false,
+                "jsxSingleQuote": false,
+                "bracketSpacing": true
+            }
+        },
+        {
+            "files": ["*.md", "*.mdx"],
+            "options": {
+                "tabWidth": 2,
+                "proseWrap": "preserve"
+            }
+        }
+    ]
 }

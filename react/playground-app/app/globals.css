@@ -119,20 +119,20 @@
 }
 
 @layer utilities {
-  /* Control component styles */
-  .control-toggle-item {
-    @apply h-8 p-0 flex-1 basis-0 min-w-0 rounded-none first:rounded-l-md last:rounded-r-md -ml-px first:ml-0;
-  }
+    /* Control component styles */
+    .control-toggle-item {
+        @apply h-8 p-0 flex-1 basis-0 min-w-0 rounded-none first:rounded-l-md last:rounded-r-md -ml-px first:ml-0;
+    }
 
-  .control-value-badge {
-    @apply rounded-md border px-1.5 py-0.5 text-[10px] text-muted-foreground;
-  }
+    .control-value-badge {
+        @apply rounded-md border px-1.5 py-0.5 text-[10px] text-muted-foreground;
+    }
 
-  .control-section-header {
-    @apply text-xs font-semibold uppercase tracking-wide text-muted-foreground;
-  }
+    .control-section-header {
+        @apply text-xs font-semibold uppercase tracking-wide text-muted-foreground;
+    }
 
-  .control-group {
-    @apply space-y-1;
-  }
+    .control-group {
+        @apply space-y-1;
+    }
 }

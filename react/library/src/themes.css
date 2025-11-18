@@ -1,12 +1,12 @@
 :root {
     /* Predefined theme colors - just the primary color */
     /* Variants (primary50, primary20) are computed automatically by components */
-    
+
     /* Default theme — adaptive like shadcn: dark ink on light, light ink on dark */
     --theme-default: hsl(0, 0%, 10%); /* Light mode: near-black */
     /* CSS variable for adaptive default - resolves correctly on both server and client */
     --adaptive-default-color: var(--theme-default);
-    
+
     /* Named color themes */
     --theme-blue: hsl(204, 88%, 52%);
     --theme-orange: hsl(29, 100%, 48%);
@@ -22,7 +22,7 @@
     --theme-default: hsl(0, 0%, 96%);
     /* Adaptive default updates automatically via CSS variable */
     --adaptive-default-color: var(--theme-default);
-    
+
     /* Named color themes (can have dark mode variants if needed) */
     --theme-blue: hsl(204, 88%, 53%);
     --theme-orange: hsl(29, 100%, 50%);

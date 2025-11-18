@@ -1,6 +1,5 @@
 "use client";
 
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -47,9 +46,7 @@ const examples: Page[] = [
 ];
 
 // List of layout pages
-const layoutPages: Page[] = [
-    { name: "Adaptive Box", path: "/layout/adaptive-box" },
-];
+const layoutPages: Page[] = [{ name: "Adaptive Box", path: "/layout/adaptive-box" }];
 
 // Theme color options
 const themeColorOptions: ThemeColor[] = [
@@ -61,8 +58,6 @@ const themeColorOptions: ThemeColor[] = [
     { color: "bg-purple-500", name: "Purple", value: themeColors.purple },
     { color: "bg-yellow-500", name: "Yellow", value: themeColors.yellow },
 ];
-
-
 
 export default function SideBar() {
     const pathname = usePathname();
@@ -279,7 +274,9 @@ export default function SideBar() {
                             >
                                 {theme === "light" && <Sun className="h-[1.1rem] w-[1.1rem] transition-all" />}
                                 {theme === "dark" && <Moon className="h-[1.1rem] w-[1.1rem] transition-all" />}
-                                {(!theme || theme === "system") && <Monitor className="h-[1.1rem] w-[1.1rem] transition-all" />}
+                                {(!theme || theme === "system") && (
+                                    <Monitor className="h-[1.1rem] w-[1.1rem] transition-all" />
+                                )}
                                 <span className="sr-only">Toggle theme</span>
                             </Button>
                         </div>

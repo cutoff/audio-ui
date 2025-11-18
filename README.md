@@ -37,9 +37,9 @@ pnpm add react@^18.2.0 react-dom@^18.2.0
 ### Basic Usage
 
 ```tsx
-import React, { useState } from 'react';
-import { Knob, Slider, Button } from '@cutoff/audio-ui-react';
-import '@cutoff/audio-ui-react/style.css';
+import React, { useState } from "react";
+import { Knob, Slider, Button } from "@cutoff/audio-ui-react";
+import "@cutoff/audio-ui-react/style.css";
 
 function AudioInterface() {
   const [volume, setVolume] = useState(50);
@@ -48,27 +48,11 @@ function AudioInterface() {
 
   return (
     <div className="audio-interface">
-      <Knob
-        value={volume}
-        onChange={setVolume}
-        label="Volume"
-        min={0}
-        max={100}
-      />
-      
-      <Slider
-        value={cutoff}
-        onChange={setCutoff}
-        label="Cutoff"
-        min={0}
-        max={100}
-      />
-      
-      <Button
-        value={enabled ? 100 : 0}
-        onClick={() => setEnabled(!enabled)}
-        label="Enable"
-      />
+      <Knob value={volume} onChange={setVolume} label="Volume" min={0} max={100} />
+
+      <Slider value={cutoff} onChange={setCutoff} label="Cutoff" min={0} max={100} />
+
+      <Button value={enabled ? 100 : 0} onClick={() => setEnabled(!enabled)} label="Enable" />
     </div>
   );
 }
@@ -79,21 +63,23 @@ function AudioInterface() {
 The project is organized as a monorepo with the following structure:
 
 - `react/` - Contains the React implementation
-    - `library/` - The component library
-        - `src/` - Source code for the components
-        - `dist/` - Built output (generated)
-    - `playground-app/` - Next.js application for demonstrating the components
+  - `library/` - The component library
+    - `src/` - Source code for the components
+    - `dist/` - Built output (generated)
+  - `playground-app/` - Next.js application for demonstrating the components
 
 ## Build/Configuration Instructions
 
 ### Setting Up the Project
 
 1. Install dependencies:
+
    ```bash
    pnpm install
    ```
 
 2. Build the library:
+
    ```bash
    pnpm build
    ```
@@ -109,12 +95,14 @@ The project is organized as a monorepo with the following structure:
 The library uses Vite for building and TypeScript for type checking:
 
 - Build the library:
+
   ```bash
   cd react/library
   pnpm build
   ```
 
 - Type check the library:
+
   ```bash
   cd react/library
   pnpm typecheck
@@ -239,10 +227,10 @@ If you encounter TypeScript errors related to React types:
 ### Documentation Guidelines
 
 - **Documentation Files**:
-    - `AGENTS.md` is the primary documentation file for LLMs (AI assistants)
-    - `CLAUDE.md` and `GEMINI.md` are symbolic links to `AGENTS.md`
-    - Always edit `AGENTS.md` directly, never modify the symbolic link files
-    - Changes to `AGENTS.md` are automatically reflected in the linked files
+  - `AGENTS.md` is the primary documentation file for LLMs (AI assistants)
+  - `CLAUDE.md` and `GEMINI.md` are symbolic links to `AGENTS.md`
+  - Always edit `AGENTS.md` directly, never modify the symbolic link files
+  - Changes to `AGENTS.md` are automatically reflected in the linked files
 
 ## Licensing
 

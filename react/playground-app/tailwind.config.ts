@@ -96,8 +96,5 @@ export default {
             },
         },
     },
-    plugins: [
-        tailwindcssAnimate,
-        tailwindcssContainerQueries,
-    ],
+    plugins: [tailwindcssAnimate, tailwindcssContainerQueries],
 } satisfies Config;

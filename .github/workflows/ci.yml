@@ -1,52 +1,53 @@
 name: CI
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
 
 env:
-  CI: true
-  NEXT_TELEMETRY_DISABLED: 1
+    CI: true
+    NEXT_TELEMETRY_DISABLED: 1
 
 jobs:
-  quality:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [18, 20]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    quality:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                node-version: [18, 20]
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.20.0
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 10.20.0
 
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+            - name: Setup Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  cache: "pnpm"
 
-      - name: Cache Turbo build artifacts
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml', 'turbo.json') }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-${{ matrix.node-version }}-
+            - name: Cache Turbo build artifacts
+              uses: actions/cache@v4
+              with:
+                  path: .turbo
+                  key:
+                      ${{ runner.os }}-turbo-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml', 'turbo.json')
+                      }}
+                  restore-keys: |
+                      ${{ runner.os }}-turbo-${{ matrix.node-version }}-
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
 
-      - name: Run quality pipeline (typecheck, build, lint, test)
-        run: pnpm turbo run typecheck build lint test --cache-dir=.turbo --continue --no-daemon
- 
+            - name: Run quality pipeline (typecheck, build, lint, test)
+              run: pnpm turbo run typecheck build lint test --cache-dir=.turbo --continue --no-daemon

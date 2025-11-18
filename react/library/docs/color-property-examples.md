@@ -37,13 +37,13 @@ The `color` property can be animated by changing its value over time. Here are s
 
 ```tsx
 function AnimatedButton() {
-    const [color, setColor] = useState("blue");
+  const [color, setColor] = useState("blue");
 
-    const toggleColor = () => {
-        setColor((prevColor) => (prevColor === "blue" ? "red" : "blue"));
-    };
+  const toggleColor = () => {
+    setColor((prevColor) => (prevColor === "blue" ? "red" : "blue"));
+  };
 
-    return <Button value={75} label="Toggle" color={color} onClick={toggleColor}/>;
+  return <Button value={75} label="Toggle" color={color} onClick={toggleColor} />;
 }
 ```
 
@@ -55,14 +55,15 @@ You can add CSS transitions to make color changes smooth:
 /* In your CSS */
 .animated-component rect,
 .animated-component path {
-    transition: fill 0.3s ease,
+  transition:
+    fill 0.3s ease,
     stroke 0.3s ease;
 }
 ```
 
 ```tsx
 // In your component
-<Button className="animated-component" value={75} label="Smooth" color={color}/>
+<Button className="animated-component" value={75} label="Smooth" color={color} />
 ```
 
 ### Using Animation Libraries
@@ -71,21 +72,21 @@ You can use animation libraries like Framer Motion or React Spring for more comp
 
 ```tsx
 // Using Framer Motion
-import {motion} from "framer-motion";
-import {useState, useEffect} from "react";
+import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
 function RainbowKnob() {
-    const [hue, setHue] = useState(0);
+  const [hue, setHue] = useState(0);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setHue((h) => (h + 1) % 360);
-        }, 50);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHue((h) => (h + 1) % 360);
+    }, 50);
 
-        return () => clearInterval(interval);
-    }, []);
+    return () => clearInterval(interval);
+  }, []);
 
-    return <Knob value={50} label="Rainbow" color={`hsl(${hue}, 80%, 50%)`}/>;
+  return <Knob value={50} label="Rainbow" color={`hsl(${hue}, 80%, 50%)`} />;
 }
 ```
 
@@ -130,12 +131,12 @@ You can dynamically change the color based on the component's value:
 
 ```tsx
 function DynamicColorKnob() {
-    const [value, setValue] = useState(50);
+  const [value, setValue] = useState(50);
 
-    // Color changes from blue (0) to red (100)
-    const dynamicColor = `hsl(${240 - value * 2.4}, 80%, 50%)`;
+  // Color changes from blue (0) to red (100)
+  const dynamicColor = `hsl(${240 - value * 2.4}, 80%, 50%)`;
 
-    return <Knob value={value} min={0} max={100} label="Dynamic" color={dynamicColor} onChange={setValue}/>;
+  return <Knob value={value} min={0} max={100} label="Dynamic" color={dynamicColor} onChange={setValue} />;
 }
 ```
 
@@ -145,19 +146,19 @@ You can create a theme by using consistent colors across components:
 
 ```tsx
 function ThemedControls() {
-    // Theme color
-    const themeColor = "hsl(320, 80%, 50%)"; // Pink
+  // Theme color
+  const themeColor = "hsl(320, 80%, 50%)"; // Pink
 
-    return (
-        <div className="controls-panel">
-            <Knob value={75} label="Volume" color={themeColor}/>
-            <Button value={100} label="Power" color={themeColor}/>
-            <KnobSwitch value="sine" label="Wave" color={themeColor}>
-                <KnobSwitch.Option value="sine">Sine</KnobSwitch.Option>
-                <KnobSwitch.Option value="square">Square</KnobSwitch.Option>
-            </KnobSwitch>
-        </div>
-    );
+  return (
+    <div className="controls-panel">
+      <Knob value={75} label="Volume" color={themeColor} />
+      <Button value={100} label="Power" color={themeColor} />
+      <KnobSwitch value="sine" label="Wave" color={themeColor}>
+        <KnobSwitch.Option value="sine">Sine</KnobSwitch.Option>
+        <KnobSwitch.Option value="square">Square</KnobSwitch.Option>
+      </KnobSwitch>
+    </div>
+  );
 }
 ```
 
@@ -192,7 +193,7 @@ A new utility file `colorUtils.ts` has been added with the following function:
  * @returns An HSL color string with adjusted luminosity
  */
 export function generateLuminosityVariant(baseColor: string, luminosityPercentage: number): string {
-    // Implementation details...
+  // Implementation details...
 }
 ```
 

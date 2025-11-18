@@ -1,9 +1,30 @@
 # Ignore built files
 **/dist/**
 **/build/**
+**/.next/**
+
+# Ignore cache directories
+**/.turbo/**
+**/.cache/**
 
 # Ignore coverage reports
 **/coverage/**
 
 # Ignore node_modules
 **/node_modules/**
+
+# Ignore lock files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Ignore build info files
+**/*.tsbuildinfo
+
+# Ignore generated files
+**/next-env.d.ts
+
+# Ignore license files
+**/LICENSE*
+LICENSE*
+license/

@@ -6,7 +6,7 @@ import SideBar from "@/components/SideBar";
 
 const sansFont = Geist({
     variable: "--font-geist-sans",
-    weight: ['400', '500', '600'],
+    weight: ["400", "500", "600"],
     subsets: ["latin"],
 });
 
@@ -40,7 +40,8 @@ export default function RootLayout({
                         <SideBar />
                         <div className="flex-1 pt-16 md:pt-0">{children}</div>
                     </div>
-                </Providers>            </body>
+                </Providers>{" "}
+            </body>
         </html>
     );
 }

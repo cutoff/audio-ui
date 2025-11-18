@@ -1,9 +1,9 @@
 packages:
-  - react/library
-  - react/playground-app
+    - react/library
+    - react/playground-app
 
 onlyBuiltDependencies:
-  - '@swc/core'
-  - esbuild
-  - sharp
-  - unrs-resolver
+    - "@swc/core"
+    - esbuild
+    - sharp
+    - unrs-resolver

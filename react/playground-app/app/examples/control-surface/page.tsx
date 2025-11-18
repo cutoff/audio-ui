@@ -101,7 +101,10 @@ export default function ControlSurfacePage() {
             <div className="mt-12 mb-8">
                 <h2 className="text-xl font-medium mb-6">Control Surface</h2>
                 <div className="border rounded-lg bg-zinc-100 dark:bg-zinc-900 p-4 md:p-8 flex justify-center items-center h-[600px]">
-                    <div className="grid grid-cols-4 grid-rows-[1fr_1fr_2fr_1fr] gap-3 w-full max-w-4xl h-full" style={controlSurfaceStyle}>
+                    <div
+                        className="grid grid-cols-4 grid-rows-[1fr_1fr_2fr_1fr] gap-3 w-full max-w-4xl h-full"
+                        style={controlSurfaceStyle}
+                    >
                         {/* Row 1 - Knobs */}
                         <div className="col-span-1">
                             <Knob

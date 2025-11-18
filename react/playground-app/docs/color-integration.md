@@ -14,9 +14,9 @@ The app uses a nested provider structure:
 
 ```tsx
 <ThemeProvider attribute="class" defaultTheme="system">
-    <AudioUiProvider initialRoundness={12}>
-        <ThemeConnector>{children}</ThemeConnector>
-    </AudioUiProvider>
+  <AudioUiProvider initialRoundness={12}>
+    <ThemeConnector>{children}</ThemeConnector>
+  </AudioUiProvider>
 </ThemeProvider>
 ```
 
@@ -49,7 +49,7 @@ The playground uses a global state object to allow the sidebar (which may be out
 
 ```typescript
 export const audioUiThemeState: { current: AudioUiThemeState } = {
-    current: defaultAudioUiTheme,
+  current: defaultAudioUiTheme,
 };
 ```
 
@@ -87,6 +87,7 @@ This allows the sidebar to access theme controls without being wrapped in the pr
 The sidebar provides a dropdown to select from predefined themes using `themeColors` from the library:
 
 **Available Themes**:
+
 - Default (Adaptive) - `themeColors.default`
 - Blue - `themeColors.blue`
 - Orange - `themeColors.orange`
@@ -98,21 +99,23 @@ The sidebar provides a dropdown to select from predefined themes using `themeCol
 ### Theme Switching Implementation
 
 ```typescript
-import { themeColors } from '@cutoff/audio-ui-react';
+import { themeColors } from "@cutoff/audio-ui-react";
 
 const changeTheme = (themeColor: string) => {
-    setCurrentTheme(themeColor);
-    audioUiThemeState.current.setColor(themeColor);
+  setCurrentTheme(themeColor);
+  audioUiThemeState.current.setColor(themeColor);
 };
 ```
 
 **How it works**:
+
 1. User selects a theme color (e.g., `themeColors.blue` which is `"var(--theme-blue)"`)
 2. Sets the color directly in Audio UI context via `setColor()`
 3. All components automatically pick up the new theme
 4. Components compute variants automatically
 
 **Key Points**:
+
 - No CSS variable manipulation needed
 - Just set the color value - variants are computed automatically
 - Works with any CSS color value (not just predefined themes)
@@ -123,8 +126,8 @@ The sidebar also provides a slider and input for adjusting global roundness:
 
 ```typescript
 const changeRoundness = (value: number) => {
-    setRoundnessValue(value);
-    audioUiThemeState.current.setRoundness(value);
+  setRoundnessValue(value);
+  audioUiThemeState.current.setRoundness(value);
 };
 ```
 
@@ -143,6 +146,7 @@ The playground imports the library's styles:
 **Location**: `app/globals.css`
 
 This brings in:
+
 - Theme variables (`themes.css`)
 - Base styles and utility classes (`styles.css`)
 
@@ -151,6 +155,7 @@ This brings in:
 The playground uses Tailwind CSS for its own UI. The library's CSS variables work alongside Tailwind's theme system without conflicts.
 
 **Note**: The playground's Tailwind theme (defined in `globals.css`) is separate from the Audio UI theme system. They serve different purposes:
+
 - **Tailwind theme**: Playground UI (sidebar, buttons, inputs)
 - **Audio UI theme**: Library components (knobs, sliders, buttons)
 
@@ -163,14 +168,11 @@ Component demo pages (e.g., `app/controls/knob/page.tsx`) include a color picker
 ```tsx
 const [color, setColor] = useState<string | undefined>(undefined);
 
-<ColorPickerField
-    value={color}
-    onChange={setColor}
-    label="Color"
-/>
+<ColorPickerField value={color} onChange={setColor} label="Color" />;
 ```
 
 **Behavior**:
+
 - `undefined`: Component uses theme context (or adaptive default if no theme set)
 - String value: Component uses explicit color prop
 
@@ -213,6 +215,7 @@ For a component like `<Knob color={color} />`:
 4. Else → use `"var(--adaptive-default-color)"` (CSS variable)
 
 When using CSS variable:
+
 - Resolves to current theme variable (e.g., `--theme-blue`)
 - Which has light/dark mode variants in CSS
 - Components compute their own variants from the primary color
@@ -228,6 +231,7 @@ The playground uses `next-themes` for light/dark mode:
 ```
 
 **Behavior**:
+
 - Adds `.dark` class to `<html>` in dark mode
 - Removes it in light mode
 - System mode follows OS preference
@@ -238,13 +242,13 @@ Library theme variables automatically adapt:
 
 ```css
 :root {
-    --theme-default: hsl(0, 0%, 10%); /* Light mode */
-    --adaptive-default-color: var(--theme-default);
+  --theme-default: hsl(0, 0%, 10%); /* Light mode */
+  --adaptive-default-color: var(--theme-default);
 }
 
 .dark {
-    --theme-default: hsl(0, 0%, 96%); /* Dark mode */
-    --adaptive-default-color: var(--theme-default);
+  --theme-default: hsl(0, 0%, 96%); /* Dark mode */
+  --adaptive-default-color: var(--theme-default);
 }
 ```
 
@@ -253,6 +257,7 @@ Library theme variables automatically adapt:
 ### Automatic Mode Detection
 
 The library's `AudioUiProvider` automatically tracks mode changes:
+
 - Single shared `MutationObserver` watches for `.dark` class changes
 - Single shared `MediaQueryList` listener watches system preferences
 - All components react to mode changes via context
@@ -261,6 +266,7 @@ The library's `AudioUiProvider` automatically tracks mode changes:
 ### Manual Theme Toggle
 
 The sidebar provides a button to cycle through:
+
 - Light
 - Dark
 - System
@@ -280,6 +286,7 @@ The sidebar provides a button to cycle through:
 If components don't update when theme changes:
 
 1. Check Audio UI context is updating:
+
    ```typescript
    const { color } = useAudioUiTheme();
    console.log(color);

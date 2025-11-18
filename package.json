@@ -22,7 +22,7 @@
         "test": "turbo test",
         "lint": "turbo lint",
         "clean": "turbo clean",
-        "format": "turbo format"
+        "format": "prettier --write ."
     },
     "keywords": [
         "react",
@@ -35,5 +35,8 @@
     ],
     "dependencies": {
         "turbo": "^2.5.8"
+    },
+    "devDependencies": {
+        "prettier": "^3.4.2"
     }
 }

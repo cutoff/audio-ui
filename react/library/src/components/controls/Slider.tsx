@@ -21,7 +21,6 @@ export type SliderProps = BipolarControl &
         thickness?: number;
     };
 
-
 // @ts-ignore
 /**
  * A vertical slider component for audio applications.

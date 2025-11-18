@@ -112,7 +112,9 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
     color,
     roundness,
 }) => {
-    const optionEls = React.Children.toArray(children).filter(React.isValidElement) as React.ReactElement<KnobSwitchOptionProps>[];
+    const optionEls = React.Children.toArray(children).filter(
+        React.isValidElement
+    ) as React.ReactElement<KnobSwitchOptionProps>[];
     const maxIndex = Math.max(0, optionEls.length - 1);
 
     // Determine the index of the selected option
