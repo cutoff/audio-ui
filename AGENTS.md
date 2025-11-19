@@ -137,8 +137,8 @@ Agents docs are living documentation; update continuously for agent efficiency. 
 
 ## Sub-File Summaries
 
-- `./agents/licensing-strategy.md`: Outlines the dual-licensing model and legal framework.
-- `./agents/versioning-guidelines.md`: Details the SemVer-based versioning strategy, including developer preview conventions.
+- `./agents/audioui-licensing-strategy.md`: Outlines the dual-licensing model and legal framework.
+- `./agents/audioui-versioning-guidelines.md`: Details the SemVer-based versioning strategy, including developer preview conventions.
 - `./agents/audioui-styling-system.md`: Comprehensive styling system guidelines covering namespace isolation, naming conventions, constants usage, Stylelint enforcement, and best practices.
 - `./react/library/AGENTS.md`: Library specifics (exports, build, env); created.
 - `./react/playground-app/AGENTS.md`: Playground app details (routing, integrations, env); created.
