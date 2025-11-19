@@ -1,4 +1,5 @@
 # Tylium Evolutive License Framework (TELF)
+
 # Service Level Agreement
 
 Version 1.0 - February 7, 2025
@@ -9,8 +10,7 @@ TELF-SLA-1.0
 
 ## Document License
 
-The text of this Service Level Agreement is made available under the Creative Commons Zero (CC0) 1.0 Universal license.
-To the extent possible under law, Tylium SRL has waived all copyright and related or neighboring rights to this document.
+The text of this Service Level Agreement is made available under the Creative Commons Zero (CC0) 1.0 Universal license. To the extent possible under law, Tylium SRL has waived all copyright and related or neighboring rights to this document.
 
 You can copy, modify, distribute and perform the work, even for commercial purposes, all without asking permission.
 
@@ -74,13 +74,11 @@ Provider may modify this Agreement by providing notice through:
 - Support channel announcement
 - Package registry documentation
 
-Changes become effective 60 days after notification. Customers may terminate service and receive pro-rata refund if they
-do not accept changes.
+Changes become effective 60 days after notification. Customers may terminate service and receive pro-rata refund if they do not accept changes.
 
 ## 4. Relationship to License
 
-This Agreement supplements the Software License Agreement but does not modify it. Support services under this Agreement
-apply to any version of the Software used under a valid commercial license.
+This Agreement supplements the Software License Agreement but does not modify it. Support services under this Agreement apply to any version of the Software used under a valid commercial license.
 
 ## Document History
 
