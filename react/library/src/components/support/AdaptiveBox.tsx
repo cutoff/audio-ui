@@ -190,7 +190,7 @@ export function AdaptiveBox({
                         minHeight: 0,
                         containerType: "inline-size",
                         position: "relative",
-                        border: debug ? "2px solid #ca8a04" : undefined,
+                        border: debug ? "2px solid hsl(41, 96%, 40%)" : undefined,
                     }}
                 >
                     {/* SVG and Label are rendered by subcomponents via context; this wrapper only provides layout */}
@@ -275,7 +275,7 @@ function Svg({
                 display: "block",
                 width: "100%",
                 height: "100%",
-                backgroundColor: ctx.debug ? "#ff000010" : undefined,
+                backgroundColor: ctx.debug ? "hsl(0, 100%, 50% / 0.06)" : undefined,
                 gridRow: svgGridRow,
                 ...(style ?? {}),
             }}

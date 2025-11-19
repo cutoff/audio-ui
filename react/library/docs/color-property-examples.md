@@ -166,7 +166,7 @@ function ThemedControls() {
 
 - The `color` property accepts any valid CSS color value
 - The component automatically derives lighter/darker variants of the color for different parts of the component
-- Text color is not affected by the `color` property and continues to use the CSS variable `--text-color`
+- Text color is not affected by the `color` property and continues to use the CSS variable `--audioui-text-color`
 - Animation is handled externally by the component user, not internally by the component
 
 ## Component-Specific Color Handling

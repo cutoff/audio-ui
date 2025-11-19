@@ -109,7 +109,7 @@ const changeTheme = (themeColor: string) => {
 
 **How it works**:
 
-1. User selects a theme color (e.g., `themeColors.blue` which is `"var(--theme-blue)"`)
+1. User selects a theme color (e.g., `themeColors.blue` which is `"var(--audioui-theme-blue)"`)
 2. Sets the color directly in Audio UI context via `setColor()`
 3. All components automatically pick up the new theme
 4. Components compute variants automatically
@@ -194,13 +194,13 @@ This allows testing both theme-based and explicit color usage.
 
 1. App loads with no initial theme color (uses adaptive default)
 2. AudioUiProvider initializes with `initialColor={undefined}`
-3. Components resolve to adaptive default via CSS variable: `"var(--adaptive-default-color)"`
+3. Components resolve to adaptive default via CSS variable: `"var(--audioui-adaptive-default-color)"`
 4. Browser resolves to appropriate color based on `.dark` class
 
 ### Theme Switching
 
 1. User selects theme in sidebar (e.g., `themeColors.blue`)
-2. `changeTheme()` calls `setColor(themeColors.blue)` (which is `"var(--theme-blue)"`)
+2. `changeTheme()` calls `setColor(themeColors.blue)` (which is `"var(--audioui-theme-blue)"`)
 3. Audio UI context updated
 4. All components re-render with new theme
 5. Components compute variants automatically
@@ -212,11 +212,11 @@ For a component like `<Knob color={color} />`:
 1. If `color` prop provided → use it
 2. Else if Audio UI context has color → use context
 3. Else if component default → use `undefined`
-4. Else → use `"var(--adaptive-default-color)"` (CSS variable)
+4. Else → use `"var(--audioui-adaptive-default-color)"` (CSS variable)
 
 When using CSS variable:
 
-- Resolves to current theme variable (e.g., `--theme-blue`)
+- Resolves to current theme variable (e.g., `--audioui-theme-blue`)
 - Which has light/dark mode variants in CSS
 - Components compute their own variants from the primary color
 
@@ -242,13 +242,13 @@ Library theme variables automatically adapt:
 
 ```css
 :root {
-  --theme-default: hsl(0, 0%, 10%); /* Light mode */
-  --adaptive-default-color: var(--theme-default);
+  --audioui-theme-default: hsl(0, 0%, 10%); /* Light mode */
+  --audioui-adaptive-default-color: var(--audioui-theme-default);
 }
 
 .dark {
-  --theme-default: hsl(0, 0%, 96%); /* Dark mode */
-  --adaptive-default-color: var(--theme-default);
+  --audioui-theme-default: hsl(0, 0%, 96%); /* Dark mode */
+  --audioui-adaptive-default-color: var(--audioui-theme-default);
 }
 ```
 

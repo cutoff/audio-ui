@@ -3,6 +3,7 @@
 import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 import "../../styles.css";
+import { AUDIOUI_CLASSNAMES } from "../../styles/classNames";
 import { BipolarControl, ExplicitRange } from "../types";
 import { knobSizeMap } from "../utils/sizeMappings";
 import { bipolarFormatter } from "../utils/valueFormatters";
@@ -138,7 +139,12 @@ function Knob({
 
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {
-        return classNames(className, "cutoffAudioKit", "componentContainer", onChange ? "highlight" : "");
+        return classNames(
+            className,
+            AUDIOUI_CLASSNAMES.root,
+            AUDIOUI_CLASSNAMES.container,
+            onChange ? AUDIOUI_CLASSNAMES.highlight : ""
+        );
     }, [className, onChange]);
 
     // Get the preferred width based on the size prop

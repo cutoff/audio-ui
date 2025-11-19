@@ -2,21 +2,22 @@
 
 ## Quick Setup Summary (Load This First)
 
-| Category | Details |
-| --- | --- |
-| Scripts | `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm link` |
-| Env Vars | None |
-| Component Structure | Props with JSDoc; default params; function ComponentName() {}; arrow functions for handlers; SVG for graphics |
-| Exports | All from src/index.ts: Components (Button, Knob, Slider, Keybed, AdaptiveBox, etc.), Providers (AudioUiProvider, hooks), Types, Utils (formatters, note utils), Theme colors |
-| Testing | Vitest; .test.tsx alongside; mock deps; React 18 compat |
-| Build | Vite; generates dist/index.js, index.d.ts, style.css; ES modules |
+| Category            | Details                                                                                                                                                                      |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scripts             | `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm link`, `pnpm lint:css`                                                                                                    |
+| Env Vars            | None                                                                                                                                                                         |
+| Component Structure | Props with JSDoc; default params; function ComponentName() {}; arrow functions for handlers; SVG for graphics                                                                |
+| Exports             | All from src/index.ts: Components (Button, Knob, Slider, Keybed, AdaptiveBox, etc.), Providers (AudioUiProvider, hooks), Types, Utils (formatters, note utils), Theme colors |
+| Testing             | Vitest; .test.tsx alongside; mock deps; React 18 compat                                                                                                                      |
+| Build               | Vite; generates dist/index.js, index.d.ts, style.css; ES modules                                                                                                             |
 
 ## Key File Structure
 
 - `src/components/`: Component .tsx with .test.tsx
 - `src/index.ts`: Export all components, types, utilities, and theme colors
-- `src/themes.css`: Theme CSS variables (primary colors only; variants computed by components)
+- `src/themes.css`: Theme CSS variables (primary colors only; variants computed by components, all prefixed `--audioui-*`)
 - `src/styles.css`: Base styles, utility classes, imports themes.css
+- `src/styles/`: Shared TS constants for class names and CSS variables (enforce `audioui-` prefix)
 - `src/themeColors.ts`: Exports predefined theme colors (themeColors, themeColorsDirect)
 - `dist/`: Built output (index.js, index.d.ts, style.css)
 - `docs/`: Technical documentation (see Documentation section below)

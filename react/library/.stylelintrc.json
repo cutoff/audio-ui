@@ -1,0 +1,6 @@
+{
+    "rules": {
+        "custom-property-pattern": "^audioui-[a-z0-9-]+$",
+        "selector-class-pattern": ["^(audioui(-[a-z0-9]+)*|dark)$", { "resolveNestedSelectors": true }]
+    }
+}

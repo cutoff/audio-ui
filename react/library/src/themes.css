@@ -3,31 +3,31 @@
     /* Variants (primary50, primary20) are computed automatically by components */
 
     /* Default theme — adaptive like shadcn: dark ink on light, light ink on dark */
-    --theme-default: hsl(0, 0%, 10%); /* Light mode: near-black */
+    --audioui-theme-default: hsl(0, 0%, 10%); /* Light mode: near-black */
     /* CSS variable for adaptive default - resolves correctly on both server and client */
-    --adaptive-default-color: var(--theme-default);
+    --audioui-adaptive-default-color: var(--audioui-theme-default);
 
     /* Named color themes */
-    --theme-blue: hsl(204, 88%, 52%);
-    --theme-orange: hsl(29, 100%, 48%);
-    --theme-pink: hsl(332, 92%, 52%);
-    --theme-green: hsl(160, 95%, 44%);
-    --theme-purple: hsl(252, 96%, 54%);
-    --theme-yellow: hsl(50, 100%, 50%);
+    --audioui-theme-blue: hsl(204, 88%, 52%);
+    --audioui-theme-orange: hsl(29, 100%, 48%);
+    --audioui-theme-pink: hsl(332, 92%, 52%);
+    --audioui-theme-green: hsl(160, 95%, 44%);
+    --audioui-theme-purple: hsl(252, 96%, 54%);
+    --audioui-theme-yellow: hsl(50, 100%, 50%);
 }
 
 /* Dark mode overrides */
 .dark {
     /* Default theme — near-white ink in dark mode */
-    --theme-default: hsl(0, 0%, 96%);
+    --audioui-theme-default: hsl(0, 0%, 96%);
     /* Adaptive default updates automatically via CSS variable */
-    --adaptive-default-color: var(--theme-default);
+    --audioui-adaptive-default-color: var(--audioui-theme-default);
 
     /* Named color themes (can have dark mode variants if needed) */
-    --theme-blue: hsl(204, 88%, 53%);
-    --theme-orange: hsl(29, 100%, 50%);
-    --theme-pink: hsl(332, 95%, 54%);
-    --theme-green: hsl(160, 98%, 37%);
-    --theme-purple: hsl(252, 100%, 67%);
-    --theme-yellow: hsl(50, 100%, 50%);
+    --audioui-theme-blue: hsl(204, 88%, 53%);
+    --audioui-theme-orange: hsl(29, 100%, 50%);
+    --audioui-theme-pink: hsl(332, 95%, 54%);
+    --audioui-theme-green: hsl(160, 98%, 37%);
+    --audioui-theme-purple: hsl(252, 100%, 67%);
+    --audioui-theme-yellow: hsl(50, 100%, 50%);
 }

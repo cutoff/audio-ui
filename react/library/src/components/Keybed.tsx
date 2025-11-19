@@ -16,6 +16,7 @@ import {
     WHITE_KEY_TO_CHROMATIC,
 } from "./utils/noteUtils";
 import "../styles.css";
+import { AUDIOUI_CLASSNAMES } from "../styles/classNames";
 import { useThemableProps } from "./providers/AudioUiProvider";
 
 /**
@@ -336,7 +337,7 @@ function Keybed({
 
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {
-        return classNames(className, "cutoffAudioKit");
+        return classNames(className, AUDIOUI_CLASSNAMES.root);
     }, [className]);
 
     // Get the preferred width based on the size prop

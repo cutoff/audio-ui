@@ -25,7 +25,7 @@ These are the fundamental requirements that define the color system. **These mus
 1. **Color Prop**
    - Themable components must have a `color` prop that defines the "primary" color
    - The `color` prop accepts **any CSS color literal, function, or variable**
-   - Examples: `"blue"`, `"#FF5500"`, `"rgb(255, 85, 0)"`, `"hsl(20, 100%, 50%)"`, `"var(--theme-blue)"`, `"color-mix(...)"`
+   - Examples: `"blue"`, `"#FF5500"`, `"rgb(255, 85, 0)"`, `"hsl(20, 100%, 50%)"`, `"var(--audioui-theme-blue)"`, `"color-mix(...)"`
 
 2. **Color Variants**
    - From the primary color, **2 variants must be derived** automatically
@@ -74,7 +74,7 @@ These are the fundamental requirements that define the color system. **These mus
 
 - Variants are computed in JavaScript at component level, not in CSS
 - CSS variables are used for theme definitions, but variants are not stored as CSS variables
-- The adaptive default uses a CSS variable (`--adaptive-default-color`) to prevent hydration mismatches
+- The adaptive default uses a CSS variable (`--audioui-adaptive-default-color`) to prevent hydration mismatches
 - Color mode tracking is shared at provider level for performance (not per-component)
 
 ## Overview
@@ -132,8 +132,8 @@ SVG Component Rendering
 The library defines theme variables in `themes.css` with simple naming - **only primary colors, no variants**:
 
 ```css
---theme-{name}  /* Just the primary color */
---adaptive-default-color  /* CSS variable for adaptive default */
+--audioui-theme-{name}  /* Just the primary color */
+--audioui-adaptive-default-color  /* CSS variable for adaptive default */
 ```
 
 **Note**: Variants (`primary50`, `primary20`) are **not** defined in CSS - they are computed automatically by components.
@@ -144,13 +144,13 @@ The adaptive default color uses a CSS variable to ensure consistent server-side 
 
 ```css
 :root {
-  --theme-default: hsl(0, 0%, 10%); /* Light mode: near-black */
-  --adaptive-default-color: var(--theme-default);
+  --audioui-theme-default: hsl(0, 0%, 10%); /* Light mode: near-black */
+  --audioui-adaptive-default-color: var(--audioui-theme-default);
 }
 
 .dark {
-  --theme-default: hsl(0, 0%, 96%); /* Dark mode: near-white */
-  --adaptive-default-color: var(--theme-default);
+  --audioui-theme-default: hsl(0, 0%, 96%); /* Dark mode: near-white */
+  --audioui-adaptive-default-color: var(--audioui-theme-default);
 }
 ```
 
@@ -162,38 +162,38 @@ This approach:
 
 ### Available Named Themes
 
-1. **Default (Adaptive)**: `--theme-default`
+1. **Default (Adaptive)**: `--audioui-theme-default`
    - Light mode: Near-black (`hsl(0, 0%, 10%)`)
    - Dark mode: Near-white (`hsl(0, 0%, 96%)`)
    - Adaptive like shadcn/ui: dark ink on light, light ink on dark
 
-2. **Blue**: `--theme-blue`
+2. **Blue**: `--audioui-theme-blue`
    - Light: `hsl(204, 88%, 52%)`
    - Dark: `hsl(204, 88%, 53%)`
 
-3. **Orange**: `--theme-orange`
+3. **Orange**: `--audioui-theme-orange`
    - Light: `hsl(29, 100%, 48%)`
    - Dark: `hsl(29, 100%, 50%)`
 
-4. **Pink**: `--theme-pink`
+4. **Pink**: `--audioui-theme-pink`
    - Light: `hsl(332, 92%, 52%)`
    - Dark: `hsl(332, 95%, 54%)`
 
-5. **Green**: `--theme-green`
+5. **Green**: `--audioui-theme-green`
    - Light: `hsl(160, 95%, 44%)`
    - Dark: `hsl(160, 98%, 37%)`
 
-6. **Purple**: `--theme-purple`
+6. **Purple**: `--audioui-theme-purple`
    - Light: `hsl(252, 96%, 54%)`
    - Dark: `hsl(252, 100%, 67%)`
 
-7. **Yellow**: `--theme-yellow`
+7. **Yellow**: `--audioui-theme-yellow`
    - Light: `hsl(50, 100%, 50%)`
    - Dark: `hsl(50, 100%, 50%)`
 
 ### Important Notes
 
-- **No variant CSS variables**: `--theme-blue-50` and `--theme-blue-20` do not exist
+- **No variant CSS variables**: `--audioui-theme-blue-50` and `--audioui-theme-blue-20` do not exist
 - **Variants are computed**: Components generate variants dynamically using `generateColorVariants()`
 - **CSS variables are optional**: You can use direct color values, CSS variables, or any valid CSS color
 
@@ -207,7 +207,7 @@ Returns the adaptive default color as a CSS variable.
 
 **Returns**:
 
-- `"var(--adaptive-default-color)"` - CSS variable that resolves to white in dark mode, black in light mode
+- `"var(--audioui-adaptive-default-color)"` - CSS variable that resolves to white in dark mode, black in light mode
 
 **Usage**:
 
@@ -215,7 +215,7 @@ Returns the adaptive default color as a CSS variable.
 import { getAdaptiveDefaultColor } from "@cutoff/audio-ui-react";
 
 const defaultColor = getAdaptiveDefaultColor();
-// Returns: "var(--adaptive-default-color)"
+// Returns: "var(--audioui-adaptive-default-color)"
 ```
 
 **Why CSS variable?**: Ensures server and client render the same string, preventing hydration mismatches. The browser resolves the actual color based on the `.dark` class.
@@ -429,13 +429,13 @@ import { themeColors } from '@cutoff/audio-ui-react';
 
 **Available colors**:
 
-- `themeColors.default` - `"var(--theme-default)"`
-- `themeColors.blue` - `"var(--theme-blue)"`
-- `themeColors.orange` - `"var(--theme-orange)"`
-- `themeColors.pink` - `"var(--theme-pink)"`
-- `themeColors.green` - `"var(--theme-green)"`
-- `themeColors.purple` - `"var(--theme-purple)"`
-- `themeColors.yellow` - `"var(--theme-yellow)"`
+- `themeColors.default` - `"var(--audioui-theme-default)"`
+- `themeColors.blue` - `"var(--audioui-theme-blue)"`
+- `themeColors.orange` - `"var(--audioui-theme-orange)"`
+- `themeColors.pink` - `"var(--audioui-theme-pink)"`
+- `themeColors.green` - `"var(--audioui-theme-green)"`
+- `themeColors.purple` - `"var(--audioui-theme-purple)"`
+- `themeColors.yellow` - `"var(--audioui-theme-yellow)"`
 
 ### `themeColorsDirect`
 
@@ -456,15 +456,15 @@ The library provides utility classes for consistent styling:
 ### Available Utility Classes
 
 ```css
-.stroke-primary      /* stroke: var(--primary-color) - only works if user sets --primary-color */
-.fill-primary        /* fill: var(--primary-color) - only works if user sets --primary-color */
-.border-primary      /* border-color: var(--primary-color) - only works if user sets --primary-color */
-.text-primary        /* color: var(--primary-color) - only works if user sets --primary-color */
-.fill-text           /* fill: var(--text-color) */
-.fill-transparent    /* fill: transparent */
+.audioui-stroke-primary      /* stroke: var(--audioui-primary-color) - only works if user sets --audioui-primary-color */
+.audioui-fill-primary        /* fill: var(--audioui-primary-color) - only works if user sets --audioui-primary-color */
+.audioui-border-primary      /* border-color: var(--audioui-primary-color) - only works if user sets --audioui-primary-color */
+.audioui-text-primary        /* color: var(--audioui-primary-color) - only works if user sets --audioui-primary-color */
+.audioui-fill-text           /* fill: var(--audioui-text-color) */
+.audioui-fill-transparent    /* fill: transparent */
 ```
 
-**Note**: These utility classes only work if the user sets `--primary-color` in their CSS. They are optional and not required for component functionality.
+**Note**: These utility classes only work if the user sets `--audioui-primary-color` in their CSS. They are optional and not required for component functionality.
 
 ## Usage Examples
 
@@ -485,7 +485,7 @@ import { themeColors } from '@cutoff/audio-ui-react';
 <Knob value={50} label="Volume" color="#FF5500" />
 
 // Use CSS variable
-<Button value={75} label="Power" color="var(--theme-purple)" />
+<Button value={75} label="Power" color="var(--audioui-theme-purple)" />
 ```
 
 ### Theme Provider Usage
@@ -613,7 +613,7 @@ The color system is optimized for realtime audio UIs with the following features
 ## Best Practices
 
 1. **Use predefined colors** for consistency: `themeColors.blue`, `themeColors.purple`, etc.
-2. **Use CSS variables** when you want to leverage the theme system: `"var(--theme-blue)"`
+2. **Use CSS variables** when you want to leverage the theme system: `"var(--audioui-theme-blue)"`
 3. **Use custom colors** for one-off components or special cases: `"#FF5500"`, `"hsl(280, 80%, 60%)"`
 4. **Prefer theme provider** for global theming over individual component props
 5. **Use component props** when you need component-specific overrides
@@ -630,7 +630,7 @@ The system supports all valid CSS color formats:
 - Hex: `"#FF5500"`, `"#F50"`
 - RGB: `"rgb(255, 85, 0)"`, `"rgba(255, 85, 0, 0.5)"`
 - HSL: `"hsl(20, 100%, 50%)"`, `"hsla(20, 100%, 50%, 0.5)"`
-- CSS Variables: `"var(--theme-blue)"`
+- CSS Variables: `"var(--audioui-theme-blue)"`
 - CSS Functions: `"color-mix(...)"`, `"hsl(...)"`
 
 ### Browser Compatibility
@@ -642,6 +642,6 @@ The system supports all valid CSS color formats:
 ### SSR Compatibility
 
 - Adaptive default uses CSS variable to prevent hydration mismatches
-- Server and client render the same string: `"var(--adaptive-default-color)"`
+- Server and client render the same string: `"var(--audioui-adaptive-default-color)"`
 - Browser resolves the actual color based on `.dark` class
 - No JavaScript required for mode detection on initial render

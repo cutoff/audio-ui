@@ -35,7 +35,8 @@
         "typecheck": "tsc --noEmit",
         "test": "vitest run",
         "test:watch": "vitest",
-        "test:coverage": "vitest run --coverage"
+        "test:coverage": "vitest run --coverage",
+        "lint:css": "stylelint \"src/**/*.css\""
     },
     "keywords": [
         "react",
@@ -61,6 +62,7 @@
         "typescript": "^5.6.3",
         "vite": "^5.2.0",
         "vite-plugin-dts": "^3.0.0",
-        "vitest": "^1.2.0"
+        "vitest": "^1.2.0",
+        "stylelint": "^16.9.0"
     }
 }

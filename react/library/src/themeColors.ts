@@ -13,19 +13,19 @@
  */
 export const themeColors = {
     /** Default adaptive color (white in dark mode, black in light mode) */
-    default: "var(--theme-default)",
+    default: "var(--audioui-theme-default)",
     /** Blue theme color */
-    blue: "var(--theme-blue)",
+    blue: "var(--audioui-theme-blue)",
     /** Orange theme color */
-    orange: "var(--theme-orange)",
+    orange: "var(--audioui-theme-orange)",
     /** Pink theme color */
-    pink: "var(--theme-pink)",
+    pink: "var(--audioui-theme-pink)",
     /** Green theme color */
-    green: "var(--theme-green)",
+    green: "var(--audioui-theme-green)",
     /** Purple theme color */
-    purple: "var(--theme-purple)",
+    purple: "var(--audioui-theme-purple)",
     /** Yellow theme color */
-    yellow: "var(--theme-yellow)",
+    yellow: "var(--audioui-theme-yellow)",
 } as const;
 
 /**

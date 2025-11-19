@@ -1,21 +1,20 @@
 @import url("themes.css");
 
 :root {
-    --text-color: hsl(0, 0%, 10%);
-    --bg-color: hsl(0, 0%, 7%);
-    --default-font-size: 14px;
-    /* --primary-color is optional - users can set it if they want to use utility classes */
+    --audioui-text-color: hsl(0, 0%, 10%);
+    --audioui-default-font-size: 14px;
+    /* --audioui-primary-color is optional - users can set it if they want to use utility classes */
 }
 
 /* Dark mode text color */
 .dark {
-    --text-color: hsl(0, 0%, 96%);
+    --audioui-text-color: hsl(0, 0%, 96%);
 }
 
 textarea input {
-    color: var(--text-color);
+    color: var(--audioui-text-color);
     background-color: transparent;
-    font-size: var(--default-font-size);
+    font-size: var(--audioui-default-font-size);
 }
 
 svg text,
@@ -25,71 +24,68 @@ svg foreignObject div {
     cursor: default;
 }
 
-.cutoffAudioKit {
+.audioui {
     -webkit-user-select: none;
     user-select: none;
     cursor: default;
 }
 
-.componentContainer {
+.audioui-component-container {
     height: auto;
     max-width: 100%;
     max-height: 100%;
 }
 
-.componentContainer svg {
+.audioui-component-container svg {
     height: auto;
 }
 
-.highlight {
+.audioui-highlight {
     will-change: filter;
     /* Fast transition for realtime audio UI - instant feedback preferred */
     transition: filter 50ms linear;
     cursor: pointer;
 }
 
-.highlight:hover {
+.audioui-highlight:hover {
     /* Optimized hover effect for edition mode */
     /* Brightness and contrast boost for better visibility */
     filter: brightness(1.15) contrast(1.05)
         /* Subtle glow using primary color if available, otherwise adaptive text color */
-        drop-shadow(0 0 0.5em color-mix(in srgb, var(--primary-color, var(--text-color)) 35%, transparent));
+        drop-shadow(
+            0 0 0.5em color-mix(in srgb, var(--audioui-primary-color, var(--audioui-text-color)) 35%, transparent)
+        );
 }
 
 /* Prevent blur effect from affecting text elements */
-.highlight:hover text,
-.highlight:hover foreignObject {
+.audioui-highlight:hover text,
+.audioui-highlight:hover foreignObject {
     filter: none;
 }
 
-/* Base utility classes - only work if --primary-color is set by user */
-.stroke-primary {
-    stroke: var(--primary-color);
+/* Base utility classes - only work if --audioui-primary-color is set by user */
+.audioui-stroke-primary {
+    stroke: var(--audioui-primary-color);
 }
 
-.fill-text {
-    fill: var(--text-color);
+.audioui-fill-text {
+    fill: var(--audioui-text-color);
 }
 
-.fill-primary {
-    fill: var(--primary-color);
+.audioui-fill-primary {
+    fill: var(--audioui-primary-color);
 }
 
-.fill-transparent {
+.audioui-fill-transparent {
     fill: transparent;
 }
 
 /* Border utilities */
-.border-primary {
-    border-color: var(--primary-color);
-}
-
-/* Back-compat alias for demo markup */
-.border-primary-color {
-    border-color: var(--primary-color);
+.audioui-border-primary {
+    border-color: var(--audioui-primary-color);
 }
 
 /* Text color utilities */
-.text-primary {
-    color: var(--primary-color);
+.audioui-text-primary {
+    color: var(--audioui-primary-color);
 }

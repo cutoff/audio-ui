@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "../support/AdaptiveBox";
 import "../../styles.css";
+import { AUDIOUI_CLASSNAMES } from "../../styles/classNames";
 import { Control, ExplicitRange } from "../types";
 import { buttonSizeMap } from "../utils/sizeMappings";
 import { useThemableProps } from "../providers/AudioUiProvider";
@@ -213,7 +214,7 @@ function Button({
 
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {
-        return classNames(className, "cutoffAudioKit", onChange ? "highlight" : "");
+        return classNames(className, AUDIOUI_CLASSNAMES.root, onChange ? AUDIOUI_CLASSNAMES.highlight : "");
     }, [className, onChange]);
 
     // Get the preferred width based on the size prop
