@@ -2,8 +2,7 @@
 
 This directory contains the React implementation of the Audio UI component library.
 
-> **For general usage, installation, and component documentation, see the [main README](../README.md) at the project
-> root.**
+> **For general usage, installation, and component documentation, see the [main README](../README.md) at the project root.**
 
 ## Development Setup
 

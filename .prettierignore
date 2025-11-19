@@ -27,7 +27,7 @@ yarn.lock
 # Ignore license files
 **/LICENSE*
 LICENSE*
-license/
+license-telf/
 
 # Shadcn Components
 react/playground-app/components/ui

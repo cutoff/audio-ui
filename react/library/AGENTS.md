@@ -2,14 +2,14 @@
 
 ## Quick Setup Summary (Load This First)
 
-| Category            | Details                                                                                                                                                                      |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Scripts             | `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm link`                                                                                                                     |
-| Env Vars            | None                                                                                                                                                                         |
-| Component Structure | Props with JSDoc; default params; function ComponentName() {}; arrow functions for handlers; SVG for graphics                                                                |
-| Exports             | All from src/index.ts: Components (Button, Knob, Slider, Keybed, AdaptiveBox, etc.), Providers (AudioUiProvider, hooks), Types, Utils (formatters, note utils), Theme colors |
-| Testing             | Vitest; .test.tsx alongside; mock deps; React 18 compat                                                                                                                      |
-| Build               | Vite; generates dist/index.js, index.d.ts, style.css; ES modules                                                                                                             |
+| Category | Details |
+| --- | --- |
+| Scripts | `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm link` |
+| Env Vars | None |
+| Component Structure | Props with JSDoc; default params; function ComponentName() {}; arrow functions for handlers; SVG for graphics |
+| Exports | All from src/index.ts: Components (Button, Knob, Slider, Keybed, AdaptiveBox, etc.), Providers (AudioUiProvider, hooks), Types, Utils (formatters, note utils), Theme colors |
+| Testing | Vitest; .test.tsx alongside; mock deps; React 18 compat |
+| Build | Vite; generates dist/index.js, index.d.ts, style.css; ES modules |
 
 ## Key File Structure
 

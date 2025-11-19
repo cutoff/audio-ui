@@ -13,21 +13,21 @@
 
 ## Quick Rules Summary for Agents (Load This First)
 
-| Category            | Rule/Details                                                                                                                                                                                                                                  |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Category | Rule/Details |
+| --- | --- |
 | Performance Mandate | **Critical Priority.** Audio apps have heavy runtime constraints (e.g., avoiding UI stutters, ensuring low-latency response). Prioritize performance in all decisions: minimal re-renders, no JS for layout/sizing, efficient event handling. |
-| React               | React 18 only; library as peer deps (`^18.2.0`), demo as direct (`^18.3.1`); never upgrade to 19                                                                                                                                              |
-| TypeScript          | Strict mode; handle all errors; prefix unused params with \_; `@types/react:^18.3.23`                                                                                                                                                         |
-| Package Manager     | pnpm                                                                                                                                                                                                                                          |
-| UI Components       | Use shadcn/ui; add with `pnpm dlx shadcn@latest add [component]`; no custom if shadcn available; no alter                                                                                                                                     |
-| Testing             | Vitest; files `.test.tsx` alongside; mock deps; React 18 compat                                                                                                                                                                               |
-| Build               | Library: Vite with TS decl; demo: Next.js 15 with Turbopack; run `pnpm build && pnpm typecheck`                                                                                                                                               |
-| Dev Server          | Run `pnpm dev` at root for development; never in playground-app for testing                                                                                                                                                                   |
-| Theming             | CSS vars; default adaptive (black light, white dark); utility classes .stroke-primary etc.; named themes blue etc.                                                                                                                            |
-| Components          | Function declarations; props with JSDoc; default params; SVG for graphics                                                                                                                                                                     |
-| Perf                | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveBox CSS-only)                                                                                                                                                                       |
-| Library Exports     | From react/library/src/index.ts                                                                                                                                                                                                               |
-| Demo Routing        | Next.js app router; app/[route]/page.tsx                                                                                                                                                                                                      |
+| React | React 18 only; library as peer deps (`^18.2.0`), demo as direct (`^18.3.1`); never upgrade to 19 |
+| TypeScript | Strict mode; handle all errors; prefix unused params with \_; `@types/react:^18.3.23` |
+| Package Manager | pnpm |
+| UI Components | Use shadcn/ui; add with `pnpm dlx shadcn@latest add [component]`; no custom if shadcn available; no alter |
+| Testing | Vitest; files `.test.tsx` alongside; mock deps; React 18 compat |
+| Build | Library: Vite with TS decl; demo: Next.js 15 with Turbopack; run `pnpm build && pnpm typecheck` |
+| Dev Server | Run `pnpm dev` at root for development; never in playground-app for testing |
+| Theming | CSS vars; default adaptive (black light, white dark); utility classes .stroke-primary etc.; named themes blue etc. |
+| Components | Function declarations; props with JSDoc; default params; SVG for graphics |
+| Perf | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveBox CSS-only) |
+| Library Exports | From react/library/src/index.ts |
+| Demo Routing | Next.js app router; app/[route]/page.tsx |
 
 ## Rendering Strategy
 
