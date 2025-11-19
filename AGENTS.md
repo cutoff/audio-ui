@@ -127,15 +127,17 @@ Agents docs are living documentation; update continuously for agent efficiency. 
 
 ## Licensing & Distribution
 
-- License Model: Tylium Evolutive License Framework (see `license/LICENSE.md`), with accompanying `SLA.md` and `CLA.md` in `license/`.
-- Compatibility: A GPL-3.0 variant is available in `license/LICENSE-GPL3.md` for open-source alignment when needed; Tylium terms govern unless explicitly stated otherwise in releases.
+- License Model: Tylium Evolutive License Framework (see `license-telf/LICENSE.md`), with accompanying `SLA.md` and `CLA.md` in `license-telf/`.
+- Compatibility: A GPL-3.0 variant is available in `license-telf/LICENSE-GPL3.md` for open-source alignment when needed; Tylium terms govern unless explicitly stated otherwise in releases.
 - Source Availability: Full source code is public.
 - Distribution: Packages and releases are distributed through classical channels (e.g., public Git hosting for source; package registries/artifacts for builds where applicable).
-- Contributor Guidance: Contributors agree to the Contributor License Agreement (`license/CLA.md`) and grant rights consistent with the Tylium framework and any companion open-source terms in use for a given release.
-- Operational Note: Package manifests may show UNLICENSED during development; the authoritative license is this section and the `license/` documents until publication artifacts include SPDX identifiers.
+- Contributor Guidance: Contributors agree to the Contributor License Agreement (`license-telf/CLA.md`) and grant rights consistent with the Tylium framework and any companion open-source terms in use for a given release.
+- Operational Note: Package manifests may show UNLICENSED during development; the authoritative license is this section and the `license-telf/` documents until publication artifacts include SPDX identifiers.
 
 ## Sub-File Summaries
 
+- `./agents/licensing-strategy.md`: Outlines the dual-licensing model and legal framework.
+- `./agents/versioning-guidelines.md`: Details the SemVer-based versioning strategy, including developer preview conventions.
 - `./react/library/AGENTS.md`: Library specifics (exports, build, env); created.
 - `./react/playground-app/AGENTS.md`: Playground app details (routing, integrations, env); created.
 

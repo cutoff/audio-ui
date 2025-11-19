@@ -242,7 +242,7 @@ A commercial license is available for proprietary use cases that are incompatibl
 
 **Commercial licenses can be acquired at [https://audioui.dev](https://audioui.dev)**
 
-For complete details on the dual-licensing model and commercial terms, please see the documents in the `license/` directory.
+For complete details on the dual-licensing model and commercial terms, please see the documents in the `license-telf/` directory.
 
 ---
 
