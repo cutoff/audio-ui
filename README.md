@@ -24,10 +24,10 @@ AudioUI provides a range of components essential for building audio applications
 
 This monorepo contains the following packages:
 
-| Package / Path                                    | Description                                                                 |
-| ------------------------------------------------- | --------------------------------------------------------------------------- |
-| `@cutoff/audio-ui-react` (`packages/react`)       | The core component library, published to npm.                               |
-| `playground-react` (`apps/playground-react`)      | A [Next.js](https://nextjs.org/) app for developing and testing components. |
+| Package / Path                               | Description                                                                 |
+| -------------------------------------------- | --------------------------------------------------------------------------- |
+| `@cutoff/audio-ui-react` (`packages/react`)  | The core component library, published to npm.                               |
+| `playground-react` (`apps/playground-react`) | A [Next.js](https://nextjs.org/) app for developing and testing components. |
 
 ## Getting Started
 
@@ -100,7 +100,7 @@ AudioUI is a dual-licensed project.
 
 Commercial licenses are available at **[https://audioui.dev](https://audioui.dev)**.
 
-For full details, please see the `LICENSE.md` file and the documents within the `license-telf/` directory.
+For full details, please see the [LICENSE.md](license-telf/LICENSE.md) file and the documents within the [license-telf](license-telf/) directory.
 
 ## Contributing
 
