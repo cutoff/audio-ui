@@ -1,269 +1,107 @@
-# Audio UI - React Component Library
+# AudioUI
 
-A modern React component library for audio and MIDI applications, providing intuitive UI components for music software.
+AudioUI is a professional, open-source React component library for building high-performance user interfaces for audio and MIDI applications. It provides a meticulously crafted set of components designed to meet the demanding needs of music software, digital audio workstations (DAWs), audio plugins with a web UI, and other audio-centric web applications.
+
+## Core Components
+
+AudioUI provides a range of components essential for building audio applications:
+
+- **Knob:** A versatile rotary knob for parameter control.
+- **Slider:** A linear slider for horizontal or vertical adjustments.
+- **Button:** A customizable button with styles suited for audio interfaces.
+- **Keybed:** A responsive and interactive piano keyboard.
+- **KnobSwitch:** A multi-position rotary switch for selecting modes or options.
 
 ## Features
 
-- 🎛️ **Audio-focused Components**: Knobs, sliders, buttons designed for audio interfaces
-- 🎹 **Virtual Keybed**: Interactive piano keyboard component
-- 🎨 **Customizable Styling**: CSS custom properties for easy theming
-- 📱 **Responsive Design**: Works seamlessly across different screen sizes
-- 🔧 **TypeScript Support**: Full type safety and IntelliSense support
-- ⚡ **Performance Optimized**: Tree-shakeable ES modules with minimal bundle size
+- **Performance First:** Built for the high demands of audio applications, with a focus on minimal re-renders and low-latency interactions.
+- **Deep Customization:** A flexible theming system built on CSS variables allows for complete control over the look and feel.
+- **Fully Accessible:** All components are designed with accessibility in mind, supporting keyboard navigation and ARIA standards.
+- **Mobile & Touch Ready:** Designed from the ground up to work flawlessly on touch devices.
+- **TypeScript Native:** Written entirely in TypeScript for a superior developer experience.
 
-## Available Components
+## Packages
 
-The library provides the following audio-focused UI components:
+This monorepo contains the following packages:
 
-- **Button** - Customizable button with audio interface styling
-- **Knob** - Rotary knob control for parameter adjustment
-- **KnobSwitch** - Multi-position rotary switch
-- **Slider** - Linear slider control
-- **Keybed** - Virtual keyboard interface
-- **Option** - Option selector for component configuration
+| Package / Path                             | Description                                                                 |
+| ------------------------------------------ | --------------------------------------------------------------------------- |
+| `@cutoff/audio-ui-react` (`react/library`) | The core component library, published to npm.                               |
+| `playground-app` (`react/playground-app`)  | A [Next.js](https://nextjs.org/) app for developing and testing components. |
 
-## Quick Start
+## Getting Started
 
-### Installation
+### Using the Component Library
+
+To use AudioUI components in your project, install the `@cutoff/audio-ui-react` package from npm:
 
 ```bash
-# Install the library (when published)
 pnpm add @cutoff/audio-ui-react
+```
 
-# Install required peer dependencies
+You will also need to install its peer dependencies:
+
+```bash
 pnpm add react@^18.2.0 react-dom@^18.2.0
 ```
 
-### Basic Usage
+Here is a basic example of how to use a component:
 
 ```tsx
 import React, { useState } from "react";
-import { Knob, Slider, Button } from "@cutoff/audio-ui-react";
+import { Knob } from "@cutoff/audio-ui-react";
 import "@cutoff/audio-ui-react/style.css";
 
-function AudioInterface() {
-  const [volume, setVolume] = useState(50);
+function MyAudioModule() {
   const [cutoff, setCutoff] = useState(75);
-  const [enabled, setEnabled] = useState(false);
 
   return (
-    <div className="audio-interface">
-      <Knob value={volume} onChange={setVolume} label="Volume" min={0} max={100} />
-
-      <Slider value={cutoff} onChange={setCutoff} label="Cutoff" min={0} max={100} />
-
-      <Button value={enabled ? 100 : 0} onClick={() => setEnabled(!enabled)} label="Enable" />
+    <div>
+      <Knob value={cutoff} onChange={setCutoff} label="Cutoff" min={0} max={100} />
     </div>
   );
 }
 ```
 
-## Project Structure
+### Developing Locally
 
-The project is organized as a monorepo with the following structure:
-
-- `react/` - Contains the React implementation
-  - `library/` - The component library
-    - `src/` - Source code for the components
-    - `dist/` - Built output (generated)
-  - `playground-app/` - Next.js application for demonstrating the components
-
-## Build/Configuration Instructions
-
-### Setting Up the Project
-
-1. Install dependencies:
-
-   ```bash
-   pnpm install
-   ```
-
-2. Build the library:
-
-   ```bash
-   pnpm build
-   ```
-
-3. Run the playground application:
-   ```bash
-   cd react/playground-app
-   pnpm dev
-   ```
-
-### Library Development
-
-The library uses Vite for building and TypeScript for type checking:
-
-- Build the library:
-
-  ```bash
-  cd react/library
-  pnpm build
-  ```
-
-- Type check the library:
-
-  ```bash
-  cd react/library
-  pnpm typecheck
-  ```
-
-- Link the library for local development:
-  ```bash
-  cd react/library
-  pnpm link
-  ```
-
-## For Library Development
-
-### Setting Up the Development Environment
+To develop AudioUI locally, clone the repository and install the dependencies:
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd audio-ui/react
-
-# Install dependencies
+git clone git@github.com:cutoff/audio-ui.git
+cd audio-ui
 pnpm install
+```
 
-# Build the library
-pnpm build
+This monorepo uses `pnpm` workspaces. The two primary packages are the component `library` and the `playground-app`.
 
-# Run the playground application
-cd playground-app
+To start the development server, run:
+
+```bash
 pnpm dev
 ```
 
-## ⚠️ Important: React Version Policy
+This command will start the Next.js playground application, which is used to develop and visually test the components from the library. The playground is the recommended environment for most development tasks.
 
-**This project maintains React 18 compatibility for maximum ecosystem support.**
+## Key Scripts
 
-### Version Requirements
-
-- **Library**: React 18 peer dependencies (`react: ^18.2.0`, `react-dom: ^18.2.0`)
-- **Demo App**: React 18 direct dependencies (`react: ^18.3.1`, `react-dom: ^18.3.1`)
-- **TypeScript Types**: `@types/react: ^18.3.23`, `@types/react-dom: ^18.3.7`
-
-### Why React 18?
-
-- Ensures compatibility with the widest range of React applications
-- Avoids breaking changes introduced in React 19
-- Maintains stability for production applications
-- Supports both legacy and modern React features
-
-> **Note**: Do not upgrade to React 19 without explicit project approval and thorough testing.
-
-## Development Workflow
-
-### 1. Version Compatibility Check
-
-Before making changes, verify React versions:
-
-```bash
-# Check installed React versions
-pnpm ls react @types/react
-
-# Should show React 18.x versions consistently
-```
-
-### 2. Development Process
-
-```bash
-# Make changes to library components
-cd react/library
-pnpm build
-
-# Test changes in playground app
-cd ../playground-app
-pnpm dev
-```
-
-### 3. Type Checking
-
-Always run TypeScript checks before committing:
-
-```bash
-# Check library types
-cd react/library
-pnpm typecheck
-
-# Check playground app types
-cd ../playground-app
-pnpm exec tsc --noEmit
-```
-
-### 4. Testing
-
-```bash
-# Run tests (when configured)
-cd react/library
-pnpm test
-```
-
-## Troubleshooting
-
-### React Version Conflicts
-
-If you encounter TypeScript errors related to React types:
-
-1. **Check versions**: `pnpm ls react @types/react`
-2. **Fix conflicts**: Install correct React 18 versions
-3. **Verify**: Run `pnpm typecheck` in both library and demo app
-
-### Common Issues
-
-- **"ReactNode" type conflicts**: Usually indicates React 19 types mixed with React 18
-- **Build failures**: Ensure all dependencies are React 18 compatible
-- **Component not rendering**: Check that props are properly typed and passed
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Ensure React 18 compatibility
-4. Run type checks and tests
-5. Submit a pull request
-
-### Documentation Guidelines
-
-- **Documentation Files**:
-  - `AGENTS.md` is the primary documentation file for LLMs (AI assistants)
-  - `CLAUDE.md` and `GEMINI.md` are symbolic links to `AGENTS.md`
-  - Always edit `AGENTS.md` directly, never modify the symbolic link files
-  - Changes to `AGENTS.md` are automatically reflected in the linked files
+- `pnpm dev`: Starts the playground application for local development.
+- `pnpm build`: Builds the `@cutoff/audio-ui-react` component library.
+- `pnpm typecheck`: Runs TypeScript checks across the entire monorepo.
+- `pnpm lint`: Lints the codebase.
+- `pnpm test`: Runs the test suite for the component library.
 
 ## Licensing
 
-This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**. The full license text is available in the `LICENSE.md` file in the root of this repository.
+AudioUI is a dual-licensed project.
 
-### Commercial Licensing
+- **Open Source (GPL-3.0):** You may use this library for free in open-source projects under the terms of the GNU General Public License v3.0.
+- **Commercial License:** For use in proprietary, closed-source applications, you must purchase a commercial license. This license removes the copyleft restrictions of the GPL and includes professional support.
 
-A commercial license is available for proprietary use cases that are incompatible with the GPLv3. This license removes the copyleft restrictions and includes a Service Level Agreement (SLA) for professional support.
+Commercial licenses are available at **[https://audioui.dev](https://audioui.dev)**.
 
-**Commercial licenses can be acquired at [https://audioui.dev](https://audioui.dev)**
+For full details, please see the `LICENSE.md` file and the documents within the `license-telf/` directory.
 
-For complete details on the dual-licensing model and commercial terms, please see the documents in the `license-telf/` directory.
+## Contributing
 
----
-
-## Architecture
-
-### Library Structure
-
-- **Components**: Individual UI components in `src/components/`
-- **Exports**: All components exported from `src/index.ts`
-- **Styling**: CSS and theme files in `src/styles.css` and `src/themes.css`
-- **Types**: TypeScript definitions alongside components
-
-### Playground App Structure
-
-- **Pages**: Component demos in `app/components/[component]/page.tsx`
-- **Shared UI**: Reusable demo components in `components/ui/`
-- **Styling**: Tailwind CSS for playground app specific styling
-
-## Performance
-
-- **Tree-shaking**: Library built as ES modules
-- **Minimal CSS**: Lightweight styling with CSS custom properties
-- **SVG Graphics**: Scalable vector graphics for crisp rendering
-- **TypeScript**: Full type safety with zero runtime overhead
+We welcome contributions to AudioUI. If you would like to contribute, please fork the repository and submit a pull request. All contributors must sign our Contributor License Agreement (CLA), which can be found in the `license-telf/` directory.

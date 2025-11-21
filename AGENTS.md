@@ -130,6 +130,7 @@ Agents docs are living documentation; update continuously for agent efficiency. 
 
 - **Only modify AGENTS.md directly** - symbolic links (CLAUDE.md, GEMINI.md) should not be edited
 - **Update AGENTS.md to reflect current project state after each interaction** - ensure documentation stays synchronized with code changes
+- **Update README.md continuously:** The root `README.md` is the public face of the project. It must be updated to reflect any changes to the build process, package names, or getting-started instructions that occur during a session.
 
 ## Licensing & Distribution
 
