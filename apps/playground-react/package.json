@@ -8,11 +8,11 @@
     "homepage": "https://audioui.dev",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/CutoffAudio/audio-ui.git",
-        "directory": "react/playground-app"
+        "url": "git+https://github.com/cutoff/audio-ui.git",
+        "directory": "apps/playground-react"
     },
     "bugs": {
-        "url": "https://github.com/CutoffAudio/audio-ui/issues"
+        "url": "https://github.com/cutoff/audio-ui/issues"
     },
     "type": "module",
     "scripts": {

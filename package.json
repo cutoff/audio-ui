@@ -8,12 +8,12 @@
     "homepage": "https://audioui.dev",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/CutoffAudio/audio-ui.git"
+        "url": "git+https://github.com/cutoff/audio-ui.git"
     },
     "bugs": {
-        "url": "https://github.com/CutoffAudio/audio-ui/issues"
+        "url": "https://github.com/cutoff/audio-ui/issues"
     },
-    "packageManager": "pnpm@10.20.0",
+    "packageManager": "pnpm@10.23.0",
     "scripts": {
         "dev": "turbo dev",
         "typecheck": "turbo typecheck",
@@ -29,9 +29,6 @@
         "audio",
         "midi",
         "components"
-    ],
-    "workspaces": [
-        "react"
     ],
     "dependencies": {
         "turbo": "^2.5.8"

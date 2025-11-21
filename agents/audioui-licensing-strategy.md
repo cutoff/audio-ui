@@ -40,7 +40,7 @@ The complete legal framework is located in the `/license` directory at the root 
 
 ### 3.2. `README.md` Files
 
-- The root `README.md` and the `react/library/README.md` must clearly explain the dual-licensing model.
+- The root `README.md` and the `packages/react/README.md` must clearly explain the dual-licensing model.
 - They must include a direct link for purchasing the commercial license: `https://audioui.dev`.
 
 ### 3.3. `LICENSE.md` Files

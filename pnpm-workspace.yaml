@@ -1,6 +1,6 @@
 packages:
-    - react/library
-    - react/playground-app
+    - packages/*
+    - apps/*
 
 onlyBuiltDependencies:
     - "@swc/core"

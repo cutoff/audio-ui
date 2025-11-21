@@ -30,4 +30,4 @@ LICENSE*
 license-telf/
 
 # Shadcn Components
-react/playground-app/components/ui
+apps/playground-react/components/ui

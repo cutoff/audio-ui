@@ -56,7 +56,7 @@ The AudioUI library uses a comprehensive namespace isolation strategy to prevent
 
 ### Class Names
 
-**Location**: `react/library/src/styles/classNames.ts`
+**Location**: `packages/react/src/styles/classNames.ts`
 
 **Usage:**
 
@@ -82,7 +82,7 @@ const className = classNames(AUDIOUI_CLASSNAMES.root, AUDIOUI_CLASSNAMES.highlig
 
 ### CSS Variables
 
-**Location**: `react/library/src/styles/cssVars.ts`
+**Location**: `packages/react/src/styles/cssVars.ts`
 
 **Usage:**
 
@@ -210,7 +210,7 @@ const defaultColor = AUDIOUI_CSS_VARS.adaptiveDefaultColor;
 
 ### Configuration
 
-**Location**: `react/library/.stylelintrc.json`
+**Location**: `packages/react/.stylelintrc.json`
 
 **Rules:**
 
@@ -635,12 +635,12 @@ The adaptive default uses a CSS variable to prevent hydration mismatches:
 
 ## References
 
-- **Color System Documentation**: `react/library/docs/color-system.md`
-- **Color Integration Guide**: `react/playground-app/docs/color-integration.md`
-- **Stylelint Config**: `react/library/.stylelintrc.json`
-- **Class Name Constants**: `react/library/src/styles/classNames.ts`
-- **CSS Variable Constants**: `react/library/src/styles/cssVars.ts`
-- **Theme Colors**: `react/library/src/themeColors.ts`
+- **Color System Documentation**: `packages/react/docs/color-system.md`
+- **Color Integration Guide**: `apps/playground-react/docs/color-integration.md`
+- **Stylelint Config**: `packages/react/.stylelintrc.json`
+- **Class Name Constants**: `packages/react/src/styles/classNames.ts`
+- **CSS Variable Constants**: `packages/react/src/styles/cssVars.ts`
+- **Theme Colors**: `packages/react/src/themeColors.ts`
 
 ## Maintenance Notes
 

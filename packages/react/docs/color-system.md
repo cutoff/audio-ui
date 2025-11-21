@@ -203,7 +203,7 @@ This approach:
 
 Returns the adaptive default color as a CSS variable.
 
-**Location**: `react/library/src/components/utils/colorUtils.ts`
+**Location**: `packages/react/src/components/utils/colorUtils.ts`
 
 **Returns**:
 
@@ -224,7 +224,7 @@ const defaultColor = getAdaptiveDefaultColor();
 
 The core utility function that generates color variants from a base color. Optimized for performance with pre-compiled regex and efficient lookups.
 
-**Location**: `react/library/src/components/utils/colorUtils.ts`
+**Location**: `packages/react/src/components/utils/colorUtils.ts`
 
 **Signature**:
 
@@ -286,7 +286,7 @@ Components resolve colors using the following priority (highest to lowest):
 
 ### `useThemableProps` Hook
 
-**Location**: `react/library/src/components/providers/AudioUiProvider.tsx`
+**Location**: `packages/react/src/components/providers/AudioUiProvider.tsx`
 
 **Usage**:
 
@@ -357,7 +357,7 @@ function MyComponent({ color, roundness, ...otherProps }: MyComponentProps) {
 
 ### `AudioUiProvider`
 
-**Location**: `react/library/src/components/providers/AudioUiProvider.tsx`
+**Location**: `packages/react/src/components/providers/AudioUiProvider.tsx`
 
 Provides React context for global theme management with **shared color mode tracking** (performance optimization).
 
@@ -411,7 +411,7 @@ const { color, roundness, isDarkMode, setColor, setRoundness } = useAudioUiTheme
 
 ### `themeColors`
 
-**Location**: `react/library/src/themeColors.ts`
+**Location**: `packages/react/src/themeColors.ts`
 
 Exported predefined theme colors as CSS color values (CSS variables).
 

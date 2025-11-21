@@ -24,10 +24,10 @@ AudioUI provides a range of components essential for building audio applications
 
 This monorepo contains the following packages:
 
-| Package / Path                             | Description                                                                 |
-| ------------------------------------------ | --------------------------------------------------------------------------- |
-| `@cutoff/audio-ui-react` (`react/library`) | The core component library, published to npm.                               |
-| `playground-app` (`react/playground-app`)  | A [Next.js](https://nextjs.org/) app for developing and testing components. |
+| Package / Path                                    | Description                                                                 |
+| ------------------------------------------------- | --------------------------------------------------------------------------- |
+| `@cutoff/audio-ui-react` (`packages/react`)       | The core component library, published to npm.                               |
+| `playground-react` (`apps/playground-react`)      | A [Next.js](https://nextjs.org/) app for developing and testing components. |
 
 ## Getting Started
 
@@ -73,7 +73,7 @@ cd audio-ui
 pnpm install
 ```
 
-This monorepo uses `pnpm` workspaces. The two primary packages are the component `library` and the `playground-app`.
+This monorepo uses `pnpm` workspaces. The two primary packages are `@cutoff/audio-ui-react` (the component library) and `playground-react` (the Next.js playground application).
 
 To start the development server, run:
 

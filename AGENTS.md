@@ -26,16 +26,16 @@
 | Theming             | CSS vars with `--audioui-*`; default adaptive (black light, white dark); utility classes `.audioui-*`; named themes blue etc.                                                                                                                 |
 | Components          | Function declarations; props with JSDoc; default params; SVG for graphics                                                                                                                                                                     |
 | Perf                | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveBox CSS-only)                                                                                                                                                                       |
-| Library Exports     | From react/library/src/index.ts                                                                                                                                                                                                               |
+| Library Exports     | From packages/react/src/index.ts                                                                                                                                                                                                               |
 | Demo Routing        | Next.js app router; app/[route]/page.tsx                                                                                                                                                                                                      |
 
 ## Rendering Strategy
 
-- **`react/library` (Component Library):** **Client Components ONLY.**
+- **`packages/react` (Component Library):** **Client Components ONLY.**
   - **Rule:** Every component must have the `"use client";` directive at the top of the file.
   - **Reason:** Library components are interactive (knobs, sliders) and rely on client-side hooks and browser events. This ensures they work in any host application (CSR, SSR, SSG).
 
-- **`react/playground-app` (Playground Application):** **Server Components by default; Client Components for interactivity.**
+- **`apps/playground-react` (Playground Application):** **Server Components by default; Client Components for interactivity.**
   - **Purpose:** Internal playground for rapid iteration, visual validation, and manual testing. Not the final documentation site.
   - **Rule:** Pages (`app/**/page.tsx`) should be Server Components (default, no directive). They are pre-rendered at build time (SSG) for performance.
   - **Implementation:** To show interactive demos, import the library's Client Components into the Server Component pages. Next.js will handle the client-side hydration automatically. Pages that require hooks for demo controls (e.g., state for knobs) must use the `"use client";` directive.
@@ -43,14 +43,14 @@
 ## Documentation Strategy (Web Monorepo)
 
 - Final public documentation lives in a separate website monorepo (Next.js) with MDX-based, developer-oriented docs that embed live components.
-- This repo's `react/playground-app` is a playground, not the docs source. Keep playground focused on iteration and testing; mirror finalized examples into the docs site when stable.
+- This repo's `apps/playground-react` is a playground, not the docs source. Keep playground focused on iteration and testing; mirror finalized examples into the docs site when stable.
 
 ## Project Structure
 
-- `react/library/`: Component library; src/, dist/; Vite build; React 18 peer
-- `react/playground-app/`: Next.js playground; showcases components; app/components for pages (inferred)
+- `packages/react/`: Component library; src/, dist/; Vite build; React 18 peer
+- `apps/playground-react/`: Next.js playground; showcases components; app/components for pages (inferred)
 - `agents/`: Shared conventions (coding-conventions-2.0.md, typescript-guidelines-2.0.md, react-conventions-2.0.md, documentation-standards-2.0.md)
-- `react/library/docs/`: Specialized tech docs (e.g., adaptive-box-layout.md)
+- `packages/react/docs/`: Specialized tech docs (e.g., adaptive-box-layout.md)
 - `links/`: Symbolic links to external repositories (Read-Only, Ignored by Git). Use for reference only.
 - Sub-AGENTS.md: Optional extensions for details
 
@@ -93,7 +93,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - CSS/SVG-based layout system for SVG controls with labels
 - Modes: scaleToFit (contain, aspect, letterbox); fill (preserve vert, distort SVG width)
 - Features: container query cqw/cqh; scaler calc; two-row grid; align start/center/end; label modes visible/hidden/none; overlay sibling
-- See react/library/docs/adaptive-box-layout.md for complete specification
+- See packages/react/docs/adaptive-box-layout.md for complete specification
 - React 18 compatible
 
 ## Theme System
@@ -103,7 +103,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - Mapping: --audioui-primary-color to default (black-ish light, white-ish dark)
 - Classes: .audioui-stroke-primary, .audioui-fill-primary, .audioui-border-primary, .audioui-text-primary (all prefixed with `audioui-`)
 - Provider: AudioUiProvider defaults color; useThemableProps fallback
-- **Comprehensive Documentation**: See `react/library/docs/color-system.md` for complete color system architecture, and `react/playground-app/docs/color-integration.md` for playground integration details
+- **Comprehensive Documentation**: See `packages/react/docs/color-system.md` for complete color system architecture, and `apps/playground-react/docs/color-integration.md` for playground integration details
 - **Styling System Guidelines**: See `agents/audioui-styling-system.md` for complete styling conventions, naming patterns, constants usage, and Stylelint enforcement
 
 ## ESLint/Prettier
@@ -146,8 +146,8 @@ Agents docs are living documentation; update continuously for agent efficiency. 
 - `./agents/audioui-licensing-strategy.md`: Outlines the dual-licensing model and legal framework.
 - `./agents/audioui-versioning-guidelines.md`: Details the SemVer-based versioning strategy, including developer preview conventions.
 - `./agents/audioui-styling-system.md`: Comprehensive styling system guidelines covering namespace isolation, naming conventions, constants usage, Stylelint enforcement, and best practices.
-- `./react/library/AGENTS.md`: Library specifics (exports, build, env); created.
-- `./react/playground-app/AGENTS.md`: Playground app details (routing, integrations, env); created.
+- `./packages/react/AGENTS.md`: Library specifics (exports, build, env); created.
+- `./apps/playground-react/AGENTS.md`: Playground app details (routing, integrations, env); created.
 
 ## Documentation Files
 

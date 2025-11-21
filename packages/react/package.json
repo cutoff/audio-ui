@@ -7,11 +7,11 @@
     "homepage": "https://audioui.dev",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/CutoffAudio/audio-ui.git",
-        "directory": "react/library"
+        "url": "git+https://github.com/cutoff/audio-ui.git",
+        "directory": "packages/react"
     },
     "bugs": {
-        "url": "https://github.com/CutoffAudio/audio-ui/issues"
+        "url": "https://github.com/cutoff/audio-ui/issues"
     },
     "publishConfig": {
         "access": "public"
