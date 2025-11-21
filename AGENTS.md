@@ -51,6 +51,7 @@
 - `react/playground-app/`: Next.js playground; showcases components; app/components for pages (inferred)
 - `agents/`: Shared conventions (coding-conventions-2.0.md, typescript-guidelines-2.0.md, react-conventions-2.0.md, documentation-standards-2.0.md)
 - `react/library/docs/`: Specialized tech docs (e.g., adaptive-box-layout.md)
+- `links/`: Symbolic links to external repositories (Read-Only, Ignored by Git). Use for reference only.
 - Sub-AGENTS.md: Optional extensions for details
 
 ## Agent Workflow Template
