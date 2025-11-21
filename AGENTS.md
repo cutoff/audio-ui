@@ -84,6 +84,10 @@ When TypeScript errors occur related to React types:
 
 Do not fix unrelated TS errors; many known and ignored; focus on current task.
 
+## Strategic Roadmap
+
+**Primary Directive:** The project's strategic direction, priorities, and release plan are defined in `ROADMAP.md`. All tasks and development efforts must align with the goals and milestones outlined in this document. Consult it at the beginning of any session to understand the current priorities.
+
 ## AdaptiveBox Component
 
 - CSS/SVG-based layout system for SVG controls with labels
@@ -148,10 +152,4 @@ Agents docs are living documentation; update continuously for agent efficiency. 
 
 ### Library Documentation
 
-- `react/library/docs/color-system.md`: Comprehensive color system documentation covering CSS theme variables, color utilities, component color resolution, theme provider system, and usage examples.
-- `react/library/docs/color-property-examples.md`: Practical examples of using the `color` property with components, including animations and dynamic colors.
-- `react/library/docs/adaptive-box-layout.md`: AdaptiveBox component layout system documentation.
-
-### Playground Documentation
-
-- `react/playground-app/docs/color-integration.md`: How the playground app integrates with the library's color system, including provider setup, sidebar theme controls, and CSS integration.
+- `
