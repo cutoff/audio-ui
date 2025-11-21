@@ -30,7 +30,7 @@
         "dist"
     ],
     "scripts": {
-        "clean": "rm -rf node_modules dist",
+        "clean": "rm -rf node_modules dist .turbo",
         "build": "pnpm exec vite build",
         "typecheck": "tsc --noEmit",
         "test": "vitest run",

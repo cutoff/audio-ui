@@ -16,7 +16,7 @@
     },
     "type": "module",
     "scripts": {
-        "clean": "rm -rf node_modules .next",
+        "clean": "rm -rf node_modules .next .turbo",
         "dev": "next dev --turbo -p 3009",
         "build": "next build --turbo",
         "start": "next start -p 3009",
