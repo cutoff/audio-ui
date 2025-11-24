@@ -28,10 +28,10 @@ export default function ControlSurfacePage() {
     const [slider4Value, setSlider4Value] = useState(75);
 
     // State for button controls
-    const [buttonAValue, setButtonAValue] = useState(0);
-    const [buttonBValue, setButtonBValue] = useState(0);
-    const [buttonCValue, setButtonCValue] = useState(0);
-    const [buttonDValue, setButtonDValue] = useState(0);
+    const [buttonAValue, setButtonAValue] = useState(false);
+    const [buttonBValue, setButtonBValue] = useState(false);
+    const [buttonCValue, setButtonCValue] = useState(false);
+    const [buttonDValue, setButtonDValue] = useState(false);
 
     // Calculate transformations based on state
     const controlSurfaceStyle = {
@@ -113,6 +113,7 @@ export default function ControlSurfacePage() {
                                 label="Filter"
                                 min={0}
                                 max={100}
+                                step={1}
                                 stretch={true}
                             />
                         </div>
@@ -123,6 +124,7 @@ export default function ControlSurfacePage() {
                                 label="Resonance"
                                 min={0}
                                 max={100}
+                                step={1}
                                 stretch={true}
                             />
                         </div>
@@ -133,6 +135,7 @@ export default function ControlSurfacePage() {
                                 label="Attack"
                                 min={0}
                                 max={100}
+                                step={1}
                                 stretch={true}
                             />
                         </div>
@@ -143,6 +146,7 @@ export default function ControlSurfacePage() {
                                 label="Release"
                                 min={0}
                                 max={100}
+                                step={1}
                                 stretch={true}
                             />
                         </div>
@@ -155,6 +159,7 @@ export default function ControlSurfacePage() {
                                 label="Reverb"
                                 min={0}
                                 max={100}
+                                step={1}
                                 stretch={true}
                             />
                         </div>
@@ -165,6 +170,7 @@ export default function ControlSurfacePage() {
                                 label="Delay"
                                 min={0}
                                 max={100}
+                                step={1}
                                 stretch={true}
                             />
                         </div>
@@ -175,6 +181,7 @@ export default function ControlSurfacePage() {
                                 label="Drive"
                                 min={0}
                                 max={100}
+                                step={1}
                                 stretch={true}
                             />
                         </div>
@@ -185,6 +192,7 @@ export default function ControlSurfacePage() {
                                 label="Volume"
                                 min={0}
                                 max={100}
+                                step={1}
                                 stretch={true}
                             />
                         </div>
@@ -196,6 +204,7 @@ export default function ControlSurfacePage() {
                                 onChange={(val) => setSlider1Value(val)}
                                 min={0}
                                 max={100}
+                                step={1}
                                 orientation="vertical"
                                 label="Slider 1"
                                 stretch={true}
@@ -207,6 +216,7 @@ export default function ControlSurfacePage() {
                                 onChange={(val) => setSlider2Value(val)}
                                 min={0}
                                 max={100}
+                                step={1}
                                 orientation="vertical"
                                 label="Slider 2"
                                 stretch={true}
@@ -218,6 +228,7 @@ export default function ControlSurfacePage() {
                                 onChange={(val) => setSlider3Value(val)}
                                 min={0}
                                 max={100}
+                                step={1}
                                 orientation="vertical"
                                 label="Slider 3"
                                 stretch={true}
@@ -229,6 +240,7 @@ export default function ControlSurfacePage() {
                                 onChange={(val) => setSlider4Value(val)}
                                 min={0}
                                 max={100}
+                                step={1}
                                 orientation="vertical"
                                 label="Slider 4"
                                 stretch={true}
@@ -338,16 +350,16 @@ export default function ControlSurfacePage() {
                         <h3 className="text-lg font-medium mb-2">Buttons</h3>
                         <div className="grid grid-cols-2 gap-2 text-sm">
                             <div>
-                                <span className="font-medium">Button A:</span> {buttonAValue}
+                                <span className="font-medium">Button A:</span> {buttonAValue ? "On" : "Off"}
                             </div>
                             <div>
-                                <span className="font-medium">Button B:</span> {buttonBValue}
+                                <span className="font-medium">Button B:</span> {buttonBValue ? "On" : "Off"}
                             </div>
                             <div>
-                                <span className="font-medium">Button C:</span> {buttonCValue}
+                                <span className="font-medium">Button C:</span> {buttonCValue ? "On" : "Off"}
                             </div>
                             <div>
-                                <span className="font-medium">Button D:</span> {buttonDValue}
+                                <span className="font-medium">Button D:</span> {buttonDValue ? "On" : "Off"}
                             </div>
                         </div>
                     </div>

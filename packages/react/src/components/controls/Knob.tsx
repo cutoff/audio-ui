@@ -6,77 +6,38 @@ import "../../styles.css";
 import { CLASSNAMES } from "../../styles/classNames";
 import { BipolarControl, ExplicitRange } from "../types";
 import { knobSizeMap } from "../utils/sizeMappings";
-import { bipolarFormatter } from "../utils/valueFormatters";
 import { useThemableProps } from "../providers/AudioUiProvider";
 import AdaptiveBox from "../AdaptiveBox";
 import SvgKnob from "../svg/SvgKnob";
+import { ContinuousParameter } from "../../models/AudioParameter";
+import { useAudioParam } from "../../hooks/useAudioParam";
 
 /**
  * Props for the Knob component
  */
 export type KnobProps = BipolarControl &
-    ExplicitRange & {
+    Partial<ExplicitRange> & {
         /** Content to display inside the knob (replaces the value display) */
         children?: React.ReactNode;
         /** Thickness of the knob's stroke
          * @default 12
          */
         thickness?: number;
+        /**
+         * Audio Parameter definition (Model)
+         * If provided, overrides min/max/step/label/unit
+         */
+        parameter?: ContinuousParameter;
     };
 
 /**
  * Knob component provides a circular control for value adjustment.
- * Features:
- * - Circular progress indicator with customizable range
- * - Mouse wheel input for value adjustment
- * - Optional centering of the progress arc
- * - Customizable content display
- * - Responsive sizing with stretch option
- * - Configurable corner/cap style (square or round)
- *
- * This component inherits properties from:
- * - `Stretchable`: For responsive sizing
- * - `Control`: For basic control properties
- * - `BipolarControl`: For bipolar mode support
- *
- * @property {boolean} stretch - Whether the knob should stretch to fill its container (from `Stretchable`)
- * @property {string} label - Label displayed below the knob (from `Control`)
- * @property {number} min - Minimum value of the knob (from `Control`)
- * @property {number} max - Maximum value of the knob (from `Control`)
- * @property {number} value - Current value of the knob (from `Control`)
- * @property {boolean} bipolar - Whether to start the arc from the center (360°) instead of MAX_START_ANGLE (from `BipolarControl`)
- * @property {number} roundness - Controls the linecap style: 0 for 'square', > 0 for 'round' (from `Control`, defaults to 12)
- * @property {number} thickness - Thickness of the knob's stroke (defaults to 12)
- * @property {React.ReactNode} children - Content to display inside the knob (replaces the value display)
- * @property {string} className - Additional CSS classes
- * @property {React.CSSProperties} style - Additional inline styles
- * @property {Function} onChange - Handler for value changes via wheel input
- *
- * @example
- * ```tsx
- * // Basic usage
- * <Knob
- *   min={0}
- *   max={100}
- *   value={50}
- *   label="Volume"
- *   onChange={(value) => setVolume(value)}
- * />
- *
- * // With custom content
- * <Knob
- *   min={0}
- *   max={100}
- *   value={50}
- *   label="Custom"
- * >
- *   <img src="icon.svg" alt="Custom icon" />
- * </Knob>
- * ```
+ * ...
  */
 function Knob({
     min,
     max,
+    step,
     bipolar = false,
     value,
     label,
@@ -96,6 +57,7 @@ function Knob({
     onMouseEnter,
     onMouseLeave,
     color,
+    parameter,
 }: KnobProps) {
     // Use the themable props hook to resolve color and roundness with proper fallbacks
     const { resolvedColor, resolvedRoundness } = useThemableProps(
@@ -103,38 +65,66 @@ function Knob({
         { color: undefined, roundness: 12 }
     );
 
-    // Calculate normalized value (0 to 1)
-    const normalizedValue = useMemo(() => {
-        return (value - min) / (max - min);
-    }, [value, min, max]);
+    // Construct the configuration object either from the prop or from the ad-hoc props
+    const paramConfig = useMemo<ContinuousParameter>(() => {
+        if (parameter) {
+            if (parameter.type !== "continuous") {
+                console.error("Knob component only supports continuous parameters.");
+            }
+            return parameter;
+        }
+
+        // Ad-hoc / Unmapped Mode (Implies Continuous)
+        return {
+            id: "adhoc-knob",
+            type: "continuous",
+            name: label || "",
+            min: min ?? 0,
+            max: max ?? 100,
+            step: step,
+            unit: "",
+            defaultValue: min ?? 0,
+            midiResolution: 7
+        };
+    }, [parameter, min, max, step, label]);
+
+    // Calculate sensitivity to match legacy behavior (1 unit delta = 1 unit value)
+    // Normalized Delta = Raw Delta * Sensitivity
+    // Real Value Delta = Normalized Delta * Range
+    // We want Real Value Delta = Raw Delta
+    // So: Raw Delta * Sensitivity * Range = Raw Delta
+    // Sensitivity = 1 / Range
+    const sensitivity = useMemo(() => {
+        const range = paramConfig.max - paramConfig.min;
+        return range > 0 ? 1 / range : 0.001;
+    }, [paramConfig.max, paramConfig.min]);
+
+    // Wrap onChange
+    const handleChange = useCallback((newValue: number) => {
+        if (onChange) {
+            onChange(newValue);
+        }
+    }, [onChange]);
+
+    // Use the hook to handle all math
+    const {
+        normalizedValue,
+        displayValue,
+        adjustValue
+    } = useAudioParam(value, onChange ? handleChange : undefined, paramConfig);
 
     /**
-     * Memoized function to format value based on bipolar mode
-     * If bipolar is true, returns the value prefixed by its sign (+ or -)
-     * Otherwise, returns the number as a string
-     */
-    const formatValueFn = useCallback(
-        (val: number): string => {
-            return bipolar ? bipolarFormatter(val) : val.toString();
-        },
-        [bipolar]
-    );
-
-    /**
-     * Wheel event handler that adjusts the knob value if onChange is defined
-     * and the event hasn't been prevented by a user handler
+     * Wheel event handler that adjusts the knob value
      */
     const handleWheel = useCallback(
         (e: WheelEvent) => {
-            // Only adjust the value if onChange is defined and the event hasn't been prevented
             if (onChange && !e.defaultPrevented) {
-                const delta = e.deltaY;
-                onChange((currentValue: number) => {
-                    return Math.max(min, Math.min(currentValue + delta, max));
-                });
+                // Use positive deltaY to match previous behavior (Down = Increase)
+                // Use calculated sensitivity to match previous speed
+                adjustValue(e.deltaY, sensitivity);
             }
         },
-        [onChange, min, max]
+        [onChange, adjustValue, sensitivity]
     );
 
     // Memoize the classNames calculation
@@ -170,13 +160,17 @@ function Knob({
                 </div>
             );
         } else if (renderValue) {
-            return renderValue(value, min, max);
+            const effectiveMin = paramConfig.min;
+            const effectiveMax = paramConfig.max;
+            return renderValue(value, effectiveMin, effectiveMax);
         } else if (children) {
             return children;
         } else {
-            return formatValueFn(value);
+            return displayValue;
         }
-    }, [children, renderValue, value, min, max, formatValueFn]);
+    }, [children, renderValue, value, paramConfig.min, paramConfig.max, displayValue]);
+
+    const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
 
     return (
         <AdaptiveBox
@@ -212,11 +206,10 @@ function Knob({
                     </SvgKnob>
                 </AdaptiveBox.Svg>
 
-                {label && <AdaptiveBox.Label align="center">{label}</AdaptiveBox.Label>}
+                {effectiveLabel && <AdaptiveBox.Label align="center">{effectiveLabel}</AdaptiveBox.Label>}
             </>
         </AdaptiveBox>
     );
 }
 
-// Wrap the component in React.memo to prevent unnecessary re-renders
 export default React.memo(Knob);

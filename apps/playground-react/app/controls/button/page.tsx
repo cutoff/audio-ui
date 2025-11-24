@@ -8,10 +8,7 @@ import { Label } from "@/components/ui/label";
 import { ColorPickerField } from "@/components/ColorPickerField";
 
 export default function Page() {
-    const [value, setValue] = useState(0);
-    const [min, setMin] = useState(0);
-    const [max, setMax] = useState(100);
-    const [center, setCenter] = useState(50);
+    const [value, setValue] = useState(false);
     const [label, setLabel] = useState("Momentary");
     const [roundness, setRoundness] = useState<number | undefined>(undefined);
     const [latch, setLatch] = useState(false);
@@ -19,31 +16,22 @@ export default function Page() {
 
     // Generate code snippet with all props
     const codeString = `<Button
-  min={${min}}
-  max={${max}}
   value={${value}}
-  center={${center}}
   label="${label}"${roundness !== undefined ? `\n  roundness={${roundness}}` : ""}
   latch={${latch}}${color !== undefined ? `\n  color="${color}"` : ""}
 />`;
 
-    const handleExampleClick = (num: 0 | 1 | 2): void => {
+    const handleExampleClick = (num: 0 | 1): void => {
         switch (num) {
             case 0:
-                setValue(0);
-                setMin(0);
-                setMax(100);
-                setCenter(50);
+                setValue(false);
                 setLabel("Momentary");
                 setRoundness(undefined);
                 setColor(undefined);
                 setLatch(false);
                 break;
             case 1:
-                setValue(0);
-                setMin(0);
-                setMax(100);
-                setCenter(50);
+                setValue(false);
                 setLabel("Latch");
                 setRoundness(10);
                 setColor("#ff3366"); // Pink
@@ -53,9 +41,6 @@ export default function Page() {
     };
 
     const componentProps = {
-        min,
-        max,
-        center,
         value,
         label,
         roundness,
@@ -67,18 +52,6 @@ export default function Page() {
         <div key="label" className="grid gap-2">
             <Label htmlFor="labelProp">Label</Label>
             <Input id="labelProp" value={label} onChange={(e) => setLabel(e.target.value)} />
-        </div>,
-        <div key="min" className="grid gap-2">
-            <Label htmlFor="minProp">Min</Label>
-            <Input id="minProp" type="number" value={min} onChange={(e) => setMin(Number(e.target.value))} />
-        </div>,
-        <div key="max" className="grid gap-2">
-            <Label htmlFor="maxProp">Max</Label>
-            <Input id="maxProp" type="number" value={max} onChange={(e) => setMax(Number(e.target.value))} />
-        </div>,
-        <div key="center" className="grid gap-2">
-            <Label htmlFor="centerProp">Center</Label>
-            <Input id="centerProp" type="number" value={center} onChange={(e) => setCenter(Number(e.target.value))} />
         </div>,
         <div key="roundness" className="grid gap-2">
             <Label htmlFor="roundnessProp">Roundness</Label>
@@ -114,9 +87,7 @@ export default function Page() {
     const examples = [
         <Button
             key="0"
-            min={0}
-            max={100}
-            value={0}
+            value={false}
             label="Momentary"
             latch={false}
             // Use undefined color and roundness to inherit from theme
@@ -124,9 +95,7 @@ export default function Page() {
         />,
         <Button
             key="1"
-            min={0}
-            max={100}
-            value={0}
+            value={false}
             label="Latch"
             latch={true}
             roundness={10}
@@ -144,7 +113,7 @@ export default function Page() {
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(newValue) => setValue(newValue)}
+            onChange={(newValue) => setValue(newValue as boolean)}
         />
     );
 }

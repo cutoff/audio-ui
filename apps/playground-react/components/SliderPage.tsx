@@ -16,6 +16,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
     const [value, setValue] = useState(42);
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(100);
+    const [step, setStep] = useState<number | undefined>(1);
     const [label, setLabel] = useState("Default");
     const [bipolar, setBipolar] = useState(false);
     const [thickness, setThickness] = useState(20);
@@ -25,7 +26,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
     // Generate code snippet with all props
     const codeString = `<Slider
   min={${min}}
-  max={${max}}
+  max={${max}}${step !== undefined ? `\n  step={${step}}` : ""}
   value={${value}}
   label='${label}'
   thickness={${thickness}}
@@ -39,6 +40,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setValue(42);
                 setMin(0);
                 setMax(100);
+                setStep(1);
                 setLabel("Default");
                 setBipolar(false);
                 setThickness(20);
@@ -49,6 +51,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setValue(64);
                 setMin(0);
                 setMax(127);
+                setStep(1);
                 setLabel("Bipolar");
                 setBipolar(true);
                 setThickness(20);
@@ -59,6 +62,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setValue(22);
                 setMin(0);
                 setMax(127);
+                setStep(1);
                 setLabel("Thick");
                 setBipolar(false);
                 setThickness(40);
@@ -68,7 +72,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
         }
     };
 
-    const componentProps = { min, bipolar, max, value, label, thickness, roundness, orientation, color };
+    const componentProps = { min, bipolar, max, step, value, label, thickness, roundness, orientation, color };
 
     const properties = [
         <div key="label" className="grid gap-2">
@@ -82,6 +86,19 @@ export default function SliderPage({ orientation }: SliderPageProps) {
         <div key="max" className="grid gap-2">
             <Label htmlFor="maxProp">Max</Label>
             <Input id="maxProp" type="number" value={max} onChange={(e) => setMax(Number(e.target.value))} />
+        </div>,
+        <div key="step" className="grid gap-2">
+            <Label htmlFor="stepProp">Step</Label>
+            <Input
+                id="stepProp"
+                type="number"
+                value={step !== undefined ? step : ""}
+                onChange={(e) => {
+                    const val = e.target.value === "" ? undefined : Number(e.target.value);
+                    setStep(val);
+                }}
+                placeholder="Continuous"
+            />
         </div>,
         <div key="thickness" className="grid gap-2">
             <Label htmlFor="thicknessProp">Thickness</Label>
@@ -123,6 +140,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
             style={{ cursor: "pointer" }}
             min={0}
             max={100}
+            step={1}
             value={42}
             thickness={20}
             label="Default"
@@ -136,6 +154,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
             min={0}
             bipolar={true}
             max={127}
+            step={1}
             value={64}
             thickness={20}
             label="Bipolar"
@@ -150,6 +169,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
             min={0}
             bipolar={false}
             max={127}
+            step={1}
             value={22}
             thickness={40}
             label="Thick"

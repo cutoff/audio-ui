@@ -50,6 +50,7 @@ function generateCodeSnippet(
     label: string,
     min: number,
     max: number,
+    step: number | undefined,
     bipolar: boolean,
     useMidiBipolar: boolean,
     roundness: number | undefined,
@@ -71,6 +72,10 @@ function generateCodeSnippet(
 `;
     } else {
         let props = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}} thickness={${thickness}}`;
+
+        if (step !== undefined) {
+            props += ` step={${step}}`;
+        }
 
         // Add optional props only if they're defined
         if (roundness !== undefined) {
@@ -94,6 +99,7 @@ type KnobComponentProps = {
     value: number;
     min: number;
     max: number;
+    step?: number;
     label?: string;
     bipolar?: boolean;
     enableOptions: boolean;
@@ -113,6 +119,7 @@ function KnobComponent({
     value,
     min,
     max,
+    step,
     label,
     bipolar,
     useMidiBipolar,
@@ -148,6 +155,7 @@ function KnobComponent({
             <Knob
                 min={min}
                 max={max}
+                step={step}
                 value={value}
                 label={label}
                 bipolar={bipolar}
@@ -170,6 +178,7 @@ export default function KnobDemoPage() {
     const [value, setValue] = useState(42);
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(100);
+    const [step, setStep] = useState<number | undefined>(1);
     const [label, setLabel] = useState("Default");
     const [bipolar, setBipolar] = useState(false);
     const [useMidiBipolar, setUseMidiBipolar] = useState(false);
@@ -184,6 +193,7 @@ export default function KnobDemoPage() {
                 setValue(42);
                 setMin(0);
                 setMax(100);
+                setStep(1);
                 setLabel("Default");
                 setBipolar(false);
                 setUseMidiBipolar(false);
@@ -196,6 +206,7 @@ export default function KnobDemoPage() {
                 setValue(64);
                 setMin(0);
                 setMax(127);
+                setStep(1);
                 setLabel("Bipolar");
                 setBipolar(true);
                 setUseMidiBipolar(false);
@@ -208,6 +219,7 @@ export default function KnobDemoPage() {
                 setValue(0);
                 setMin(-1024);
                 setMax(1024);
+                setStep(1);
                 setLabel("Bipolar0");
                 setBipolar(true);
                 setUseMidiBipolar(false);
@@ -220,6 +232,7 @@ export default function KnobDemoPage() {
                 setValue(0);
                 setMin(0);
                 setMax(4);
+                setStep(1);
                 setLabel("Enum");
                 setBipolar(false);
                 setUseMidiBipolar(false);
@@ -232,6 +245,7 @@ export default function KnobDemoPage() {
                 setValue(64);
                 setMin(0);
                 setMax(127);
+                setStep(1);
                 setLabel("MIDI Bipolar");
                 setBipolar(true);
                 setUseMidiBipolar(true);
@@ -255,6 +269,19 @@ export default function KnobDemoPage() {
         <div key="max" className="grid gap-2">
             <Label htmlFor="maxProp">Max</Label>
             <Input id="maxProp" type="number" value={max} onChange={(e) => setMax(Number(e.target.value))} />
+        </div>,
+        <div key="step" className="grid gap-2">
+            <Label htmlFor="stepProp">Step</Label>
+            <Input
+                id="stepProp"
+                type="number"
+                value={step !== undefined ? step : ""}
+                onChange={(e) => {
+                    const val = e.target.value === "" ? undefined : Number(e.target.value);
+                    setStep(val);
+                }}
+                placeholder="Continuous"
+            />
         </div>,
         <div key="thickness" className="grid gap-2">
             <Label htmlFor="thicknessProp">Thickness</Label>
@@ -317,6 +344,7 @@ export default function KnobDemoPage() {
             style={{ cursor: "pointer" }}
             min={0}
             max={100}
+            step={1}
             value={42}
             label="Default"
             // Use undefined color and roundness to inherit from theme
@@ -328,6 +356,7 @@ export default function KnobDemoPage() {
             min={0}
             bipolar={true}
             max={127}
+            step={1}
             value={64}
             label="Bipolar"
             roundness={12}
@@ -340,6 +369,7 @@ export default function KnobDemoPage() {
             min={-1024}
             bipolar={true}
             max={1024}
+            step={1}
             value={0}
             label="Bipolar0"
             roundness={12}
@@ -362,6 +392,7 @@ export default function KnobDemoPage() {
             style={{ cursor: "pointer" }}
             min={0}
             max={127}
+            step={1}
             value={64}
             label="MIDI Bipolar"
             bipolar={true}
@@ -378,6 +409,7 @@ export default function KnobDemoPage() {
         label,
         min,
         max,
+        step,
         bipolar,
         useMidiBipolar,
         roundness,
@@ -389,6 +421,7 @@ export default function KnobDemoPage() {
         bipolar,
         useMidiBipolar,
         max,
+        step,
         value,
         label,
         enableOptions,

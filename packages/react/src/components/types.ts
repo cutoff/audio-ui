@@ -62,6 +62,10 @@ export type ExplicitRange = {
     min: number;
     /** Maximum value of the component */
     max: number;
+    /** Step size for value adjustments
+     * @default 1 (or calculated based on range)
+     */
+    step?: number;
 };
 
 /**

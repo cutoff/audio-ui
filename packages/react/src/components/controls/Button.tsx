@@ -5,83 +5,39 @@ import classNames from "classnames";
 import AdaptiveBox from "../AdaptiveBox";
 import "../../styles.css";
 import { CLASSNAMES } from "../../styles/classNames";
-import { Control, ExplicitRange } from "../types";
+import { Control } from "../types";
 import { buttonSizeMap } from "../utils/sizeMappings";
 import { useThemableProps } from "../providers/AudioUiProvider";
 import SvgButton from "../svg/SvgButton";
+import { BooleanParameter } from "../../models/AudioParameter";
+import { useAudioParam } from "../../hooks/useAudioParam";
 
 /**
  * Props for the Button component
  */
-export type ButtonProps = Control &
-    ExplicitRange & {
-        /** Whether the button should latch (toggle between states) or momentary (only active while pressed) */
-        latch?: boolean;
-    };
+export type ButtonProps = Omit<Partial<Control>, "value" | "onChange"> & {
+    /** Whether the button should latch (toggle between states) or momentary (only active while pressed) */
+    latch?: boolean;
+    /**
+     * Audio Parameter definition (Model)
+     */
+    parameter?: BooleanParameter;
+    /**
+     * Current value (must be boolean)
+     */
+    value: boolean;
+    /**
+     * Handler for value changes
+     */
+    onChange?: (value: boolean) => void;
+};
 
 /**
  * A button component for audio applications.
- *
- * Features:
- * - Supports value-based appearance changes
- * - Responsive sizing with stretch option
- * - Grid layout compatible
- * - Visual feedback for interactive state
- * - Configurable corner/cap style (square or round)
- * - Clickable with latch or momentary behavior
- *
- * This component inherits properties from:
- * - `Stretchable`: For responsive sizing
- * - `Control`: For basic control properties
- * - `InteractiveControl`: For interactive behavior (onChange)
- *
- * @property {boolean} stretch - Whether the button should stretch to fill its container (from `Stretchable`)
- * @property {string} label - Label displayed below the button (from `Control`)
- * @property {number} min - Minimum value of the button (from `Control`)
- * @property {number} max - Maximum value of the button (from `Control`)
- * @property {number} value - Current value of the button (from `Control`)
- * @property {number} roundness - Controls the corner style: 0 for square corners, > 0 for rounded corners (from `Control`, defaults to 10)
- * @property {Function} onChange - Handler for value changes. When provided, makes the button clickable and interactive. If not provided, the button is not editable. (from `InteractiveControl`)
- * @property {boolean} latch - Whether the button should latch (toggle between states) or momentary (only active while pressed). Defaults to false.
- *
- * @example
- * ```tsx
- * // Non-interactive button (display only)
- * <Button
- *   value={75}
- *   label="Power"
- * />
- *
- * // Interactive button with latch behavior
- * <Button
- *   value={75}
- *   label="Power"
- *   onChange={setValue}
- *   latch={true}
- * />
- *
- * // Interactive button with momentary behavior
- * <Button
- *   value={0}
- *   label="Trigger"
- *   onChange={setValue}
- *   latch={false}
- * />
- *
- * // Grid-aligned stretched button
- * <Button
- *   value={50}
- *   label="Mode"
- *   stretch={true}
- *   style={{ justifySelf: 'center' }}
- *   onChange={setValue}
- * />
- * ```
+ * ...
  */
 function Button({
-    min = 0,
-    max = 100,
-    value = 0,
+    value = false,
     label,
     stretch = false,
     className,
@@ -96,6 +52,7 @@ function Button({
     onMouseEnter,
     onMouseLeave,
     color,
+    parameter,
 }: ButtonProps) {
     // Use the themable props hook to resolve color and roundness with proper fallbacks
     const { resolvedColor, resolvedRoundness } = useThemableProps(
@@ -103,66 +60,67 @@ function Button({
         { color: undefined, roundness: 10 }
     );
 
+    // Construct the configuration object
+    const paramConfig = useMemo<BooleanParameter>(() => {
+        if (parameter) {
+            if (parameter.type !== "boolean") {
+                console.error("Button component only supports boolean parameters.");
+            }
+            return parameter;
+        }
+
+        // Ad-hoc Boolean Parameter
+        return {
+            id: "adhoc-button",
+            type: "boolean",
+            name: label || "",
+            mode: latch ? "toggle" : "momentary",
+            defaultValue: false,
+            midiResolution: 7
+        };
+    }, [parameter, label, latch]);
+
+    // Use the hook to handle normalization
+    const {
+        normalizedValue
+    } = useAudioParam(value, onChange, paramConfig);
+
     // Ref to track if the button is currently pressed (for momentary mode)
     const isPressedRef = useRef(false);
 
-    // Calculate normalized value (0 to 1)
-    const normalizedValue = useMemo(() => {
-        return (value - min) / (max - min);
-    }, [value, min, max]);
-
-    // Calculate the center value based on min and max for threshold calculation
-    const actualCenter = useMemo(() => {
-        return Math.floor((max - min + 1) / 2) + min;
-    }, [min, max]);
-
-    // Calculate normalized threshold (0.5 corresponds to actualCenter)
-    const normalizedThreshold = useMemo(() => {
-        return (actualCenter - min) / (max - min);
-    }, [actualCenter, min, max]);
-
-    // Internal handler for mouse down events to toggle the button state or set to max value
+    // Internal handler for mouse down
     const handleInternalMouseDown = useCallback(
         (_e: React.MouseEvent) => {
-            // If onChange is provided, handle the button state
             if (onChange) {
-                if (latch) {
-                    // For latch buttons, toggle between min and max values
-                    const isOn = value > actualCenter;
-                    const newValue = isOn ? min : max;
-                    onChange(newValue);
+                if (paramConfig.mode === "toggle") {
+                    // Toggle
+                    onChange(!value);
                 } else {
-                    // For non-latch buttons, set to max value and mark as pressed
+                    // Momentary Press -> True
                     isPressedRef.current = true;
-                    onChange(max);
+                    onChange(true);
                 }
             }
         },
-        [onChange, latch, value, actualCenter, min, max]
+        [onChange, paramConfig.mode, value]
     );
 
-    // Internal handler for mouse up event for both latch and non-latch buttons
+    // Internal handler for mouse up
     const handleInternalMouseUp = useCallback(
         (_e: React.MouseEvent) => {
-            // For non-latch buttons, reset to min value if the button is pressed
-            if (onChange && !latch && isPressedRef.current) {
+            // Momentary Release -> False
+            if (onChange && paramConfig.mode === "momentary" && isPressedRef.current) {
                 isPressedRef.current = false;
-                onChange(min);
+                onChange(false);
             }
-            // For latch buttons, do nothing (the toggle happens on mouseDown)
         },
-        [onChange, latch, min]
+        [onChange, paramConfig.mode]
     );
 
-    // Combined handler for mouse down events that calls both user handler and internal handler
+    // Combined handlers
     const handleMouseDown = useCallback(
         (e: React.MouseEvent) => {
-            // Call user's handler if provided
-            if (onMouseDown) {
-                onMouseDown(e);
-            }
-
-            // If event wasn't prevented by user's handler, call internal handler
+            onMouseDown?.(e);
             if (!e.defaultPrevented) {
                 handleInternalMouseDown(e);
             }
@@ -170,15 +128,9 @@ function Button({
         [onMouseDown, handleInternalMouseDown]
     );
 
-    // Combined handler for mouse up events that calls both user handler and internal handler
     const handleMouseUp = useCallback(
         (e: React.MouseEvent) => {
-            // Call user's handler if provided
-            if (onMouseUp) {
-                onMouseUp(e);
-            }
-
-            // If event wasn't prevented by user's handler, call internal handler
+            onMouseUp?.(e);
             if (!e.defaultPrevented) {
                 handleInternalMouseUp(e);
             }
@@ -186,31 +138,21 @@ function Button({
         [onMouseUp, handleInternalMouseUp]
     );
 
-    // Memoize the global mouseup handler to ensure consistent function reference
-    // This is important for proper cleanup when dependencies change
+    // Global mouseup for momentary buttons
     const handleGlobalMouseUp = useCallback(() => {
         if (isPressedRef.current) {
             isPressedRef.current = false;
-            onChange?.(min);
+            onChange?.(false);
         }
-    }, [onChange, min]);
+    }, [onChange]);
 
-    // Set up global mouseup event listener for momentary buttons
     useEffect(() => {
-        // Only add the global listener if this is a momentary button with onChange handler
-        if (!latch && onChange) {
-            // Add global mouseup listener
+        if (paramConfig.mode === "momentary" && onChange) {
             window.addEventListener("mouseup", handleGlobalMouseUp);
-
-            // Clean up
-            return () => {
-                window.removeEventListener("mouseup", handleGlobalMouseUp);
-            };
+            return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
         }
-        // Return undefined for the case when we don't add a listener
-        // This fixes the TypeScript warning: TS7030: Not all code paths return a value
         return undefined;
-    }, [latch, onChange, handleGlobalMouseUp]); // Use memoized function in dependencies
+    }, [paramConfig.mode, onChange, handleGlobalMouseUp]);
 
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {
@@ -219,6 +161,9 @@ function Button({
 
     // Get the preferred width based on the size prop
     const { width: preferredWidth, height: preferredHeight } = buttonSizeMap[size];
+
+    // Use display value or label
+    const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
 
     return (
         <AdaptiveBox
@@ -243,15 +188,15 @@ function Button({
             >
                 <SvgButton
                     normalizedValue={normalizedValue}
-                    threshold={normalizedThreshold}
+                    // Threshold is 0.5 for boolean
+                    threshold={0.5}
                     roundness={resolvedRoundness ?? 10}
                     color={resolvedColor}
                 />
             </AdaptiveBox.Svg>
-            {label && <AdaptiveBox.Label align="center">{label}</AdaptiveBox.Label>}
+            {effectiveLabel && <AdaptiveBox.Label align="center">{effectiveLabel}</AdaptiveBox.Label>}
         </AdaptiveBox>
     );
 }
 
-// Wrap the component in React.memo to prevent unnecessary re-renders
 export default React.memo(Button);

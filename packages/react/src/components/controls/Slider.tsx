@@ -8,90 +8,37 @@ import { useThemableProps } from "../providers/AudioUiProvider";
 import AdaptiveBox from "../AdaptiveBox";
 import SvgSlider from "../svg/SvgSlider";
 import { CLASSNAMES } from "../../styles/classNames";
+import { ContinuousParameter } from "../../models/AudioParameter";
+import { useAudioParam } from "../../hooks/useAudioParam";
 
 /**
  * Props for the Slider component
  */
 export type SliderProps = BipolarControl &
-    ExplicitRange & {
+    Partial<ExplicitRange> & {
         /** Orientation of the slider
          * @default 'vertical' */
         orientation?: "horizontal" | "vertical";
         /** Thickness of the slider in pixels
          * @default 20 */
         thickness?: number;
+        /**
+         * Audio Parameter definition (Model)
+         * If provided, overrides min/max/label
+         */
+        parameter?: ContinuousParameter;
     };
 
 // @ts-ignore
 /**
  * A vertical slider component for audio applications.
- *
- * Features:
- * - Supports both unidirectional (min to max) and bidirectional (center-based) modes
- * - Mouse wheel interaction for value adjustment
- * - Customizable thickness
- * - Optional stretch behavior to fill container
- * - Grid layout compatible
- * - Visual feedback for interactive state
- * - Configurable corner/cap style (square or round)
- *
- * The slider consists of a background track with a filled portion indicating the current value.
- * When a center point is specified, the fill originates from the center point rather than
- * the minimum value.
- *
- * This component inherits properties from:
- * - `Stretchable`: For responsive sizing
- * - `Control`: For basic control properties
- * - `BipolarControl`: For bipolar mode support
- *
- * @property {boolean} stretch - Whether the slider should stretch to fill its container (from `Stretchable`)
- * @property {string} label - Label displayed below the slider (from `Control`)
- * @property {number} min - Minimum value of the slider (from `Control`)
- * @property {number} max - Maximum value of the slider (from `Control`)
- * @property {number} value - Current value of the slider (from `Control`)
- * @property {boolean} bipolar - Whether to start the fill from the center instead of minimum (from `BipolarControl`)
- * @property {number} roundness - Controls the corner style: 0 for square corners, > 0 for rounded corners (from `Control`, defaults to half the slider width)
- * @property {number} thickness - Thickness of the slider in pixels (defaults to 20)
- * @property {string} className - Additional CSS class names
- * @property {React.CSSProperties} style - Additional inline styles
- * @property {Function} onChange - Handler for value changes
- *
- * @example
- * ```tsx
- * // Basic usage
- * <Slider
- *   min={0}
- *   max={100}
- *   value={50}
- *   label="Volume"
- *   onChange={handleChange}
- * />
- *
- * // Center-based slider
- * <Slider
- *   min={-50}
- *   max={50}
- *   center={0}
- *   value={25}
- *   label="Pan"
- *   onChange={handleChange}
- * />
- *
- * // Grid-aligned stretched slider
- * <Slider
- *   min={0}
- *   max={100}
- *   value={75}
- *   label="Level"
- *   stretch={true}
- *   style={{ justifySelf: 'center' }}
- * />
- * ```
+ * ...
  */
 const Slider = ({
     orientation = "vertical",
     min,
     max,
+    step,
     bipolar = false,
     value,
     label,
@@ -109,34 +56,67 @@ const Slider = ({
     onMouseEnter,
     onMouseLeave,
     color,
+    parameter,
 }: SliderProps) => {
     // Use the themable props hook to resolve color and roundness with proper fallbacks
-    // For Slider, the default roundness is dynamic based on dimensions, so we pass undefined
     const { resolvedColor, resolvedRoundness } = useThemableProps(
         { color, roundness },
         { color: undefined, roundness: undefined }
     );
 
-    // Calculate normalized value (0 to 1)
-    const normalizedValue = useMemo(() => {
-        return (value - min) / (max - min);
-    }, [value, min, max]);
+    // Construct the configuration object either from the prop or from the ad-hoc props
+    const paramConfig = useMemo<ContinuousParameter>(() => {
+        if (parameter) {
+            if (parameter.type !== "continuous") {
+                console.error("Slider component only supports continuous parameters.");
+            }
+            return parameter;
+        }
+
+        // Ad-hoc / Unmapped Mode (Implies Continuous)
+        return {
+            id: "adhoc-slider",
+            type: "continuous",
+            name: label || "",
+            min: min ?? 0,
+            max: max ?? 100,
+            step: step,
+            unit: "",
+            defaultValue: min ?? 0,
+            midiResolution: 7
+        };
+    }, [parameter, min, max, step, label]);
+
+    // Calculate sensitivity to match legacy behavior
+    const sensitivity = useMemo(() => {
+        const range = paramConfig.max - paramConfig.min;
+        return range > 0 ? 1 / range : 0.001;
+    }, [paramConfig.max, paramConfig.min]);
+
+    // Wrap onChange
+    const handleChange = useCallback((newValue: number) => {
+        if (onChange) {
+            onChange(newValue);
+        }
+    }, [onChange]);
+
+    // Use the hook to handle all math
+    const {
+        normalizedValue,
+        adjustValue
+    } = useAudioParam(value, onChange ? handleChange : undefined, paramConfig);
 
     /**
-     * Wheel event handler that adjusts the slider value if onChange is defined
-     * and the event hasn't been prevented by a user handler
+     * Wheel event handler that adjusts the slider value
      */
     const handleWheel = useCallback(
         (e: WheelEvent) => {
-            // Only adjust the value if onChange is defined and the event hasn't been prevented
             if (onChange && !e.defaultPrevented) {
-                const delta = e.deltaY;
-                onChange((currentValue: number) => {
-                    return Math.max(min, Math.min(currentValue + delta, max));
-                });
+                // Use positive deltaY to match previous behavior
+                adjustValue(e.deltaY, sensitivity);
             }
         },
-        [onChange, min, max]
+        [onChange, adjustValue, sensitivity]
     );
 
     // Memoize the classNames calculation
@@ -156,6 +136,9 @@ const Slider = ({
     const minHeight = orientation === "vertical" ? 60 : 20;
 
     const labelHeightUnits = orientation === "vertical" ? 40 : 40;
+
+    // Determine label to display
+    const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
 
     return (
         <AdaptiveBox
@@ -188,10 +171,9 @@ const Slider = ({
                     color={resolvedColor}
                 />
             </AdaptiveBox.Svg>
-            {label && <AdaptiveBox.Label align="center">{label}</AdaptiveBox.Label>}
+            {effectiveLabel && <AdaptiveBox.Label align="center">{effectiveLabel}</AdaptiveBox.Label>}
         </AdaptiveBox>
     );
 };
 
-// Wrap the component in React.memo to prevent unnecessary re-renders
 export default React.memo(Slider);
