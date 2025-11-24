@@ -1,4 +1,4 @@
-export { default as Option } from "./components/support/Option";
+export { default as Option } from "./components/Option";
 
 export { default as Button } from "./components/controls/Button";
 export { default as Knob } from "./components/controls/Knob";
@@ -11,7 +11,7 @@ export { default as SvgKnob } from "./components/svg/SvgKnob";
 export { default as SvgSlider } from "./components/svg/SvgSlider";
 
 export { default as Keybed } from "./components/Keybed";
-export { default as AdaptiveBox } from "./components/support/AdaptiveBox";
+export { default as AdaptiveBox } from "./components/AdaptiveBox";
 
 // Export theme provider and hooks
 export { default as AudioUiProvider, useAudioUiTheme, useThemableProps } from "./components/providers/AudioUiProvider";

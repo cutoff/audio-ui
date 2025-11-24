@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import classNames from "classnames";
-import AdaptiveBox from "../support/AdaptiveBox";
+import AdaptiveBox from "../AdaptiveBox";
 import "../../styles.css";
 import { CLASSNAMES } from "../../styles/classNames";
 import { Control, ExplicitRange } from "../types";

@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { BipolarControl, ExplicitRange } from "../types";
 import { sliderSizeMap } from "../utils/sizeMappings";
 import { useThemableProps } from "../providers/AudioUiProvider";
-import AdaptiveBox from "../support/AdaptiveBox";
+import AdaptiveBox from "../AdaptiveBox";
 import SvgSlider from "../svg/SvgSlider";
 import { CLASSNAMES } from "../../styles/classNames";
 

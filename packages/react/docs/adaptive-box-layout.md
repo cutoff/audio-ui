@@ -202,5 +202,5 @@ Mapping to the React API
 
 Further Reading
 
-- Source: packages/react/src/components/support/AdaptiveBox.tsx
+- Source: packages/react/src/components/AdaptiveBox.tsx
 - Demo usages: apps/playground-react/app/examples/control-surface/page.tsx and control pages (e.g., knob/slider)

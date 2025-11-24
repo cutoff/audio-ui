@@ -8,7 +8,7 @@ import { BipolarControl, ExplicitRange } from "../types";
 import { knobSizeMap } from "../utils/sizeMappings";
 import { bipolarFormatter } from "../utils/valueFormatters";
 import { useThemableProps } from "../providers/AudioUiProvider";
-import AdaptiveBox from "../support/AdaptiveBox";
+import AdaptiveBox from "../AdaptiveBox";
 import SvgKnob from "../svg/SvgKnob";
 
 /**

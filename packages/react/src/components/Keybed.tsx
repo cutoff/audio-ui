@@ -2,7 +2,7 @@
 
 import React, { useMemo, useCallback } from "react";
 import classNames from "classnames";
-import AdaptiveBox from "./support/AdaptiveBox";
+import AdaptiveBox from "./AdaptiveBox";
 import { AdaptativeSize, Base, Themable } from "./types";
 import { keybedSizeMap } from "./utils/sizeMappings";
 import { generateColorVariants } from "./utils/colorUtils";
