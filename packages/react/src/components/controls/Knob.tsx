@@ -84,7 +84,6 @@ function Knob({
             step: step,
             unit: "",
             defaultValue: min ?? 0,
-            midiResolution: 7
         };
     }, [parameter, min, max, step, label]);
 
