@@ -7,7 +7,7 @@ import { sliderSizeMap } from "../utils/sizeMappings";
 import { useThemableProps } from "../providers/AudioUiProvider";
 import AdaptiveBox from "../support/AdaptiveBox";
 import SvgSlider from "../svg/SvgSlider";
-import { AUDIOUI_CLASSNAMES } from "../../styles/classNames";
+import { CLASSNAMES } from "../../styles/classNames";
 
 /**
  * Props for the Slider component
@@ -141,7 +141,7 @@ const Slider = ({
 
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {
-        return classNames(className, AUDIOUI_CLASSNAMES.root, onChange ? AUDIOUI_CLASSNAMES.highlight : "");
+        return classNames(className, CLASSNAMES.root, onChange ? CLASSNAMES.highlight : "");
     }, [className, onChange]);
 
     // Get the preferred dimensions based on the size prop and orientation

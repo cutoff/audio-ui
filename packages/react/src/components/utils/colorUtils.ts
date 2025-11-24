@@ -1,4 +1,4 @@
-import { AUDIOUI_CSS_VARS } from "../../styles/cssVars";
+import { CSS_VARS } from "../../styles/cssVars";
 /**
  * Utility functions for color manipulation
  *
@@ -45,7 +45,7 @@ export function isDarkMode(): boolean {
 export function getAdaptiveDefaultColor(): string {
     // Use CSS variable so server and client render the same string
     // The browser will resolve it correctly based on .dark class
-    return `var(${AUDIOUI_CSS_VARS.adaptiveDefaultColor})`;
+    return `var(${CSS_VARS.adaptiveDefaultColor})`;
 }
 
 /**

@@ -61,17 +61,17 @@ The AudioUI library uses a comprehensive namespace isolation strategy to prevent
 **Usage:**
 
 ```typescript
-import { AUDIOUI_CLASSNAMES } from "../../styles/classNames";
+import { CLASSNAMES } from "../../styles/classNames";
 
 // In component
-const className = classNames(AUDIOUI_CLASSNAMES.root, AUDIOUI_CLASSNAMES.highlight, customClassName);
+const className = classNames(CLASSNAMES.root, CLASSNAMES.highlight, customClassName);
 ```
 
 **Available Constants:**
 
-- `AUDIOUI_CLASSNAMES.root` - `"audioui"` - Main component class
-- `AUDIOUI_CLASSNAMES.container` - `"audioui-component-container"` - Container helper
-- `AUDIOUI_CLASSNAMES.highlight` - `"audioui-highlight"` - Interactive state
+- `CLASSNAMES.root` - `"audioui"` - Main component class
+- `CLASSNAMES.container` - `"audioui-component-container"` - Container helper
+- `CLASSNAMES.highlight` - `"audioui-highlight"` - Interactive state
 
 **When to Use:**
 
@@ -87,16 +87,16 @@ const className = classNames(AUDIOUI_CLASSNAMES.root, AUDIOUI_CLASSNAMES.highlig
 **Usage:**
 
 ```typescript
-import { AUDIOUI_CSS_VARS } from "../../styles/cssVars";
+import { CSS_VARS } from "../../styles/cssVars";
 
 // In component or utility
-const defaultColor = AUDIOUI_CSS_VARS.adaptiveDefaultColor;
+const defaultColor = CSS_VARS.adaptiveDefaultColor;
 // Returns: "--audioui-adaptive-default-color"
 ```
 
 **Available Constants:**
 
-- `AUDIOUI_CSS_VARS.adaptiveDefaultColor` - `"--audioui-adaptive-default-color"`
+- `CSS_VARS.adaptiveDefaultColor` - `"--audioui-adaptive-default-color"`
 
 **When to Use:**
 
@@ -123,7 +123,7 @@ const defaultColor = AUDIOUI_CSS_VARS.adaptiveDefaultColor;
 2. **Add to constants** (`styles/classNames.ts`):
 
    ```typescript
-   export const AUDIOUI_CLASSNAMES = {
+   export const CLASSNAMES = {
      // ... existing
      myNewClass: "audioui-my-new-class",
    } as const;
@@ -132,8 +132,8 @@ const defaultColor = AUDIOUI_CSS_VARS.adaptiveDefaultColor;
 3. **Use in components**:
 
    ```typescript
-   import { AUDIOUI_CLASSNAMES } from "../../styles/classNames";
-   // Use AUDIOUI_CLASSNAMES.myNewClass
+   import { CLASSNAMES } from "../../styles/classNames";
+   // Use CLASSNAMES.myNewClass
    ```
 
 4. **Verify with Stylelint**:
@@ -154,7 +154,7 @@ const defaultColor = AUDIOUI_CSS_VARS.adaptiveDefaultColor;
 2. **Add to constants** (`styles/cssVars.ts`):
 
    ```typescript
-   export const AUDIOUI_CSS_VARS = {
+   export const CSS_VARS = {
      // ... existing
      myNewVariable: "--audioui-my-new-variable",
    } as const;
@@ -163,8 +163,8 @@ const defaultColor = AUDIOUI_CSS_VARS.adaptiveDefaultColor;
 3. **Use in code**:
 
    ```typescript
-   import { AUDIOUI_CSS_VARS } from "../../styles/cssVars";
-   // Use AUDIOUI_CSS_VARS.myNewVariable
+   import { CSS_VARS } from "../../styles/cssVars";
+   // Use CSS_VARS.myNewVariable
    ```
 
 4. **Verify with Stylelint**:
@@ -281,14 +281,14 @@ pnpm --filter @cutoff/audio-ui-react lint:css
 ### Standard Component Pattern
 
 ```typescript
-import { AUDIOUI_CLASSNAMES } from "../../styles/classNames";
+import { CLASSNAMES } from "../../styles/classNames";
 import classNames from "classnames";
 
 function MyComponent({ className, onChange, ...props }: MyComponentProps) {
     const componentClassName = useMemo(() => {
         return classNames(
-            AUDIOUI_CLASSNAMES.root,           // Always include root class
-            onChange ? AUDIOUI_CLASSNAMES.highlight : "",  // Conditional highlight
+            CLASSNAMES.root,           // Always include root class
+            onChange ? CLASSNAMES.highlight : "",  // Conditional highlight
             className                          // User-provided classes
         );
     }, [className, onChange]);
@@ -620,7 +620,7 @@ The adaptive default uses a CSS variable to prevent hydration mismatches:
 **Solution**:
 
 1. Import from `styles/classNames.ts`
-2. Use `AUDIOUI_CLASSNAMES` object, not string literals
+2. Use `CLASSNAMES` object, not string literals
 3. Check that constants are exported correctly
 
 ### Styles Not Applying
