@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { AudioParameterImpl, MidiParameter, ContinuousParameter, EnumParameter } from "./AudioParameter";
+import { AudioParameterImpl, MidiParameter, ContinuousParameter, EnumParameter, LogScale, ExpScale, LinearScale } from "./AudioParameter";
 
 describe("AudioParameterImpl", () => {
     describe("Continuous Parameter (High Res / Default)", () => {
@@ -40,6 +40,117 @@ describe("AudioParameterImpl", () => {
 
         it("formats output", () => {
             expect(impl.format(-6.0)).toBe("-6 dB");
+        });
+    });
+
+    describe("Continuous Parameter with Logarithmic Scale", () => {
+        const volumeParam: ContinuousParameter = {
+            id: "vol-log",
+            name: "Volume (Log)",
+            type: "continuous",
+            min: 0,
+            max: 100,
+            unit: "%",
+            scale: "log", // Using string shortcut
+        };
+        const impl = new AudioParameterImpl(volumeParam);
+
+        it("normalizes with log scale", () => {
+            expect(impl.normalize(0)).toBe(0);
+            expect(impl.normalize(100)).toBe(1);
+            // Log scale: middle value (50) should map to > 0.5 in normalized space
+            // because logarithmic scales compress low values and expand high values
+            const midNorm = impl.normalize(50);
+            expect(midNorm).toBeGreaterThan(0.5);
+            expect(midNorm).toBeLessThan(1);
+        });
+
+        it("denormalizes with log scale", () => {
+            expect(impl.denormalize(0)).toBe(0);
+            expect(impl.denormalize(1)).toBe(100);
+            // Round-trip: 50 -> normalize -> denormalize should be close to 50
+            const normalized = impl.normalize(50);
+            const denormalized = impl.denormalize(normalized);
+            expect(denormalized).toBeCloseTo(50, 1);
+        });
+
+        it("works with ScaleFunction object", () => {
+            const paramWithObject: ContinuousParameter = {
+                ...volumeParam,
+                scale: LogScale, // Using ScaleFunction object
+            };
+            const impl2 = new AudioParameterImpl(paramWithObject);
+            expect(impl2.normalize(50)).toBeCloseTo(impl.normalize(50), 5);
+        });
+    });
+
+    describe("Continuous Parameter with Exponential Scale", () => {
+        const attackParam: ContinuousParameter = {
+            id: "attack-exp",
+            name: "Attack (Exp)",
+            type: "continuous",
+            min: 0,
+            max: 1000,
+            unit: "ms",
+            scale: "exp", // Using string shortcut
+        };
+        const impl = new AudioParameterImpl(attackParam);
+
+        it("normalizes with exp scale", () => {
+            expect(impl.normalize(0)).toBe(0);
+            expect(impl.normalize(1000)).toBe(1);
+            // Exp scale: middle value (500) should map to < 0.5 in normalized space
+            // because exponential scales expand low values and compress high values
+            const midNorm = impl.normalize(500);
+            expect(midNorm).toBeLessThan(0.5);
+            expect(midNorm).toBeGreaterThan(0);
+        });
+
+        it("denormalizes with exp scale", () => {
+            expect(impl.denormalize(0)).toBe(0);
+            expect(impl.denormalize(1)).toBe(1000);
+            // Round-trip: 500 -> normalize -> denormalize should be close to 500
+            const normalized = impl.normalize(500);
+            const denormalized = impl.denormalize(normalized);
+            expect(denormalized).toBeCloseTo(500, 0);
+        });
+
+        it("works with ScaleFunction object", () => {
+            const paramWithObject: ContinuousParameter = {
+                ...attackParam,
+                scale: ExpScale, // Using ScaleFunction object
+            };
+            const impl2 = new AudioParameterImpl(paramWithObject);
+            expect(impl2.normalize(500)).toBeCloseTo(impl.normalize(500), 5);
+        });
+    });
+
+    describe("Scale Function Round-Trip Accuracy", () => {
+        it("LinearScale maintains exact values", () => {
+            const testValues = [0, 0.25, 0.5, 0.75, 1];
+            testValues.forEach(val => {
+                const scaled = LinearScale.forward(val);
+                const restored = LinearScale.inverse(scaled);
+                expect(restored).toBeCloseTo(val, 10);
+            });
+        });
+
+        it("LogScale round-trip is accurate", () => {
+            const testValues = [0.01, 0.1, 0.25, 0.5, 0.75, 0.9, 0.99];
+            testValues.forEach(val => {
+                const scaled = LogScale.forward(val);
+                const restored = LogScale.inverse(scaled);
+                expect(restored).toBeCloseTo(val, 5);
+            });
+        });
+
+        it("ExpScale round-trip is accurate", () => {
+            const testValues = [0.01, 0.1, 0.25, 0.5, 0.75, 0.9, 0.99];
+            testValues.forEach(val => {
+                const scaled = ExpScale.forward(val);
+                const restored = ExpScale.inverse(scaled);
+                expect(restored).toBeCloseTo(val, 5);
+            });
         });
     });
 

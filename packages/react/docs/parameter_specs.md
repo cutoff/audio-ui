@@ -61,7 +61,23 @@ interface BaseAudioParameter {
 Used for Volume, Frequency, Pan, etc.
 
 ```typescript
-export type ScaleType = "linear" | "log" | "exp";
+/**
+ * A scale function that transforms normalized values (0..1) to scaled values (0..1)
+ * Both forward and inverse must be provided for bidirectional conversion.
+ */
+export interface ScaleFunction {
+  forward: (normalized: number) => number; // Real -> Normalized
+  inverse: (scaled: number) => number; // Normalized -> Real
+  name?: string;
+}
+
+// Predefined scale functions
+export const LinearScale: ScaleFunction;
+export const LogScale: ScaleFunction; // For volume/dB, frequency
+export const ExpScale: ScaleFunction; // For envelope curves
+
+// Type: can be ScaleFunction object or string shortcut
+export type ScaleType = ScaleFunction | "linear" | "log" | "exp";
 
 export interface ContinuousParameter extends BaseAudioParameter {
   type: "continuous";
@@ -70,8 +86,51 @@ export interface ContinuousParameter extends BaseAudioParameter {
   step?: number; // Granularity of the REAL value (e.g. 0.1, or 1 for Integers)
   defaultValue?: number;
   unit?: string; // "dB", "Hz"
-  scale?: ScaleType; // Default: "linear"
+  scale?: ScaleType; // Default: "linear" (can be string shortcut or ScaleFunction object)
 }
+```
+
+**Scale Functions:**
+
+The `scale` property defines how the parameter should be interpreted semantically. It transforms the normalized value (0..1) in the real domain to a scaled value (0..1) for MIDI quantization.
+
+- **`"linear"` or `LinearScale`**: Standard linear mapping (default). Used for pan, modulation depth, etc.
+- **`"log"` or `LogScale`**: Logarithmic scale. Used for volume/dB, frequency (musical intervals).
+- **`"exp"` or `ExpScale`**: Exponential scale. Used for envelope curves, some filter parameters.
+
+**Usage Examples:**
+
+```typescript
+// Using string shortcuts (convenience)
+const volumeParam: ContinuousParameter = {
+  id: "vol",
+  name: "Volume",
+  type: "continuous",
+  min: -60,
+  max: 6,
+  unit: "dB",
+  scale: "log", // Logarithmic for volume
+};
+
+// Using ScaleFunction objects (explicit, extensible)
+import { LogScale } from "@cutoff/audio-ui-react";
+
+const freqParam: ContinuousParameter = {
+  id: "freq",
+  name: "Frequency",
+  type: "continuous",
+  min: 20,
+  max: 20000,
+  unit: "Hz",
+  scale: LogScale, // Can also use custom ScaleFunction objects
+};
+
+// Custom scale function (future extensibility)
+const customScale: ScaleFunction = {
+  forward: (n) => Math.pow(n, 2), // Square curve
+  inverse: (s) => Math.sqrt(s),
+  name: "square",
+};
 ```
 
 #### 2. Boolean Parameter (Switch/Button)
