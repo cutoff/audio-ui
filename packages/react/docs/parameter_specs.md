@@ -90,6 +90,64 @@ export interface ContinuousParameter extends BaseAudioParameter {
 }
 ```
 
+**Important: `step` and Non-Linear Scales**
+
+The `step` parameter defines a **linear grid in the real value domain**, regardless of the scale type. This means:
+
+- **`step` is always applied in the real value domain** (after scale transformation)
+- **`step` is optional** - omit it when a linear grid doesn't make sense for your use case
+- **The scale transformation affects control feel, not the step grid**
+
+**When `step` makes sense:**
+
+- **Linear scales**: Always works well (e.g., `step: 1` for integer values, `step: 0.5` for half-units)
+- **Log scales with linear units**: Works when the unit itself is linear (e.g., `step: 0.5` for dB in a volume parameter)
+- **Exp scales with linear units**: Works when the unit itself is linear (e.g., `step: 1` for milliseconds in an attack parameter)
+
+**When `step` may not make sense:**
+
+- **Log scales with non-linear units**: For frequency (Hz) with log scale, linear Hz steps don't align with musical perception. Consider omitting `step` or using a very small step (e.g., `step: 0.01`) to allow smooth control while still providing some quantization.
+
+**Examples:**
+
+```typescript
+// Volume with log scale: step makes sense (linear dB increments)
+const volumeParam: ContinuousParameter = {
+  id: "vol",
+  name: "Volume",
+  type: "continuous",
+  min: -60,
+  max: 6,
+  step: 0.5, // 0.5 dB increments
+  unit: "dB",
+  scale: "log",
+};
+
+// Frequency with log scale: step may not make sense (musical intervals aren't linear Hz)
+const freqParam: ContinuousParameter = {
+  id: "freq",
+  name: "Frequency",
+  type: "continuous",
+  min: 20,
+  max: 20000,
+  // No step - allow smooth control across the logarithmic range
+  unit: "Hz",
+  scale: "log",
+};
+
+// Attack time with exp scale: step makes sense (linear ms increments)
+const attackParam: ContinuousParameter = {
+  id: "attack",
+  name: "Attack",
+  type: "continuous",
+  min: 0,
+  max: 1000,
+  step: 1, // 1 ms increments
+  unit: "ms",
+  scale: "exp",
+};
+```
+
 **Scale Functions:**
 
 The `scale` property defines how the parameter should be interpreted semantically. It transforms the normalized value (0..1) in the real domain to a scaled value (0..1) for MIDI quantization.

@@ -232,6 +232,10 @@ export class AudioParameterImpl {
                 let val = conf.min + scaled * (conf.max - conf.min);
 
                 // Apply Step Grid
+                // NOTE: step is always a linear grid in the real value domain, regardless of scale type.
+                // This works well for linear scales and log/exp scales with linear units (e.g., dB, ms).
+                // For log scales with non-linear units (e.g., frequency in Hz), consider omitting step
+                // or using a very small step to allow smooth control while providing some quantization.
                 if (conf.step) {
                     const steps = Math.round((val - conf.min) / conf.step);
                     val = conf.min + steps * conf.step;
