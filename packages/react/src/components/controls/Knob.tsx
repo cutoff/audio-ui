@@ -87,12 +87,11 @@ function Knob({
         };
     }, [parameter, min, max, step, label]);
 
-    // Calculate sensitivity to match legacy behavior (1 unit delta = 1 unit value)
+    // Calculate sensitivity for intuitive control response
     // Normalized Delta = Raw Delta * Sensitivity
     // Real Value Delta = Normalized Delta * Range
-    // We want Real Value Delta = Raw Delta
-    // So: Raw Delta * Sensitivity * Range = Raw Delta
-    // Sensitivity = 1 / Range
+    // Target: Real Value Delta = Raw Delta (1:1 mapping)
+    // Therefore: Sensitivity = 1 / Range
     const sensitivity = useMemo(() => {
         const range = paramConfig.max - paramConfig.min;
         return range > 0 ? 1 / range : 0.001;
@@ -118,8 +117,8 @@ function Knob({
     const handleWheel = useCallback(
         (e: WheelEvent) => {
             if (onChange && !e.defaultPrevented) {
-                // Use positive deltaY to match previous behavior (Down = Increase)
-                // Use calculated sensitivity to match previous speed
+                // Positive deltaY increases value (Down = Increase)
+                // Sensitivity ensures 1:1 mapping between wheel delta and value change
                 adjustValue(e.deltaY, sensitivity);
             }
         },

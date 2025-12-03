@@ -9,7 +9,25 @@
 
 **IMPORTANT: This library has never been released.**
 
-**No Backward Compatibility Required**: Since the project has never been released, there is no need to maintain backward compatibility, migration notes, or update guides. Always prioritize clean, modern code and best practices. Do not include migration notes, backward compatibility warnings, or "what changed" sections in documentation.
+**CRITICAL: No Backward Compatibility Required**
+
+**This project is in active development and has never been released. Backward compatibility is NOT a concern at this stage.**
+
+- **Do NOT maintain backward compatibility** - feel free to make breaking changes to improve the architecture
+- **Do NOT write migration guides** - there are no existing users to migrate
+- **Do NOT include "what changed" sections** - focus on current state, not history
+- **Do NOT preserve deprecated APIs** - remove them entirely if they're no longer needed
+- **Always prioritize clean, modern code** over maintaining old patterns
+- **Refactor freely** - if a better approach exists, use it without worrying about existing code
+
+When making changes, focus on:
+
+1. Clean architecture and separation of concerns
+2. Modern React patterns and best practices
+3. Performance and maintainability
+4. Type safety and correctness
+
+Do not waste effort on compatibility layers, deprecation warnings, or gradual migration strategies.
 
 ## Quick Rules Summary for Agents (Load This First)
 
@@ -26,7 +44,7 @@
 | Theming             | CSS vars with `--audioui-*`; default adaptive (black light, white dark); utility classes `.audioui-*`; named themes blue etc.                                                                                                                 |
 | Components          | Function declarations; props with JSDoc; default params; SVG for graphics                                                                                                                                                                     |
 | Perf                | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveBox CSS-only)                                                                                                                                                                       |
-| Library Exports     | From packages/react/src/index.ts                                                                                                                                                                                                               |
+| Library Exports     | From packages/react/src/index.ts                                                                                                                                                                                                              |
 | Demo Routing        | Next.js app router; app/[route]/page.tsx                                                                                                                                                                                                      |
 
 ## Rendering Strategy

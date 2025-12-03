@@ -162,7 +162,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
                     const count = derivedParameter.options.length;
                     if (count > 1) {
                         const stepSize = 1.01 / (count - 1); // Slightly larger to ensure jump
-                        // Use positive deltaY to match previous behavior
+                        // Positive deltaY increases value (Down = Increase)
                         adjustValue(e.deltaY, stepSize * 0.01); // Scaling factor for wheel delta
                     }
                 }

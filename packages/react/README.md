@@ -91,9 +91,9 @@ To develop and test changes:
 2. The playground app will pick up changes automatically (or rebuild if needed)
 3. Run the playground: `pnpm dev` from the repository root
 
-## Version Compatibility
+## React Version Requirements
 
-**Critical**: This project maintains React 18 compatibility. Before making changes:
+**Critical**: This project requires React 18. Before making changes:
 
 ```bash
 # Check React versions

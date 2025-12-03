@@ -12,6 +12,8 @@ This project adheres to **Semantic Versioning (SemVer) 2.0.0**. All version numb
 
 The project is currently in a **Developer Preview** phase, which introduces a pre-release identifier to the standard SemVer format.
 
+**Note**: During the developer preview phase, backward compatibility is **not** a concern. Breaking changes are expected and acceptable. The SemVer definitions above apply to future stable releases, not to the current development phase.
+
 ### 2.1. Version Format
 
 - **Format**: `1.0.0-dp.X`

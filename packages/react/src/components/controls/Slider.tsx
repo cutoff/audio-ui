@@ -86,7 +86,7 @@ const Slider = ({
         };
     }, [parameter, min, max, step, label]);
 
-    // Calculate sensitivity to match legacy behavior
+    // Calculate sensitivity for intuitive control response (1:1 mapping between wheel delta and value change)
     const sensitivity = useMemo(() => {
         const range = paramConfig.max - paramConfig.min;
         return range > 0 ? 1 / range : 0.001;
@@ -111,7 +111,7 @@ const Slider = ({
     const handleWheel = useCallback(
         (e: WheelEvent) => {
             if (onChange && !e.defaultPrevented) {
-                // Use positive deltaY to match previous behavior
+                // Positive deltaY increases value (Down = Increase)
                 adjustValue(e.deltaY, sensitivity);
             }
         },

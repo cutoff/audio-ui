@@ -198,7 +198,7 @@ type SwitchProps = {
 
 ### Integration in `Knob`
 
-The `Knob` component acts as a Facade, supporting both direct `AudioParameter` injection and legacy props. It validates that the parameter is compatible (Continuous).
+The `Knob` component acts as a Facade, supporting both direct `AudioParameter` injection and ad-hoc props (`min`, `max`, `step`). It validates that the parameter is compatible (Continuous).
 
 ```tsx
 // packages/react/src/components/controls/Knob.tsx
