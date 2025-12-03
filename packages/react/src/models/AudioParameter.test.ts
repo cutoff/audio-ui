@@ -313,4 +313,37 @@ describe("AudioParameterImpl", () => {
             });
         });
     });
+
+    describe("MidiParameter Factory - Bipolar Variants", () => {
+        it("Bipolar7Bit creates symmetric range around 0", () => {
+            const param = MidiParameter.Bipolar7Bit("Pan");
+            expect(param.min).toBe(-64);
+            expect(param.max).toBe(63);
+            expect(param.defaultValue).toBe(0);
+            expect(param.midiResolution).toBe(7);
+        });
+
+        it("Bipolar14Bit creates symmetric range around 0", () => {
+            const param = MidiParameter.Bipolar14Bit("Pan");
+            expect(param.min).toBe(-8192);
+            expect(param.max).toBe(8191);
+            expect(param.defaultValue).toBe(0);
+            expect(param.midiResolution).toBe(14);
+        });
+
+        it("Bipolar creates custom symmetric range", () => {
+            const param = MidiParameter.Bipolar("Pan", 50, "%");
+            expect(param.min).toBe(-50);
+            expect(param.max).toBe(50);
+            expect(param.defaultValue).toBe(0);
+            expect(param.unit).toBe("%");
+        });
+
+        it("Bipolar with default range uses 100", () => {
+            const param = MidiParameter.Bipolar("Modulation");
+            expect(param.min).toBe(-100);
+            expect(param.max).toBe(100);
+            expect(param.defaultValue).toBe(0);
+        });
+    });
 });

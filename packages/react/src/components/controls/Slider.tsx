@@ -74,17 +74,43 @@ const Slider = ({
         }
 
         // Ad-hoc / Unmapped Mode (Implies Continuous)
+        // If bipolar mode, adapt min/max to be symmetric around 0
+        let effectiveMin = min;
+        let effectiveMax = max;
+        let effectiveDefault = min ?? 0;
+
+        if (bipolar) {
+            // If both min and max are provided, use them as-is (user override)
+            // Otherwise, use symmetric defaults
+            if (min === undefined && max === undefined) {
+                effectiveMin = -100;
+                effectiveMax = 100;
+                effectiveDefault = 0;
+            } else if (min === undefined && max !== undefined) {
+                // Only max provided: make symmetric
+                effectiveMin = -max;
+                effectiveDefault = 0;
+            } else if (min !== undefined && max === undefined) {
+                // Only min provided: make symmetric
+                effectiveMax = -min;
+                effectiveDefault = 0;
+            } else {
+                // Both provided: use as-is, but default to 0 if in bipolar mode
+                effectiveDefault = 0;
+            }
+        }
+
         return {
             id: "adhoc-slider",
             type: "continuous",
             name: label || "",
-            min: min ?? 0,
-            max: max ?? 100,
+            min: effectiveMin ?? 0,
+            max: effectiveMax ?? 100,
             step: step,
             unit: "",
-            defaultValue: min ?? 0,
+            defaultValue: effectiveDefault,
         };
-    }, [parameter, min, max, step, label]);
+    }, [parameter, min, max, step, label, bipolar]);
 
     // Calculate sensitivity for intuitive control response (1:1 mapping between wheel delta and value change)
     const sensitivity = useMemo(() => {

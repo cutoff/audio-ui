@@ -417,6 +417,53 @@ export const MidiParameter = {
     }),
 
     /**
+     * Bipolar 7-bit CC (-64 to 63, centered at 0)
+     * Useful for pan, modulation depth, etc.
+     */
+    Bipolar7Bit: (name: string): ContinuousParameter => ({
+        id: `cc-bipolar-${name.toLowerCase().replace(/\s+/g, "-")}`,
+        name,
+        type: "continuous",
+        min: -64,
+        max: 63,
+        step: 1,
+        midiResolution: 7,
+        unit: "",
+        defaultValue: 0,
+    }),
+
+    /**
+     * Bipolar 14-bit CC (-8192 to 8191, centered at 0)
+     * Useful for high-resolution pan, modulation depth, etc.
+     */
+    Bipolar14Bit: (name: string): ContinuousParameter => ({
+        id: `cc14-bipolar-${name.toLowerCase().replace(/\s+/g, "-")}`,
+        name,
+        type: "continuous",
+        min: -8192,
+        max: 8191,
+        step: 1,
+        midiResolution: 14,
+        unit: "",
+        defaultValue: 0,
+    }),
+
+    /**
+     * Bipolar parameter with custom range (centered at 0)
+     * Useful for pan (-100 to 100), modulation depth, etc.
+     */
+    Bipolar: (name: string, range: number = 100, unit: string = ""): ContinuousParameter => ({
+        id: `bipolar-${name.toLowerCase().replace(/\s+/g, "-")}`,
+        name,
+        type: "continuous",
+        min: -range,
+        max: range,
+        step: 1,
+        unit,
+        defaultValue: 0,
+    }),
+
+    /**
      * Boolean Switch (Off/On)
      */
     Switch: (name: string, mode: "toggle" | "momentary" = "toggle"): BooleanParameter => ({
