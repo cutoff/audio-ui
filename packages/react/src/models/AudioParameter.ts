@@ -385,13 +385,30 @@ export class AudioParameterImpl {
 }
 
 /**
- * Factory for common parameter configurations
+ * Configuration for creating a generic continuous control parameter (for knobs, sliders, etc.).
  */
-export const MidiParameter = {
+export interface ContinuousControlConfig {
+    id?: string;
+    name?: string;
+    label?: string;
+    min?: number;
+    max?: number;
+    step?: number;
+    bipolar?: boolean;
+    unit?: string;
+    defaultValue?: number;
+    scale?: ScaleType;
+    midiResolution?: BaseAudioParameter["midiResolution"];
+}
+
+/**
+ * Factory for common AudioParameter configurations (including MIDI-flavoured presets).
+ */
+export const AudioParameterFactory = {
     /**
      * Standard 7-bit CC (0-127)
      */
-    Standard7Bit: (name: string): ContinuousParameter => ({
+    createMidiStandard7Bit: (name: string): ContinuousParameter => ({
         id: `cc-${name.toLowerCase().replace(/\s+/g, "-")}`,
         name,
         type: "continuous",
@@ -405,7 +422,7 @@ export const MidiParameter = {
     /**
      * Standard 14-bit CC (0-16383)
      */
-    Standard14Bit: (name: string): ContinuousParameter => ({
+    createMidiStandard14Bit: (name: string): ContinuousParameter => ({
         id: `cc14-${name.toLowerCase().replace(/\s+/g, "-")}`,
         name,
         type: "continuous",
@@ -420,7 +437,7 @@ export const MidiParameter = {
      * Bipolar 7-bit CC (-64 to 63, centered at 0)
      * Useful for pan, modulation depth, etc.
      */
-    Bipolar7Bit: (name: string): ContinuousParameter => ({
+    createMidiBipolar7Bit: (name: string): ContinuousParameter => ({
         id: `cc-bipolar-${name.toLowerCase().replace(/\s+/g, "-")}`,
         name,
         type: "continuous",
@@ -436,7 +453,7 @@ export const MidiParameter = {
      * Bipolar 14-bit CC (-8192 to 8191, centered at 0)
      * Useful for high-resolution pan, modulation depth, etc.
      */
-    Bipolar14Bit: (name: string): ContinuousParameter => ({
+    createMidiBipolar14Bit: (name: string): ContinuousParameter => ({
         id: `cc14-bipolar-${name.toLowerCase().replace(/\s+/g, "-")}`,
         name,
         type: "continuous",
@@ -452,7 +469,7 @@ export const MidiParameter = {
      * Bipolar parameter with custom range (centered at 0)
      * Useful for pan (-100 to 100), modulation depth, etc.
      */
-    Bipolar: (name: string, range: number = 100, unit: string = ""): ContinuousParameter => ({
+    createBipolar: (name: string, range: number = 100, unit: string = ""): ContinuousParameter => ({
         id: `bipolar-${name.toLowerCase().replace(/\s+/g, "-")}`,
         name,
         type: "continuous",
@@ -466,7 +483,7 @@ export const MidiParameter = {
     /**
      * Boolean Switch (Off/On)
      */
-    Switch: (name: string, mode: "toggle" | "momentary" = "toggle"): BooleanParameter => ({
+    createSwitch: (name: string, mode: "toggle" | "momentary" = "toggle"): BooleanParameter => ({
         id: `sw-${name.toLowerCase().replace(/\s+/g, "-")}`,
         name,
         type: "boolean",
@@ -480,7 +497,7 @@ export const MidiParameter = {
     /**
      * Selector (Enumeration)
      */
-    Selector: (name: string, options: Array<{ value: string | number; label: string }>): EnumParameter => ({
+    createSelector: (name: string, options: Array<{ value: string | number; label: string }>): EnumParameter => ({
         id: `sel-${name.toLowerCase().replace(/\s+/g, "-")}`,
         name,
         type: "enum",
@@ -489,4 +506,40 @@ export const MidiParameter = {
         midiResolution: 7,
         midiMapping: "spread",
     }),
+
+    /**
+     * Generic continuous control parameter (for ad-hoc UI controls like Knob/Slider).
+     */
+    createControl: (config: ContinuousControlConfig): ContinuousParameter => {
+        const { id, name, label, min, max, step, bipolar, unit = "", defaultValue, scale, midiResolution } = config;
+
+        let effectiveMin = min;
+        let effectiveMax = max;
+        let effectiveDefault = defaultValue ?? min ?? 0;
+
+        if (bipolar) {
+            if (min === undefined && max === undefined) {
+                effectiveMin = -100;
+                effectiveMax = 100;
+            } else if (min === undefined && max !== undefined) {
+                effectiveMin = -max!;
+            } else if (min !== undefined && max === undefined) {
+                effectiveMax = -min!;
+            }
+            effectiveDefault = 0;
+        }
+
+        return {
+            id: id ?? "adhoc-control",
+            type: "continuous",
+            name: name ?? label ?? "",
+            min: effectiveMin ?? 0,
+            max: effectiveMax ?? 100,
+            step,
+            unit,
+            defaultValue: effectiveDefault,
+            scale,
+            midiResolution,
+        };
+    },
 };

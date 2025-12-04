@@ -1,11 +1,11 @@
 import { describe, it, expect, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useAudioParam } from "./useAudioParam";
-import { MidiParameter } from "../models/AudioParameter";
+import { AudioParameterFactory } from "../models/AudioParameter";
 
 describe("useAudioParam", () => {
     describe("Continuous Parameter", () => {
-        const param = MidiParameter.Standard7Bit("Test CC");
+        const param = AudioParameterFactory.createMidiStandard7Bit("Test CC");
         // Range 0-127, Step 1
 
         it("initializes correctly", () => {
@@ -49,7 +49,7 @@ describe("useAudioParam", () => {
     });
 
     describe("Enum Parameter", () => {
-        const param = MidiParameter.Selector("Wave", [
+        const param = AudioParameterFactory.createSelector("Wave", [
             { value: "sin", label: "Sine" },
             { value: "saw", label: "Saw" },
             { value: "sqr", label: "Square" }

@@ -1,5 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { AudioParameterImpl, MidiParameter, ContinuousParameter, EnumParameter, LogScale, ExpScale, LinearScale } from "./AudioParameter";
+import {
+    AudioParameterImpl,
+    AudioParameterFactory,
+    ContinuousParameter,
+    EnumParameter,
+    LogScale,
+    ExpScale,
+    LinearScale,
+} from "./AudioParameter";
 
 describe("AudioParameterImpl", () => {
     describe("Continuous Parameter (High Res / Default)", () => {
@@ -188,7 +196,7 @@ describe("AudioParameterImpl", () => {
     });
 
     describe("Boolean Parameter", () => {
-        const switchParam = MidiParameter.Switch("Mute");
+        const switchParam = AudioParameterFactory.createSwitch("Mute");
         const impl = new AudioParameterImpl(switchParam);
 
         it("normalizes correctly", () => {
@@ -314,9 +322,9 @@ describe("AudioParameterImpl", () => {
         });
     });
 
-    describe("MidiParameter Factory - Bipolar Variants", () => {
+    describe("AudioParameterFactory - Bipolar Variants", () => {
         it("Bipolar7Bit creates symmetric range around 0", () => {
-            const param = MidiParameter.Bipolar7Bit("Pan");
+            const param = AudioParameterFactory.createMidiBipolar7Bit("Pan");
             expect(param.min).toBe(-64);
             expect(param.max).toBe(63);
             expect(param.defaultValue).toBe(0);
@@ -324,7 +332,7 @@ describe("AudioParameterImpl", () => {
         });
 
         it("Bipolar14Bit creates symmetric range around 0", () => {
-            const param = MidiParameter.Bipolar14Bit("Pan");
+            const param = AudioParameterFactory.createMidiBipolar14Bit("Pan");
             expect(param.min).toBe(-8192);
             expect(param.max).toBe(8191);
             expect(param.defaultValue).toBe(0);
@@ -332,7 +340,7 @@ describe("AudioParameterImpl", () => {
         });
 
         it("Bipolar creates custom symmetric range", () => {
-            const param = MidiParameter.Bipolar("Pan", 50, "%");
+            const param = AudioParameterFactory.createBipolar("Pan", 50, "%");
             expect(param.min).toBe(-50);
             expect(param.max).toBe(50);
             expect(param.defaultValue).toBe(0);
@@ -340,7 +348,7 @@ describe("AudioParameterImpl", () => {
         });
 
         it("Bipolar with default range uses 100", () => {
-            const param = MidiParameter.Bipolar("Modulation");
+            const param = AudioParameterFactory.createBipolar("Modulation");
             expect(param.min).toBe(-100);
             expect(param.max).toBe(100);
             expect(param.defaultValue).toBe(0);

@@ -412,7 +412,7 @@ For cases where the user just wants a raw MIDI control (e.g., a generic CC knob)
 
 ```typescript
 // Usage
-const unmappedParam = MidiParameter.Standard7Bit("Mod Wheel");
+const unmappedParam = AudioParameterFactory.createMidiStandard7Bit("Mod Wheel");
 // Creates: { type: "continuous", min: 0, max: 127, step: 1, unit: "", midiResolution: 7, ... }
 
 return (

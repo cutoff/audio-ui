@@ -9,7 +9,7 @@ import { knobSizeMap } from "../utils/sizeMappings";
 import { useThemableProps } from "../providers/AudioUiProvider";
 import AdaptiveBox from "../AdaptiveBox";
 import SvgKnob from "../svg/SvgKnob";
-import { ContinuousParameter } from "../../models/AudioParameter";
+import { AudioParameterFactory, ContinuousParameter } from "../../models/AudioParameter";
 import { useAudioParam } from "../../hooks/useAudioParam";
 
 /**
@@ -75,38 +75,15 @@ function Knob({
         }
 
         // Ad-hoc / Unmapped Mode (Implies Continuous)
-        // If bipolar mode, adapt min/max to be symmetric around 0
-        let effectiveMin = min;
-        let effectiveMax = max;
-        let effectiveDefault = min ?? 0;
-
-        if (bipolar) {
-            // If both min and max are provided, use them as-is (user override)
-            // Otherwise, use symmetric defaults
-            if (min === undefined && max === undefined) {
-                effectiveMin = -100;
-                effectiveMax = 100;
-            } else if (min === undefined && max !== undefined) {
-                // Only max provided: make symmetric
-                effectiveMin = -max;
-            } else if (min !== undefined && max === undefined) {
-                // Only min provided: make symmetric
-                effectiveMax = -min;
-            }
-            effectiveDefault = 0;
-        }
-
-        return {
+        return AudioParameterFactory.createControl({
             id: "adhoc-knob",
-            type: "continuous",
-            name: label || "",
-            min: effectiveMin ?? 0,
-            max: effectiveMax ?? 100,
-            step: step,
-            unit: "",
-            defaultValue: effectiveDefault,
-        };
-    }, [parameter, min, max, step, label, bipolar]);
+            label,
+            min,
+            max,
+            step,
+            bipolar,
+        });
+    }, [parameter, label, min, max, step, bipolar]);
 
     // Calculate sensitivity for intuitive control response
     // Normalized Delta = Raw Delta * Sensitivity
