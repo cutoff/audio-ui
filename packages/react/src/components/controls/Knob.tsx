@@ -123,19 +123,12 @@ function Knob({
         return range > 0 ? 1 / range : 0.001;
     }, [paramConfig.max, paramConfig.min]);
 
-    // Wrap onChange
-    const handleChange = useCallback((newValue: number) => {
-        if (onChange) {
-            onChange(newValue);
-        }
-    }, [onChange]);
-
     // Use the hook to handle all math
     const {
         normalizedValue,
         displayValue,
         adjustValue
-    } = useAudioParam(value, onChange ? handleChange : undefined, paramConfig);
+    } = useAudioParam(value, onChange, paramConfig);
 
     /**
      * Wheel event handler that adjusts the knob value

@@ -139,19 +139,12 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
         // Determine effective value (controlled or default)
         const effectiveValue = value !== undefined ? value : defaultVal;
 
-        // Wrap onChange
-        const handleChange = useCallback((newValue: any) => {
-            if (onChange) {
-                onChange(newValue);
-            }
-        }, [onChange]);
-
         // Use Audio Param Hook
         const {
             normalizedValue,
             adjustValue,
             displayValue
-        } = useAudioParam(effectiveValue, onChange ? handleChange : undefined, derivedParameter);
+        } = useAudioParam(effectiveValue, onChange, derivedParameter);
 
         // Handle Wheel
         const handleWheel = useCallback(
