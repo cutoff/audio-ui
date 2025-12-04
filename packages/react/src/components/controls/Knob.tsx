@@ -86,19 +86,14 @@ function Knob({
             if (min === undefined && max === undefined) {
                 effectiveMin = -100;
                 effectiveMax = 100;
-                effectiveDefault = 0;
             } else if (min === undefined && max !== undefined) {
                 // Only max provided: make symmetric
                 effectiveMin = -max;
-                effectiveDefault = 0;
             } else if (min !== undefined && max === undefined) {
                 // Only min provided: make symmetric
                 effectiveMax = -min;
-                effectiveDefault = 0;
-            } else {
-                // Both provided: use as-is, but default to 0 if in bipolar mode
-                effectiveDefault = 0;
             }
+            effectiveDefault = 0;
         }
 
         return {
