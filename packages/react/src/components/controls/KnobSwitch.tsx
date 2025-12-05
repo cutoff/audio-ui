@@ -66,7 +66,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
     onMouseEnter,
     onMouseLeave,
     size = "normal",
-    paramId: _paramId,
+    paramId,
     color,
     roundness,
     parameter,
@@ -123,7 +123,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
 
             return {
                 derivedParameter: {
-                    id: "adhoc-enum",
+                    id: paramId ?? "adhoc-enum",
                     type: "enum",
                     name: label || "",
                     options,

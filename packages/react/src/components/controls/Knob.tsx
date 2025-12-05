@@ -50,7 +50,7 @@ function Knob({
     thickness = 12,
     size = "normal",
     renderValue,
-    paramId: _paramId,
+    paramId,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -76,7 +76,7 @@ function Knob({
 
         // Ad-hoc / Unmapped Mode (Implies Continuous)
         return AudioParameterFactory.createControl({
-            id: "adhoc-knob",
+            id: paramId ?? "adhoc-knob",
             label,
             min,
             max,

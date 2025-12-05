@@ -49,7 +49,7 @@ const Slider = ({
     onChange,
     roundness,
     size = "normal",
-    paramId: _paramId,
+    paramId,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -75,7 +75,7 @@ const Slider = ({
 
         // Ad-hoc / Unmapped Mode (Implies Continuous)
         return AudioParameterFactory.createControl({
-            id: "adhoc-slider",
+            id: paramId ?? "adhoc-slider",
             label,
             min,
             max,

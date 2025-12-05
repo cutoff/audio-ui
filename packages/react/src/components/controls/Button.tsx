@@ -42,6 +42,7 @@ function Button({
     stretch = false,
     className,
     style,
+    paramId,
     onChange,
     latch = false,
     roundness,
@@ -71,7 +72,7 @@ function Button({
 
         // Ad-hoc Boolean Parameter
         return {
-            id: "adhoc-button",
+            id: paramId ?? "adhoc-button",
             type: "boolean",
             name: label || "",
             mode: latch ? "toggle" : "momentary",
