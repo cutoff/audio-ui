@@ -9,7 +9,7 @@ import { knobSizeMap } from "../utils/sizeMappings";
 import { useThemableProps } from "../providers/AudioUiProvider";
 import { CLASSNAMES } from "../../styles/classNames";
 import { EnumParameter } from "../../models/AudioParameter";
-import { useAudioParam } from "../../hooks/useAudioParam";
+import { useAudioParameter } from "../../hooks/useAudioParameter";
 
 /**
  * Props for the option elements within KnobSwitch
@@ -144,7 +144,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             normalizedValue,
             adjustValue,
             displayValue
-        } = useAudioParam(effectiveValue, onChange, derivedParameter);
+        } = useAudioParameter(effectiveValue, onChange, derivedParameter);
 
         // Handle Wheel
         const handleWheel = useCallback(

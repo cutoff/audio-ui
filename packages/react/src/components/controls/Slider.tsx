@@ -9,7 +9,7 @@ import AdaptiveBox from "../AdaptiveBox";
 import SvgSlider from "../svg/SvgSlider";
 import { CLASSNAMES } from "../../styles/classNames";
 import { AudioParameterFactory, ContinuousParameter } from "../../models/AudioParameter";
-import { useAudioParam } from "../../hooks/useAudioParam";
+import { useAudioParameter } from "../../hooks/useAudioParameter";
 
 /**
  * Props for the Slider component
@@ -94,7 +94,7 @@ const Slider = ({
     const {
         normalizedValue,
         adjustValue
-    } = useAudioParam(value, onChange, paramConfig);
+    } = useAudioParameter(value, onChange, paramConfig);
 
     /**
      * Wheel event handler that adjusts the slider value

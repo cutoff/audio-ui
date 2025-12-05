@@ -1,17 +1,15 @@
 import { describe, it, expect, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
-import { useAudioParam } from "./useAudioParam";
+import { useAudioParameter } from "./useAudioParameter";
 import { AudioParameterFactory } from "../models/AudioParameter";
 
-describe("useAudioParam", () => {
+describe("useAudioParameter", () => {
     describe("Continuous Parameter", () => {
         const param = AudioParameterFactory.createMidiStandard7Bit("Test CC");
         // Range 0-127, Step 1
 
         it("initializes correctly", () => {
-            const { result } = renderHook(() =>
-                useAudioParam(64, undefined, param)
-            );
+            const { result } = renderHook(() => useAudioParameter(64, undefined, param));
 
             // 64 is approx 0.5039 of 127
             expect(result.current.normalizedValue).toBeCloseTo(64 / 127, 4);
@@ -20,9 +18,7 @@ describe("useAudioParam", () => {
 
         it("updates via setNormalizedValue", () => {
             const onChange = vi.fn();
-            const { result } = renderHook(() =>
-                useAudioParam(64, onChange, param)
-            );
+            const { result } = renderHook(() => useAudioParameter(64, onChange, param));
 
             act(() => {
                 result.current.setNormalizedValue(1.0);
@@ -35,7 +31,7 @@ describe("useAudioParam", () => {
             const onChange = vi.fn();
             const { result } = renderHook(() =>
                 // Start at 0
-                useAudioParam(0, onChange, param)
+                useAudioParameter(0, onChange, param)
             );
 
             act(() => {
@@ -52,22 +48,18 @@ describe("useAudioParam", () => {
         const param = AudioParameterFactory.createSelector("Wave", [
             { value: "sin", label: "Sine" },
             { value: "saw", label: "Saw" },
-            { value: "sqr", label: "Square" }
+            { value: "sqr", label: "Square" },
         ]);
 
         it("initializes correctly", () => {
-            const { result } = renderHook(() =>
-                useAudioParam("saw", undefined, param)
-            );
+            const { result } = renderHook(() => useAudioParameter("saw", undefined, param));
             expect(result.current.normalizedValue).toBe(0.5);
             expect(result.current.displayValue).toBe("Saw");
         });
 
         it("snaps to nearest option on setNormalizedValue", () => {
             const onChange = vi.fn();
-            const { result } = renderHook(() =>
-                useAudioParam("sin", onChange, param)
-            );
+            const { result } = renderHook(() => useAudioParameter("sin", onChange, param));
 
             act(() => {
                 // 0.9 -> should snap to 1.0 (sqr)
@@ -78,4 +70,3 @@ describe("useAudioParam", () => {
         });
     });
 });
-

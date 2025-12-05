@@ -141,7 +141,7 @@ export type AudioParameter = ContinuousParameter | BooleanParameter | EnumParame
  *
  * This ensures deterministic behavior and alignment with hardware standards.
  */
-export class AudioParameterImpl {
+export class AudioParameterConverter {
     private maxMidi: number;
     private scaleFunction: ScaleFunction | null = null;
 

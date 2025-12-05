@@ -10,7 +10,7 @@ import { useThemableProps } from "../providers/AudioUiProvider";
 import AdaptiveBox from "../AdaptiveBox";
 import SvgKnob from "../svg/SvgKnob";
 import { AudioParameterFactory, ContinuousParameter } from "../../models/AudioParameter";
-import { useAudioParam } from "../../hooks/useAudioParam";
+import { useAudioParameter } from "../../hooks/useAudioParameter";
 
 /**
  * Props for the Knob component
@@ -66,7 +66,7 @@ function Knob({
     );
 
     // Construct the configuration object either from the prop or from the ad-hoc props
-    const paramConfig = useMemo<ContinuousParameter>(() => {
+    const parameterDef = useMemo<ContinuousParameter>(() => {
         if (parameter) {
             if (parameter.type !== "continuous") {
                 console.error("Knob component only supports continuous parameters.");
@@ -91,16 +91,16 @@ function Knob({
     // Target: Real Value Delta = Raw Delta (1:1 mapping)
     // Therefore: Sensitivity = 1 / Range
     const sensitivity = useMemo(() => {
-        const range = paramConfig.max - paramConfig.min;
+        const range = parameterDef.max - parameterDef.min;
         return range > 0 ? 1 / range : 0.001;
-    }, [paramConfig.max, paramConfig.min]);
+    }, [parameterDef.max, parameterDef.min]);
 
     // Use the hook to handle all math
     const {
         normalizedValue,
         displayValue,
         adjustValue
-    } = useAudioParam(value, onChange, paramConfig);
+    } = useAudioParameter(value, onChange, parameterDef);
 
     /**
      * Wheel event handler that adjusts the knob value
@@ -149,17 +149,17 @@ function Knob({
                 </div>
             );
         } else if (renderValue) {
-            const effectiveMin = paramConfig.min;
-            const effectiveMax = paramConfig.max;
+            const effectiveMin = parameterDef.min;
+            const effectiveMax = parameterDef.max;
             return renderValue(value, effectiveMin, effectiveMax);
         } else if (children) {
             return children;
         } else {
             return displayValue;
         }
-    }, [children, renderValue, value, paramConfig.min, paramConfig.max, displayValue]);
+    }, [children, renderValue, value, parameterDef.min, parameterDef.max, displayValue]);
 
-    const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
+    const effectiveLabel = label ?? (parameter ? parameterDef.name : undefined);
 
     return (
         <AdaptiveBox

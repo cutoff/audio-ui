@@ -58,4 +58,4 @@ export { themeColors, themeColorsDirect } from "./themeColors";
 
 // Export Audio Parameter Model and Hook
 export * from "./models/AudioParameter";
-export * from "./hooks/useAudioParam";
+export * from "./hooks/useAudioParameter";

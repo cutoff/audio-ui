@@ -1,13 +1,13 @@
 import { useMemo, useCallback, useRef } from "react";
-import { AudioParameter, AudioParameterImpl } from "../models/AudioParameter";
+import { AudioParameter, AudioParameterConverter } from "../models/AudioParameter";
 
-export interface UseAudioParamResult {
+export interface UseAudioParameterResult {
     /** The normalized value (0..1) for UI rendering */
     normalizedValue: number;
     /** Formatted string representation of the current value */
     displayValue: string;
     /** The full parameter model instance */
-    param: AudioParameterImpl;
+    converter: AudioParameterConverter;
     /**
      * Set the value using a normalized (0..1) input.
      * Automatically denormalizes and calls onChange.
@@ -26,22 +26,22 @@ export interface UseAudioParamResult {
  *
  * @param value The current real-world value (Source of Truth)
  * @param onChange Callback when value changes
- * @param paramConfig The parameter definition
+ * @param parameterDef The parameter definition
  */
-export function useAudioParam<T extends number | boolean | string>(
+export function useAudioParameter<T extends number | boolean | string>(
     value: T,
     onChange: undefined | ((value: T) => void),
-    paramConfig: AudioParameter
-): UseAudioParamResult {
+    parameterDef: AudioParameter
+): UseAudioParameterResult {
     // 1. Ensure we always have an instance with methods
-    const param = useMemo(() => {
-        return new AudioParameterImpl(paramConfig);
-    }, [paramConfig]);
+    const converter = useMemo(() => {
+        return new AudioParameterConverter(parameterDef);
+    }, [parameterDef]);
 
     // 2. Calculate normalized value for the View (0..1)
     const normalizedValue = useMemo(() => {
-        return param.normalize(value);
-    }, [value, param]);
+        return converter.normalize(value);
+    }, [value, converter]);
 
     // 3. Track the latest value in a ref to avoid stale closures during rapid events (e.g. wheel)
     const valueRef = useRef(value);
@@ -53,7 +53,7 @@ export function useAudioParam<T extends number | boolean | string>(
             if (!onChange) return;
             // Clamp to 0..1 before denormalizing
             const clamped = Math.max(0, Math.min(1, newNormal));
-            const realValue = param.denormalize(clamped) as T;
+            const realValue = converter.denormalize(clamped) as T;
 
             // Only fire if value actually changed
             if (realValue !== valueRef.current) {
@@ -61,7 +61,7 @@ export function useAudioParam<T extends number | boolean | string>(
                 onChange(realValue);
             }
         },
-        [param, onChange]
+        [converter, onChange]
     );
 
     // 5. Helper for incremental updates (wheel, keys)
@@ -71,7 +71,7 @@ export function useAudioParam<T extends number | boolean | string>(
 
             // Use Ref for calculation base to prevent stale closure jitter during rapid events
             const currentReal = valueRef.current;
-            const currentNormal = param.normalize(currentReal);
+            const currentNormal = converter.normalize(currentReal);
 
             // For Enum/Boolean, we might want stepping logic, but normalize/denormalize handles it.
             // Adding delta to normalized value works generally if sensitivity is tuned.
@@ -80,18 +80,18 @@ export function useAudioParam<T extends number | boolean | string>(
             const newNormal = Math.max(0, Math.min(1, currentNormal + delta * sensitivity));
             setNormalizedValue(newNormal);
         },
-        [param, onChange, setNormalizedValue]
+        [converter, onChange, setNormalizedValue]
     );
 
     // 6. Format for display
     const displayValue = useMemo(() => {
-        return param.format(value);
-    }, [value, param]);
+        return converter.format(value);
+    }, [value, converter]);
 
     return {
         normalizedValue,
         displayValue,
-        param,
+        converter,
         setNormalizedValue,
         adjustValue,
     };

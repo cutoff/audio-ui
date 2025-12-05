@@ -32,8 +32,8 @@ To robustly handle audio and MIDI data, we identify three distinct value domains
 
 We adopt a React-idiomatic Model-View-Controller (MVC) approach:
 
-- **Model**: `AudioParameter` (Polymorphic Interface) and `AudioParameterImpl` (Class). Defines the physics, boundaries, and formatting.
-- **Controller**: `useAudioParam` (Hook). Connects the Model to React state, handling normalization/denormalization.
+- **Model**: `AudioParameter` (Polymorphic Interface) and `AudioParameterConverter` (Class). Defines the physics, boundaries, and formatting.
+- **Controller**: `useAudioParameter` (Hook). Connects the Model to React state, handling normalization/denormalization.
 - **View**: `Knob`, `Switch`, `Slider` (Components). Presentation layers that enforce compatibility with specific parameter types.
 
 ### 1. The Domain Model
@@ -248,7 +248,7 @@ export interface EnumParameter extends BaseAudioParameter {
 export type AudioParameter = ContinuousParameter | BooleanParameter | EnumParameter;
 ```
 
-### 2. Implementation (`AudioParameterImpl`)
+### 2. Implementation (`AudioParameterConverter`)
 
 The class wraps the configuration and handles the math for all types using the MIDI Pivot strategy.
 
@@ -345,7 +345,7 @@ function Knob(props: KnobProps) {
   }, [props.parameter, props.min, props.max, props.step, props.label, props.unit]);
 
   // Use the hook to handle all math
-  const { normalizedValue, displayValue, adjustValue } = useAudioParam(props.value, props.onChange, paramConfig);
+  const { normalizedValue, displayValue, adjustValue } = useAudioParameter(props.value, props.onChange, paramConfig);
 
   const handleWheel = (e: WheelEvent) => {
     // Reverse deltaY so scrolling up increases value
@@ -403,7 +403,7 @@ The component infers the `EnumParameter` from the children structure.
 1. Scan children to build `EnumParameter`:
    `options: [{value: "saw", label: "saw"}, {value: "sqr", label: "sqr"}]`
 2. Build visual map: `{"saw": <SawIcon />, "sqr": <SquareIcon />}`
-3. Use `useAudioParam` with the generated parameter.
+3. Use `useAudioParameter` with the generated parameter.
 4. Render using visual map for content.
 
 ### Unmapped Parameter (MIDI-only)
@@ -429,6 +429,6 @@ return (
 - **Default Continuous**: Linear, Min 0, Max 127, Step 1.
 - **Default Boolean**: False/True.
 - **Factories**:
-  - `MidiParameter.Standard7Bit()` -> Continuous
-  - `MidiParameter.Switch()` -> Boolean
-  - `MidiParameter.Selector(options)` -> Enum
+  - `AudioParameterFactory.createMidiStandard7Bit()` -> Continuous
+  - `AudioParameterFactory.createSwitch()` -> Boolean
+  - `AudioParameterFactory.createSelector(options)` -> Enum

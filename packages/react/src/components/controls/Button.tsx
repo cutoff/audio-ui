@@ -10,7 +10,7 @@ import { buttonSizeMap } from "../utils/sizeMappings";
 import { useThemableProps } from "../providers/AudioUiProvider";
 import SvgButton from "../svg/SvgButton";
 import { BooleanParameter } from "../../models/AudioParameter";
-import { useAudioParam } from "../../hooks/useAudioParam";
+import { useAudioParameter } from "../../hooks/useAudioParameter";
 
 /**
  * Props for the Button component
@@ -83,7 +83,7 @@ function Button({
     // Use the hook to handle normalization
     const {
         normalizedValue
-    } = useAudioParam(value, onChange, paramConfig);
+    } = useAudioParameter(value, onChange, paramConfig);
 
     // Ref to track if the button is currently pressed (for momentary mode)
     const isPressedRef = useRef(false);

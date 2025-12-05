@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
-    AudioParameterImpl,
+    AudioParameterConverter,
     AudioParameterFactory,
     ContinuousParameter,
     EnumParameter,
@@ -9,7 +9,7 @@ import {
     LinearScale,
 } from "./AudioParameter";
 
-describe("AudioParameterImpl", () => {
+describe("AudioParameterConverter", () => {
     describe("Continuous Parameter (High Res / Default)", () => {
         const volumeParam: ContinuousParameter = {
             id: "vol",
@@ -21,7 +21,7 @@ describe("AudioParameterImpl", () => {
             unit: "dB",
             // midiResolution default is 32-bit
         };
-        const impl = new AudioParameterImpl(volumeParam);
+        const impl = new AudioParameterConverter(volumeParam);
 
         it("normalizes correctly", () => {
             expect(impl.normalize(-60)).toBe(0);
@@ -61,7 +61,7 @@ describe("AudioParameterImpl", () => {
             unit: "%",
             scale: "log", // Using string shortcut
         };
-        const impl = new AudioParameterImpl(volumeParam);
+        const impl = new AudioParameterConverter(volumeParam);
 
         it("normalizes with log scale", () => {
             expect(impl.normalize(0)).toBe(0);
@@ -87,7 +87,7 @@ describe("AudioParameterImpl", () => {
                 ...volumeParam,
                 scale: LogScale, // Using ScaleFunction object
             };
-            const impl2 = new AudioParameterImpl(paramWithObject);
+            const impl2 = new AudioParameterConverter(paramWithObject);
             expect(impl2.normalize(50)).toBeCloseTo(impl.normalize(50), 5);
         });
     });
@@ -102,7 +102,7 @@ describe("AudioParameterImpl", () => {
             unit: "ms",
             scale: "exp", // Using string shortcut
         };
-        const impl = new AudioParameterImpl(attackParam);
+        const impl = new AudioParameterConverter(attackParam);
 
         it("normalizes with exp scale", () => {
             expect(impl.normalize(0)).toBe(0);
@@ -128,7 +128,7 @@ describe("AudioParameterImpl", () => {
                 ...attackParam,
                 scale: ExpScale, // Using ScaleFunction object
             };
-            const impl2 = new AudioParameterImpl(paramWithObject);
+            const impl2 = new AudioParameterConverter(paramWithObject);
             expect(impl2.normalize(500)).toBeCloseTo(impl.normalize(500), 5);
         });
     });
@@ -136,7 +136,7 @@ describe("AudioParameterImpl", () => {
     describe("Scale Function Round-Trip Accuracy", () => {
         it("LinearScale maintains exact values", () => {
             const testValues = [0, 0.25, 0.5, 0.75, 1];
-            testValues.forEach(val => {
+            testValues.forEach((val) => {
                 const scaled = LinearScale.forward(val);
                 const restored = LinearScale.inverse(scaled);
                 expect(restored).toBeCloseTo(val, 10);
@@ -145,7 +145,7 @@ describe("AudioParameterImpl", () => {
 
         it("LogScale round-trip is accurate", () => {
             const testValues = [0.01, 0.1, 0.25, 0.5, 0.75, 0.9, 0.99];
-            testValues.forEach(val => {
+            testValues.forEach((val) => {
                 const scaled = LogScale.forward(val);
                 const restored = LogScale.inverse(scaled);
                 expect(restored).toBeCloseTo(val, 5);
@@ -154,7 +154,7 @@ describe("AudioParameterImpl", () => {
 
         it("ExpScale round-trip is accurate", () => {
             const testValues = [0.01, 0.1, 0.25, 0.5, 0.75, 0.9, 0.99];
-            testValues.forEach(val => {
+            testValues.forEach((val) => {
                 const scaled = ExpScale.forward(val);
                 const restored = ExpScale.inverse(scaled);
                 expect(restored).toBeCloseTo(val, 5);
@@ -173,14 +173,14 @@ describe("AudioParameterImpl", () => {
             unit: "dB",
             midiResolution: 7, // Explicit 7-bit
         };
-        const impl = new AudioParameterImpl(lowResParam);
+        const impl = new AudioParameterConverter(lowResParam);
 
         it("quantizes normalization", () => {
             // Center (-27) is exactly 0.5 in Float.
             // 0.5 * 127 = 63.5 -> Rounds to 64.
             // 64 / 127 = 0.503937...
             expect(impl.normalize(-27)).not.toBe(0.5);
-            expect(impl.normalize(-27)).toBeCloseTo(64/127, 5);
+            expect(impl.normalize(-27)).toBeCloseTo(64 / 127, 5);
         });
 
         it("converts to MIDI (7-bit)", () => {
@@ -197,7 +197,7 @@ describe("AudioParameterImpl", () => {
 
     describe("Boolean Parameter", () => {
         const switchParam = AudioParameterFactory.createSwitch("Mute");
-        const impl = new AudioParameterImpl(switchParam);
+        const impl = new AudioParameterConverter(switchParam);
 
         it("normalizes correctly", () => {
             expect(impl.normalize(false)).toBe(0);
@@ -237,7 +237,7 @@ describe("AudioParameterImpl", () => {
             midiResolution: 7,
             midiMapping: "spread",
         };
-        const impl = new AudioParameterImpl(waveformParam);
+        const impl = new AudioParameterConverter(waveformParam);
 
         it("normalizes correctly (spread)", () => {
             expect(impl.normalize("sine")).toBe(0);
@@ -247,7 +247,7 @@ describe("AudioParameterImpl", () => {
             // BUT wait, toMidi for Enum (Spread) uses `round(norm * maxMidi)`.
             // Normalize uses `toMidi / maxMidi`.
             // So it will be quantized.
-            expect(impl.normalize("saw")).toBeCloseTo(64/127, 5);
+            expect(impl.normalize("saw")).toBeCloseTo(64 / 127, 5);
             expect(impl.normalize("square")).toBe(1);
         });
 
@@ -276,7 +276,7 @@ describe("AudioParameterImpl", () => {
                 ...waveformParam,
                 midiMapping: "sequential",
             };
-            const seqImpl = new AudioParameterImpl(seqParam);
+            const seqImpl = new AudioParameterConverter(seqParam);
 
             it("converts to MIDI (Sequential)", () => {
                 expect(seqImpl.toMidi("sine")).toBe(0);
@@ -301,7 +301,7 @@ describe("AudioParameterImpl", () => {
                     { value: "square", label: "Square", midiValue: 90 },
                 ],
             };
-            const customImpl = new AudioParameterImpl(customParam);
+            const customImpl = new AudioParameterConverter(customParam);
 
             it("converts to MIDI (Custom)", () => {
                 expect(customImpl.toMidi("sine")).toBe(10);
