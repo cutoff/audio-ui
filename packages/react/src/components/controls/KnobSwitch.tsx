@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "../AdaptiveBox";
 import SvgKnob from "../svg/SvgKnob";
@@ -142,25 +142,50 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
         // Use Audio Param Hook
         const {
             normalizedValue,
-            adjustValue,
-            displayValue
+            setNormalizedValue,
+            displayValue,
+            converter
         } = useAudioParameter(effectiveValue, onChange, derivedParameter);
 
-        // Handle Wheel
+        // Create value-to-index map for O(1) lookups (performance optimization)
+        const valueToIndexMap = useMemo(() => {
+            const map = new Map<any, number>();
+            derivedParameter.options.forEach((opt, index) => {
+                map.set(opt.value, index);
+            });
+            return map;
+        }, [derivedParameter.options]);
+
+        // Track current value in ref for wheel handler (avoids stale closures)
+        const valueRef = useRef(effectiveValue);
+        valueRef.current = effectiveValue;
+
+        // Handle Wheel - discrete steps for enum parameters
         const handleWheel = useCallback(
             (e: WheelEvent) => {
                 if (onChange && !e.defaultPrevented) {
-                    // For Enums, we need enough sensitivity to jump steps
-                    // Step size in normalized space is 1 / (count - 1)
+                    e.preventDefault();
                     const count = derivedParameter.options.length;
-                    if (count > 1) {
-                        const stepSize = 1.01 / (count - 1); // Slightly larger to ensure jump
-                        // Positive deltaY increases value (Down = Increase)
-                        adjustValue(e.deltaY, stepSize * 0.01); // Scaling factor for wheel delta
+                    if (count <= 1) return;
+
+                    // Use O(1) lookup instead of O(n) findIndex
+                    const currentIndex = valueToIndexMap.get(valueRef.current) ?? -1;
+                    if (currentIndex === -1) return;
+                    
+                    // Determine direction: negative deltaY (scroll up) = decrease index, positive = increase
+                    const direction = e.deltaY < 0 ? -1 : 1;
+                    const newIndex = Math.max(0, Math.min(count - 1, currentIndex + direction));
+                    
+                    // Only update if index actually changed
+                    if (newIndex !== currentIndex && newIndex >= 0 && newIndex < count) {
+                        const newValue = derivedParameter.options[newIndex].value;
+                        // Convert the new value to normalized and set it
+                        const newNormalized = converter.normalize(newValue);
+                        setNormalizedValue(newNormalized);
                     }
                 }
             },
-            [onChange, adjustValue, derivedParameter.options.length]
+            [onChange, derivedParameter.options, valueToIndexMap, converter, setNormalizedValue]
         );
 
         // Memoize the classNames calculation
@@ -171,6 +196,29 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
         // Get the preferred width based on the size prop
         const { width: preferredWidth, height: preferredHeight } = knobSizeMap[size];
 
+        // Memoize content wrapper style to avoid object recreation on every render
+        const contentWrapperStyle = useMemo(() => ({
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "22px",
+            fontWeight: "500",
+            color: "var(--audioui-text-color)",
+            cursor: "inherit",
+        }), []);
+
+        // Create option lookup map for O(1) performance (avoids O(n) find on every render)
+        const optionByValueMap = useMemo(() => {
+            if (!renderOption) return null;
+            const map = new Map<any, { value: any; label: string }>();
+            derivedParameter.options.forEach(opt => {
+                map.set(opt.value, opt);
+            });
+            return map;
+        }, [renderOption, derivedParameter.options]);
+
         // Render Content
         const content = useMemo(() => {
             // 1. Visual Map (Children Mode)
@@ -178,15 +226,15 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
                 return visualMap.get(effectiveValue);
             }
 
-            // 2. Render Prop (Mode A)
-            if (renderOption) {
-                const opt = derivedParameter.options.find(o => o.value === effectiveValue);
+            // 2. Render Prop (Mode A) - use O(1) lookup
+            if (renderOption && optionByValueMap) {
+                const opt = optionByValueMap.get(effectiveValue);
                 if (opt) return renderOption(opt);
             }
 
             // 3. Default Text (from Hook)
             return displayValue;
-        }, [visualMap, effectiveValue, renderOption, derivedParameter.options, displayValue]);
+        }, [visualMap, effectiveValue, renderOption, optionByValueMap, displayValue]);
 
         const effectiveLabel = label ?? derivedParameter.name;
 
@@ -220,17 +268,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
                             roundness={resolvedRoundness ?? 12}
                             color={resolvedColor}
                         >
-                            <div style={{
-                                width: "100%",
-                                height: "100%",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                fontSize: "22px",
-                                fontWeight: "500",
-                                color: "var(--audioui-text-color)",
-                                cursor: "inherit",
-                            }}>
+                            <div style={contentWrapperStyle}>
                                 {content}
                             </div>
                         </SvgKnob>

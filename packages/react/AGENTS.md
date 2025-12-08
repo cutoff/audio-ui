@@ -51,6 +51,18 @@ Technical documentation is located in `docs/`:
 - Using color properties in components
 - Working with Keybed component (MIDI note positioning)
 
+## Component-Specific Notes
+
+### KnobSwitch (Enum Parameters)
+
+- **Icon Theming**: Uses inline SVG components with `fill="currentColor"` to inherit text color automatically. Library CSS applies `fill: currentColor` to all inline SVGs within knob content. Third-party icon libraries (e.g., react-icons) work seamlessly.
+- **Wheel Interaction**: Implements discrete step-by-step navigation (one option per wheel tick) using O(1) value-to-index Map lookups for performance. Uses `useRef` to track current value and avoid stale closures during rapid events.
+- **Performance Optimizations**:
+  - Value-to-index Map for O(1) lookups instead of O(n) array searches
+  - Option-by-value Map for O(1) content rendering lookups
+  - Memoized style objects to prevent object recreation
+  - `useRef` for event handlers to avoid stale closures
+
 ## Shared Conventions
 
 - `agents/react-conventions-2.0.md`: Components/hooks

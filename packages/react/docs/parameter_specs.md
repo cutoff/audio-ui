@@ -406,6 +406,12 @@ The component infers the `EnumParameter` from the children structure.
 3. Use `useAudioParameter` with the generated parameter.
 4. Render using visual map for content.
 
+**Wheel Interaction:**
+
+- Uses discrete step-by-step navigation (one option per wheel tick)
+- Performance optimized with O(1) value-to-index lookups using Map data structures
+- Prevents jumping between extremes by tracking current index and moving incrementally
+
 ### Unmapped Parameter (MIDI-only)
 
 For cases where the user just wants a raw MIDI control (e.g., a generic CC knob) without specific units or real-world values.

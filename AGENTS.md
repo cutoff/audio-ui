@@ -43,7 +43,7 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 | Dev Server          | Run `pnpm dev` at root for development; never in playground-app for testing                                                                                                                                                                   |
 | Theming             | CSS vars with `--audioui-*`; default adaptive (black light, white dark); utility classes `.audioui-*`; named themes blue etc.                                                                                                                 |
 | Components          | Function declarations; props with JSDoc; default params; SVG for graphics                                                                                                                                                                     |
-| Perf                | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveBox CSS-only)                                                                                                                                                                       |
+| Perf                | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveBox CSS-only); O(1) lookups for enum parameters; memoized styles/calculations; useRef for event handlers to avoid stale closures                                                    |
 | Library Exports     | From packages/react/src/index.ts                                                                                                                                                                                                              |
 | Demo Routing        | Next.js app router; app/[route]/page.tsx                                                                                                                                                                                                      |
 
@@ -123,6 +123,14 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - Provider: AudioUiProvider defaults color; useThemableProps fallback
 - **Comprehensive Documentation**: See `packages/react/docs/color-system.md` for complete color system architecture, and `apps/playground-react/docs/color-integration.md` for playground integration details
 - **Styling System Guidelines**: See `agents/audioui-styling-system.md` for complete styling conventions, naming patterns, constants usage, and Stylelint enforcement
+
+## Icon Theming Best Practices
+
+- **Use Inline SVGs with `currentColor`**: Icons should be provided as React components that render inline `<svg>` elements with `fill="currentColor"`. This allows icons to automatically inherit text color and adapt to light/dark mode.
+- **Library CSS Support**: The library's CSS automatically applies `fill: currentColor` to inline SVGs within knob content, ensuring proper color inheritance.
+- **Third-Party Icon Libraries**: Icon libraries like `react-icons` work seamlessly as they render inline SVGs that inherit `currentColor`.
+- **Avoid `<img>` Tags for Themed Icons**: External SVG files loaded via `<img>` tags cannot be themed with CSS. Use inline SVG components instead.
+- **Example Pattern**: See `apps/playground-react/components/wave-icons.tsx` for reference implementation of themed icon components.
 
 ## ESLint/Prettier
 
