@@ -129,6 +129,7 @@ function KnobComponent({
                 stretch={stretch}
                 label={label}
                 style={style}
+                className={className}
                 onClick={onClick}
                 onChange={onChange}
                 size={size}
