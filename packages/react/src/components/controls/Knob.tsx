@@ -126,6 +126,7 @@ function Knob({
 
     // Prepare the content to display inside the knob
     const knobContent = useMemo(() => {
+        // Handle images first
         if (React.isValidElement(children) && children.type === "img") {
             return (
                 <div
@@ -135,7 +136,6 @@ function Knob({
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        padding: "10px",
                         cursor: "inherit",
                     }}
                 >
@@ -148,15 +148,34 @@ function Knob({
                     } as React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>)}
                 </div>
             );
-        } else if (renderValue) {
-            const effectiveMin = parameterDef.min;
-            const effectiveMax = parameterDef.max;
-            return renderValue(value, effectiveMin, effectiveMax);
-        } else if (children) {
-            return children;
-        } else {
-            return displayValue;
         }
+
+        // Handle custom children or render props
+        if (children) {
+            return children;
+        }
+
+        // Determine text content: custom render prop or default display value
+        const textContent = renderValue
+            ? renderValue(value, parameterDef.min, parameterDef.max)
+            : displayValue;
+
+        // Default text rendering, now consistently applied
+        return (
+            <div style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "22px",
+                fontWeight: "500",
+                color: "var(--audioui-text-color)",
+                cursor: "inherit",
+            }}>
+                {textContent}
+            </div>
+        );
     }, [children, renderValue, value, parameterDef.min, parameterDef.max, displayValue]);
 
     const effectiveLabel = label ?? (parameter ? parameterDef.name : undefined);

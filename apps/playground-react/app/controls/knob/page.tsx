@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColorPickerField } from "@/components/ColorPickerField";
+import { SawWaveIcon, SineWaveIcon, SquareWaveIcon, TriangleWaveIcon } from "@/components/wave-icons";
 
 // Define a simple MIDI bipolar formatter function for the demo
 // This will be replaced by the library's midiBipolarFormatter when it's available
@@ -17,27 +18,18 @@ const midiBipolarFormatter = (value: number, min: number, max: number): string =
     return shiftedValue > 0 ? `+${shiftedValue}` : shiftedValue.toString();
 };
 
-const iconSineWave = "/sine-wave.svg";
-const iconTriangleWave = "/triangle-wave.svg";
-const iconSawWave = "/saw-wave.svg";
-const iconSquareWave = "/square-wave.svg";
-
 const sampleOptions = [
     <Option key={0} value={0}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={iconSineWave} alt="Sine" />
+        <SineWaveIcon />
     </Option>,
     <Option key={1} value={1}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={iconTriangleWave} alt="Triangle" />
+        <TriangleWaveIcon />
     </Option>,
     <Option key={2} value={2}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={iconSquareWave} alt="Saw" />
+        <SquareWaveIcon />
     </Option>,
     <Option key={3} value={3}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={iconSawWave} alt="Saw" />
+        <SawWaveIcon />
     </Option>,
     <Option key={4} value={4}>
         Oth
@@ -58,17 +50,13 @@ function generateCodeSnippet(
     color: string | undefined
 ): string {
     if (enableOptions) {
-        return `<Knob value={${value}} label='${label}'${color !== undefined ? ` color='${color}'` : ""}>
-    <Option value={0}>{/* eslint-disable-next-line @next/next/no-img-element */}
-    <img src={iconSineWave} alt="Sine" /></Option>
-    <Option value={1}>{/* eslint-disable-next-line @next/next/no-img-element */}
-    <img src={iconTriangleWave} alt="Triangle" /></Option>
-    <Option value={2}>{/* eslint-disable-next-line @next/next/no-img-element */}
-    <img src={iconSquareWave} alt="Square" /></Option>
-    <Option value={3}>{/* eslint-disable-next-line @next/next/no-img-element */}
-    <img src={iconSawWave} alt="Saw" /></Option>
+        return `<KnobSwitch value={${value}} label='${label}'${color !== undefined ? ` color='${color}'` : ""}>
+    <Option value={0}><SineWaveIcon /></Option>
+    <Option value={1}><TriangleWaveIcon /></Option>
+    <Option value={2}><SquareWaveIcon /></Option>
+    <Option value={3}><SawWaveIcon /></Option>
     <Option value={4}>Oth</Option>
-</Knob>
+</KnobSwitch>
 `;
     } else {
         let props = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}} thickness={${thickness}}`;

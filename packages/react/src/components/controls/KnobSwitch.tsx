@@ -175,18 +175,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
         const content = useMemo(() => {
             // 1. Visual Map (Children Mode)
             if (visualMap && visualMap.has(effectiveValue)) {
-                const node = visualMap.get(effectiveValue);
-                // If node is an image, wrap it
-                if (React.isValidElement(node) && node.type === "img") {
-                    return (
-                        <div style={{
-                            width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", padding: "10px"
-                        }}>
-                            {React.cloneElement(node, { style: { maxWidth: "100%", maxHeight: "100%" } } as any)}
-                        </div>
-                    );
-                }
-                return node;
+                return visualMap.get(effectiveValue);
             }
 
             // 2. Render Prop (Mode A)
@@ -232,8 +221,15 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
                             color={resolvedColor}
                         >
                             <div style={{
-                                width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center",
-                                fontSize: "22px", fontWeight: "500"
+                                width: "100%",
+                                height: "100%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontSize: "22px",
+                                fontWeight: "500",
+                                color: "var(--audioui-text-color)",
+                                cursor: "inherit",
                             }}>
                                 {content}
                             </div>

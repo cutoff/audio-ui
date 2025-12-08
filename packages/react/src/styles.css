@@ -24,6 +24,22 @@ svg foreignObject div {
     cursor: default;
 }
 
+/* Make inline SVGs in knob content inherit text color */
+/* This works for inline <svg> elements and SVG components from libraries like react-icons */
+svg foreignObject div svg {
+    fill: currentColor;
+    color: inherit;
+    /* Ensure SVG icons scale down to fit, creating a visual margin */
+    max-width: 75%;
+    max-height: 75%;
+}
+
+/* For icon components (like react-icons) that render SVGs, ensure they inherit color */
+svg foreignObject div > * svg {
+    fill: currentColor;
+    color: inherit;
+}
+
 .audioui {
     -webkit-user-select: none;
     user-select: none;
@@ -58,10 +74,24 @@ svg foreignObject div {
 }
 
 /* Prevent blur effect from affecting text elements */
-.audioui-highlight:hover text,
+.audioui-highlight:hover text {
+    filter: none;
+}
+
+/* Reset foreignObject filter on hover, but preserve img filters */
 .audioui-highlight:hover foreignObject {
     filter: none;
 }
+
+/* Ensure img filters are preserved even when foreignObject filter is reset on hover */
+.audioui-highlight:hover foreignObject div img {
+    filter: brightness(0);
+}
+
+.dark .audioui-highlight:hover foreignObject div img {
+    filter: none;
+}
+
 
 /* Base utility classes - only work if --audioui-primary-color is set by user */
 .audioui-stroke-primary {

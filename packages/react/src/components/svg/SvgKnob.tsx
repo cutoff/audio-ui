@@ -98,23 +98,8 @@ function SvgKnob({
 
             {/* Value Display */}
             {children && (
-                <foreignObject style={{ cursor: "inherit" }} x="20" y="22" width="60" height="60">
-                    <div
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: "22px",
-                            maxWidth: "100%",
-                            maxHeight: "100%",
-                            fontWeight: "500",
-                            cursor: "inherit",
-                        }}
-                    >
-                        {children}
-                    </div>
+                <foreignObject style={{ cursor: "inherit" }} x="20" y="20" width="60" height="60">
+                    {children}
                 </foreignObject>
             )}
         </g>
