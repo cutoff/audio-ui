@@ -31,9 +31,9 @@
         "components"
     ],
     "dependencies": {
-        "turbo": "^2.5.8"
+        "turbo": "^2.6.3"
     },
     "devDependencies": {
-        "prettier": "^3.4.2"
+        "prettier": "^3.7.4"
     }
 }
