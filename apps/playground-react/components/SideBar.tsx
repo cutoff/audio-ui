@@ -47,7 +47,10 @@ const examples: Page[] = [
 ];
 
 // List of layout pages
-const layoutPages: Page[] = [{ name: "Adaptive Box", path: "/layout/adaptive-box" }];
+const layoutPages: Page[] = [
+    { name: "Adaptive Box", path: "/layout/adaptive-box" },
+    { name: "Grid Layout", path: "/layout/grid-layout" },
+];
 
 // Theme color options
 const themeColorOptions: ThemeColor[] = [
