@@ -175,6 +175,8 @@ export default function StressTestPage() {
     const [animationSpeed, setAnimationSpeed] = useState(1);
     const [showKeybeds, setShowKeybeds] = useState(true);
     const [keybedCount, setKeybedCount] = useState(4);
+    const [showFps, setShowFps] = useState(false);
+    const [fps, setFps] = useState(0);
 
     // Control values state - using refs for performance during animation
     const [values, setValues] = useState<number[]>(() => new Array(controlCount).fill(50));
@@ -189,6 +191,10 @@ export default function StressTestPage() {
     // Animation frame reference
     const animationRef = useRef<number | null>(null);
     const startTimeRef = useRef<number>(performance.now());
+    
+    // FPS calculation refs
+    const frameCountRef = useRef(0);
+    const lastFpsUpdateRef = useRef(performance.now());
 
     // Memoized keybed configurations
     const keybedConfigs = useMemo(
@@ -252,6 +258,16 @@ export default function StressTestPage() {
         setValues(newValues);
         setButtonValues(newButtonValues);
         setKeybedNotes(newKeybedNotes);
+
+        // Calculate FPS
+        frameCountRef.current++;
+        const now = performance.now();
+        const elapsed = now - lastFpsUpdateRef.current;
+        if (elapsed >= 1000) {
+            setFps(Math.round((frameCountRef.current * 1000) / elapsed));
+            frameCountRef.current = 0;
+            lastFpsUpdateRef.current = now;
+        }
 
         animationRef.current = requestAnimationFrame(animate);
     }, [isAnimating, animationSpeed, controlConfigs, keybedConfigs]);
@@ -322,14 +338,24 @@ export default function StressTestPage() {
             <div className="mb-4 p-4 border rounded-lg bg-zinc-100 dark:bg-zinc-900">
                 <h2 className="text-lg font-medium mb-3">Configuration</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {/* Animation Toggle */}
-                    <div className="flex items-center justify-between gap-4">
-                        <Label htmlFor="animation-toggle">Animation</Label>
-                        <Switch
-                            id="animation-toggle"
-                            checked={isAnimating}
-                            onCheckedChange={setIsAnimating}
-                        />
+                    {/* Toggle Switches Row */}
+                    <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-2">
+                            <Label htmlFor="animation-toggle">Animation</Label>
+                            <Switch
+                                id="animation-toggle"
+                                checked={isAnimating}
+                                onCheckedChange={setIsAnimating}
+                            />
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Label htmlFor="fps-toggle">FPS</Label>
+                            <Switch
+                                id="fps-toggle"
+                                checked={showFps}
+                                onCheckedChange={setShowFps}
+                            />
+                        </div>
                     </div>
 
                     {/* Animation Speed */}
@@ -465,6 +491,16 @@ export default function StressTestPage() {
                     All components use CSS for layout and SVG for graphics.
                 </p>
             </div>
+
+            {/* FPS Display */}
+            {showFps && (
+                <div className="fixed bottom-4 right-4 bg-black/80 text-white px-3 py-2 rounded-lg font-mono text-sm shadow-lg">
+                    <span className={fps >= 50 ? "text-green-400" : fps >= 30 ? "text-yellow-400" : "text-red-400"}>
+                        {fps}
+                    </span>
+                    <span className="text-zinc-400 ml-1">FPS</span>
+                </div>
+            )}
         </div>
     );
 }
