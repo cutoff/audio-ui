@@ -157,7 +157,7 @@ function Button({
 
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {
-        return classNames(className, CLASSNAMES.root, onChange ? CLASSNAMES.highlight : "");
+        return classNames(className, CLASSNAMES.root, CLASSNAMES.container, onChange ? CLASSNAMES.highlight : "");
     }, [className, onChange]);
 
     // Get the preferred width based on the size prop
@@ -186,6 +186,30 @@ function Button({
                 onMouseUp={handleMouseUp}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
+                // Add keyboard accessibility
+                tabIndex={0}
+                role="button"
+                aria-pressed={value}
+                aria-label={effectiveLabel}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        if (onChange) {
+                            onChange(latch ? !value : true);
+                            if (!latch) {
+                                // Simulate release after delay or keyup? 
+                                // Standard button triggers on click (down+up).
+                                // For momentary, usually keydown=active, keyup=inactive
+                            }
+                        }
+                    }
+                }}
+                onKeyUp={(e) => {
+                    if (!latch && onChange && (e.key === "Enter" || e.key === " ")) {
+                        e.preventDefault();
+                        onChange(false);
+                    }
+                }}
             >
                 <SvgButton
                     normalizedValue={normalizedValue}

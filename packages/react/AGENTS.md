@@ -48,19 +48,66 @@ Technical documentation is located in `docs/`:
 
 - **`docs/Keybed-MiddleC-Positions.md`**: Specifications for middle C positions on physical MIDI keyboards. Documents standard layouts for common keyboard sizes (25-88 keys), MIDI note numbering conventions, visual representations, and transposition considerations.
 
+- **`docs/interaction-system.md`**: Complete interaction system architecture documentation. Covers the `useInteractiveControl` hook, interaction modes, sensitivity tuning, input methods (drag/touch, wheel, keyboard), focus management, accessibility, performance considerations, and component-specific behavior. **Essential reference for understanding how all interactive controls handle user input.**
+
 **Reference these docs when:**
 
 - Working with AdaptiveBox component (layout, sizing, alignment)
 - Implementing or modifying color theming
 - Using color properties in components
 - Working with Keybed component (MIDI note positioning)
+- **Implementing or modifying interactive controls (drag, wheel, keyboard interactions)**
+- **Tuning sensitivity or interaction behavior**
 
 ## Component-Specific Notes
+
+### Unified Interaction System (useInteractiveControl)
+
+**Comprehensive Documentation**: See `packages/react/docs/interaction-system.md` for complete interaction system architecture, design decisions, sensitivity tuning, and implementation details.
+
+**Quick Reference**:
+
+- **Hook Location**: `packages/react/src/hooks/useInteractiveControl.ts`
+- **Interaction Modes**: Controls support `interactionMode` ("drag" | "wheel" | "both") to restrict input methods.
+- **Sensitivity Tuning**: 
+  - Knob: `0.008` drag (increased for responsiveness)
+  - Slider: `0.005` drag (standard)
+  - KnobSwitch: `0.1` drag, `stepSize / 4` wheel (high sensitivity for enumerated steps)
+- **Mouse/Touch**:
+  - `user-select: none` applied during drag to prevent text selection.
+  - `preventDefault` on `onMouseDown` is AVOIDED to allow element focus (enabling keyboard support).
+  - Global window listeners attached only during active drag sessions (zero overhead when idle).
+- **Keyboard**:
+  - Standard focus management via `tabIndex={0}`.
+  - Arrow keys increment/decrement values (clamped at min/max).
+  - Home/End jump to min/max.
+  - `KnobSwitch`: Space key and Click cycle through options ("rotate" with wrap-around).
+  - `KnobSwitch`: Arrow keys step increment/decrement (clamped, no wrap).
+- **Wheel**:
+  - Native non-passive listeners are used in `AdaptiveBox.Svg` to reliably `preventDefault` and stop page scrolling.
+  - Direction: Positive `deltaY` (scrolling down/pulling) increases value, consistent with standard audio knob behavior.
+  - Default wheel sensitivity is `sensitivity / 4` to account for larger wheel deltas.
+- **Focus Styles**:
+  - Default browser ring disabled via `outline: none`.
+  - Custom highlight effect (brightness/contrast boost) applied via `:focus-visible` and `.audioui-highlight:focus-within`.
+  - All controls must include `.audioui-component-container` class for focus styles to work.
+- **Performance**:
+  - Uses `useRef` for mutable state to avoid stale closures.
+  - O(1) value-to-index Map lookups in KnobSwitch.
+  - Memoized event handlers with `useCallback`.
 
 ### KnobSwitch (Enum Parameters)
 
 - **Icon Theming**: Uses inline SVG components with `fill="currentColor"` to inherit text color automatically. Library CSS applies `fill: currentColor` to all inline SVGs within knob content. Third-party icon libraries (e.g., react-icons) work seamlessly.
-- **Wheel Interaction**: Implements discrete step-by-step navigation (one option per wheel tick) using O(1) value-to-index Map lookups for performance. Uses `useRef` to track current value and avoid stale closures during rapid events.
+- **Interaction Methods**:
+  - **Click**: Cycles to next value (same as Space key, wraps to first when reaching end)
+  - **Space Key**: Cycles to next value (wraps to first when reaching end)
+  - **Arrow Keys**: Step increment/decrement (clamped at min/max, no wrap)
+  - **Wheel**: Discrete step-by-step navigation (one option per wheel tick) using O(1) value-to-index Map lookups
+  - **Drag/Touch**: High sensitivity (0.1) for responsive enumerated step changes
+- **Sensitivity**: 
+  - Drag: `0.1` (much higher than continuous controls for responsive step changes)
+  - Wheel: `stepSize / 4` (ensures one wheel notch ≈ one step)
 - **Performance Optimizations**:
   - Value-to-index Map for O(1) lookups instead of O(n) array searches
   - Option-by-value Map for O(1) content rendering lookups

@@ -52,8 +52,21 @@ svg foreignObject div > * svg {
     max-height: 100%;
 }
 
+/* Accessibility Focus Styles */
 .audioui-component-container svg {
     height: auto;
+    outline: none; /* Remove default outline */
+}
+
+/* Only show focus ring when navigating via keyboard */
+.audioui-component-container svg:focus-visible {
+    /* Instead of a ring, use the highlight effect */
+    outline: none;
+    /* Apply the same filter boost as hover */
+    filter: brightness(1.15) contrast(1.05)
+        drop-shadow(
+            0 0 0.5em color-mix(in srgb, var(--audioui-primary-color, var(--audioui-text-color)) 35%, transparent)
+        );
 }
 
 .audioui-highlight {
@@ -63,7 +76,9 @@ svg foreignObject div > * svg {
     cursor: pointer;
 }
 
-.audioui-highlight:hover {
+/* Apply highlight on hover OR when focused (keyboard/click) */
+.audioui-highlight:hover,
+.audioui-highlight:focus-within {
     /* Optimized hover effect for edition mode */
     /* Brightness and contrast boost for better visibility */
     filter: brightness(1.15) contrast(1.05)
@@ -71,24 +86,29 @@ svg foreignObject div > * svg {
         drop-shadow(
             0 0 0.5em color-mix(in srgb, var(--audioui-primary-color, var(--audioui-text-color)) 35%, transparent)
         );
+    outline: none; /* Ensure no default ring */
 }
 
 /* Prevent blur effect from affecting text elements */
-.audioui-highlight:hover text {
+.audioui-highlight:hover text,
+.audioui-highlight:focus-within text {
     filter: none;
 }
 
 /* Reset foreignObject filter on hover, but preserve img filters */
-.audioui-highlight:hover foreignObject {
+.audioui-highlight:hover foreignObject,
+.audioui-highlight:focus-within foreignObject {
     filter: none;
 }
 
 /* Ensure img filters are preserved even when foreignObject filter is reset on hover */
-.audioui-highlight:hover foreignObject div img {
+.audioui-highlight:hover foreignObject div img,
+.audioui-highlight:focus-within foreignObject div img {
     filter: brightness(0);
 }
 
-.dark .audioui-highlight:hover foreignObject div img {
+.dark .audioui-highlight:hover foreignObject div img,
+.dark .audioui-highlight:focus-within foreignObject div img {
     filter: none;
 }
 

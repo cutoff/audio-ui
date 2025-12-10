@@ -50,11 +50,29 @@ export type AdaptativeSize = {
     stretch?: boolean;
 };
 
+/**
+ * Interaction modes for controls
+ */
+export type InteractionMode = "drag" | "wheel" | "both";
+
 export type InteractiveControl = {
     /** Handler for value changes
      * @param value The new value or a function to update the previous value
      */
     onChange?: (value: number | ((prev: number) => number)) => void;
+
+    /**
+     * Interaction mode: drag, wheel, or both.
+     * @default "both"
+     */
+    interactionMode?: InteractionMode;
+
+    /**
+     * Sensitivity of the control.
+     * Represents the amount of normalized value change per pixel (drag) or unit (wheel).
+     * @default Component-specific
+     */
+    sensitivity?: number;
 };
 
 export type ExplicitRange = {

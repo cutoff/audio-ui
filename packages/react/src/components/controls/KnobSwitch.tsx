@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "../primitives/AdaptiveBox";
 import SvgKnob from "../theme/SvgKnob";
@@ -10,6 +10,7 @@ import { useThemableProps } from "../theme/AudioUiProvider";
 import { CLASSNAMES } from "../../styles/classNames";
 import { EnumParameter } from "../../models/AudioParameter";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
+import { useInteractiveControl } from "../../hooks/useInteractiveControl";
 
 /**
  * Props for the option elements within KnobSwitch
@@ -72,6 +73,8 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
     parameter,
     renderOption,
     thickness = 12,
+    interactionMode,
+    sensitivity,
 }) => {
         // Use the themable props hook to resolve color and roundness with proper fallbacks
         const { resolvedColor, resolvedRoundness } = useThemableProps(
@@ -144,49 +147,36 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             normalizedValue,
             setNormalizedValue,
             displayValue,
+            adjustValue,
             converter
         } = useAudioParameter(effectiveValue, onChange, derivedParameter);
 
-        // Create value-to-index map for O(1) lookups (performance optimization)
-        const valueToIndexMap = useMemo(() => {
-            const map = new Map<any, number>();
-            derivedParameter.options.forEach((opt, index) => {
-                map.set(opt.value, index);
-            });
-            return map;
-        }, [derivedParameter.options]);
+        // Calculate step size for normalized range (0..1)
+        const stepSize = useMemo(() => {
+            const count = derivedParameter.options.length;
+            return count > 1 ? 1 / (count - 1) : 0;
+        }, [derivedParameter.options.length]);
 
-        // Track current value in ref for wheel handler (avoids stale closures)
-        const valueRef = useRef(effectiveValue);
-        valueRef.current = effectiveValue;
-
-        // Handle Wheel - discrete steps for enum parameters
-        const handleWheel = useCallback(
-            (e: WheelEvent) => {
-                if (onChange && !e.defaultPrevented) {
-                    e.preventDefault();
-                    const count = derivedParameter.options.length;
-                    if (count <= 1) return;
-
-                    // Use O(1) lookup instead of O(n) findIndex
-                    const currentIndex = valueToIndexMap.get(valueRef.current) ?? -1;
-                    if (currentIndex === -1) return;
-                    
-                    // Determine direction: negative deltaY (scroll up) = decrease index, positive = increase
-                    const direction = e.deltaY < 0 ? -1 : 1;
-                    const newIndex = Math.max(0, Math.min(count - 1, currentIndex + direction));
-                    
-                    // Only update if index actually changed
-                    if (newIndex !== currentIndex && newIndex >= 0 && newIndex < count) {
-                        const newValue = derivedParameter.options[newIndex].value;
-                        // Convert the new value to normalized and set it
-                        const newNormalized = converter.normalize(newValue);
-                        setNormalizedValue(newNormalized);
-                    }
-                }
-            },
-            [onChange, derivedParameter.options, valueToIndexMap, converter, setNormalizedValue]
-        );
+        // Use interactive control hook
+        const interactiveProps = useInteractiveControl({
+            adjustValue,
+            interactionMode: interactionMode ?? "both",
+            direction: "vertical",
+            // For enumerations, drag sensitivity needs to be higher to feel responsive,
+            // otherwise you have to drag extremely far to change one step.
+            // 0.05 was still too low. Increasing to 0.1 (approx 10px per step if step is 1/N).
+            sensitivity: sensitivity ?? 0.1,
+            // Wheel sensitivity: 1 notch (100 delta) = 1 step
+            // We want 1 notch (delta ~100) to equal exactly one step (stepSize).
+            // adjustValue does: delta * sensitivity.
+            // We want 100 * sensitivity = stepSize.
+            // So sensitivity = stepSize / 100.
+            // If it's "too hard", it means we need MORE change per delta.
+            // So we need HIGHER sensitivity.
+            // Previous was stepSize / 20. Increasing to stepSize / 5.
+            // This means 5 delta (very tiny scroll) triggers step.
+            wheelSensitivity: stepSize > 0 ? stepSize / 4 : 0
+        });
 
         // Memoize the classNames calculation
         const componentClassNames = useMemo(() => {
@@ -238,12 +228,89 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
 
         const effectiveLabel = label ?? derivedParameter.name;
 
+        // Common cycle logic for Space key and Click
+        const cycleNext = () => {
+            const count = derivedParameter.options.length;
+            if (count <= 1) return;
+            
+            // Find current index
+            const currentIdx = derivedParameter.options.findIndex(opt => opt.value === effectiveValue);
+            if (currentIdx === -1) return;
+            
+            const nextIdx = (currentIdx + 1) % count;
+            const nextVal = derivedParameter.options[nextIdx].value;
+            const nextNorm = converter.normalize(nextVal);
+            setNormalizedValue(nextNorm);
+        };
+
+        // Merge event handlers
+        const handleMouseDown = (e: React.MouseEvent) => {
+            interactiveProps.onMouseDown(e);
+            onMouseDown?.(e);
+        };
+
+        // Handle Click for rotation
+        const handleClick = (e: React.MouseEvent<SVGSVGElement>) => {
+            if (interactionMode === "wheel") return; // Drag disabled usually means no mouse interaction?
+            // Actually, if we allow click to rotate, it should probably work regardless of drag/wheel mode,
+            // or perhaps only if not dragging?
+            // The issue is distinguishing a click from a drag.
+            // If the user drags, we don't want to trigger a cycle on mouse up (click).
+            // Usually 'click' fires after mouseup if no move happened.
+            // Let's assume standard click behavior.
+            
+            // Note: If onClick prop is provided, we should probably call it too?
+            // The props say `onClick?: React.MouseEventHandler;`
+            onClick?.(e as unknown as React.MouseEvent);
+            if (!e.defaultPrevented) {
+                cycleNext();
+            }
+        };
+
+        // Custom keyboard handler for Space cycling and Arrow keys stepping
+        const handleKeyDown = (e: React.KeyboardEvent) => {
+            if (e.key === " ") {
+                e.preventDefault();
+                cycleNext();
+            } else if (e.key === "ArrowUp" || e.key === "ArrowRight") {
+                e.preventDefault();
+                // Explicitly handle increment to ensure step change
+                const count = derivedParameter.options.length;
+                if (count <= 1) return;
+                
+                const currentIdx = derivedParameter.options.findIndex(opt => opt.value === effectiveValue);
+                if (currentIdx === -1) return;
+                
+                if (currentIdx < count - 1) {
+                    const nextVal = derivedParameter.options[currentIdx + 1].value;
+                    setNormalizedValue(converter.normalize(nextVal));
+                }
+            } else if (e.key === "ArrowDown" || e.key === "ArrowLeft") {
+                e.preventDefault();
+                // Explicitly handle decrement
+                const count = derivedParameter.options.length;
+                if (count <= 1) return;
+                
+                const currentIdx = derivedParameter.options.findIndex(opt => opt.value === effectiveValue);
+                if (currentIdx === -1) return;
+                
+                if (currentIdx > 0) {
+                    const nextVal = derivedParameter.options[currentIdx - 1].value;
+                    setNormalizedValue(converter.normalize(nextVal));
+                }
+            } else {
+                // Delegate other keys (Home/End) to the standard handler
+                interactiveProps.onKeyDown(e);
+            }
+        };
+
         return (
             <AdaptiveBox
                 displayMode="scaleToFit"
                 className={componentClassNames}
                 style={{
                     ...(style ?? {}),
+                    ...(interactiveProps.style ?? {}),
                     ...(stretch ? {} : { width: `${preferredWidth}px`, height: `${preferredHeight}px` }),
                 }}
                 labelHeightUnits={20}
@@ -254,12 +321,19 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
                     <AdaptiveBox.Svg
                         viewBoxWidth={SvgKnob.viewBox.width}
                         viewBoxHeight={SvgKnob.viewBox.height}
-                        onWheel={handleWheel}
-                        onClick={onClick}
-                        onMouseDown={onMouseDown}
+                        onWheel={interactiveProps.onWheel}
+                        onClick={handleClick}
+                        onMouseDown={handleMouseDown}
+                        onTouchStart={interactiveProps.onTouchStart}
+                        onKeyDown={handleKeyDown}
                         onMouseUp={onMouseUp}
                         onMouseEnter={onMouseEnter}
                         onMouseLeave={onMouseLeave}
+                        tabIndex={interactiveProps.tabIndex}
+                        role={interactiveProps.role}
+                        aria-valuenow={typeof effectiveValue === 'number' ? effectiveValue : undefined}
+                        aria-valuetext={displayValue}
+                        aria-label={effectiveLabel}
                     >
                         <SvgKnob
                             normalizedValue={normalizedValue}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 import "../../styles.css";
 import { CLASSNAMES } from "../../styles/classNames";
@@ -11,6 +11,7 @@ import AdaptiveBox from "../primitives/AdaptiveBox";
 import SvgKnob from "../theme/SvgKnob";
 import { AudioParameterFactory, ContinuousParameter } from "../../models/AudioParameter";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
+import { useInteractiveControl } from "../../hooks/useInteractiveControl";
 
 /**
  * Props for the Knob component
@@ -58,6 +59,8 @@ function Knob({
     onMouseLeave,
     color,
     parameter,
+    interactionMode,
+    sensitivity,
 }: KnobProps) {
     // Use the themable props hook to resolve color and roundness with proper fallbacks
     const { resolvedColor, resolvedRoundness } = useThemableProps(
@@ -85,16 +88,6 @@ function Knob({
         });
     }, [parameter, label, min, max, step, bipolar]);
 
-    // Calculate sensitivity for intuitive control response
-    // Normalized Delta = Raw Delta * Sensitivity
-    // Real Value Delta = Normalized Delta * Range
-    // Target: Real Value Delta = Raw Delta (1:1 mapping)
-    // Therefore: Sensitivity = 1 / Range
-    const sensitivity = useMemo(() => {
-        const range = parameterDef.max - parameterDef.min;
-        return range > 0 ? 1 / range : 0.001;
-    }, [parameterDef.max, parameterDef.min]);
-
     // Use the hook to handle all math
     const {
         normalizedValue,
@@ -102,19 +95,13 @@ function Knob({
         adjustValue
     } = useAudioParameter(value, onChange, parameterDef);
 
-    /**
-     * Wheel event handler that adjusts the knob value
-     */
-    const handleWheel = useCallback(
-        (e: WheelEvent) => {
-            if (onChange && !e.defaultPrevented) {
-                // Positive deltaY increases value (Down = Increase)
-                // Sensitivity ensures 1:1 mapping between wheel delta and value change
-                adjustValue(e.deltaY, sensitivity);
-            }
-        },
-        [onChange, adjustValue, sensitivity]
-    );
+    // Use the interactive control hook for unified event handling
+    const interactiveProps = useInteractiveControl({
+        adjustValue,
+        interactionMode: interactionMode ?? "both",
+        direction: "vertical",
+        sensitivity: sensitivity ?? 0.008, // Increased default sensitivity (was 0.005)
+    });
 
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {
@@ -180,12 +167,19 @@ function Knob({
 
     const effectiveLabel = label ?? (parameter ? parameterDef.name : undefined);
 
+    // Merge event handlers
+    const handleMouseDown = (e: React.MouseEvent) => {
+        interactiveProps.onMouseDown(e);
+        onMouseDown?.(e);
+    };
+
     return (
         <AdaptiveBox
             displayMode="scaleToFit"
             className={componentClassNames}
             style={{
                 ...(style ?? {}),
+                ...(interactiveProps.style ?? {}),
                 ...(stretch ? {} : { width: `${preferredWidth}px`, height: `${preferredHeight}px` }),
             }}
             labelHeightUnits={20}
@@ -196,12 +190,20 @@ function Knob({
                 <AdaptiveBox.Svg
                     viewBoxWidth={SvgKnob.viewBox.width}
                     viewBoxHeight={SvgKnob.viewBox.height}
-                    onWheel={handleWheel}
+                    onWheel={interactiveProps.onWheel}
                     onClick={onClick}
-                    onMouseDown={onMouseDown}
+                    onMouseDown={handleMouseDown}
+                    onTouchStart={interactiveProps.onTouchStart}
+                    onKeyDown={interactiveProps.onKeyDown}
                     onMouseUp={onMouseUp}
                     onMouseEnter={onMouseEnter}
                     onMouseLeave={onMouseLeave}
+                    tabIndex={interactiveProps.tabIndex}
+                    role={interactiveProps.role}
+                    aria-valuenow={value}
+                    aria-valuemin={parameterDef.min}
+                    aria-valuemax={parameterDef.max}
+                    aria-label={effectiveLabel}
                 >
                     <SvgKnob
                         normalizedValue={normalizedValue}

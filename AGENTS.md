@@ -33,6 +33,7 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 
 | Category            | Rule/Details                                                                                                                                                                                                                                  |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Git Operations      | **Do NOT commit changes automatically.** Always ask for user confirmation before running `git commit`, `git merge`, `git reset`, or modifying git history.                                                                                    |
 | Performance Mandate | **Critical Priority.** Audio apps have heavy runtime constraints (e.g., avoiding UI stutters, ensuring low-latency response). Prioritize performance in all decisions: minimal re-renders, no JS for layout/sizing, efficient event handling. |
 | React               | React 18 only; library as peer deps (`^18.2.0`), demo as direct (`^18.3.1`); never upgrade to 19                                                                                                                                              |
 | TypeScript          | Strict mode; handle all errors; prefix unused params with \_; `@types/react:^18.3.23`                                                                                                                                                         |
@@ -43,7 +44,7 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 | Dev Server          | Run `pnpm dev` at root for development; never in playground-app for testing                                                                                                                                                                   |
 | Theming             | CSS vars with `--audioui-*`; default adaptive (black light, white dark); utility classes `.audioui-*`; named themes blue etc.                                                                                                                 |
 | Components          | Function declarations; props with JSDoc; default params; SVG for graphics                                                                                                                                                                     |
-| Perf                | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveBox CSS-only); O(1) lookups for enum parameters; memoized styles/calculations; useRef for event handlers to avoid stale closures                                                    |
+| Perf                | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveBox CSS-only); O(1) lookups for enum parameters; memoized styles/calculations; useRef for event handlers to avoid stale closures; lazy global event listeners (only during drag)    |
 | Library Exports     | From packages/react/src/index.ts                                                                                                                                                                                                              |
 | Demo Routing        | Next.js app router; app/[route]/page.tsx                                                                                                                                                                                                      |
 
@@ -116,6 +117,27 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - Features: container query cqw/cqh; scaler calc; two-row grid; align start/center/end; label modes visible/hidden/none; overlay sibling
 - See packages/react/docs/adaptive-box-layout.md for complete specification
 - React 18 compatible
+- **Wheel Event Handling**: Uses native non-passive event listeners (not React synthetic events) to reliably prevent page scrolling during wheel interactions
+
+## Interactive Controls System
+
+- **Unified Interaction Hook**: All interactive controls (Knob, Slider, KnobSwitch, Button) use `useInteractiveControl` hook for consistent behavior
+- **Input Methods**: Supports drag (mouse/touch), wheel, and keyboard interactions
+- **Interaction Modes**: Configurable via `interactionMode` prop ("drag" | "wheel" | "both")
+- **Sensitivity Tuning**: Component-specific defaults tuned for optimal feel (Knob: 0.008, Slider: 0.005, KnobSwitch: 0.1 drag, stepSize/5 wheel)
+- **Focus Management**:
+  - Custom highlight effect (brightness/contrast boost + shadow) replaces browser ring
+  - Applied via `:focus-visible` (keyboard) and `:focus-within` (click/touch)
+  - Elements receive focus naturally (no `preventDefault` on mousedown)
+- **Text Selection**: Prevented during drag via `user-select: none`
+- **Wheel Propagation**: Native non-passive listeners prevent page scrolling
+- **Keyboard Support**:
+  - Arrow keys (step/increment)
+  - Home/End (min/max)
+  - Space/Enter (Button activate, KnobSwitch cycle)
+- **KnobSwitch Special**: Supports click-to-cycle and Space-to-cycle with wrap-around
+- **Performance**: Lazy global event listeners (only during drag), refs for mutable state, O(1) lookups for enums
+- **Comprehensive Documentation**: See `packages/react/docs/interaction-system.md` for complete architecture, design decisions, and implementation details
 
 ## Theme System
 
@@ -175,8 +197,9 @@ Agents docs are living documentation; update continuously for agent efficiency. 
 - `./agents/audioui-licensing-strategy.md`: Outlines the dual-licensing model and legal framework.
 - `./agents/audioui-versioning-guidelines.md`: Details the SemVer-based versioning strategy, including developer preview conventions.
 - `./agents/audioui-styling-system.md`: Comprehensive styling system guidelines covering namespace isolation, naming conventions, constants usage, Stylelint enforcement, and best practices.
-- `./packages/react/AGENTS.md`: Library specifics (exports, build, env); created.
-- `./apps/playground-react/AGENTS.md`: Playground app details (routing, integrations, env); created.
+- `./packages/react/AGENTS.md`: Library specifics (exports, build, env, interaction system).
+- `./apps/playground-react/AGENTS.md`: Playground app details (routing, integrations, env).
+- `./packages/react/docs/interaction-system.md`: Complete interaction system architecture, design decisions, sensitivity tuning, and implementation details for all interactive controls.
 
 ## Documentation Files
 

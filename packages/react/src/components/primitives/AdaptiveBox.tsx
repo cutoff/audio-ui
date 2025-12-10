@@ -209,12 +209,22 @@ export interface AdaptiveBoxSvgProps extends PropsWithChildren {
     className?: string;
     style?: CSSProperties;
     // Event handlers (use native WheelEvent as requested)
-    onWheel?: (e: WheelEvent) => void;
+    onWheel?: (e: React.WheelEvent<SVGSVGElement>) => void;
     onClick?: React.MouseEventHandler<SVGSVGElement>;
     onMouseDown?: React.MouseEventHandler<SVGSVGElement>;
     onMouseUp?: React.MouseEventHandler<SVGSVGElement>;
     onMouseEnter?: React.MouseEventHandler<SVGSVGElement>;
     onMouseLeave?: React.MouseEventHandler<SVGSVGElement>;
+    onTouchStart?: React.TouchEventHandler<SVGSVGElement>;
+    onKeyDown?: React.KeyboardEventHandler<SVGSVGElement>;
+    tabIndex?: number;
+    role?: string;
+    "aria-valuenow"?: number;
+    "aria-valuemin"?: number;
+    "aria-valuemax"?: number;
+    "aria-label"?: string;
+    "aria-valuetext"?: string;
+    "aria-orientation"?: "horizontal" | "vertical";
 }
 
 function Svg({
@@ -239,19 +249,18 @@ function Svg({
     const svgRef = useRef<SVGSVGElement>(null);
 
     // Wheel handler per requirements: use native event listener with passive: false
+    // React's onWheel prop is passive by default in some contexts or doesn't guarantee non-passive.
+    // To ensure we can prevent scrolling (especially in Safari/Mobile), we must use a native non-passive listener.
     useEffect(() => {
         if (!svgRef.current || !onWheel) return;
 
         const element = svgRef.current;
+        // Need to cast or wrap because the prop expects React event but addEventListener provides Native event
         const wheelHandler = (e: WheelEvent) => {
-            // Call the user's handler
-            onWheel(e);
-
-            // Only prevent/default & stop propagation if not already prevented
-            if (!e.defaultPrevented) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
+            // We need to pass a React-like event to the handler because our hook expects it.
+            // Fortunately, React.WheelEvent is structurally compatible enough for our simple usage (deltaY, preventDefault)
+            // or we can cast it.
+            onWheel(e as unknown as React.WheelEvent<SVGSVGElement>);
         };
 
         element.addEventListener("wheel", wheelHandler, { passive: false });
@@ -279,6 +288,7 @@ function Svg({
                 gridRow: svgGridRow,
                 ...(style ?? {}),
             }}
+            // Remove onWheel prop here to avoid double firing/conflict with native listener
             {...rest}
         >
             {children}

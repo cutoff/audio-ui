@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 import { BipolarControl, ExplicitRange } from "../types";
 import { sliderSizeMap } from "../utils/sizeMappings";
@@ -10,6 +10,7 @@ import SvgSlider from "../theme/SvgSlider";
 import { CLASSNAMES } from "../../styles/classNames";
 import { AudioParameterFactory, ContinuousParameter } from "../../models/AudioParameter";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
+import { useInteractiveControl } from "../../hooks/useInteractiveControl";
 
 /**
  * Props for the Slider component
@@ -29,7 +30,6 @@ export type SliderProps = BipolarControl &
         parameter?: ContinuousParameter;
     };
 
-// @ts-ignore
 /**
  * A vertical slider component for audio applications.
  * ...
@@ -57,6 +57,8 @@ const Slider = ({
     onMouseLeave,
     color,
     parameter,
+    interactionMode,
+    sensitivity,
 }: SliderProps) => {
     // Use the themable props hook to resolve color and roundness with proper fallbacks
     const { resolvedColor, resolvedRoundness } = useThemableProps(
@@ -84,34 +86,23 @@ const Slider = ({
         });
     }, [parameter, label, min, max, step, bipolar]);
 
-    // Calculate sensitivity for intuitive control response (1:1 mapping between wheel delta and value change)
-    const sensitivity = useMemo(() => {
-        const range = paramConfig.max - paramConfig.min;
-        return range > 0 ? 1 / range : 0.001;
-    }, [paramConfig.max, paramConfig.min]);
-
     // Use the hook to handle all math
     const {
         normalizedValue,
         adjustValue
     } = useAudioParameter(value, onChange, paramConfig);
 
-    /**
-     * Wheel event handler that adjusts the slider value
-     */
-    const handleWheel = useCallback(
-        (e: WheelEvent) => {
-            if (onChange && !e.defaultPrevented) {
-                // Positive deltaY increases value (Down = Increase)
-                adjustValue(e.deltaY, sensitivity);
-            }
-        },
-        [onChange, adjustValue, sensitivity]
-    );
+    // Use the interactive control hook for unified event handling
+    const interactiveProps = useInteractiveControl({
+        adjustValue,
+        interactionMode: interactionMode ?? "both",
+        direction: orientation,
+        sensitivity,
+    });
 
     // Memoize the classNames calculation
     const componentClassNames = useMemo(() => {
-        return classNames(className, CLASSNAMES.root, onChange ? CLASSNAMES.highlight : "");
+        return classNames(className, CLASSNAMES.root, CLASSNAMES.container, onChange ? CLASSNAMES.highlight : "");
     }, [className, onChange]);
 
     // Get the preferred dimensions based on the size prop and orientation
@@ -130,12 +121,19 @@ const Slider = ({
     // Determine label to display
     const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
 
+    // Merge event handlers
+    const handleMouseDown = (e: React.MouseEvent) => {
+        interactiveProps.onMouseDown(e);
+        onMouseDown?.(e);
+    };
+
     return (
         <AdaptiveBox
             displayMode="scaleToFit"
             className={componentClassNames}
             style={{
                 ...(style ?? {}),
+                ...(interactiveProps.style ?? {}),
                 ...(stretch ? {} : { width: `${preferredWidth}px`, height: `${preferredHeight}px` }),
             }}
             labelHeightUnits={labelHeightUnits}
@@ -145,12 +143,21 @@ const Slider = ({
             <AdaptiveBox.Svg
                 viewBoxWidth={viewBoxWidth}
                 viewBoxHeight={viewBoxHeight}
-                onWheel={handleWheel}
+                onWheel={interactiveProps.onWheel}
                 onClick={onClick}
-                onMouseDown={onMouseDown}
+                onMouseDown={handleMouseDown}
+                onTouchStart={interactiveProps.onTouchStart}
+                onKeyDown={interactiveProps.onKeyDown}
                 onMouseUp={onMouseUp}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
+                tabIndex={interactiveProps.tabIndex}
+                role={interactiveProps.role}
+                aria-valuenow={value}
+                aria-valuemin={paramConfig.min}
+                aria-valuemax={paramConfig.max}
+                aria-label={effectiveLabel}
+                aria-orientation={orientation}
             >
                 <SvgSlider
                     normalizedValue={normalizedValue}
