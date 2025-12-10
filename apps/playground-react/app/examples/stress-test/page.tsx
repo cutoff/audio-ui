@@ -175,7 +175,7 @@ export default function StressTestPage() {
     const [animationSpeed, setAnimationSpeed] = useState(1);
     const [showKeybeds, setShowKeybeds] = useState(true);
     const [keybedCount, setKeybedCount] = useState(4);
-    const [showFps, setShowFps] = useState(false);
+    const [showFps, setShowFps] = useState(true);
     const [fps, setFps] = useState(0);
 
     // Control values state - using refs for performance during animation
@@ -494,7 +494,7 @@ export default function StressTestPage() {
 
             {/* FPS Display */}
             {showFps && (
-                <div className="fixed bottom-4 right-4 bg-black/80 text-white px-3 py-2 rounded-lg font-mono text-sm shadow-lg">
+                <div className="fixed bottom-4 right-4 bg-black/80 text-white px-4 py-3 rounded-lg font-mono text-base shadow-lg">
                     <span className={fps >= 50 ? "text-green-400" : fps >= 30 ? "text-yellow-400" : "text-red-400"}>
                         {fps}
                     </span>
