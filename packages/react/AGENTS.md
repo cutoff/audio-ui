@@ -14,6 +14,10 @@
 ## Key File Structure
 
 - `src/components/`: Component .tsx with .test.tsx
+  - `controls/`: Interactive controls (Button, Knob, Slider, KnobSwitch)
+  - `primitives/`: Base components for building final components, excluding theme-specific (AdaptiveBox, Option)
+  - `theme/`: Default theme system (AudioUiProvider, default SVG components: SvgButton, SvgKnob, SvgSlider)
+  - `Keybed.tsx`: Keyboard component
 - `src/index.ts`: Export all components, types, utilities, and theme colors
 - `src/themes.css`: Theme CSS variables (primary colors only; variants computed by components, all prefixed `--audioui-*`)
 - `src/styles.css`: Base styles, utility classes, imports themes.css

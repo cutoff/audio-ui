@@ -2,13 +2,13 @@
 
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import classNames from "classnames";
-import AdaptiveBox from "../AdaptiveBox";
+import AdaptiveBox from "../primitives/AdaptiveBox";
 import "../../styles.css";
 import { CLASSNAMES } from "../../styles/classNames";
 import { Control } from "../types";
 import { buttonSizeMap } from "../utils/sizeMappings";
-import { useThemableProps } from "../providers/AudioUiProvider";
-import SvgButton from "../svg/SvgButton";
+import { useThemableProps } from "../theme/AudioUiProvider";
+import SvgButton from "../theme/SvgButton";
 import { BooleanParameter } from "../../models/AudioParameter";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
 

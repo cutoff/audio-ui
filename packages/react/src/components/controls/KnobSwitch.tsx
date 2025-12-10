@@ -2,11 +2,11 @@
 
 import React, { useCallback, useMemo, useRef } from "react";
 import classNames from "classnames";
-import AdaptiveBox from "../AdaptiveBox";
-import SvgKnob from "../svg/SvgKnob";
+import AdaptiveBox from "../primitives/AdaptiveBox";
+import SvgKnob from "../theme/SvgKnob";
 import { AdaptativeSize, Base, InteractiveControl, Themable } from "../types";
 import { knobSizeMap } from "../utils/sizeMappings";
-import { useThemableProps } from "../providers/AudioUiProvider";
+import { useThemableProps } from "../theme/AudioUiProvider";
 import { CLASSNAMES } from "../../styles/classNames";
 import { EnumParameter } from "../../models/AudioParameter";
 import { useAudioParameter } from "../../hooks/useAudioParameter";

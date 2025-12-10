@@ -66,6 +66,9 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 ## Project Structure
 
 - `packages/react/`: Component library; src/, dist/; Vite build; React 18 peer
+  - `src/components/primitives/`: Base components for building final components (AdaptiveBox, Option) - excludes theme-specific
+  - `src/components/theme/`: Default theme system (AudioUiProvider, default SVG components)
+  - `src/components/controls/`: Interactive controls built from primitives and theme components
 - `apps/playground-react/`: Next.js playground; showcases components; app/components for pages (inferred)
 - `agents/`: Shared conventions (coding-conventions-2.0.md, typescript-guidelines-2.0.md, react-conventions-2.0.md, documentation-standards-2.0.md)
 - `packages/react/docs/`: Specialized tech docs (e.g., adaptive-box-layout.md)

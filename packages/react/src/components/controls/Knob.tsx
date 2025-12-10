@@ -6,9 +6,9 @@ import "../../styles.css";
 import { CLASSNAMES } from "../../styles/classNames";
 import { BipolarControl, ExplicitRange } from "../types";
 import { knobSizeMap } from "../utils/sizeMappings";
-import { useThemableProps } from "../providers/AudioUiProvider";
-import AdaptiveBox from "../AdaptiveBox";
-import SvgKnob from "../svg/SvgKnob";
+import { useThemableProps } from "../theme/AudioUiProvider";
+import AdaptiveBox from "../primitives/AdaptiveBox";
+import SvgKnob from "../theme/SvgKnob";
 import { AudioParameterFactory, ContinuousParameter } from "../../models/AudioParameter";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
 

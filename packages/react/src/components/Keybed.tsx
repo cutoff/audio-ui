@@ -2,7 +2,7 @@
 
 import React, { useMemo, useCallback } from "react";
 import classNames from "classnames";
-import AdaptiveBox from "./AdaptiveBox";
+import AdaptiveBox from "./primitives/AdaptiveBox";
 import { AdaptativeSize, Base, Themable } from "./types";
 import { keybedSizeMap } from "./utils/sizeMappings";
 import { generateColorVariants } from "./utils/colorUtils";
@@ -17,7 +17,7 @@ import {
 } from "./utils/noteUtils";
 import "../styles.css";
 import { CLASSNAMES } from "../styles/classNames";
-import { useThemableProps } from "./providers/AudioUiProvider";
+import { useThemableProps } from "./theme/AudioUiProvider";
 
 /**
  * Type definition for note names (C to B)

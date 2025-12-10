@@ -32,11 +32,9 @@ packages/react/
 ├── src/
 │   ├── components/      # React components
 │   │   ├── controls/    # Interactive controls (Button, Knob, Slider, etc.)
-│   │   ├── svg/         # Low-level SVG primitives shared by controls
-│   │   ├── providers/   # Context providers (AudioUiProvider)
-│   │   ├── AdaptiveBox.tsx  # Layout wrapper used by SVG controls + labels
-│   │   ├── Option.tsx       # Primitive option wrapper consumed by controls
-│   │   └── Keybed.tsx       # Keyboard component composed of SVG primitives
+│   │   ├── primitives/  # Base components for building final components (AdaptiveBox, Option)
+│   │   ├── theme/       # Default theme system (AudioUiProvider, default SVG components)
+│   │   └── Keybed.tsx   # Keyboard component composed of SVG primitives
 │   ├── styles/          # Style constants and utilities
 │   ├── index.ts         # Main exports
 │   ├── styles.css       # Component styles
