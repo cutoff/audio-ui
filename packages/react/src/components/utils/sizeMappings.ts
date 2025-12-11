@@ -1,91 +1,111 @@
 import { SizeType } from "../types";
 
 /**
- * Maps size values to dimensions for the Knob component
+ * Maps size values to CSS class names for square components (Button, Knob, KnobSwitch)
  */
-export const knobSizeMap: Record<SizeType, { width: number; height: number }> = {
-    xsmall: { width: 50, height: 50 },
-    small: { width: 65, height: 65 },
-    normal: { width: 75, height: 75 },
-    large: { width: 90, height: 90 },
-    xlarge: { width: 110, height: 110 },
+export const squareSizeClassMap: Record<SizeType, string> = {
+    xsmall: "audioui-size-square-xsmall",
+    small: "audioui-size-square-small",
+    normal: "audioui-size-square-normal",
+    large: "audioui-size-square-large",
+    xlarge: "audioui-size-square-xlarge",
 };
 
 /**
- * Maps size values to dimensions for the Button component
+ * Maps size values to CSS class names for horizontal slider
  */
-export const buttonSizeMap: Record<SizeType, { width: number; height: number }> = {
-    xsmall: { width: 30, height: 30 },
-    small: { width: 40, height: 40 },
-    normal: { width: 50, height: 50 },
-    large: { width: 60, height: 60 },
-    xlarge: { width: 75, height: 75 },
+export const horizontalSliderSizeClassMap: Record<SizeType, string> = {
+    xsmall: "audioui-size-hslider-xsmall",
+    small: "audioui-size-hslider-small",
+    normal: "audioui-size-hslider-normal",
+    large: "audioui-size-hslider-large",
+    xlarge: "audioui-size-hslider-xlarge",
 };
 
 /**
- * Maps size values to dimensions for the Keybed component
+ * Maps size values to CSS class names for vertical slider
  */
-export const keybedSizeMap: Record<SizeType, { width: number; height: number }> = {
-    xsmall: { width: 320, height: 80 },
-    small: { width: 460, height: 115 },
-    normal: { width: 640, height: 160 },
-    large: { width: 800, height: 200 },
-    xlarge: { width: 900, height: 225 },
+export const verticalSliderSizeClassMap: Record<SizeType, string> = {
+    xsmall: "audioui-size-vslider-xsmall",
+    small: "audioui-size-vslider-small",
+    normal: "audioui-size-vslider-normal",
+    large: "audioui-size-vslider-large",
+    xlarge: "audioui-size-vslider-xlarge",
 };
 
 /**
- * Maps size values to dimensions for the Slider component
+ * Maps size values to CSS class names for keybed
  */
-export const sliderSizeMap: Record<
-    SizeType,
-    {
-        vertical: { width: number; height: number };
-        horizontal: { width: number; height: number };
-    }
-> = {
-    xsmall: {
-        vertical: { width: 25, height: 100 },
-        horizontal: { width: 100, height: 25 },
-    },
-    small: {
-        vertical: { width: 30, height: 130 },
-        horizontal: { width: 130, height: 30 },
-    },
-    normal: {
-        vertical: { width: 40, height: 160 },
-        horizontal: { width: 160, height: 40 },
-    },
-    large: {
-        vertical: { width: 50, height: 200 },
-        horizontal: { width: 200, height: 50 },
-    },
-    xlarge: {
-        vertical: { width: 60, height: 240 },
-        horizontal: { width: 240, height: 60 },
-    },
+export const keybedSizeClassMap: Record<SizeType, string> = {
+    xsmall: "audioui-size-keybed-xsmall",
+    small: "audioui-size-keybed-small",
+    normal: "audioui-size-keybed-normal",
+    large: "audioui-size-keybed-large",
+    xlarge: "audioui-size-keybed-xlarge",
 };
 
 /**
- * Gets the appropriate size dimensions for a component
+ * Gets the appropriate size class name for a component
  * @param componentType The type of component ('knob', 'button', 'keybed', or 'slider')
  * @param size The size value
  * @param orientation The orientation for slider components ('vertical' or 'horizontal')
- * @returns The dimensions for the component
+ * @returns The CSS class name for the component size
  */
-export function getSizeForComponent(
+export function getSizeClassForComponent(
     componentType: "knob" | "button" | "keybed" | "slider",
     size: SizeType = "normal",
     orientation: "vertical" | "horizontal" = "vertical"
-): number | { width: number; height: number } {
+): string {
     switch (componentType) {
         case "knob":
-            return knobSizeMap[size];
         case "button":
-            return buttonSizeMap[size];
+            return squareSizeClassMap[size];
         case "keybed":
-            return keybedSizeMap[size];
+            return keybedSizeClassMap[size];
         case "slider":
-            return sliderSizeMap[size][orientation];
+            return orientation === "horizontal" ? horizontalSliderSizeClassMap[size] : verticalSliderSizeClassMap[size];
+        default:
+            throw new Error(`Unknown component type: ${componentType}`);
+    }
+}
+
+/**
+ * Gets the CSS variable references for a component's size dimensions.
+ * Used to apply size as inline styles (which override AdaptiveBox's default 100%).
+ * @param componentType The type of component ('knob', 'button', 'keybed', or 'slider')
+ * @param size The size value
+ * @param orientation The orientation for slider components ('vertical' or 'horizontal')
+ * @returns An object with width and height CSS variable references
+ */
+export function getSizeStyleForComponent(
+    componentType: "knob" | "button" | "keybed" | "slider",
+    size: SizeType = "normal",
+    orientation: "vertical" | "horizontal" = "vertical"
+): { width: string; height: string } {
+    switch (componentType) {
+        case "knob":
+        case "button":
+            return {
+                width: `var(--audioui-size-square-${size})`,
+                height: `var(--audioui-size-square-${size})`,
+            };
+        case "keybed":
+            return {
+                width: `var(--audioui-size-keybed-width-${size})`,
+                height: `var(--audioui-size-keybed-height-${size})`,
+            };
+        case "slider":
+            if (orientation === "horizontal") {
+                return {
+                    width: `var(--audioui-size-hslider-width-${size})`,
+                    height: `var(--audioui-size-hslider-height-${size})`,
+                };
+            } else {
+                return {
+                    width: `var(--audioui-size-vslider-width-${size})`,
+                    height: `var(--audioui-size-vslider-height-${size})`,
+                };
+            }
         default:
             throw new Error(`Unknown component type: ${componentType}`);
     }

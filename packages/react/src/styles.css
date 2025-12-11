@@ -139,3 +139,107 @@ svg foreignObject div > * svg {
 .audioui-text-primary {
     color: var(--audioui-primary-color);
 }
+
+/* Size utility classes - Square components (Button, Knob, KnobSwitch) */
+.audioui-size-square-xsmall {
+    width: var(--audioui-size-square-xsmall);
+    height: var(--audioui-size-square-xsmall);
+}
+
+.audioui-size-square-small {
+    width: var(--audioui-size-square-small);
+    height: var(--audioui-size-square-small);
+}
+
+.audioui-size-square-normal {
+    width: var(--audioui-size-square-normal);
+    height: var(--audioui-size-square-normal);
+}
+
+.audioui-size-square-large {
+    width: var(--audioui-size-square-large);
+    height: var(--audioui-size-square-large);
+}
+
+.audioui-size-square-xlarge {
+    width: var(--audioui-size-square-xlarge);
+    height: var(--audioui-size-square-xlarge);
+}
+
+/* Size utility classes - Horizontal Slider (1x4) */
+.audioui-size-hslider-xsmall {
+    width: var(--audioui-size-hslider-width-xsmall);
+    height: var(--audioui-size-hslider-height-xsmall);
+}
+
+.audioui-size-hslider-small {
+    width: var(--audioui-size-hslider-width-small);
+    height: var(--audioui-size-hslider-height-small);
+}
+
+.audioui-size-hslider-normal {
+    width: var(--audioui-size-hslider-width-normal);
+    height: var(--audioui-size-hslider-height-normal);
+}
+
+.audioui-size-hslider-large {
+    width: var(--audioui-size-hslider-width-large);
+    height: var(--audioui-size-hslider-height-large);
+}
+
+.audioui-size-hslider-xlarge {
+    width: var(--audioui-size-hslider-width-xlarge);
+    height: var(--audioui-size-hslider-height-xlarge);
+}
+
+/* Size utility classes - Vertical Slider (4x1) */
+.audioui-size-vslider-xsmall {
+    width: var(--audioui-size-vslider-width-xsmall);
+    height: var(--audioui-size-vslider-height-xsmall);
+}
+
+.audioui-size-vslider-small {
+    width: var(--audioui-size-vslider-width-small);
+    height: var(--audioui-size-vslider-height-small);
+}
+
+.audioui-size-vslider-normal {
+    width: var(--audioui-size-vslider-width-normal);
+    height: var(--audioui-size-vslider-height-normal);
+}
+
+.audioui-size-vslider-large {
+    width: var(--audioui-size-vslider-width-large);
+    height: var(--audioui-size-vslider-height-large);
+}
+
+.audioui-size-vslider-xlarge {
+    width: var(--audioui-size-vslider-width-xlarge);
+    height: var(--audioui-size-vslider-height-xlarge);
+}
+
+/* Size utility classes - Keybed (1x5) */
+.audioui-size-keybed-xsmall {
+    width: var(--audioui-size-keybed-width-xsmall);
+    height: var(--audioui-size-keybed-height-xsmall);
+}
+
+.audioui-size-keybed-small {
+    width: var(--audioui-size-keybed-width-small);
+    height: var(--audioui-size-keybed-height-small);
+}
+
+.audioui-size-keybed-normal {
+    width: var(--audioui-size-keybed-width-normal);
+    height: var(--audioui-size-keybed-height-normal);
+}
+
+.audioui-size-keybed-large {
+    width: var(--audioui-size-keybed-width-large);
+    height: var(--audioui-size-keybed-height-large);
+}
+
+.audioui-size-keybed-xlarge {
+    width: var(--audioui-size-keybed-width-xlarge);
+    height: var(--audioui-size-keybed-height-xlarge);
+}

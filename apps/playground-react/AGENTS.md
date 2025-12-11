@@ -15,9 +15,10 @@
 - `app/layout.tsx`: Root layout
 - `app/page.tsx`: Home page
 - `app/[route]/page.tsx`: Demo pages (e.g., app/controls/button/page.tsx for Button demo)
+- `app/layout/sizing/page.tsx`: Centralized sizing system showcase (all components, all sizes)
 - `app/providers.tsx`: Context providers (theme, etc.)
 - `components/ui/`: **shadcn components ONLY** - do not add custom components here
-- `components/`: Custom playground components (e.g., ColorPickerField, ComponentSkeletonPage)
+- `components/`: Custom playground components (e.g., ColorPickerField, ComponentSkeletonPage, ControlSkeletonPage)
 - `lib/`: Utils (e.g., cn for clsx)
 - `hooks/`: Custom hooks
 - `types/`: TypeScript types
@@ -26,6 +27,8 @@
 ## Workflow Patterns (Bullets)
 
 - Add new playground page: Create app/[route]/[component]/page.tsx; import from @cutoff/audio-ui-react; add examples with props; use shadcn for UI
+- Control demo pages: Use `ControlSkeletonPage` component; examples use `size="large"` for visibility; no individual Size showcases (centralized in `/layout/sizing`)
+- Sizing showcase: Centralized at `/layout/sizing`; showcases all components (Button, Knob, KnobSwitch, Slider, Keybed) with all sizes (xsmall through xlarge)
 - Theming: next-themes in providers; toggle dark mode
 - Testing demos: Run pnpm dev; validate components from library
 - Building: pnpm build for prod; Next.js optimization

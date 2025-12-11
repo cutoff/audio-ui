@@ -49,6 +49,7 @@ const examples: Page[] = [
 // List of layout pages
 const layoutPages: Page[] = [
     { name: "Adaptive Box", path: "/layout/adaptive-box" },
+    { name: "Sizing", path: "/layout/sizing" },
     { name: "Grid Layout", path: "/layout/grid-layout" },
 ];
 

@@ -41,22 +41,23 @@
 - This separation allows custom controls to opt into theming only if needed
   - `Keybed.tsx`: Keyboard component
 - `src/index.ts`: Export all components, types, utilities, and theme colors
-- `src/themes.css`: Theme CSS variables (primary colors only; variants computed by components, all prefixed `--audioui-*`)
-- `src/styles.css`: Base styles, utility classes, imports themes.css
+- `src/themes.css`: Theme CSS variables (primary colors only; variants computed by components, all prefixed `--audioui-*`); size system CSS variables (base unit, multipliers, component-specific dimensions)
+- `src/styles.css`: Base styles, utility classes, imports themes.css; size utility classes for semantic purposes
 - `src/styles/`: Shared TS constants for class names and CSS variables (enforce `audioui-` prefix)
 - `src/themeColors.ts`: Exports predefined theme colors (themeColors, themeColorsDirect)
+- `src/components/utils/sizeMappings.ts`: Size class name mappings and utility functions (`getSizeClassForComponent`, `getSizeStyleForComponent`)
 - `dist/`: Built output (index.js, index.d.ts, style.css)
 - `docs/`: Technical documentation (see Documentation section below)
 
 ## Workflow Patterns
 
-- Component dev: Function declarations; hooks; CSS classes/inline; theming utility classes
+- Component dev: Function declarations; hooks; CSS classes/inline; theming utility classes; size system via CSS variables
 - Build: `pnpm build`; Vite with declarations
 - Test: Alongside; e.g., render Button, expect class
 - Local dev: `pnpm link`; demo imports
 - TS: Prefix unused params with \_; strict
 
-Agent Note: Enforce from agents/typescript-guidelines-2.0.md; read docs/ for AdaptiveBox, color system, and component-specific documentation.
+Agent Note: Enforce from agents/typescript-guidelines-2.0.md; read docs/ for AdaptiveBox, color system, size system, and component-specific documentation.
 
 ## Documentation
 
@@ -72,6 +73,8 @@ Technical documentation is located in `docs/`:
 
 - **`docs/interaction-system.md`**: Complete interaction system architecture documentation. Covers the `useInteractiveControl` hook, interaction modes, sensitivity tuning, input methods (drag/touch, wheel, keyboard), focus management, accessibility, performance considerations, and component-specific behavior. **Essential reference for understanding how all interactive controls handle user input.**
 
+- **`docs/size-system.md`**: Complete size system architecture documentation. Covers base unit system, component aspect ratios, CSS variable structure, size utility classes, implementation details, customization options, and design system consistency. **Essential reference for understanding component sizing and the size prop.**
+
 **Reference these docs when:**
 
 - Working with AdaptiveBox component (layout, sizing, alignment)
@@ -80,6 +83,7 @@ Technical documentation is located in `docs/`:
 - Working with Keybed component (MIDI note positioning)
 - **Implementing or modifying interactive controls (drag, wheel, keyboard interactions)**
 - **Tuning sensitivity or interaction behavior**
+- **Working with component sizing, size prop, or customizing the size system**
 
 ## Component-Specific Notes
 

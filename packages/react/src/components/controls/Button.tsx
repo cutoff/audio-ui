@@ -6,7 +6,7 @@ import AdaptiveBox from "../primitives/AdaptiveBox";
 import "../../styles.css";
 import { CLASSNAMES } from "../../styles/classNames";
 import { BooleanControlProps, Themable } from "../types";
-import { buttonSizeMap } from "../utils/sizeMappings";
+import { getSizeClassForComponent, getSizeStyleForComponent } from "../utils/sizeMappings";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import SvgButton from "../theme/SvgButton";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
@@ -139,25 +139,31 @@ function Button({
         return undefined;
     }, [paramConfig.mode, onChange, handleGlobalMouseUp]);
 
-    // Memoize the classNames calculation
-    const componentClassNames = useMemo(() => {
-        return classNames(className, CLASSNAMES.root, CLASSNAMES.container, onChange ? CLASSNAMES.highlight : "");
-    }, [className, onChange]);
+    // Get the size class name based on the size prop
+    const sizeClassName = stretch ? undefined : getSizeClassForComponent("button", size);
 
-    // Get the preferred width based on the size prop
-    const { width: preferredWidth, height: preferredHeight } = buttonSizeMap[size];
+    // Memoize the classNames calculation: size class first, then base classes, then user className (user takes precedence)
+    const componentClassNames = useMemo(() => {
+        return classNames(
+            sizeClassName,
+            CLASSNAMES.root,
+            CLASSNAMES.container,
+            onChange ? CLASSNAMES.highlight : "",
+            className
+        );
+    }, [sizeClassName, className, onChange]);
 
     // Use display value or label
     const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
+
+    // Build merged style: size style (when not stretching), then user style (user takes precedence)
+    const sizeStyle = stretch ? undefined : getSizeStyleForComponent("button", size);
 
     return (
         <AdaptiveBox
             displayMode="scaleToFit"
             className={componentClassNames}
-            style={{
-                ...(style ?? {}),
-                ...(stretch ? {} : { width: `${preferredWidth}px`, height: `${preferredHeight}px` }),
-            }}
+            style={{ ...sizeStyle, ...style }}
             labelHeightUnits={30}
             minWidth={20}
             minHeight={40}

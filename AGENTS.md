@@ -169,6 +169,22 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - **Comprehensive Documentation**: See `packages/react/docs/color-system.md` for complete color system architecture, and `apps/playground-react/docs/color-integration.md` for playground integration details
 - **Styling System Guidelines**: See `agents/audioui-styling-system.md` for complete styling conventions, naming patterns, constants usage, and Stylelint enforcement
 
+## Size System
+
+- **Base Unit System**: All component sizes derive from `--audioui-unit` (48px default) with size multipliers (xsmall: 1x, small: 1.25x, normal: 1.5x, large: 2x, xlarge: 2.5x)
+- **Component Aspect Ratios**:
+  - Button, Knob, KnobSwitch: 1x1 (square)
+  - Horizontal Slider: 1x4 (width:height) - width > height
+  - Vertical Slider: 4x1 (width:height) - height > width
+  - Keybed: 1x5 (width:height) - width > height
+- **Implementation**: Size defined via CSS variables in `themes.css`; size classes in `styles.css` for semantic purposes; inline styles (CSS variable references) override AdaptiveBox's default 100% sizing
+- **Size Prop**: All controls support `size` prop ("xsmall" | "small" | "normal" | "large" | "xlarge", default "normal") and `stretch` prop (default false)
+- **When `stretch={false}`**: Size class and inline size styles applied; user `style` prop spreads last (takes precedence)
+- **When `stretch={true}`**: No size constraints; component fills its container (AdaptiveBox's default 100% behavior)
+- **User Override**: User `className` and `style` props take precedence over size classes/styles
+- **Utilities**: `getSizeClassForComponent()` returns CSS class names; `getSizeStyleForComponent()` returns inline style objects with CSS variable references
+- **Location**: Size mappings in `packages/react/src/components/utils/sizeMappings.ts`; CSS variables in `packages/react/src/themes.css`; size classes in `packages/react/src/styles.css`
+
 ## Icon Theming Best Practices
 
 - **Use Inline SVGs with `currentColor`**: Icons should be provided as React components that render inline `<svg>` elements with `fill="currentColor"`. This allows icons to automatically inherit text color and adapt to light/dark mode.
@@ -217,9 +233,10 @@ Agents docs are living documentation; update continuously for agent efficiency. 
 - `./agents/audioui-licensing-strategy.md`: Outlines the dual-licensing model and legal framework.
 - `./agents/audioui-versioning-guidelines.md`: Details the SemVer-based versioning strategy, including developer preview conventions.
 - `./agents/audioui-styling-system.md`: Comprehensive styling system guidelines covering namespace isolation, naming conventions, constants usage, Stylelint enforcement, and best practices.
-- `./packages/react/AGENTS.md`: Library specifics (exports, build, env, interaction system, generic control architecture).
-- `./apps/playground-react/AGENTS.md`: Playground app details (routing, integrations, env).
+- `./packages/react/AGENTS.md`: Library specifics (exports, build, env, interaction system, generic control architecture, size system).
+- `./apps/playground-react/AGENTS.md`: Playground app details (routing, integrations, env, sizing showcase).
 - `./packages/react/docs/interaction-system.md`: Complete interaction system architecture, design decisions, sensitivity tuning, and implementation details for all interactive controls.
+- `./packages/react/docs/size-system.md`: Complete size system architecture, base unit system, component aspect ratios, CSS variable structure, implementation details, and customization options.
 
 ## Documentation Files
 

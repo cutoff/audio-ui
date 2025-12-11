@@ -89,6 +89,7 @@ export default function Page() {
             key="0"
             value={false}
             label="Momentary"
+            size="large"
             latch={false}
             // Use undefined color and roundness to inherit from theme
             onChange={() => handleExampleClick(0)}
@@ -97,6 +98,7 @@ export default function Page() {
             key="1"
             value={false}
             label="Latch"
+            size="large"
             latch={true}
             roundness={10}
             color="#ff3366" // Pink

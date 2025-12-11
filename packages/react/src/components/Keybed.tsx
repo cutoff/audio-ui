@@ -4,7 +4,7 @@ import React, { useMemo, useCallback } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "./primitives/AdaptiveBox";
 import { AdaptiveSize, BaseProps, Themable } from "./types";
-import { keybedSizeMap } from "./utils/sizeMappings";
+import { getSizeClassForComponent, getSizeStyleForComponent } from "./utils/sizeMappings";
 import { generateColorVariants } from "./utils/colorUtils";
 import {
     createNoteNumSet,
@@ -335,27 +335,22 @@ function Keybed({
         }).filter(Boolean);
     }, [keybedDimensions, octaveShift, isNoteActive, correctBlackPass, resolvedRoundness, colorVariants]);
 
-    // Memoize the classNames calculation
+    // Get the size class name based on the size prop
+    const sizeClassName = stretch ? undefined : getSizeClassForComponent("keybed", size);
+
+    // Memoize the classNames calculation: size class first, then base classes, then user className (user takes precedence)
     const componentClassNames = useMemo(() => {
-        return classNames(className, CLASSNAMES.root);
-    }, [className]);
+        return classNames(sizeClassName, CLASSNAMES.root, className);
+    }, [sizeClassName, className]);
 
-    // Get the preferred width based on the size prop
-    const { width: preferredWidth, height: preferredHeight } = keybedSizeMap[size];
-
-    const adaptiveBoxStyle = useMemo(
-        () => ({
-            ...(style ?? {}),
-            ...(stretch ? {} : { width: `${preferredWidth}px`, height: `${preferredHeight}px` }),
-        }),
-        [style, stretch, preferredWidth, preferredHeight]
-    );
+    // Build merged style: size style (when not stretching), then user style (user takes precedence)
+    const sizeStyle = stretch ? undefined : getSizeStyleForComponent("keybed", size);
 
     return (
         <AdaptiveBox
             displayMode="scaleToFit"
             className={componentClassNames}
-            style={adaptiveBoxStyle}
+            style={{ ...sizeStyle, ...style }}
             minWidth={40}
             minHeight={40}
         >

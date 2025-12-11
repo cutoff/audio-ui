@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { sliderSizeMap } from "../utils/sizeMappings";
+import classNames from "classnames";
+import { getSizeClassForComponent, getSizeStyleForComponent } from "../utils/sizeMappings";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import { SvgVerticalSlider, SvgHorizontalSlider } from "../theme/SvgSlider";
 import SvgContinuousControl from "../primitives/SvgContinuousControl";
@@ -56,8 +57,14 @@ function Slider({
         { color: undefined, roundness: undefined }
     );
 
-    // Get the preferred dimensions based on the size prop and orientation
-    const { width: preferredWidth, height: preferredHeight } = sliderSizeMap[size][orientation];
+    // Get the size class name based on the size prop and orientation
+    const sizeClassName = stretch ? undefined : getSizeClassForComponent("slider", size, orientation);
+
+    // Merge class names: size class first, then user className (user takes precedence)
+    const mergedClassName = classNames(sizeClassName, className);
+
+    // Build merged style: size style (when not stretching), then user style (user takes precedence)
+    const sizeStyle = stretch ? undefined : getSizeStyleForComponent("slider", size, orientation);
 
     // Select the appropriate view component based on orientation
     const ViewComponent = orientation === "vertical" ? SvgVerticalSlider : SvgHorizontalSlider;
@@ -72,11 +79,8 @@ function Slider({
             value={value}
             label={label}
             stretch={stretch}
-            className={className}
-            style={{
-                ...(style ?? {}),
-                ...(stretch ? {} : { width: `${preferredWidth}px`, height: `${preferredHeight}px` }),
-            }}
+            className={mergedClassName}
+            style={{ ...sizeStyle, ...style }}
             onChange={onChange}
             paramId={paramId}
             onClick={onClick}

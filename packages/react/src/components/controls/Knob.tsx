@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { knobSizeMap } from "../utils/sizeMappings";
+import classNames from "classnames";
+import { getSizeClassForComponent, getSizeStyleForComponent } from "../utils/sizeMappings";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import SvgKnob from "../theme/SvgKnob";
 import SvgContinuousControl from "../primitives/SvgContinuousControl";
@@ -83,8 +84,8 @@ function Knob({
     // Get displayValue for default rendering
     const { displayValue } = useAudioParameter(value, onChange, parameterDef);
 
-    // Get the preferred width based on the size prop
-    const { width: preferredWidth, height: preferredHeight } = knobSizeMap[size];
+    // Get the size class name based on the size prop
+    const sizeClassName = stretch ? undefined : getSizeClassForComponent("knob", size);
 
     // Prepare the content to display inside the knob
     const knobContent = useMemo(() => {
@@ -140,6 +141,12 @@ function Knob({
         );
     }, [children, renderValue, value, parameterDef.min, parameterDef.max, displayValue]);
 
+    // Merge class names: size class first, then user className (user takes precedence)
+    const mergedClassName = classNames(sizeClassName, className);
+
+    // Build merged style: size style (when not stretching), then user style (user takes precedence)
+    const sizeStyle = stretch ? undefined : getSizeStyleForComponent("knob", size);
+    
     return (
         <SvgContinuousControl
             view={SvgKnob}
@@ -150,11 +157,8 @@ function Knob({
             value={value}
             label={label}
             stretch={stretch}
-            className={className}
-            style={{
-                ...(style ?? {}),
-                ...(stretch ? {} : { width: `${preferredWidth}px`, height: `${preferredHeight}px` }),
-            }}
+            className={mergedClassName}
+            style={{ ...sizeStyle, ...style }}
             onChange={onChange}
             paramId={paramId}
             onClick={onClick}

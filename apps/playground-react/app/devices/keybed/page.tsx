@@ -14,37 +14,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 // Define the NoteName type to match the one in the Keybed component
 type NoteName = "C" | "D" | "E" | "F" | "G" | "A" | "B";
 
-const DemoKeybed = React.memo(
-    ({
-        nbKeys,
-        startKey,
-        octaveShift,
-        notesOn,
-        size,
-        color,
-        roundness,
-    }: {
-        nbKeys: number;
-        startKey: NoteName;
-        octaveShift: number;
-        notesOn: (string | number)[];
-        size: "xsmall" | "small" | "normal" | "large" | "xlarge";
-        color?: string;
-        roundness?: number;
-    }) => (
-        <Keybed
-            nbKeys={nbKeys}
-            startKey={startKey}
-            octaveShift={octaveShift}
-            notesOn={notesOn}
-            size={size}
-            color={color}
-            roundness={roundness}
-        />
-    )
-);
-DemoKeybed.displayName = "DemoKeybed";
-
 export default function KeybedPage() {
     const [nbKeys, setNbKeys] = useState<number>(61);
     const [startKey, setStartKey] = useState<NoteName>("C");
@@ -292,57 +261,6 @@ export default function KeybedPage() {
                             </Select>
                         </div>
                     )}
-
-                    <div>
-                        <h2 className="text-xl md:text-2xl font-medium mb-4">Keybed Sizes</h2>
-                        <div className="flex flex-col flex-wrap gap-4 mb-6">
-                            <DemoKeybed
-                                nbKeys={nbKeys}
-                                startKey={startKey}
-                                octaveShift={octaveShift}
-                                notesOn={notesOn}
-                                size="xsmall"
-                                color={color || "#3399ff"} // Blue
-                                roundness={roundness}
-                            />
-                            <DemoKeybed
-                                nbKeys={nbKeys}
-                                startKey={startKey}
-                                octaveShift={octaveShift}
-                                notesOn={notesOn}
-                                size="small"
-                                color={color || "#ff3366"} // Pink
-                                roundness={roundness}
-                            />
-                            <DemoKeybed
-                                nbKeys={nbKeys}
-                                startKey={startKey}
-                                octaveShift={octaveShift}
-                                notesOn={notesOn}
-                                size="normal"
-                                color={color || "#33cc66"} // Green
-                                roundness={roundness}
-                            />
-                            <DemoKeybed
-                                nbKeys={nbKeys}
-                                startKey={startKey}
-                                octaveShift={octaveShift}
-                                notesOn={notesOn}
-                                size="large"
-                                color={color || "#9966ff"} // Purple
-                                roundness={roundness}
-                            />
-                            <DemoKeybed
-                                nbKeys={nbKeys}
-                                startKey={startKey}
-                                octaveShift={octaveShift}
-                                notesOn={notesOn}
-                                size="xlarge"
-                                color={color || "#ff9933"} // Orange
-                                roundness={roundness}
-                            />
-                        </div>
-                    </div>
 
                     <div className="text-sm text-muted-foreground">
                         <p>Connect a MIDI keyboard and select it from the dropdown to play notes.</p>

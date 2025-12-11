@@ -135,49 +135,55 @@ export default function SliderPage({ orientation }: SliderPageProps) {
     ];
 
     const examples = [
-        <Slider
-            key="0"
-            style={{ cursor: "pointer" }}
-            min={0}
-            max={100}
-            step={1}
-            value={42}
-            thickness={20}
-            label="Default"
-            orientation={orientation}
-            // Use undefined color and roundness to inherit from theme
-            onClick={() => handleExampleClick(0)}
-        />,
-        <Slider
-            key="1"
-            style={{ cursor: "pointer" }}
-            min={0}
-            bipolar={true}
-            max={127}
-            step={1}
-            value={64}
-            thickness={20}
-            label="Bipolar"
-            orientation={orientation}
-            roundness={10}
-            color="#ff3366" // Pink
-            onClick={() => handleExampleClick(1)}
-        />,
-        <Slider
-            key="2"
-            style={{ cursor: "pointer" }}
-            min={0}
-            bipolar={false}
-            max={127}
-            step={1}
-            value={22}
-            thickness={40}
-            label="Thick"
-            orientation={orientation}
-            roundness={10}
-            color="#33cc66" // Green
-            onClick={() => handleExampleClick(2)}
-        />,
+        <div key="0" className={orientation === "vertical" ? "h-64" : "w-64"}>
+            <Slider
+                style={{ cursor: "pointer" }}
+                min={0}
+                max={100}
+                step={1}
+                value={42}
+                thickness={20}
+                label="Default"
+                size="large"
+                orientation={orientation}
+                // Use undefined color and roundness to inherit from theme
+                onClick={() => handleExampleClick(0)}
+            />
+        </div>,
+        <div key="1" className={orientation === "vertical" ? "h-64" : "w-64"}>
+            <Slider
+                style={{ cursor: "pointer" }}
+                min={0}
+                bipolar={true}
+                max={127}
+                step={1}
+                value={64}
+                thickness={20}
+                label="Bipolar"
+                size="large"
+                orientation={orientation}
+                roundness={10}
+                color="#ff3366" // Pink
+                onClick={() => handleExampleClick(1)}
+            />
+        </div>,
+        <div key="2" className={orientation === "vertical" ? "h-64" : "w-64"}>
+            <Slider
+                style={{ cursor: "pointer" }}
+                min={0}
+                bipolar={false}
+                max={127}
+                step={1}
+                value={22}
+                thickness={40}
+                label="Thick"
+                size="large"
+                orientation={orientation}
+                roundness={10}
+                color="#33cc66" // Green
+                onClick={() => handleExampleClick(2)}
+            />
+        </div>,
     ];
 
     return (

@@ -5,7 +5,7 @@ import classNames from "classnames";
 import AdaptiveBox from "../primitives/AdaptiveBox";
 import SvgKnob from "../theme/SvgKnob";
 import { AdaptiveSize, BaseProps, InteractiveControl, Themable } from "../types";
-import { knobSizeMap } from "../utils/sizeMappings";
+import { getSizeClassForComponent, getSizeStyleForComponent } from "../utils/sizeMappings";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import { CLASSNAMES } from "../../styles/classNames";
 import { EnumParameter } from "../../models/AudioParameter";
@@ -178,13 +178,22 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             wheelSensitivity: stepSize > 0 ? stepSize / 4 : 0
         });
 
-        // Memoize the classNames calculation
-        const componentClassNames = useMemo(() => {
-            return classNames(className, CLASSNAMES.root, CLASSNAMES.container, onChange ? CLASSNAMES.highlight : "");
-        }, [className, onChange]);
+        // Get the size class name based on the size prop
+        const sizeClassName = stretch ? undefined : getSizeClassForComponent("knob", size);
 
-        // Get the preferred width based on the size prop
-        const { width: preferredWidth, height: preferredHeight } = knobSizeMap[size];
+        // Memoize the classNames calculation: size class first, then base classes, then user className (user takes precedence)
+        const componentClassNames = useMemo(() => {
+            return classNames(
+                sizeClassName,
+                CLASSNAMES.root,
+                CLASSNAMES.container,
+                onChange ? CLASSNAMES.highlight : "",
+                className
+            );
+        }, [sizeClassName, className, onChange]);
+
+        // Build merged style: size style (when not stretching), then interactive props style, then user style (user takes precedence)
+        const sizeStyle = stretch ? undefined : getSizeStyleForComponent("knob", size);
 
         // Memoize content wrapper style to avoid object recreation on every render
         const contentWrapperStyle = useMemo(() => ({
@@ -308,11 +317,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             <AdaptiveBox
                 displayMode="scaleToFit"
                 className={componentClassNames}
-                style={{
-                    ...(style ?? {}),
-                    ...(interactiveProps.style ?? {}),
-                    ...(stretch ? {} : { width: `${preferredWidth}px`, height: `${preferredHeight}px` }),
-                }}
+                style={{ ...sizeStyle, ...interactiveProps.style, ...style }}
                 labelHeightUnits={20}
                 minWidth={40}
                 minHeight={40}

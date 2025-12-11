@@ -336,6 +336,7 @@ export default function KnobDemoPage() {
             step={1}
             value={42}
             label="Default"
+            size="large"
             // Use undefined color and roundness to inherit from theme
             onClick={() => handleExampleClick(0)}
         />,
@@ -348,6 +349,7 @@ export default function KnobDemoPage() {
             step={1}
             value={64}
             label="Bipolar"
+            size="large"
             roundness={12}
             color="#ff3366" // Pink
             onClick={() => handleExampleClick(1)}
@@ -361,6 +363,7 @@ export default function KnobDemoPage() {
             step={1}
             value={0}
             label="Bipolar0"
+            size="large"
             roundness={12}
             color="#33cc66" // Green
             onClick={() => handleExampleClick(2)}
@@ -370,6 +373,7 @@ export default function KnobDemoPage() {
             style={{ cursor: "pointer" }}
             value={0}
             label="Enum"
+            size="large"
             roundness={12}
             color="#9966ff" // Purple
             onClick={() => handleExampleClick(3)}
@@ -384,6 +388,7 @@ export default function KnobDemoPage() {
             step={1}
             value={64}
             label="MIDI Bipolar"
+            size="large"
             bipolar={true}
             roundness={12}
             color="#ff9933" // Orange
