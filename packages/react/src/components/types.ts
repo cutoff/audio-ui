@@ -129,3 +129,58 @@ export type BipolarControl = Control & {
      */
     bipolar?: boolean;
 };
+
+// --- GENERIC CONTRACTS ---
+
+/**
+ * Contract for a component acting as a visualization for a generic control.
+ * It defines the geometric requirements and interaction behavior.
+ */
+export interface ControlComponentView {
+    /** The viewBox dimensions required by this visualization */
+    viewBox: { width: number; height: number };
+
+    /**
+     * Label height in the same units as SVG viewBox height.
+     * Used by AdaptiveBox to calculate layout proportions.
+     */
+    labelHeightUnits?: number;
+
+    /**
+     * The preferred interaction configuration for this visualization.
+     * This tells the generic control how to interpret user input.
+     */
+    interaction: {
+        /** Supported interaction modes */
+        mode?: "drag" | "wheel" | "both";
+        /**
+         * Direction of the interaction gesture.
+         * - vertical: Drag up/down changes value (Standard Faders/Knobs)
+         * - horizontal: Drag left/right changes value
+         */
+        direction?: "vertical" | "horizontal";
+    };
+}
+
+/**
+ * The minimum props that ANY control view must accept.
+ */
+export interface ControlComponentViewProps {
+    /** The normalized value (0..1) to display */
+    normalizedValue: number;
+
+    /** Content to be rendered inside the control (e.g. label, icon) */
+    children?: React.ReactNode;
+
+    /** Optional class name passed from the parent */
+    className?: string;
+
+    /** Optional style passed from the parent */
+    style?: React.CSSProperties;
+}
+
+/**
+ * A Generic Component Type that enforces the contract + props.
+ * P = Additional custom props specific to the visualization (e.g. color, thickness).
+ */
+export type ControlComponent<P = {}> = React.ComponentType<ControlComponentViewProps & P> & ControlComponentView;

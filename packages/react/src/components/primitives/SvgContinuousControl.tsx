@@ -1,0 +1,152 @@
+"use client";
+
+import React, { useMemo } from "react";
+import classNames from "classnames";
+import { CLASSNAMES } from "../../styles/classNames";
+import { BipolarControl, ExplicitRange, ControlComponent } from "../types";
+import AdaptiveBox from "./AdaptiveBox";
+import { AudioParameterFactory, ContinuousParameter } from "../../models/AudioParameter";
+import { useAudioParameter } from "../../hooks/useAudioParameter";
+import { useInteractiveControl } from "../../hooks/useInteractiveControl";
+
+// 1. Define Props with Generics
+// P represents the "Extra Props" required by the specific View component
+export type SvgContinuousControlProps<P extends object = {}> =
+    // Base Control Props
+    BipolarControl &
+    Partial<ExplicitRange> &
+    // The "Extra Props" P are intersected here so they appear on the root component
+    P & {
+        /**
+         * The Visualization Component.
+         * Must adhere to ControlComponent contract.
+         */
+        view: ControlComponent<P>;
+
+        /**
+         * Audio Parameter definition (Model)
+         */
+        parameter?: ContinuousParameter;
+
+        /**
+         * Content passed to the View (e.g. center label for knobs)
+         */
+        children?: React.ReactNode;
+
+        /** Override interaction mode defined by the view */
+        interactionMode?: "drag" | "wheel" | "both";
+
+        /** Override sensitivity */
+        sensitivity?: number;
+    };
+
+/**
+ * A Generic Continuous Control that connects a Data Model (AudioParameter)
+ * to a Visualization View (ControlComponent).
+ */
+export function SvgContinuousControl<P extends object = {}>({
+    view: View,
+    min,
+    max,
+    step,
+    bipolar = false,
+    value,
+    label,
+    children,
+    className,
+    style,
+    onChange,
+    paramId,
+    onClick,
+    onMouseDown,
+    onMouseUp,
+    onMouseEnter,
+    onMouseLeave,
+    parameter,
+    interactionMode, // Override prop
+    sensitivity,
+    ...viewProps // Capture all other props (color, thickness, etc.) to pass to View
+}: SvgContinuousControlProps<P>) {
+
+    // 1. Parameter Model
+    const paramConfig = useMemo(() => {
+        if (parameter) return parameter;
+        return AudioParameterFactory.createControl({
+            id: paramId,
+            label,
+            min,
+            max,
+            step,
+            bipolar,
+        });
+    }, [parameter, label, min, max, step, bipolar, paramId]);
+
+    // 2. Audio Logic Hook
+    const { normalizedValue, adjustValue } = useAudioParameter(value, onChange, paramConfig);
+
+    // 3. Determine Interaction Settings (View default vs Override)
+    const effectiveInteractionMode = interactionMode ?? View.interaction.mode ?? "both";
+    const effectiveDirection = View.interaction.direction ?? "vertical";
+
+    // 4. Interaction Hook
+    const interactiveProps = useInteractiveControl({
+        adjustValue,
+        interactionMode: effectiveInteractionMode,
+        direction: effectiveDirection,
+        sensitivity,
+    });
+
+    const componentClassNames = useMemo(() => {
+        return classNames(className, CLASSNAMES.root, CLASSNAMES.container, onChange ? CLASSNAMES.highlight : "");
+    }, [className, onChange]);
+
+    const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
+
+    const handleMouseDown = (e: React.MouseEvent) => {
+        interactiveProps.onMouseDown(e);
+        onMouseDown?.(e);
+    };
+
+    return (
+        <AdaptiveBox
+            displayMode="scaleToFit"
+            className={componentClassNames}
+            style={{
+                ...(style ?? {}),
+                ...(interactiveProps.style ?? {}),
+            }}
+            labelHeightUnits={View.labelHeightUnits ?? 20}
+        >
+            <AdaptiveBox.Svg
+                viewBoxWidth={View.viewBox.width}
+                viewBoxHeight={View.viewBox.height}
+                onWheel={interactiveProps.onWheel}
+                onClick={onClick}
+                onMouseDown={handleMouseDown}
+                onTouchStart={interactiveProps.onTouchStart}
+                onKeyDown={interactiveProps.onKeyDown}
+                onMouseUp={onMouseUp}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                tabIndex={interactiveProps.tabIndex}
+                role={interactiveProps.role}
+                aria-valuenow={value}
+                aria-label={effectiveLabel}
+            >
+                {/*
+                    Render the View with normalized value + children + specific props (P)
+                    Cast viewProps to P because TypeScript generic spread is tricky
+                */}
+                <View
+                    normalizedValue={normalizedValue}
+                    {...(viewProps as P)}
+                >
+                    {children}
+                </View>
+            </AdaptiveBox.Svg>
+            {effectiveLabel && <AdaptiveBox.Label>{effectiveLabel}</AdaptiveBox.Label>}
+        </AdaptiveBox>
+    );
+}
+
+export default React.memo(SvgContinuousControl) as typeof SvgContinuousControl;

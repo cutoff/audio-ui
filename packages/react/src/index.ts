@@ -4,11 +4,12 @@ export { default as Button } from "./components/controls/Button";
 export { default as Knob } from "./components/controls/Knob";
 export { default as KnobSwitch } from "./components/controls/KnobSwitch";
 export { default as Slider } from "./components/controls/Slider";
+export { default as SvgContinuousControl } from "./components/primitives/SvgContinuousControl";
 
 // Export SVG presentation components
 export { default as SvgButton } from "./components/theme/SvgButton";
 export { default as SvgKnob } from "./components/theme/SvgKnob";
-export { default as SvgSlider } from "./components/theme/SvgSlider";
+export { default as SvgSlider, SvgVerticalSlider, SvgHorizontalSlider } from "./components/theme/SvgSlider";
 
 export { default as Keybed } from "./components/Keybed";
 export { default as AdaptiveBox } from "./components/primitives/AdaptiveBox";
@@ -22,6 +23,7 @@ export type { KnobSwitchProps, KnobSwitchOptionProps } from "./components/contro
 export type { KnobProps } from "./components/controls/Knob";
 export type { SliderProps } from "./components/controls/Slider";
 export type { ButtonProps } from "./components/controls/Button";
+export type { SvgContinuousControlProps } from "./components/primitives/SvgContinuousControl";
 export type { KeybedProps } from "./components/Keybed";
 
 // Export SVG component types
@@ -30,7 +32,7 @@ export type { SvgKnobProps } from "./components/theme/SvgKnob";
 export type { SvgSliderProps } from "./components/theme/SvgSlider";
 
 // Export common types
-export type { SizeType, AdaptativeSize, Control, BipolarControl, Themable } from "./components/types";
+export type { SizeType, AdaptativeSize, Control, BipolarControl, Themable, ControlComponent, ControlComponentView, ControlComponentViewProps } from "./components/types";
 
 // Export value formatters
 export {

@@ -179,7 +179,7 @@ When a white key is pressed, it uses the primary color, while black keys use dar
 
 ### Color Utilities
 
-A new utility file `colorUtils.ts` has been added with the following function:
+The `colorUtils.ts` utility file provides the following function:
 
 ```typescript
 /**

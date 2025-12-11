@@ -19,6 +19,7 @@
 - **Do NOT preserve deprecated APIs** - remove them entirely if they're no longer needed
 - **Always prioritize clean, modern code** over maintaining old patterns
 - **Refactor freely** - if a better approach exists, use it without worrying about existing code
+- **Do NOT use evolution phrasing** - Avoid words like "now", "recently", "changed", "updated", "moved", "introduced", "added", "removed". Write in present tense, declarative statements. Example: Instead of "Knob now uses SvgContinuousControl", write "Knob uses SvgContinuousControl" or "Knob is implemented using SvgContinuousControl"
 
 When making changes, focus on:
 
@@ -31,22 +32,23 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 
 ## Quick Rules Summary for Agents (Load This First)
 
-| Category            | Rule/Details                                                                                                                                                                                                                                  |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Git Operations      | **Do NOT commit changes automatically.** Always ask for user confirmation before running `git commit`, `git merge`, `git reset`, or modifying git history.                                                                                    |
-| Performance Mandate | **Critical Priority.** Audio apps have heavy runtime constraints (e.g., avoiding UI stutters, ensuring low-latency response). Prioritize performance in all decisions: minimal re-renders, no JS for layout/sizing, efficient event handling. |
-| React               | React 18 only; library as peer deps (`^18.2.0`), demo as direct (`^18.3.1`); never upgrade to 19                                                                                                                                              |
-| TypeScript          | Strict mode; handle all errors; prefix unused params with \_; `@types/react:^18.3.23`                                                                                                                                                         |
-| Package Manager     | pnpm                                                                                                                                                                                                                                          |
-| UI Components       | Use shadcn/ui; add with `pnpm dlx shadcn@latest add [component]`; no custom if shadcn available; no alter                                                                                                                                     |
-| Testing             | Vitest; files `.test.tsx` alongside; mock deps; React 18 compat                                                                                                                                                                               |
-| Build               | Library: Vite with TS decl; demo: Next.js 15 with Turbopack; run `pnpm build && pnpm typecheck`                                                                                                                                               |
-| Dev Server          | Run `pnpm dev` at root for development; never in playground-app for testing                                                                                                                                                                   |
-| Theming             | CSS vars with `--audioui-*`; default adaptive (black light, white dark); utility classes `.audioui-*`; named themes blue etc.                                                                                                                 |
-| Components          | Function declarations; props with JSDoc; default params; SVG for graphics                                                                                                                                                                     |
-| Perf                | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveBox CSS-only); O(1) lookups for enum parameters; memoized styles/calculations; useRef for event handlers to avoid stale closures; lazy global event listeners (only during drag)    |
-| Library Exports     | From packages/react/src/index.ts                                                                                                                                                                                                              |
-| Demo Routing        | Next.js app router; app/[route]/page.tsx                                                                                                                                                                                                      |
+| Category            | Rule/Details                                                                                                                                                                                                                                                                               |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Git Operations      | **Do NOT commit changes automatically.** Always ask for user confirmation before running `git commit`, `git merge`, `git reset`, or modifying git history.                                                                                                                                 |
+| Documentation Style | **Write in present tense, declarative statements.** Avoid evolution phrasing: "now", "recently", "changed", "updated", "moved", "introduced", "added", "removed". Focus on current state, not history. Example: "Knob uses SvgContinuousControl" not "Knob now uses SvgContinuousControl". |
+| Performance Mandate | **Critical Priority.** Audio apps have heavy runtime constraints (e.g., avoiding UI stutters, ensuring low-latency response). Prioritize performance in all decisions: minimal re-renders, no JS for layout/sizing, efficient event handling.                                              |
+| React               | React 18 only; library as peer deps (`^18.2.0`), demo as direct (`^18.3.1`); never upgrade to 19                                                                                                                                                                                           |
+| TypeScript          | Strict mode; handle all errors; prefix unused params with \_; `@types/react:^18.3.23`                                                                                                                                                                                                      |
+| Package Manager     | pnpm                                                                                                                                                                                                                                                                                       |
+| UI Components       | Use shadcn/ui; add with `pnpm dlx shadcn@latest add [component]`; no custom if shadcn available; no alter                                                                                                                                                                                  |
+| Testing             | Vitest; files `.test.tsx` alongside; mock deps; React 18 compat                                                                                                                                                                                                                            |
+| Build               | Library: Vite with TS decl; demo: Next.js 15 with Turbopack; run `pnpm build && pnpm typecheck`                                                                                                                                                                                            |
+| Dev Server          | Run `pnpm dev` at root for development; never in playground-app for testing                                                                                                                                                                                                                |
+| Theming             | CSS vars with `--audioui-*`; default adaptive (black light, white dark); utility classes `.audioui-*`; named themes blue etc.                                                                                                                                                              |
+| Components          | Function declarations; props with JSDoc; default params; SVG for graphics                                                                                                                                                                                                                  |
+| Perf                | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveBox CSS-only); O(1) lookups for enum parameters; memoized styles/calculations; useRef for event handlers to avoid stale closures; lazy global event listeners (only during drag)                                                 |
+| Library Exports     | From packages/react/src/index.ts                                                                                                                                                                                                                                                           |
+| Demo Routing        | Next.js app router; app/[route]/page.tsx                                                                                                                                                                                                                                                   |
 
 ## Rendering Strategy
 
@@ -67,9 +69,9 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 ## Project Structure
 
 - `packages/react/`: Component library; src/, dist/; Vite build; React 18 peer
-  - `src/components/primitives/`: Base components for building final components (AdaptiveBox, Option) - excludes theme-specific
-  - `src/components/theme/`: Default theme system (AudioUiProvider, default SVG components)
-  - `src/components/controls/`: Interactive controls built from primitives and theme components
+  - `src/components/primitives/`: Base components for building final components (AdaptiveBox, Option, SvgContinuousControl) - excludes theme-specific
+  - `src/components/theme/`: Default theme system (AudioUiProvider, default SVG components: SvgButton, SvgKnob, SvgSlider)
+  - `src/components/controls/`: Interactive controls (Button, Knob, Slider, KnobSwitch) - built using primitives and theme components
 - `apps/playground-react/`: Next.js playground; showcases components; app/components for pages (inferred)
 - `agents/`: Shared conventions (coding-conventions-2.0.md, typescript-guidelines-2.0.md, react-conventions-2.0.md, documentation-standards-2.0.md)
 - `packages/react/docs/`: Specialized tech docs (e.g., adaptive-box-layout.md)
@@ -121,6 +123,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 
 ## Interactive Controls System
 
+- **Generic Control Architecture**: `Knob` and `Slider` are implemented using `SvgContinuousControl`, a generic component that decouples behavior (AudioParameter, interaction logic) from visualization (SVG rendering). This architecture allows easy customization by providing custom view components that implement the `ControlComponentView` contract.
 - **Unified Interaction Hook**: All interactive controls (Knob, Slider, KnobSwitch, Button) use `useInteractiveControl` hook for consistent behavior
 - **Input Methods**: Supports drag (mouse/touch), wheel, and keyboard interactions
 - **Interaction Modes**: Configurable via `interactionMode` prop ("drag" | "wheel" | "both")
@@ -197,7 +200,7 @@ Agents docs are living documentation; update continuously for agent efficiency. 
 - `./agents/audioui-licensing-strategy.md`: Outlines the dual-licensing model and legal framework.
 - `./agents/audioui-versioning-guidelines.md`: Details the SemVer-based versioning strategy, including developer preview conventions.
 - `./agents/audioui-styling-system.md`: Comprehensive styling system guidelines covering namespace isolation, naming conventions, constants usage, Stylelint enforcement, and best practices.
-- `./packages/react/AGENTS.md`: Library specifics (exports, build, env, interaction system).
+- `./packages/react/AGENTS.md`: Library specifics (exports, build, env, interaction system, generic control architecture).
 - `./apps/playground-react/AGENTS.md`: Playground app details (routing, integrations, env).
 - `./packages/react/docs/interaction-system.md`: Complete interaction system architecture, design decisions, sensitivity tuning, and implementation details for all interactive controls.
 

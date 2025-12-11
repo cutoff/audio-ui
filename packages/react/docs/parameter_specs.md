@@ -38,7 +38,7 @@ We adopt a React-idiomatic Model-View-Controller (MVC) approach:
 
 ### 1. The Domain Model
 
-The `AudioParameter` is now a polymorphic union type to handle different data shapes properly.
+The `AudioParameter` is a polymorphic union type to handle different data shapes properly.
 
 #### Base Definition
 
@@ -288,7 +288,7 @@ Components are not generic "do-it-all" wrappers. They declare which Parameter Ty
 
 ### 4. The View (Component Props)
 
-Components now use a generic prop structure but enforce the type.
+Components use a generic prop structure but enforce the type.
 
 ```typescript
 // Example for Knob

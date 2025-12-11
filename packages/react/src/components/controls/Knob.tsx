@@ -1,17 +1,13 @@
 "use client";
 
 import React, { useMemo } from "react";
-import classNames from "classnames";
-import "../../styles.css";
-import { CLASSNAMES } from "../../styles/classNames";
-import { BipolarControl, ExplicitRange } from "../types";
 import { knobSizeMap } from "../utils/sizeMappings";
 import { useThemableProps } from "../theme/AudioUiProvider";
-import AdaptiveBox from "../primitives/AdaptiveBox";
 import SvgKnob from "../theme/SvgKnob";
+import SvgContinuousControl from "../primitives/SvgContinuousControl";
+import { BipolarControl, ExplicitRange } from "../types";
 import { AudioParameterFactory, ContinuousParameter } from "../../models/AudioParameter";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
-import { useInteractiveControl } from "../../hooks/useInteractiveControl";
 
 /**
  * Props for the Knob component
@@ -69,6 +65,7 @@ function Knob({
     );
 
     // Construct the configuration object either from the prop or from the ad-hoc props
+    // We need this to get displayValue and min/max for renderValue
     const parameterDef = useMemo<ContinuousParameter>(() => {
         if (parameter) {
             if (parameter.type !== "continuous") {
@@ -86,27 +83,10 @@ function Knob({
             step,
             bipolar,
         });
-    }, [parameter, label, min, max, step, bipolar]);
+    }, [parameter, label, min, max, step, bipolar, paramId]);
 
-    // Use the hook to handle all math
-    const {
-        normalizedValue,
-        displayValue,
-        adjustValue
-    } = useAudioParameter(value, onChange, parameterDef);
-
-    // Use the interactive control hook for unified event handling
-    const interactiveProps = useInteractiveControl({
-        adjustValue,
-        interactionMode: interactionMode ?? "both",
-        direction: "vertical",
-        sensitivity: sensitivity ?? 0.008, // Increased default sensitivity (was 0.005)
-    });
-
-    // Memoize the classNames calculation
-    const componentClassNames = useMemo(() => {
-        return classNames(className, CLASSNAMES.root, CLASSNAMES.container, onChange ? CLASSNAMES.highlight : "");
-    }, [className, onChange]);
+    // Get displayValue for default rendering
+    const { displayValue } = useAudioParameter(value, onChange, parameterDef);
 
     // Get the preferred width based on the size prop
     const { width: preferredWidth, height: preferredHeight } = knobSizeMap[size];
@@ -165,60 +145,37 @@ function Knob({
         );
     }, [children, renderValue, value, parameterDef.min, parameterDef.max, displayValue]);
 
-    const effectiveLabel = label ?? (parameter ? parameterDef.name : undefined);
-
-    // Merge event handlers
-    const handleMouseDown = (e: React.MouseEvent) => {
-        interactiveProps.onMouseDown(e);
-        onMouseDown?.(e);
-    };
-
     return (
-        <AdaptiveBox
-            displayMode="scaleToFit"
-            className={componentClassNames}
+        <SvgContinuousControl
+            view={SvgKnob}
+            min={min}
+            max={max}
+            step={step}
+            bipolar={bipolar}
+            value={value}
+            label={label}
+            stretch={stretch}
+            className={className}
             style={{
                 ...(style ?? {}),
-                ...(interactiveProps.style ?? {}),
                 ...(stretch ? {} : { width: `${preferredWidth}px`, height: `${preferredHeight}px` }),
             }}
-            labelHeightUnits={20}
-            minWidth={40}
-            minHeight={40}
+            onChange={onChange}
+            paramId={paramId}
+            onClick={onClick}
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            color={resolvedColor}
+            parameter={parameter}
+            interactionMode={interactionMode}
+            sensitivity={sensitivity ?? 0.008}
+            thickness={thickness}
+            roundness={resolvedRoundness ?? 12}
         >
-            <>
-                <AdaptiveBox.Svg
-                    viewBoxWidth={SvgKnob.viewBox.width}
-                    viewBoxHeight={SvgKnob.viewBox.height}
-                    onWheel={interactiveProps.onWheel}
-                    onClick={onClick}
-                    onMouseDown={handleMouseDown}
-                    onTouchStart={interactiveProps.onTouchStart}
-                    onKeyDown={interactiveProps.onKeyDown}
-                    onMouseUp={onMouseUp}
-                    onMouseEnter={onMouseEnter}
-                    onMouseLeave={onMouseLeave}
-                    tabIndex={interactiveProps.tabIndex}
-                    role={interactiveProps.role}
-                    aria-valuenow={value}
-                    aria-valuemin={parameterDef.min}
-                    aria-valuemax={parameterDef.max}
-                    aria-label={effectiveLabel}
-                >
-                    <SvgKnob
-                        normalizedValue={normalizedValue}
-                        bipolar={bipolar}
-                        thickness={thickness}
-                        roundness={resolvedRoundness ?? 12}
-                        color={resolvedColor}
-                    >
-                        {knobContent}
-                    </SvgKnob>
-                </AdaptiveBox.Svg>
-
-                {effectiveLabel && <AdaptiveBox.Label align="center">{effectiveLabel}</AdaptiveBox.Label>}
-            </>
-        </AdaptiveBox>
+            {knobContent}
+        </SvgContinuousControl>
     );
 }
 

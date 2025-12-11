@@ -3,6 +3,7 @@
 import React, { useMemo } from "react";
 import { generateColorVariants } from "../utils/colorUtils";
 import { calculateArcPath } from "../utils/svgHelpers";
+import { ControlComponent } from "../types";
 
 /**
  * Angular constants for the knob's arc
@@ -25,7 +26,7 @@ export type SvgKnobProps = {
     /** Roundness for stroke linecap (0 = square, > 0 = round) */
     roundness?: number;
     /** Resolved color string */
-    color: string;
+    color?: string;
     /** Content to display inside the knob */
     children?: React.ReactNode;
     /** Additional CSS class name */
@@ -52,7 +53,7 @@ function SvgKnob({
     color,
     children,
     className,
-}: SvgKnobProps): JSX.Element {
+}: SvgKnobProps) {
     // Convert normalized value to angle
     const valueToAngle = useMemo(() => {
         return normalizedValue * MAX_ARC_ANGLE + MAX_START_ANGLE;
@@ -74,7 +75,7 @@ function SvgKnob({
     }, [roundness]);
 
     // Generate color variants
-    const colorVariants = useMemo(() => generateColorVariants(color, "transparency"), [color]);
+    const colorVariants = useMemo(() => generateColorVariants(color ?? "var(--audioui-primary-color)", "transparency"), [color]);
 
     return (
         <g className={className}>
@@ -113,6 +114,19 @@ function SvgKnob({
 SvgKnob.viewBox = {
     width: 100,
     height: 100,
-} as const;
+};
 
-export default SvgKnob;
+/**
+ * Label height for the SvgKnob component.
+ */
+SvgKnob.labelHeightUnits = 20;
+
+/**
+ * Interaction contract for the SvgKnob component.
+ */
+SvgKnob.interaction = {
+    mode: "both",
+    direction: "vertical", // Knobs are typically adjusted via vertical drag
+};
+
+export default SvgKnob as ControlComponent<Omit<SvgKnobProps, "normalizedValue" | "children" | "className" | "style">>;

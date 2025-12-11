@@ -217,6 +217,7 @@ export interface AdaptiveBoxSvgProps extends PropsWithChildren {
     onMouseLeave?: React.MouseEventHandler<SVGSVGElement>;
     onTouchStart?: React.TouchEventHandler<SVGSVGElement>;
     onKeyDown?: React.KeyboardEventHandler<SVGSVGElement>;
+    onKeyUp?: React.KeyboardEventHandler<SVGSVGElement>;
     tabIndex?: number;
     role?: string;
     "aria-valuenow"?: number;
@@ -225,6 +226,7 @@ export interface AdaptiveBoxSvgProps extends PropsWithChildren {
     "aria-label"?: string;
     "aria-valuetext"?: string;
     "aria-orientation"?: "horizontal" | "vertical";
+    "aria-pressed"?: boolean | "mixed";
 }
 
 function Svg({

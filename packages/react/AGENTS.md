@@ -2,21 +2,21 @@
 
 ## Quick Setup Summary (Load This First)
 
-| Category            | Details                                                                                                                                                                      |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Scripts             | `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm link`, `pnpm lint:css`                                                                                                    |
-| Env Vars            | None                                                                                                                                                                         |
-| Component Structure | Props with JSDoc; default params; function ComponentName() {}; arrow functions for handlers; SVG for graphics                                                                |
-| Exports             | All from src/index.ts: Components (Button, Knob, Slider, Keybed, AdaptiveBox, etc.), Providers (AudioUiProvider, hooks), Types, Utils (formatters, note utils), Theme colors |
-| Testing             | Vitest; .test.tsx alongside; mock deps; React 18 compat                                                                                                                      |
-| Build               | Vite; generates dist/index.js, index.d.ts, style.css; ES modules                                                                                                             |
+| Category            | Details                                                                                                                                                                                                                                               |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scripts             | `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm link`, `pnpm lint:css`                                                                                                                                                                             |
+| Env Vars            | None                                                                                                                                                                                                                                                  |
+| Component Structure | Props with JSDoc; default params; function ComponentName() {}; arrow functions for handlers; SVG for graphics                                                                                                                                         |
+| Exports             | All from src/index.ts: Components (Button, Knob, Slider, Keybed, AdaptiveBox, SvgContinuousControl, etc.), Providers (AudioUiProvider, hooks), Types (including ControlComponent, ControlComponentView), Utils (formatters, note utils), Theme colors |
+| Testing             | Vitest; .test.tsx alongside; mock deps; React 18 compat                                                                                                                                                                                               |
+| Build               | Vite; generates dist/index.js, index.d.ts, style.css; ES modules                                                                                                                                                                                      |
 
 ## Key File Structure
 
 - `src/components/`: Component .tsx with .test.tsx
-  - `controls/`: Interactive controls (Button, Knob, Slider, KnobSwitch)
-  - `primitives/`: Base components for building final components, excluding theme-specific (AdaptiveBox, Option)
-  - `theme/`: Default theme system (AudioUiProvider, default SVG components: SvgButton, SvgKnob, SvgSlider)
+  - `controls/`: Interactive controls (Button, Knob, Slider, KnobSwitch). Knob and Slider use SvgContinuousControl internally.
+  - `primitives/`: Base components for building final components, excluding theme-specific (AdaptiveBox, Option, SvgContinuousControl)
+  - `theme/`: Default theme system (AudioUiProvider, default SVG components: SvgButton, SvgKnob, SvgSlider with SvgVerticalSlider/SvgHorizontalSlider variants)
   - `Keybed.tsx`: Keyboard component
 - `src/index.ts`: Export all components, types, utilities, and theme colors
 - `src/themes.css`: Theme CSS variables (primary colors only; variants computed by components, all prefixed `--audioui-*`)
@@ -61,6 +61,24 @@ Technical documentation is located in `docs/`:
 
 ## Component-Specific Notes
 
+### Generic Control Architecture (SvgContinuousControl)
+
+The library provides a generic `SvgContinuousControl` component that decouples behavior from visualization. `Knob` and `Slider` use `SvgContinuousControl` internally, eliminating code duplication.
+
+- **Purpose**: Allows users to use any SVG component as a continuous control (knob, fader, etc.) without reimplementing interaction logic. Also used internally by `Knob` and `Slider` for shared behavior.
+- **Location**: `packages/react/src/components/primitives/SvgContinuousControl.tsx`
+- **Contract**: The view component must implement `ControlComponentView` interface, defining:
+  - `viewBox`: Dimensions for the SVG (required)
+  - `labelHeightUnits`: Label height in viewBox units (optional, defaults to 20)
+  - `interaction`: Preferred mode ("drag" | "wheel" | "both") and direction ("vertical" | "horizontal")
+- **Props**: The view receives `ControlComponentViewProps` (normalizedValue, children, className, style) plus any custom props (passed through generic type parameter `P`).
+- **Reference Implementations**:
+  - `SvgKnob` - implements contract with `viewBox: {width: 100, height: 100}`, `labelHeightUnits: 20`, `interaction: {mode: "both", direction: "vertical"}`
+  - `SvgVerticalSlider` / `SvgHorizontalSlider` - specialized slider views with orientation-specific viewBox and interaction direction
+- **Internal Usage**: `Knob` wraps `SvgContinuousControl` with `view={SvgKnob}`, `Slider` wraps with `view={SvgVerticalSlider}` or `view={SvgHorizontalSlider}` based on orientation
+- **Performance**: Double memoization (both wrapper and SvgContinuousControl are memoized) provides optimal re-render protection
+- **Type Exports**: `ControlComponent`, `ControlComponentView`, and `ControlComponentViewProps` are exported from `src/index.ts` for users creating custom view components
+
 ### Unified Interaction System (useInteractiveControl)
 
 **Comprehensive Documentation**: See `packages/react/docs/interaction-system.md` for complete interaction system architecture, design decisions, sensitivity tuning, and implementation details.
@@ -69,7 +87,7 @@ Technical documentation is located in `docs/`:
 
 - **Hook Location**: `packages/react/src/hooks/useInteractiveControl.ts`
 - **Interaction Modes**: Controls support `interactionMode` ("drag" | "wheel" | "both") to restrict input methods.
-- **Sensitivity Tuning**: 
+- **Sensitivity Tuning**:
   - Knob: `0.008` drag (increased for responsiveness)
   - Slider: `0.005` drag (standard)
   - KnobSwitch: `0.1` drag, `stepSize / 4` wheel (high sensitivity for enumerated steps)
@@ -105,7 +123,7 @@ Technical documentation is located in `docs/`:
   - **Arrow Keys**: Step increment/decrement (clamped at min/max, no wrap)
   - **Wheel**: Discrete step-by-step navigation (one option per wheel tick) using O(1) value-to-index Map lookups
   - **Drag/Touch**: High sensitivity (0.1) for responsive enumerated step changes
-- **Sensitivity**: 
+- **Sensitivity**:
   - Drag: `0.1` (much higher than continuous controls for responsive step changes)
   - Wheel: `stepSize / 4` (ensures one wheel notch ≈ one step)
 - **Performance Optimizations**:
