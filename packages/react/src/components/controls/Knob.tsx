@@ -5,27 +5,22 @@ import { knobSizeMap } from "../utils/sizeMappings";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import SvgKnob from "../theme/SvgKnob";
 import SvgContinuousControl from "../primitives/SvgContinuousControl";
-import { BipolarControl, ExplicitRange } from "../types";
+import { ContinuousControlProps, Themable } from "../types";
 import { AudioParameterFactory, ContinuousParameter } from "../../models/AudioParameter";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
 
 /**
- * Props for the Knob component
+ * Props for the Knob component (built-in control with theming support)
  */
-export type KnobProps = BipolarControl &
-    Partial<ExplicitRange> & {
-        /** Content to display inside the knob (replaces the value display) */
-        children?: React.ReactNode;
-        /** Thickness of the knob's stroke
-         * @default 12
-         */
-        thickness?: number;
-        /**
-         * Audio Parameter definition (Model)
-         * If provided, overrides min/max/step/label/unit
-         */
-        parameter?: ContinuousParameter;
-    };
+export type KnobProps = ContinuousControlProps &
+    Themable & {
+    /** Content to display inside the knob (replaces the value display) */
+    children?: React.ReactNode;
+    /** Thickness of the knob's stroke
+     * @default 12
+     */
+    thickness?: number;
+};
 
 /**
  * Knob component provides a circular control for value adjustment.

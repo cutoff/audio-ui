@@ -5,32 +5,16 @@ import classNames from "classnames";
 import AdaptiveBox from "../primitives/AdaptiveBox";
 import "../../styles.css";
 import { CLASSNAMES } from "../../styles/classNames";
-import { Control } from "../types";
+import { BooleanControlProps, Themable } from "../types";
 import { buttonSizeMap } from "../utils/sizeMappings";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import SvgButton from "../theme/SvgButton";
-import { BooleanParameter } from "../../models/AudioParameter";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
 
 /**
- * Props for the Button component
+ * Props for the Button component (built-in control with theming support)
  */
-export type ButtonProps = Omit<Partial<Control>, "value" | "onChange"> & {
-    /** Whether the button should latch (toggle between states) or momentary (only active while pressed) */
-    latch?: boolean;
-    /**
-     * Audio Parameter definition (Model)
-     */
-    parameter?: BooleanParameter;
-    /**
-     * Current value (must be boolean)
-     */
-    value: boolean;
-    /**
-     * Handler for value changes
-     */
-    onChange?: (value: boolean) => void;
-};
+export type ButtonProps = BooleanControlProps & Themable;
 
 /**
  * A button component for audio applications.
@@ -62,7 +46,7 @@ function Button({
     );
 
     // Construct the configuration object
-    const paramConfig = useMemo<BooleanParameter>(() => {
+    const paramConfig = useMemo(() => {
         if (parameter) {
             if (parameter.type !== "boolean") {
                 console.error("Button component only supports boolean parameters.");
@@ -73,13 +57,13 @@ function Button({
         // Ad-hoc Boolean Parameter
         return {
             id: paramId ?? "adhoc-button",
-            type: "boolean",
+            type: "boolean" as const,
             name: label || "",
-            mode: latch ? "toggle" : "momentary",
+            mode: (latch ? "toggle" : "momentary") as "toggle" | "momentary",
             defaultValue: false,
-            midiResolution: 7
+            midiResolution: 7 as const
         };
-    }, [parameter, label, latch]);
+    }, [parameter, label, latch, paramId]);
 
     // Use the hook to handle normalization
     const {

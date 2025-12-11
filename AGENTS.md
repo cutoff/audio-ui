@@ -72,6 +72,23 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
   - `src/components/primitives/`: Base components for building final components (AdaptiveBox, Option, SvgContinuousControl) - excludes theme-specific
   - `src/components/theme/`: Default theme system (AudioUiProvider, default SVG components: SvgButton, SvgKnob, SvgSlider)
   - `src/components/controls/`: Interactive controls (Button, Knob, Slider, KnobSwitch) - built using primitives and theme components
+
+## Component Architecture: Built-in vs Customizable
+
+The library distinguishes between **built-in controls** and **customizable primitives**:
+
+- **Built-in Controls** (`src/components/controls/`): Ready-to-use components (Button, Knob, Slider, KnobSwitch) that include theming support via `Themable` props (`color`, `roundness`). These are opinionated, production-ready components with full theming integration.
+
+- **Customizable Primitives** (`src/components/primitives/`): Lower-level components (SvgContinuousControl, AdaptiveBox) that provide behavior and structure without built-in theming. Users can build custom controls by:
+  - Using `SvgContinuousControl` with custom view components
+  - Adding their own theming props as needed
+  - Not being forced into the library's theming model
+
+**Type System Distinction:**
+
+- `ContinuousControlProps` and `BooleanControlProps` are primitive types (no `Themable` included) - for building custom controls
+- `KnobProps`, `SliderProps`, `ButtonProps` extend the primitives with `Themable` - for built-in controls
+- This allows users to create custom controls without inheriting theming constraints they may not need
 - `apps/playground-react/`: Next.js playground; showcases components; app/components for pages (inferred)
 - `agents/`: Shared conventions (coding-conventions-2.0.md, typescript-guidelines-2.0.md, react-conventions-2.0.md, documentation-standards-2.0.md)
 - `packages/react/docs/`: Specialized tech docs (e.g., adaptive-box-layout.md)

@@ -5,26 +5,20 @@ import { sliderSizeMap } from "../utils/sizeMappings";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import { SvgVerticalSlider, SvgHorizontalSlider } from "../theme/SvgSlider";
 import SvgContinuousControl from "../primitives/SvgContinuousControl";
-import { BipolarControl, ExplicitRange } from "../types";
-import { ContinuousParameter } from "../../models/AudioParameter";
+import { ContinuousControlProps, Themable } from "../types";
 
 /**
- * Props for the Slider component
+ * Props for the Slider component (built-in control with theming support)
  */
-export type SliderProps = BipolarControl &
-    Partial<ExplicitRange> & {
-        /** Orientation of the slider
-         * @default 'vertical' */
-        orientation?: "horizontal" | "vertical";
-        /** Thickness of the slider in pixels
-         * @default 20 */
-        thickness?: number;
-        /**
-         * Audio Parameter definition (Model)
-         * If provided, overrides min/max/label
-         */
-        parameter?: ContinuousParameter;
-    };
+export type SliderProps = ContinuousControlProps &
+    Themable & {
+    /** Orientation of the slider
+     * @default 'vertical' */
+    orientation?: "horizontal" | "vertical";
+    /** Thickness of the slider in pixels
+     * @default 20 */
+    thickness?: number;
+};
 
 /**
  * A vertical slider component for audio applications.

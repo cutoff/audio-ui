@@ -4,7 +4,7 @@ import React, { useMemo } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "../primitives/AdaptiveBox";
 import SvgKnob from "../theme/SvgKnob";
-import { AdaptativeSize, Base, InteractiveControl, Themable } from "../types";
+import { AdaptiveSize, BaseProps, InteractiveControl, Themable } from "../types";
 import { knobSizeMap } from "../utils/sizeMappings";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import { CLASSNAMES } from "../../styles/classNames";
@@ -27,9 +27,9 @@ export type KnobSwitchOptionProps = {
 /**
  * Props for the KnobSwitch component
  */
-export type KnobSwitchProps = AdaptativeSize &
+export type KnobSwitchProps = AdaptiveSize &
     InteractiveControl &
-    Base &
+    BaseProps &
     Themable & {
         /** Label displayed below the component */
         label?: string;

@@ -17,6 +17,28 @@
   - `controls/`: Interactive controls (Button, Knob, Slider, KnobSwitch). Knob and Slider use SvgContinuousControl internally.
   - `primitives/`: Base components for building final components, excluding theme-specific (AdaptiveBox, Option, SvgContinuousControl)
   - `theme/`: Default theme system (AudioUiProvider, default SVG components: SvgButton, SvgKnob, SvgSlider with SvgVerticalSlider/SvgHorizontalSlider variants)
+
+## Component Architecture: Built-in vs Customizable
+
+**Built-in Controls** (`src/components/controls/`):
+
+- Ready-to-use components (Button, Knob, Slider, KnobSwitch)
+- Include `Themable` props (`color`, `roundness`) via type extensions
+- Opinionated, production-ready with full theming integration
+- Props: `KnobProps`, `SliderProps`, `ButtonProps` extend primitives with `Themable`
+
+**Customizable Primitives** (`src/components/primitives/`):
+
+- Lower-level components (SvgContinuousControl, AdaptiveBox)
+- No built-in theming - users add their own theming props as needed
+- For building custom controls without theming constraints
+- Props: `ContinuousControlProps`, `BooleanControlProps` (no `Themable` included)
+
+**Type System:**
+
+- Primitive types (`ContinuousControlProps`, `BooleanControlProps`) do NOT include `Themable`
+- Built-in control types (`KnobProps`, `SliderProps`, `ButtonProps`) extend primitives with `Themable`
+- This separation allows custom controls to opt into theming only if needed
   - `Keybed.tsx`: Keyboard component
 - `src/index.ts`: Export all components, types, utilities, and theme colors
 - `src/themes.css`: Theme CSS variables (primary colors only; variants computed by components, all prefixed `--audioui-*`)

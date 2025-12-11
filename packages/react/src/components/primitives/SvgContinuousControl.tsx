@@ -3,18 +3,17 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 import { CLASSNAMES } from "../../styles/classNames";
-import { BipolarControl, ExplicitRange, ControlComponent } from "../types";
+import { ContinuousControlProps, ControlComponent } from "../types";
 import AdaptiveBox from "./AdaptiveBox";
-import { AudioParameterFactory, ContinuousParameter } from "../../models/AudioParameter";
+import { AudioParameterFactory } from "../../models/AudioParameter";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
 import { useInteractiveControl } from "../../hooks/useInteractiveControl";
 
 // 1. Define Props with Generics
 // P represents the "Extra Props" required by the specific View component
 export type SvgContinuousControlProps<P extends object = {}> =
-    // Base Control Props
-    BipolarControl &
-    Partial<ExplicitRange> &
+    // Base Control Props (includes all ContinuousControlProps)
+    ContinuousControlProps &
     // The "Extra Props" P are intersected here so they appear on the root component
     P & {
         /**
@@ -24,20 +23,9 @@ export type SvgContinuousControlProps<P extends object = {}> =
         view: ControlComponent<P>;
 
         /**
-         * Audio Parameter definition (Model)
-         */
-        parameter?: ContinuousParameter;
-
-        /**
          * Content passed to the View (e.g. center label for knobs)
          */
         children?: React.ReactNode;
-
-        /** Override interaction mode defined by the view */
-        interactionMode?: "drag" | "wheel" | "both";
-
-        /** Override sensitivity */
-        sensitivity?: number;
     };
 
 /**

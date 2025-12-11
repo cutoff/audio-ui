@@ -32,7 +32,19 @@ export type { SvgKnobProps } from "./components/theme/SvgKnob";
 export type { SvgSliderProps } from "./components/theme/SvgSlider";
 
 // Export common types
-export type { SizeType, AdaptativeSize, Control, BipolarControl, Themable, ControlComponent, ControlComponentView, ControlComponentViewProps } from "./components/types";
+export type {
+    SizeType,
+    AdaptiveSize,
+    BaseProps,
+    ContinuousControlProps,
+    BooleanControlProps,
+    InteractiveControl,
+    InteractionMode,
+    Themable,
+    ControlComponent,
+    ControlComponentView,
+    ControlComponentViewProps,
+} from "./components/types";
 
 // Export value formatters
 export {

@@ -1,4 +1,5 @@
 import React from "react";
+import { ContinuousParameter, BooleanParameter } from "../models/AudioParameter";
 
 /**
  * Size options for control components
@@ -21,7 +22,10 @@ export type Themable = {
     roundness?: number;
 };
 
-export type Base = {
+/**
+ * Base props for all components
+ */
+export type BaseProps = {
     /** Additional CSS classes */
     className?: string;
     /** Additional inline styles */
@@ -38,7 +42,10 @@ export type Base = {
     onMouseLeave?: React.MouseEventHandler;
 };
 
-export type AdaptativeSize = {
+/**
+ * Adaptive sizing props for responsive components
+ */
+export type AdaptiveSize = {
     /** Size of the component
      * @default 'normal'
      */
@@ -55,6 +62,10 @@ export type AdaptativeSize = {
  */
 export type InteractionMode = "drag" | "wheel" | "both";
 
+/**
+ * Props for interactive controls (drag, wheel, keyboard)
+ * Used by both continuous and enum controls
+ */
 export type InteractiveControl = {
     /** Handler for value changes
      * @param value The new value or a function to update the previous value
@@ -75,33 +86,30 @@ export type InteractiveControl = {
     sensitivity?: number;
 };
 
-export type ExplicitRange = {
-    /** Minimum value of the component */
-    min: number;
-    /** Maximum value of the component */
-    max: number;
-    /** Step size for value adjustments
-     * @default 1 (or calculated based on range)
-     */
-    step?: number;
-};
-
 /**
- * Base interface for control components with value ranges
- * Extends Stretchable to include responsive sizing capabilities
+ * Props for continuous value controls (primitives like SvgContinuousControl).
+ *
+ * Note: This is a primitive type for building customizable controls. Built-in controls
+ * (Knob, Slider) extend this with Themable props. If you're building a custom control
+ * using SvgContinuousControl, you can add your own theming props as needed.
+ *
+ * Supports two modes:
+ * 1. Parameter model mode: Provide `parameter` (ContinuousParameter) - all range/label info comes from the model
+ * 2. Ad-hoc mode: Provide `min`, `max`, `step`, `label` directly as props
+ *
+ * When `parameter` is provided, it takes precedence over ad-hoc props.
  */
-export type Control = AdaptativeSize &
-    InteractiveControl &
-    Base &
-    Themable & {
+export type ContinuousControlProps = BaseProps &
+    AdaptiveSize &
+    InteractiveControl & {
+        /** Current value of the control */
+        value: number;
+
         /** Label displayed below the component */
         label?: string;
 
-        /** Current value of the component */
-        value: number;
-
         /** Identifier for the parameter this control represents
-         * Used as the first argument in onChange callbacks
+         * Used when creating ad-hoc parameters
          */
         paramId?: string;
 
@@ -114,21 +122,74 @@ export type Control = AdaptativeSize &
          * @returns A string representation of the value
          */
         renderValue?: (value: number, min: number, max: number) => string;
+
+        /**
+         * Whether the component should operate in bipolar mode
+         * In bipolar mode, the component visualizes values relative to a center point
+         * rather than from minimum to maximum
+         * @default false
+         */
+        bipolar?: boolean;
+
+        /**
+         * Audio Parameter definition (Model)
+         * If provided, overrides min/max/step/label/bipolar from ad-hoc props
+         */
+        parameter?: ContinuousParameter;
+
+        /** Minimum value (ad-hoc mode, ignored if parameter provided) */
+        min?: number;
+
+        /** Maximum value (ad-hoc mode, ignored if parameter provided) */
+        max?: number;
+
+        /** Step size for value adjustments (ad-hoc mode, ignored if parameter provided)
+         * @default 1 (or calculated based on range)
+         */
+        step?: number;
     };
 
 /**
- * Interface for control components that support bipolar (centered) mode
- * Extends Control to include all basic control properties
+ * Props for boolean value controls (primitives).
+ *
+ * Note: This is a primitive type for building customizable controls. Built-in controls
+ * (Button) extend this with Themable props. If you're building a custom control,
+ * you can add your own theming props as needed.
+ *
+ * Supports two modes:
+ * 1. Parameter model mode: Provide `parameter` (BooleanParameter) - all config comes from the model
+ * 2. Ad-hoc mode: Provide `label`, `latch` directly as props
+ *
+ * When `parameter` is provided, it takes precedence over ad-hoc props.
  */
-export type BipolarControl = Control & {
-    /**
-     * Whether the component should operate in bipolar mode
-     * In bipolar mode, the component visualizes values relative to a center point
-     * rather than from minimum to maximum
-     * @default false
-     */
-    bipolar?: boolean;
-};
+export type BooleanControlProps = BaseProps &
+    AdaptiveSize & {
+        /** Current value (must be boolean) */
+        value: boolean;
+
+        /** Handler for value changes */
+        onChange?: (value: boolean) => void;
+
+        /** Label displayed below the component */
+        label?: string;
+
+        /** Identifier for the parameter this control represents
+         * Used when creating ad-hoc parameters
+         */
+        paramId?: string;
+
+        /**
+         * Audio Parameter definition (Model)
+         * If provided, overrides label/latch from ad-hoc props
+         */
+        parameter?: BooleanParameter;
+
+        /** Whether the button should latch (toggle between states) or momentary (only active while pressed)
+         * Ad-hoc mode only, ignored if parameter provided
+         * @default false
+         */
+        latch?: boolean;
+    };
 
 // --- GENERIC CONTRACTS ---
 

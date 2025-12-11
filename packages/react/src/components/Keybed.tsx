@@ -3,7 +3,7 @@
 import React, { useMemo, useCallback } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "./primitives/AdaptiveBox";
-import { AdaptativeSize, Base, Themable } from "./types";
+import { AdaptiveSize, BaseProps, Themable } from "./types";
 import { keybedSizeMap } from "./utils/sizeMappings";
 import { generateColorVariants } from "./utils/colorUtils";
 import {
@@ -28,8 +28,8 @@ const notesCount = WHITE_KEY_NAMES.length;
 /**
  * Props for the Keybed component
  */
-export type KeybedProps = Base &
-    AdaptativeSize &
+export type KeybedProps = BaseProps &
+    AdaptiveSize &
     Themable & {
         /** Number of keys on the keybed
          * @default 61 */
