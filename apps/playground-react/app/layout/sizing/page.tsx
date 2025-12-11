@@ -86,13 +86,13 @@ export default function SizingPage() {
                 <section className="mb-12">
                     <h2 className="text-2xl font-semibold mb-6">Slider Components</h2>
                     <p className="text-muted-foreground mb-6">
-                        Sliders maintain consistent track widths across sizes, with height/width ratios of 4:1 (vertical)
-                        and 1:4 (horizontal).
+                        Sliders maintain consistent track widths across sizes, with height/width ratios of 3:1 (vertical)
+                        and 1:3 (horizontal).
                     </p>
 
                     {/* Vertical Slider */}
                     <div className="mb-10">
-                        <h3 className="text-xl font-medium mb-4">Vertical Slider (4:1 width:height)</h3>
+                        <h3 className="text-xl font-medium mb-4">Vertical Slider (3:1 width:height)</h3>
                         <div className="flex flex-wrap gap-6 md:gap-8 items-end">
                             {sizeTypes.map((size) => (
                                 <div key={size} className="flex flex-col items-center gap-2">
@@ -114,7 +114,7 @@ export default function SizingPage() {
 
                     {/* Horizontal Slider */}
                     <div className="mb-10">
-                        <h3 className="text-xl font-medium mb-4">Horizontal Slider (1:4 width:height)</h3>
+                        <h3 className="text-xl font-medium mb-4">Horizontal Slider (1:3 width:height)</h3>
                         <div className="flex flex-wrap gap-6 md:gap-8 items-end">
                             {sizeTypes.map((size) => (
                                 <div key={size} className="flex flex-col items-center gap-2">

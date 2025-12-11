@@ -33,31 +33,31 @@
     --audioui-size-square-large: calc(var(--audioui-unit) * var(--audioui-size-mult-large));
     --audioui-size-square-xlarge: calc(var(--audioui-unit) * var(--audioui-size-mult-xlarge));
 
-    /* Horizontal Slider (1x4): height = base, width = 4 * base (width > height) */
+    /* Horizontal Slider (1x3): height = base, width = 3 * base (width > height) */
     --audioui-size-hslider-height-xsmall: var(--audioui-unit);
     --audioui-size-hslider-height-small: calc(var(--audioui-unit) * var(--audioui-size-mult-small));
     --audioui-size-hslider-height-normal: calc(var(--audioui-unit) * var(--audioui-size-mult-normal));
     --audioui-size-hslider-height-large: calc(var(--audioui-unit) * var(--audioui-size-mult-large));
     --audioui-size-hslider-height-xlarge: calc(var(--audioui-unit) * var(--audioui-size-mult-xlarge));
 
-    --audioui-size-hslider-width-xsmall: calc(var(--audioui-size-hslider-height-xsmall) * 4);
-    --audioui-size-hslider-width-small: calc(var(--audioui-size-hslider-height-small) * 4);
-    --audioui-size-hslider-width-normal: calc(var(--audioui-size-hslider-height-normal) * 4);
-    --audioui-size-hslider-width-large: calc(var(--audioui-size-hslider-height-large) * 4);
-    --audioui-size-hslider-width-xlarge: calc(var(--audioui-size-hslider-height-xlarge) * 4);
+    --audioui-size-hslider-width-xsmall: calc(var(--audioui-size-hslider-height-xsmall) * 3);
+    --audioui-size-hslider-width-small: calc(var(--audioui-size-hslider-height-small) * 3);
+    --audioui-size-hslider-width-normal: calc(var(--audioui-size-hslider-height-normal) * 3);
+    --audioui-size-hslider-width-large: calc(var(--audioui-size-hslider-height-large) * 3);
+    --audioui-size-hslider-width-xlarge: calc(var(--audioui-size-hslider-height-xlarge) * 3);
 
-    /* Vertical Slider (4x1): width = base, height = 4 * base (height > width) */
+    /* Vertical Slider (3x1): width = base, height = 3 * base (height > width) */
     --audioui-size-vslider-width-xsmall: var(--audioui-unit);
     --audioui-size-vslider-width-small: calc(var(--audioui-unit) * var(--audioui-size-mult-small));
     --audioui-size-vslider-width-normal: calc(var(--audioui-unit) * var(--audioui-size-mult-normal));
     --audioui-size-vslider-width-large: calc(var(--audioui-unit) * var(--audioui-size-mult-large));
     --audioui-size-vslider-width-xlarge: calc(var(--audioui-unit) * var(--audioui-size-mult-xlarge));
 
-    --audioui-size-vslider-height-xsmall: calc(var(--audioui-size-vslider-width-xsmall) * 4);
-    --audioui-size-vslider-height-small: calc(var(--audioui-size-vslider-width-small) * 4);
-    --audioui-size-vslider-height-normal: calc(var(--audioui-size-vslider-width-normal) * 4);
-    --audioui-size-vslider-height-large: calc(var(--audioui-size-vslider-width-large) * 4);
-    --audioui-size-vslider-height-xlarge: calc(var(--audioui-size-vslider-width-xlarge) * 4);
+    --audioui-size-vslider-height-xsmall: calc(var(--audioui-size-vslider-width-xsmall) * 3);
+    --audioui-size-vslider-height-small: calc(var(--audioui-size-vslider-width-small) * 3);
+    --audioui-size-vslider-height-normal: calc(var(--audioui-size-vslider-width-normal) * 3);
+    --audioui-size-vslider-height-large: calc(var(--audioui-size-vslider-width-large) * 3);
+    --audioui-size-vslider-height-xlarge: calc(var(--audioui-size-vslider-width-xlarge) * 3);
 
     /* Keybed (1x5): height = base, width = 5 * base (width > height) */
     --audioui-size-keybed-height-xsmall: var(--audioui-unit);

@@ -59,7 +59,7 @@ function SvgSlider({
                 x,
                 y: 20,
                 w: nonNegativeThickness,
-                h: 330,
+                h: 260,
             };
         } else {
             // For horizontal orientation
@@ -67,7 +67,7 @@ function SvgSlider({
             return {
                 x: 20,
                 y,
-                w: 330,
+                w: 260,
                 h: nonNegativeThickness,
                 maxH: nonNegativeThickness, // Add maxH to match Zone type if needed, or rely on w/h
             };
@@ -134,10 +134,10 @@ function SvgSlider({
 SvgSlider.viewBox = {
     vertical: {
         width: 100,
-        height: 370,
+        height: 300,
     },
     horizontal: {
-        width: 370,
+        width: 300,
         height: 100,
     },
 } as const;

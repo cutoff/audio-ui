@@ -174,8 +174,8 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - **Base Unit System**: All component sizes derive from `--audioui-unit` (48px default) with size multipliers (xsmall: 1x, small: 1.25x, normal: 1.5x, large: 2x, xlarge: 2.5x)
 - **Component Aspect Ratios**:
   - Button, Knob, KnobSwitch: 1x1 (square)
-  - Horizontal Slider: 1x4 (width:height) - width > height
-  - Vertical Slider: 4x1 (width:height) - height > width
+  - Horizontal Slider: 1x3 (width:height) - width > height
+  - Vertical Slider: 3x1 (width:height) - height > width
   - Keybed: 1x5 (width:height) - width > height
 - **Implementation**: Size defined via CSS variables in `themes.css`; size classes in `styles.css` for semantic purposes; inline styles (CSS variable references) override AdaptiveBox's default 100% sizing
 - **Size Prop**: All controls support `size` prop ("xsmall" | "small" | "normal" | "large" | "xlarge", default "normal") and `stretch` prop (default false)

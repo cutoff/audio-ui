@@ -166,7 +166,7 @@ svg foreignObject div > * svg {
     height: var(--audioui-size-square-xlarge);
 }
 
-/* Size utility classes - Horizontal Slider (1x4) */
+/* Size utility classes - Horizontal Slider (1x3) */
 .audioui-size-hslider-xsmall {
     width: var(--audioui-size-hslider-width-xsmall);
     height: var(--audioui-size-hslider-height-xsmall);
@@ -192,7 +192,7 @@ svg foreignObject div > * svg {
     height: var(--audioui-size-hslider-height-xlarge);
 }
 
-/* Size utility classes - Vertical Slider (4x1) */
+/* Size utility classes - Vertical Slider (3x1) */
 .audioui-size-vslider-xsmall {
     width: var(--audioui-size-vslider-width-xsmall);
     height: var(--audioui-size-vslider-height-xsmall);

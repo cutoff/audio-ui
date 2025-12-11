@@ -25,8 +25,8 @@ Each component type has a fixed aspect ratio that defines its shape:
 - **Button**: 1x1 (square)
 - **Knob**: 1x1 (square)
 - **KnobSwitch**: 1x1 (square)
-- **Horizontal Slider**: 1x4 (width:height) - width > height
-- **Vertical Slider**: 4x1 (width:height) - height > width
+- **Horizontal Slider**: 1x3 (width:height) - width > height
+- **Vertical Slider**: 3x1 (width:height) - height > width
 - **Keybed**: 1x5 (width:height) - width > height
 
 ## CSS Variable Structure
@@ -47,13 +47,13 @@ Size dimensions are defined in `themes.css` using CSS variables:
 /* Square components (Button, Knob, KnobSwitch) */
 --audioui-size-square-{size}: calc(var(--audioui-unit) * var(--audioui-size-mult-{size}));
 
-/* Horizontal Slider (1x4) */
+/* Horizontal Slider (1x3) */
 --audioui-size-hslider-height-{size}: var(--audioui-unit) * multiplier;
---audioui-size-hslider-width-{size}: calc(height * 4);
+--audioui-size-hslider-width-{size}: calc(height * 3);
 
-/* Vertical Slider (4x1) */
+/* Vertical Slider (3x1) */
 --audioui-size-vslider-width-{size}: var(--audioui-unit) * multiplier;
---audioui-size-vslider-height-{size}: calc(width * 4);
+--audioui-size-vslider-height-{size}: calc(width * 3);
 
 /* Keybed (1x5) */
 --audioui-size-keybed-height-{size}: var(--audioui-unit) * multiplier;
