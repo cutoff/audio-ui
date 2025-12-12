@@ -71,6 +71,12 @@
     --audioui-size-keybed-width-normal: calc(var(--audioui-size-keybed-height-normal) * 5);
     --audioui-size-keybed-width-large: calc(var(--audioui-size-keybed-height-large) * 5);
     --audioui-size-keybed-width-xlarge: calc(var(--audioui-size-keybed-height-xlarge) * 5);
+
+    /* Classic Piano Key Colors */
+    --audioui-keybed-ivory: hsl(40, 20%, 95%); /* Warm off-white color for classic white keys */
+    --audioui-keybed-ivory-stroke: hsl(40, 20%, 85%); /* Slightly darker for stroke contrast */
+    --audioui-keybed-ebony: hsl(0, 0%, 15%); /* Deep black color for classic black keys */
+    --audioui-keybed-ebony-stroke: hsl(0, 0%, 25%); /* Slightly lighter for stroke contrast */
 }
 
 /* Dark mode overrides */

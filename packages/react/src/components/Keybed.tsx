@@ -17,6 +17,7 @@ import {
 } from "./utils/noteUtils";
 import "../styles.css";
 import { CLASSNAMES } from "../styles/classNames";
+import { CSS_VARS } from "../styles/cssVars";
 import { useThemableProps } from "./theme/AudioUiProvider";
 
 /**
@@ -47,6 +48,12 @@ export type KeybedProps = BaseProps &
          * - Numbers representing MIDI note IDs (e.g., 60 for C4, 61 for C#4, etc.)
          * @example ['C4', 'E4', 'G4'] or [60, 64, 67] or ['C4', 64, 'G4'] */
         notesOn?: (string | number)[];
+        /** Key styling mode
+         * - 'theme': Uses theme colors (current behavior, uses color prop and themable hook)
+         * - 'classic': Classic piano style with ivory white keys and ebony black keys
+         * - 'classic-inverted': Inverted classic style with ebony white keys and ivory black keys
+         * @default 'theme' */
+        keyStyle?: "theme" | "classic" | "classic-inverted";
     };
 
 /**
@@ -79,6 +86,7 @@ const positiveModulo = (number: number, modulus: number): number => {
  * @property {string} className - Additional CSS classes
  * @property {React.CSSProperties} style - Additional inline styles
  * @property {SizeType} size - Size of the component (xsmall, small, normal, large, xlarge)
+ * @property {"theme" | "classic" | "classic-inverted"} keyStyle - Key styling mode (default "theme")
  *
  * @example
  * ```tsx
@@ -109,6 +117,12 @@ const positiveModulo = (number: number, modulus: number): number => {
  *   style={{ marginTop: '20px' }}
  *   size="large"
  * />
+ *
+ * // Classic piano style
+ * <Keybed keyStyle="classic" />
+ *
+ * // Inverted classic style
+ * <Keybed keyStyle="classic-inverted" />
  * ```
  */
 function Keybed({
@@ -122,6 +136,7 @@ function Keybed({
     size = "normal",
     color,
     roundness,
+    keyStyle = "theme",
 }: KeybedProps) {
     // Ensure nbKeys is within valid range (1-128)
     const validNbKeys = Math.max(1, Math.min(128, nbKeys));
@@ -192,13 +207,38 @@ function Keybed({
     }, [validNbKeys, startKey]);
 
     // Use the themable props hook to resolve color and roundness with proper fallbacks
+    // Color is always resolved (even in classic modes) so active keys can use theme color
     const defaultThemableProps = useMemo(() => ({ color: undefined, roundness: 0 }), []);
     const { resolvedColor, resolvedRoundness } = useThemableProps({ color, roundness }, defaultThemableProps);
 
     // Generate color variants using the centralized utility
+    // Used for theme mode rendering and for active keys in classic modes
     const colorVariants = useMemo(() => {
         return generateColorVariants(resolvedColor, "luminosity");
     }, [resolvedColor]);
+
+    // Determine key colors based on keyStyle
+    // Active keys always use theme color (colorVariants.primary), regardless of keyStyle
+    const keyColors = useMemo(() => {
+        if (keyStyle === "theme") {
+            return null; // Use colorVariants instead
+        } else if (keyStyle === "classic") {
+            return {
+                whiteFill: `var(${CSS_VARS.keybedIvory})`,
+                whiteStroke: `var(${CSS_VARS.keybedIvoryStroke})`,
+                blackFill: `var(${CSS_VARS.keybedEbony})`,
+                blackStroke: `var(${CSS_VARS.keybedEbonyStroke})`,
+            };
+        } else {
+            // classic-inverted
+            return {
+                whiteFill: `var(${CSS_VARS.keybedEbony})`,
+                whiteStroke: `var(${CSS_VARS.keybedEbonyStroke})`,
+                blackFill: `var(${CSS_VARS.keybedIvory})`,
+                blackStroke: `var(${CSS_VARS.keybedIvoryStroke})`,
+            };
+        }
+    }, [keyStyle]);
 
     // Memoize the active notes set for efficient lookups
     const activeNoteNumSet = useMemo(() => {
@@ -253,12 +293,29 @@ function Keybed({
             // Convert the MIDI note number to a note name and octave
             const currentWhiteNote = noteNumToNote(noteNum);
 
+            // Determine colors based on keyStyle
+            // Active keys always use theme color (colorVariants.primary)
+            let strokeColor: string;
+            let fillColor: string;
+
+            if (keyStyle === "theme") {
+                strokeColor = colorVariants.primary50;
+                fillColor = isNoteActive(currentWhiteNote) ? colorVariants.primary : "transparent";
+            } else if (keyColors) {
+                strokeColor = keyColors.whiteStroke;
+                fillColor = isNoteActive(currentWhiteNote) ? colorVariants.primary : keyColors.whiteFill;
+            } else {
+                // Fallback (should not happen)
+                strokeColor = "#000";
+                fillColor = "transparent";
+            }
+
             return (
                 <rect
                     key={`white-${index}-${currentWhiteNote}`}
                     style={{
-                        stroke: colorVariants.primary50,
-                        fill: isNoteActive(currentWhiteNote) ? colorVariants.primary : "transparent",
+                        stroke: strokeColor,
+                        fill: fillColor,
                     }}
                     strokeWidth={innerStrokeWidth}
                     x={index * whiteWidth + halfInnerStrokeWidth}
@@ -269,7 +326,7 @@ function Keybed({
                 />
             );
         });
-    }, [keybedDimensions, octaveShift, isNoteActive, resolvedRoundness, colorVariants]);
+    }, [keybedDimensions, octaveShift, isNoteActive, resolvedRoundness, colorVariants, keyColors, keyStyle]);
 
     // Memoize black keys rendering
     const renderBlackKeys = useMemo(() => {
@@ -316,13 +373,30 @@ function Keybed({
             // Convert the MIDI note number to a note name and octave
             const currentBlackNote = noteNumToNote(noteNum);
 
+            // Determine colors based on keyStyle
+            // Active keys always use theme color (colorVariants.primary)
+            let strokeColor: string;
+            let fillColor: string;
+
+            if (keyStyle === "theme") {
+                strokeColor = colorVariants.primary50;
+                fillColor = isNoteActive(currentBlackNote) ? colorVariants.primary : colorVariants.primary50;
+            } else if (keyColors) {
+                strokeColor = keyColors.blackStroke;
+                fillColor = isNoteActive(currentBlackNote) ? colorVariants.primary : keyColors.blackFill;
+            } else {
+                // Fallback (should not happen)
+                strokeColor = "#000";
+                fillColor = "#000";
+            }
+
             return (
                 <rect
                     key={`black-${index}-${currentBlackNote}`}
                     style={{
                         zIndex: 1,
-                        stroke: colorVariants.primary50,
-                        fill: isNoteActive(currentBlackNote) ? colorVariants.primary : colorVariants.primary50,
+                        stroke: strokeColor,
+                        fill: fillColor,
                     }}
                     strokeWidth={innerStrokeWidth}
                     x={index * whiteWidth + blackXShift + halfInnerStrokeWidth}
@@ -333,7 +407,7 @@ function Keybed({
                 />
             );
         }).filter(Boolean);
-    }, [keybedDimensions, octaveShift, isNoteActive, correctBlackPass, resolvedRoundness, colorVariants]);
+    }, [keybedDimensions, octaveShift, isNoteActive, correctBlackPass, resolvedRoundness, colorVariants, keyColors, keyStyle]);
 
     // Get the size class name based on the size prop
     const sizeClassName = stretch ? undefined : getSizeClassForComponent("keybed", size);

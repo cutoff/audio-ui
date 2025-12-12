@@ -22,11 +22,78 @@ export default function KeybedPage() {
     const [color, setColor] = useState<string | undefined>(undefined);
     const [roundness, setRoundness] = useState<number | undefined>(undefined);
     const [stretch, setStretch] = useState(true);
+    const [keyStyle, setKeyStyle] = useState<"theme" | "classic" | "classic-inverted">("theme");
 
     // MIDI related state
     const [midiInputs, setMidiInputs] = useState<WebMidi.MIDIInput[]>([]);
     const [selectedInputId, setSelectedInputId] = useState<string>("");
     const [webMidiSupported, setWebMidiSupported] = useState<boolean>(true);
+
+    // Handle example clicks to update main component props
+    const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4 | 5): void => {
+        switch (num) {
+            case 0:
+                // Default - matches main component preview
+                setNbKeys(61);
+                setStartKey("C");
+                setOctaveShift(0);
+                setKeyStyle("theme");
+                setNotesOn(["C4", 64, 67]);
+                setColor(undefined);
+                setRoundness(undefined);
+                break;
+            case 1:
+                // Classic Style
+                setNbKeys(25);
+                setStartKey("C");
+                setOctaveShift(0);
+                setKeyStyle("classic");
+                setNotesOn(["C4", "E4", "G4"]);
+                setColor(undefined);
+                setRoundness(undefined);
+                break;
+            case 2:
+                // Classic Inverted
+                setNbKeys(25);
+                setStartKey("C");
+                setOctaveShift(0);
+                setKeyStyle("classic-inverted");
+                setNotesOn(["C4", "E4", "G4"]);
+                setColor("#ff3366");
+                setRoundness(undefined);
+                break;
+            case 3:
+                // With Roundness
+                setNbKeys(25);
+                setStartKey("C");
+                setOctaveShift(0);
+                setKeyStyle("classic");
+                setNotesOn([]);
+                setColor("#33cc66");
+                setRoundness(4);
+                break;
+            case 4:
+                // Scale (C Major)
+                setNbKeys(37);
+                setStartKey("C");
+                setOctaveShift(0);
+                setKeyStyle("classic");
+                setNotesOn(["C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4"]);
+                setColor("#9966ff");
+                setRoundness(undefined);
+                break;
+            case 5:
+                // Small (MIDI Notes)
+                setNbKeys(13);
+                setStartKey("C");
+                setOctaveShift(0);
+                setKeyStyle("theme");
+                setNotesOn([60, 64, 67]);
+                setColor("#ff9933");
+                setRoundness(undefined);
+                break;
+        }
+    };
 
     // Generate code snippet with dynamic notesOn array
     const codeString = `<Keybed
@@ -35,7 +102,7 @@ export default function KeybedPage() {
   octaveShift={${octaveShift}}
   notesOn={[${notesOn.map((note) => (typeof note === "string" ? `"${note}"` : note)).join(", ")}]}${
       roundness !== undefined ? `\n  roundness={${roundness}}` : ""
-  }${color !== undefined ? `\n  color="${color}"` : ""}
+  }${color !== undefined ? `\n  color="${color}"` : ""}${keyStyle !== "theme" ? `\n  keyStyle="${keyStyle}"` : ""}
 />`;
 
     const componentProps = {
@@ -46,6 +113,7 @@ export default function KeybedPage() {
         color,
         roundness,
         stretch,
+        keyStyle,
     };
 
     const properties = [
@@ -106,6 +174,19 @@ export default function KeybedPage() {
                     setRoundness(nextValue);
                 }}
             />
+        </div>,
+        <div key="keyStyle" className="grid gap-2">
+            <Label htmlFor="keyStyleProp">Key Style</Label>
+            <Select value={keyStyle} onValueChange={(value) => setKeyStyle(value as typeof keyStyle)}>
+                <SelectTrigger id="keyStyleProp">
+                    <SelectValue placeholder="Select key style" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="theme">Theme</SelectItem>
+                    <SelectItem value="classic">Classic</SelectItem>
+                    <SelectItem value="classic-inverted">Classic Inverted</SelectItem>
+                </SelectContent>
+            </Select>
         </div>,
     ];
 
@@ -225,9 +306,109 @@ export default function KeybedPage() {
                 properties={properties}
             />
 
-            {/* Right Column - Original Keybed Page Content */}
+            {/* Right Column - Examples and MIDI Input */}
             <div className="w-full md:w-2/3 p-4 md:p-8">
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-6 md:gap-10">
+                    {/* Examples Section */}
+                    <div>
+                        <h2 className="text-xl md:text-2xl font-medium mb-4 md:mb-6">Examples</h2>
+                        <div className="flex flex-wrap gap-4 md:gap-8 justify-center md:justify-start">
+                            <div className="flex flex-col items-center gap-2">
+                                <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(0)}>
+                                    <Keybed
+                                        nbKeys={61}
+                                        startKey="C"
+                                        keyStyle="theme"
+                                        notesOn={["C4", 64, 67]}
+                                        color={undefined}
+                                        roundness={undefined}
+                                        size="large"
+                                        stretch={false}
+                                        style={{ cursor: "pointer" }}
+                                    />
+                                </div>
+                                <span className="text-xs text-muted-foreground text-center">Default</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-2">
+                                <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(1)}>
+                                    <Keybed
+                                        nbKeys={25}
+                                        startKey="C"
+                                        keyStyle="classic"
+                                        notesOn={["C4", "E4", "G4"]}
+                                        color={undefined}
+                                        size="large"
+                                        stretch={false}
+                                        style={{ cursor: "pointer" }}
+                                    />
+                                </div>
+                                <span className="text-xs text-muted-foreground text-center">Classic Style</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-2">
+                                <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(2)}>
+                                    <Keybed
+                                        nbKeys={25}
+                                        startKey="C"
+                                        keyStyle="classic-inverted"
+                                        notesOn={["C4", "E4", "G4"]}
+                                        color="#ff3366"
+                                        size="large"
+                                        stretch={false}
+                                        style={{ cursor: "pointer" }}
+                                    />
+                                </div>
+                                <span className="text-xs text-muted-foreground text-center">Classic Inverted</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-2">
+                                <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(3)}>
+                                    <Keybed
+                                        nbKeys={25}
+                                        startKey="C"
+                                        keyStyle="classic"
+                                        notesOn={[]}
+                                        color="#33cc66"
+                                        roundness={4}
+                                        size="large"
+                                        stretch={false}
+                                        style={{ cursor: "pointer" }}
+                                    />
+                                </div>
+                                <span className="text-xs text-muted-foreground text-center">With Roundness</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-2">
+                                <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(4)}>
+                                    <Keybed
+                                        nbKeys={37}
+                                        startKey="C"
+                                        keyStyle="classic"
+                                        notesOn={["C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4"]}
+                                        color="#9966ff"
+                                        size="large"
+                                        stretch={false}
+                                        style={{ cursor: "pointer" }}
+                                    />
+                                </div>
+                                <span className="text-xs text-muted-foreground text-center">Scale (C Major)</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-2">
+                                <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(5)}>
+                                    <Keybed
+                                        nbKeys={13}
+                                        startKey="C"
+                                        keyStyle="theme"
+                                        notesOn={[60, 64, 67]}
+                                        color="#ff9933"
+                                        size="large"
+                                        stretch={false}
+                                        style={{ cursor: "pointer" }}
+                                    />
+                                </div>
+                                <span className="text-xs text-muted-foreground text-center">Small (MIDI Notes)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* MIDI Input Section */}
                     {!webMidiSupported ? (
                         <Alert variant="destructive">
                             <AlertTriangle className="h-4 w-4" />
