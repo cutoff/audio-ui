@@ -44,6 +44,13 @@ export interface UseInteractiveControlProps {
      * Whether the control is disabled
      */
     disabled?: boolean;
+
+    /**
+     * Whether the control is editable (has an onChange handler).
+     * When false, cursor will be "default" instead of "pointer".
+     * @default true
+     */
+    editable?: boolean;
 }
 
 export interface InteractiveControlHandlers {
@@ -69,6 +76,7 @@ export function useInteractiveControl({
     sensitivity = 0.005,
     wheelSensitivity,
     disabled = false,
+    editable = true,
 }: UseInteractiveControlProps): InteractiveControlHandlers {
     // Refs to avoid stale closures in event listeners
     const stateRef = useRef({
@@ -275,6 +283,15 @@ export function useInteractiveControl({
         [adjustValue, sensitivity, keyboardStep, disabled]
     );
 
+    // Determine cursor based on state: disabled > editable > interaction mode
+    const cursor = disabled
+        ? "not-allowed"
+        : !editable
+        ? "default"
+        : interactionMode === "wheel"
+        ? "ns-resize"
+        : "pointer";
+
     return {
         onMouseDown,
         onTouchStart,
@@ -284,7 +301,7 @@ export function useInteractiveControl({
         role: "slider",
         "aria-disabled": disabled,
         style: {
-            cursor: disabled ? "not-allowed" : interactionMode === "wheel" ? "ns-resize" : "pointer",
+            cursor,
             touchAction: "none", // vital for touch drag to not scroll
         },
     };

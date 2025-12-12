@@ -330,7 +330,6 @@ export default function KnobDemoPage() {
     const examples = [
         <Knob
             key="0"
-            style={{ cursor: "pointer" }}
             min={0}
             max={100}
             step={1}
@@ -342,7 +341,6 @@ export default function KnobDemoPage() {
         />,
         <Knob
             key="1"
-            style={{ cursor: "pointer" }}
             min={0}
             bipolar={true}
             max={127}
@@ -356,7 +354,6 @@ export default function KnobDemoPage() {
         />,
         <Knob
             key="2"
-            style={{ cursor: "pointer" }}
             min={-1024}
             bipolar={true}
             max={1024}
@@ -370,7 +367,6 @@ export default function KnobDemoPage() {
         />,
         <KnobSwitch
             key="3"
-            style={{ cursor: "pointer" }}
             value={0}
             label="Enum"
             size="large"
@@ -382,7 +378,6 @@ export default function KnobDemoPage() {
         </KnobSwitch>,
         <Knob
             key="4"
-            style={{ cursor: "pointer" }}
             min={0}
             max={127}
             step={1}

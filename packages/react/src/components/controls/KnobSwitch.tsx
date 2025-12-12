@@ -175,7 +175,8 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             // So we need HIGHER sensitivity.
             // Previous was stepSize / 20. Increasing to stepSize / 5.
             // This means 5 delta (very tiny scroll) triggers step.
-            wheelSensitivity: stepSize > 0 ? stepSize / 4 : 0
+            wheelSensitivity: stepSize > 0 ? stepSize / 4 : 0,
+            editable: !!onChange || !!onClick,
         });
 
         // Get the size class name based on the size prop
@@ -187,10 +188,10 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
                 sizeClassName,
                 CLASSNAMES.root,
                 CLASSNAMES.container,
-                onChange ? CLASSNAMES.highlight : "",
+                (onChange || onClick) ? CLASSNAMES.highlight : "",
                 className
             );
-        }, [sizeClassName, className, onChange]);
+        }, [sizeClassName, className, onChange, onClick]);
 
         // Build merged style: size style (when not stretching), then interactive props style, then user style (user takes precedence)
         const sizeStyle = stretch ? undefined : getSizeStyleForComponent("knob", size);
@@ -317,7 +318,14 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             <AdaptiveBox
                 displayMode="scaleToFit"
                 className={componentClassNames}
-                style={{ ...sizeStyle, ...interactiveProps.style, ...style }}
+                style={{
+                    // Size style first
+                    ...sizeStyle,
+                    // Interactive style second (provides default cursor)
+                    ...interactiveProps.style,
+                    // User style last (can override cursor and other styles)
+                    ...style,
+                }}
                 labelHeightUnits={20}
                 minWidth={40}
                 minHeight={40}

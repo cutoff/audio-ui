@@ -82,11 +82,12 @@ export function SvgContinuousControl<P extends object = {}>({
         interactionMode: effectiveInteractionMode,
         direction: effectiveDirection,
         sensitivity,
+        editable: !!onChange || !!onClick,
     });
 
     const componentClassNames = useMemo(() => {
-        return classNames(className, CLASSNAMES.root, CLASSNAMES.container, onChange ? CLASSNAMES.highlight : "");
-    }, [className, onChange]);
+        return classNames(className, CLASSNAMES.root, CLASSNAMES.container, (onChange || onClick) ? CLASSNAMES.highlight : "");
+    }, [className, onChange, onClick]);
 
     const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
 
@@ -100,8 +101,10 @@ export function SvgContinuousControl<P extends object = {}>({
             displayMode="scaleToFit"
             className={componentClassNames}
             style={{
-                ...(style ?? {}),
+                // Interactive style first (provides default cursor)
                 ...(interactiveProps.style ?? {}),
+                // User style second (can override cursor and other styles)
+                ...(style ?? {}),
             }}
             labelHeightUnits={View.labelHeightUnits ?? 20}
         >

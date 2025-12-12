@@ -148,16 +148,19 @@ function Button({
             sizeClassName,
             CLASSNAMES.root,
             CLASSNAMES.container,
-            onChange ? CLASSNAMES.highlight : "",
+            (onChange || onClick) ? CLASSNAMES.highlight : "",
             className
         );
-    }, [sizeClassName, className, onChange]);
+    }, [sizeClassName, className, onChange, onClick]);
 
     // Use display value or label
     const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
 
     // Build merged style: size style (when not stretching), then user style (user takes precedence)
     const sizeStyle = stretch ? undefined : getSizeStyleForComponent("button", size);
+
+    // Determine if button is editable/clickable
+    const isInteractive = !!(onChange || onClick);
 
     return (
         <AdaptiveBox
@@ -181,6 +184,11 @@ function Button({
                 role="button"
                 aria-pressed={value}
                 aria-label={effectiveLabel}
+                style={{
+                    // Explicitly set cursor based on interactivity
+                    // User can override via className or parent style
+                    cursor: isInteractive ? "pointer" : "default",
+                }}
                 onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();

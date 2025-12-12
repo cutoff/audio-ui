@@ -41,6 +41,18 @@ describe("useInteractiveControl", () => {
         expect(adjustValue).not.toHaveBeenCalled();
     });
 
+    it("handles non-editable state correctly (no onChange)", () => {
+        const { result } = renderHook(() => useInteractiveControl({ adjustValue, editable: false }));
+
+        expect(result.current.style?.cursor).toBe("default");
+    });
+
+    it("handles editable state correctly (with onChange)", () => {
+        const { result } = renderHook(() => useInteractiveControl({ adjustValue, editable: true }));
+
+        expect(result.current.style?.cursor).toBe("pointer");
+    });
+
     describe("Drag Interaction", () => {
         it("handles vertical drag (default)", () => {
             const { result } = renderHook(() => useInteractiveControl({ adjustValue, sensitivity: 0.1 }));
