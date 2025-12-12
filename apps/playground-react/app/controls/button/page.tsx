@@ -33,7 +33,7 @@ export default function Page() {
             case 1:
                 setValue(false);
                 setLabel("Latch");
-                setRoundness(10);
+                setRoundness(0.3);
                 setColor("#ff3366"); // Pink
                 setLatch(true);
                 break;
@@ -54,14 +54,16 @@ export default function Page() {
             <Input id="labelProp" value={label} onChange={(e) => setLabel(e.target.value)} />
         </div>,
         <div key="roundness" className="grid gap-2">
-            <Label htmlFor="roundnessProp">Roundness</Label>
+            <Label htmlFor="roundnessProp">Roundness (0.0-1.0)</Label>
             <Input
                 id="roundnessProp"
                 type="number"
                 min="0"
+                max="1"
+                step="0.01"
                 value={roundness !== undefined ? roundness : ""}
                 onChange={(e) => {
-                    const value = e.target.value === "" ? undefined : Math.max(0, Number(e.target.value));
+                    const value = e.target.value === "" ? undefined : Math.max(0, Math.min(1, Number(e.target.value)));
                     setRoundness(value);
                 }}
             />
@@ -100,7 +102,7 @@ export default function Page() {
             label="Latch"
             size="large"
             latch={true}
-            roundness={10}
+            roundness={0.3}
             color="#ff3366" // Pink
             onChange={() => handleExampleClick(1)}
         />,

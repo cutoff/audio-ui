@@ -70,7 +70,7 @@ export default function KeybedPage() {
                 setKeyStyle("classic");
                 setNotesOn([]);
                 setColor("#33cc66");
-                setRoundness(4);
+                setRoundness(0.3);
                 break;
             case 4:
                 // Scale (C Major)
@@ -160,17 +160,18 @@ export default function KeybedPage() {
             <ColorPickerField id="colorProp" label="Color" value={color} onChange={setColor} />
         </div>,
         <div key="roundness" className="grid gap-2">
-            <Label htmlFor="roundnessProp">Roundness (optional)</Label>
+            <Label htmlFor="roundnessProp">Roundness (0.0-1.0, optional)</Label>
             <Input
                 id="roundnessProp"
                 type="number"
                 min="0"
-                max="50"
+                max="1"
+                step="0.01"
                 value={roundness ?? ""}
                 placeholder="theme"
                 onChange={(e) => {
                     const nextValue =
-                        e.target.value === "" ? undefined : Math.max(0, Math.min(50, Number(e.target.value)));
+                        e.target.value === "" ? undefined : Math.max(0, Math.min(1, Number(e.target.value)));
                     setRoundness(nextValue);
                 }}
             />
@@ -367,7 +368,7 @@ export default function KeybedPage() {
                                         keyStyle="classic"
                                         notesOn={[]}
                                         color="#33cc66"
-                                        roundness={4}
+                                        roundness={0.3}
                                         size="large"
                                         stretch={false}
                                         style={{ cursor: "pointer" }}

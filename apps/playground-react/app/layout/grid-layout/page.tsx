@@ -78,7 +78,7 @@ export default function GridLayoutPage() {
                                 value={knobValue}
                                 step={1}
                                 label="Default"
-                                thickness={12}
+                                thickness={0.35}
                                 stretch={true}
                                 className="emphasized-bg"
                                 style={{
@@ -94,7 +94,7 @@ export default function GridLayoutPage() {
                                 value={knobValue}
                                 step={1}
                                 label="Default"
-                                thickness={12}
+                                thickness={0.35}
                                 stretch={true}
                                 className="emphasized-bg"
                                 style={{
@@ -110,7 +110,7 @@ export default function GridLayoutPage() {
                                 value={knobValue}
                                 step={1}
                                 label="Default"
-                                thickness={12}
+                                thickness={0.35}
                                 stretch={true}
                                 className="emphasized-bg"
                                 style={{
@@ -126,7 +126,7 @@ export default function GridLayoutPage() {
                                 value={knobValue}
                                 step={1}
                                 label="Default"
-                                thickness={12}
+                                thickness={0.35}
                                 stretch={true}
                                 className="emphasized-bg"
                                 style={{
@@ -142,7 +142,7 @@ export default function GridLayoutPage() {
                                 value={knobValue}
                                 step={1}
                                 label="Default"
-                                thickness={12}
+                                thickness={0.35}
                                 stretch={true}
                                 className="emphasized-bg"
                                 style={{
@@ -160,7 +160,7 @@ export default function GridLayoutPage() {
                                 value={hSliderValue}
                                 step={1}
                                 label="Slider"
-                                thickness={20}
+                                thickness={0.25}
                                 orientation="horizontal"
                                 stretch={true}
                                 className="emphasized-bg"
@@ -177,7 +177,7 @@ export default function GridLayoutPage() {
                                 value={hSliderValue}
                                 step={1}
                                 label="Slider"
-                                thickness={20}
+                                thickness={0.25}
                                 orientation="horizontal"
                                 stretch={true}
                                 className="emphasized-bg"
@@ -196,7 +196,7 @@ export default function GridLayoutPage() {
                                 value={vSliderValue}
                                 step={1}
                                 label="Slider"
-                                thickness={20}
+                                thickness={0.25}
                                 orientation="vertical"
                                 stretch={true}
                                 className="emphasized-bg"
@@ -213,7 +213,7 @@ export default function GridLayoutPage() {
                                 value={vSliderValue}
                                 step={1}
                                 label="Slider"
-                                thickness={20}
+                                thickness={0.25}
                                 orientation="vertical"
                                 stretch={true}
                                 className="emphasized-bg"
@@ -230,7 +230,7 @@ export default function GridLayoutPage() {
                                 value={vSliderValue}
                                 step={1}
                                 label="Slider"
-                                thickness={20}
+                                thickness={0.25}
                                 orientation="vertical"
                                 stretch={true}
                                 className="emphasized-bg"
@@ -247,7 +247,7 @@ export default function GridLayoutPage() {
                                 value={vSliderValue}
                                 step={1}
                                 label="Slider"
-                                thickness={20}
+                                thickness={0.25}
                                 orientation="vertical"
                                 stretch={true}
                                 className="emphasized-bg"

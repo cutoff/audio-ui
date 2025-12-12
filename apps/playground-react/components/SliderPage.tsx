@@ -19,7 +19,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
     const [step, setStep] = useState<number | undefined>(1);
     const [label, setLabel] = useState("Default");
     const [bipolar, setBipolar] = useState(false);
-    const [thickness, setThickness] = useState(20);
+    const [thickness, setThickness] = useState(0.4);
     const [roundness, setRoundness] = useState<number | undefined>(undefined);
     const [color, setColor] = useState<string | undefined>(undefined); // Allow undefined to use theme values
 
@@ -43,7 +43,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setStep(1);
                 setLabel("Default");
                 setBipolar(false);
-                setThickness(20);
+                setThickness(0.4);
                 setRoundness(undefined); // Use theme roundness
                 setColor(undefined); // Use theme color
                 break;
@@ -54,8 +54,8 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setStep(1);
                 setLabel("Bipolar");
                 setBipolar(true);
-                setThickness(20);
-                setRoundness(10);
+                setThickness(0.4);
+                setRoundness(0.3);
                 setColor("#ff3366"); // Pink
                 break;
             case 2:
@@ -65,8 +65,8 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setStep(1);
                 setLabel("Thick");
                 setBipolar(false);
-                setThickness(40);
-                setRoundness(10);
+                setThickness(0.6);
+                setRoundness(0.3);
                 setColor("#33cc66"); // Green
                 break;
         }
@@ -101,24 +101,28 @@ export default function SliderPage({ orientation }: SliderPageProps) {
             />
         </div>,
         <div key="thickness" className="grid gap-2">
-            <Label htmlFor="thicknessProp">Thickness</Label>
+            <Label htmlFor="thicknessProp">Thickness (0.0-1.0)</Label>
             <Input
                 id="thicknessProp"
                 type="number"
                 min="0"
+                max="1"
+                step="0.01"
                 value={thickness}
-                onChange={(e) => setThickness(Math.max(0, Number(e.target.value)))}
+                onChange={(e) => setThickness(Math.max(0, Math.min(1, Number(e.target.value))))}
             />
         </div>,
         <div key="roundness" className="grid gap-2">
-            <Label htmlFor="roundnessProp">Roundness</Label>
+            <Label htmlFor="roundnessProp">Roundness (0.0-1.0)</Label>
             <Input
                 id="roundnessProp"
                 type="number"
                 min="0"
+                max="1"
+                step="0.01"
                 value={roundness !== undefined ? roundness : ""}
                 onChange={(e) => {
-                    const value = e.target.value === "" ? undefined : Math.max(0, Number(e.target.value));
+                    const value = e.target.value === "" ? undefined : Math.max(0, Math.min(1, Number(e.target.value)));
                     setRoundness(value);
                 }}
             />
@@ -142,7 +146,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 max={100}
                 step={1}
                 value={42}
-                thickness={20}
+                thickness={0.4}
                 label="Default"
                 size="large"
                 orientation={orientation}
@@ -158,11 +162,11 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 max={127}
                 step={1}
                 value={64}
-                thickness={20}
+                thickness={0.4}
                 label="Bipolar"
                 size="large"
                 orientation={orientation}
-                roundness={10}
+                roundness={0.4}
                 color="#ff3366" // Pink
                 onClick={() => handleExampleClick(1)}
             />
@@ -175,11 +179,11 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 max={127}
                 step={1}
                 value={22}
-                thickness={40}
+                thickness={0.6}
                 label="Thick"
                 size="large"
                 orientation={orientation}
-                roundness={10}
+                roundness={0.4}
                 color="#33cc66" // Green
                 onClick={() => handleExampleClick(2)}
             />

@@ -7,6 +7,8 @@ import { useThemableProps } from "../theme/AudioUiProvider";
 import SvgKnob from "../theme/SvgKnob";
 import SvgContinuousControl from "../primitives/SvgContinuousControl";
 import { ContinuousControlProps, Themable } from "../types";
+import { clampNormalized } from "../utils/normalizedProps";
+import { DEFAULT_ROUNDNESS } from "../utils/themeDefaults";
 import { AudioParameterFactory, ContinuousParameter } from "../../models/AudioParameter";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
 
@@ -17,8 +19,8 @@ export type KnobProps = ContinuousControlProps &
     Themable & {
     /** Content to display inside the knob (replaces the value display) */
     children?: React.ReactNode;
-    /** Thickness of the knob's stroke
-     * @default 12
+    /** Thickness of the knob's stroke (normalized 0.0-1.0, maps to 1-20)
+     * @default 0.4
      */
     thickness?: number;
 };
@@ -40,7 +42,7 @@ function Knob({
     style,
     onChange,
     roundness,
-    thickness = 12,
+    thickness = 0.4,
     size = "normal",
     renderValue,
     paramId,
@@ -55,9 +57,12 @@ function Knob({
     sensitivity,
 }: KnobProps) {
     // Use the themable props hook to resolve color and roundness with proper fallbacks
+    // Clamp values to 0.0-1.0 range
+    const clampedRoundness = roundness !== undefined ? clampNormalized(roundness) : undefined;
+    const clampedThickness = clampNormalized(thickness);
     const { resolvedColor, resolvedRoundness } = useThemableProps(
-        { color, roundness },
-        { color: undefined, roundness: 12 }
+        { color, roundness: clampedRoundness },
+        { color: undefined, roundness: DEFAULT_ROUNDNESS }
     );
 
     // Construct the configuration object either from the prop or from the ad-hoc props
@@ -170,8 +175,8 @@ function Knob({
             parameter={parameter}
             interactionMode={interactionMode}
             sensitivity={sensitivity ?? 0.008}
-            thickness={thickness}
-            roundness={resolvedRoundness ?? 12}
+            thickness={clampedThickness}
+            roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
         >
             {knobContent}
         </SvgContinuousControl>

@@ -54,9 +54,10 @@ const COLORS = [
     "#cc66ff", // Violet
 ];
 
-// Thickness options for knobs and sliders
-const KNOB_THICKNESSES = [6, 8, 10, 12, 14];
-const SLIDER_THICKNESSES = [10, 14, 18, 22, 26];
+// Thickness options for knobs and sliders (normalized 0.0-1.0)
+// Knob: maps to 1-20, Slider: maps to 1-50
+const KNOB_THICKNESSES = [0.26, 0.37, 0.47, 0.58, 0.68]; // ~6, 8, 10, 12, 14 in legacy
+const SLIDER_THICKNESSES = [0.18, 0.27, 0.35, 0.43, 0.51]; // ~10, 14, 18, 22, 26 in legacy (adjusted for 1-50 range)
 
 function generateControlConfigs(count: number): ControlConfig[] {
     const configs: ControlConfig[] = [];
@@ -442,7 +443,7 @@ export default function StressTestPage() {
                                     startKey={config.startKey}
                                     notesOn={keybedNotes[i] || []}
                                     color={config.color}
-                                    size="xsmall"
+                                    size="normal"
                                 />
                             </div>
                         ))}

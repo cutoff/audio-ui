@@ -19,6 +19,8 @@ import "../styles.css";
 import { CLASSNAMES } from "../styles/classNames";
 import { CSS_VARS } from "../styles/cssVars";
 import { useThemableProps } from "./theme/AudioUiProvider";
+import { translateKeybedRoundness } from "./utils/normalizedProps";
+import { DEFAULT_ROUNDNESS } from "./utils/themeDefaults";
 
 /**
  * Type definition for note names (C to B)
@@ -208,8 +210,14 @@ function Keybed({
 
     // Use the themable props hook to resolve color and roundness with proper fallbacks
     // Color is always resolved (even in classic modes) so active keys can use theme color
-    const defaultThemableProps = useMemo(() => ({ color: undefined, roundness: 0 }), []);
+    const defaultThemableProps = useMemo(() => ({ color: undefined, roundness: DEFAULT_ROUNDNESS }), []);
     const { resolvedColor, resolvedRoundness } = useThemableProps({ color, roundness }, defaultThemableProps);
+
+    // Translate normalized roundness to legacy range (0-12)
+    const legacyRoundness = useMemo(() => {
+        const normalized = resolvedRoundness ?? DEFAULT_ROUNDNESS;
+        return translateKeybedRoundness(normalized);
+    }, [resolvedRoundness]);
 
     // Generate color variants using the centralized utility
     // Used for theme mode rendering and for active keys in classic modes
@@ -322,11 +330,11 @@ function Keybed({
                     y={halfInnerStrokeWidth}
                     width={whiteWidth}
                     height={whiteHeight}
-                    rx={resolvedRoundness ?? 0}
+                    rx={legacyRoundness}
                 />
             );
         });
-    }, [keybedDimensions, octaveShift, isNoteActive, resolvedRoundness, colorVariants, keyColors, keyStyle]);
+    }, [keybedDimensions, octaveShift, isNoteActive, legacyRoundness, colorVariants, keyColors, keyStyle]);
 
     // Memoize black keys rendering
     const renderBlackKeys = useMemo(() => {
@@ -403,11 +411,11 @@ function Keybed({
                     y={halfInnerStrokeWidth}
                     width={blackWidth}
                     height={blackHeight}
-                    rx={resolvedRoundness ?? 0}
+                    rx={legacyRoundness}
                 />
             );
         }).filter(Boolean);
-    }, [keybedDimensions, octaveShift, isNoteActive, correctBlackPass, resolvedRoundness, colorVariants, keyColors, keyStyle]);
+    }, [keybedDimensions, octaveShift, isNoteActive, correctBlackPass, legacyRoundness, colorVariants, keyColors, keyStyle]);
 
     // Get the size class name based on the size prop
     const sizeClassName = stretch ? undefined : getSizeClassForComponent("keybed", size);

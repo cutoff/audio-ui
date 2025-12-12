@@ -4,6 +4,8 @@ import React, { useMemo } from "react";
 import { generateColorVariants } from "../utils/colorUtils";
 import { calculateArcPath } from "../utils/svgHelpers";
 import { ControlComponent } from "../types";
+import { translateKnobRoundness, translateKnobThickness } from "../utils/normalizedProps";
+import { DEFAULT_ROUNDNESS } from "../utils/themeDefaults";
 
 /**
  * Angular constants for the knob's arc
@@ -21,9 +23,9 @@ export type SvgKnobProps = {
     normalizedValue: number;
     /** Whether to start the arc from center (bipolar mode) */
     bipolar?: boolean;
-    /** Thickness of the knob's stroke */
+    /** Thickness of the knob's stroke (normalized 0.0-1.0, maps to 1-20) */
     thickness?: number;
-    /** Roundness for stroke linecap (0 = square, > 0 = round) */
+    /** Roundness for stroke linecap (normalized 0.0-1.0, 0.0 = square, >0.0 = round) */
     roundness?: number;
     /** Resolved color string */
     color?: string;
@@ -39,8 +41,8 @@ export type SvgKnobProps = {
  *
  * @param normalizedValue - Value between 0 and 1
  * @param bipolar - Whether to start arc from center (default false)
- * @param thickness - Stroke width (default 12)
- * @param roundness - Linecap style: 0 for square, > 0 for round (default 12)
+ * @param thickness - Normalized thickness 0.0-1.0 (default 0.4, maps to 1-20)
+ * @param roundness - Normalized roundness 0.0-1.0 (default 0.3, 0.0 = square, >0.0 = round)
  * @param color - Resolved color string
  * @param children - Content to display in the center
  * @param className - Optional CSS class
@@ -48,8 +50,8 @@ export type SvgKnobProps = {
 function SvgKnob({
     normalizedValue,
     bipolar = false,
-    thickness = 12,
-    roundness = 12,
+    thickness = 0.4,
+    roundness = DEFAULT_ROUNDNESS,
     color,
     children,
     className,
@@ -59,8 +61,13 @@ function SvgKnob({
         return normalizedValue * MAX_ARC_ANGLE + MAX_START_ANGLE;
     }, [normalizedValue]);
 
-    // Use the thickness prop for stroke width (ensure non-negative)
-    const strokeWidth = Math.max(0, thickness);
+    // Translate normalized thickness to legacy range (1-20)
+    const legacyThickness = useMemo(() => {
+        return translateKnobThickness(thickness);
+    }, [thickness]);
+
+    // Use the translated thickness for stroke width
+    const strokeWidth = legacyThickness;
 
     // Calculate radius to make stroke expand inward
     // The outer edge stays at radius 50, and the stroke grows inward as thickness increases
@@ -68,10 +75,10 @@ function SvgKnob({
         return 50 - strokeWidth / 2;
     }, [strokeWidth]);
 
-    // Determine stroke linecap based on roundness (square if 0, round if > 0)
+    // Translate normalized roundness to legacy value and determine stroke linecap
     const strokeLinecap = useMemo(() => {
-        const nonNegativeRoundness = Math.max(0, roundness);
-        return nonNegativeRoundness === 0 ? "square" : "round";
+        const legacyRoundness = translateKnobRoundness(roundness);
+        return legacyRoundness === 0 ? "square" : "round";
     }, [roundness]);
 
     // Generate color variants

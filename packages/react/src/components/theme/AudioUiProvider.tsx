@@ -3,6 +3,8 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
 import { Themable } from "../types";
 import { getAdaptiveDefaultColor, isDarkMode } from "../utils/colorUtils";
+import { clampNormalized } from "../utils/normalizedProps";
+import { DEFAULT_ROUNDNESS } from "../utils/themeDefaults";
 
 /**
  * Theme context type with setter functions
@@ -19,7 +21,7 @@ interface ThemeContextType {
 // Note: color will be resolved to adaptive default if not provided
 const ThemeContext = createContext<ThemeContextType>({
     color: undefined,
-    roundness: 12,
+    roundness: DEFAULT_ROUNDNESS,
     isDarkMode: false,
     setColor: () => {},
     setRoundness: () => {},
@@ -39,8 +41,8 @@ export interface AudioUiProviderProps {
      */
     initialColor?: string;
     /**
-     * Initial roundness value
-     * @default 12
+     * Initial roundness value (normalized 0.0-1.0)
+     * @default 0.3
      */
     initialRoundness?: number;
 }
@@ -51,14 +53,14 @@ export interface AudioUiProviderProps {
  *
  * @example
  * ```tsx
- * <AudioUiProvider initialColor="purple" initialRoundness={8}>
+ * <AudioUiProvider initialColor="purple" initialRoundness={0.4}>
  *   <App />
  * </AudioUiProvider>
  * ```
  */
-export function AudioUiProvider({ children, initialColor, initialRoundness = 12 }: AudioUiProviderProps) {
+export function AudioUiProvider({ children, initialColor, initialRoundness = DEFAULT_ROUNDNESS }: AudioUiProviderProps) {
     const [color, setColor] = useState<string | undefined>(initialColor);
-    const [roundness, setRoundness] = useState<number>(initialRoundness);
+    const [roundness, setRoundness] = useState<number>(clampNormalized(initialRoundness));
 
     // Track color mode at provider level - shared across all components
     // This prevents creating multiple MutationObservers and MediaQueryList listeners
@@ -163,9 +165,10 @@ export function useThemableProps(
         return props.color ?? themeContext.color ?? defaultValues.color ?? getAdaptiveDefaultColor();
     }, [props.color, themeContext.color, defaultValues.color, themeContext.isDarkMode]);
 
-    // Memoize resolved roundness
+    // Memoize resolved roundness and clamp to 0.0-1.0
     const resolvedRoundness = useMemo(() => {
-        return props.roundness ?? themeContext.roundness ?? defaultValues.roundness;
+        const value = props.roundness ?? themeContext.roundness ?? defaultValues.roundness;
+        return value !== undefined ? clampNormalized(value) : undefined;
     }, [props.roundness, themeContext.roundness, defaultValues.roundness]);
 
     return { resolvedColor, resolvedRoundness };

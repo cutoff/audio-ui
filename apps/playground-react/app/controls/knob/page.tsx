@@ -173,7 +173,7 @@ export default function KnobDemoPage() {
     const [useMidiBipolar, setUseMidiBipolar] = useState(false);
     const [enableOptions, setEnableOptions] = useState(false);
     const [roundness, setRoundness] = useState<number | undefined>(undefined);
-    const [thickness, setThickness] = useState(12);
+    const [thickness, setThickness] = useState(0.4);
     const [color, setColor] = useState<string | undefined>(undefined); // Allow undefined to use theme values
 
     const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4): void => {
@@ -187,7 +187,7 @@ export default function KnobDemoPage() {
                 setBipolar(false);
                 setUseMidiBipolar(false);
                 setEnableOptions(false);
-                setThickness(12);
+                setThickness(0.4);
                 setRoundness(undefined); // Use theme roundness
                 setColor(undefined); // Use theme color
                 break;
@@ -200,8 +200,8 @@ export default function KnobDemoPage() {
                 setBipolar(true);
                 setUseMidiBipolar(false);
                 setEnableOptions(false);
-                setThickness(12);
-                setRoundness(12);
+                setThickness(0.4);
+                setRoundness(0.3);
                 setColor("#ff3366"); // Pink
                 break;
             case 2:
@@ -213,8 +213,8 @@ export default function KnobDemoPage() {
                 setBipolar(true);
                 setUseMidiBipolar(false);
                 setEnableOptions(false);
-                setThickness(12);
-                setRoundness(12);
+                setThickness(0.4);
+                setRoundness(0.3);
                 setColor("#33cc66"); // Green
                 break;
             case 3:
@@ -226,8 +226,8 @@ export default function KnobDemoPage() {
                 setBipolar(false);
                 setUseMidiBipolar(false);
                 setEnableOptions(true);
-                setThickness(16);
-                setRoundness(12);
+                setThickness(0.6);
+                setRoundness(0.3);
                 setColor("#9966ff"); // Purple
                 break;
             case 4:
@@ -239,8 +239,8 @@ export default function KnobDemoPage() {
                 setBipolar(true);
                 setUseMidiBipolar(true);
                 setEnableOptions(false);
-                setThickness(12);
-                setRoundness(12);
+                setThickness(0.4);
+                setRoundness(0.3);
                 setColor("#ff9933"); // Orange
                 break;
         }
@@ -273,24 +273,28 @@ export default function KnobDemoPage() {
             />
         </div>,
         <div key="thickness" className="grid gap-2">
-            <Label htmlFor="thicknessProp">Thickness</Label>
+            <Label htmlFor="thicknessProp">Thickness (0.0-1.0)</Label>
             <Input
                 id="thicknessProp"
                 type="number"
                 min="0"
+                max="1"
+                step="0.01"
                 value={thickness}
-                onChange={(e) => setThickness(Math.max(0, Number(e.target.value)))}
+                onChange={(e) => setThickness(Math.max(0, Math.min(1, Number(e.target.value))))}
             />
         </div>,
         <div key="roundness" className="grid gap-2">
-            <Label htmlFor="roundnessProp">Roundness</Label>
+            <Label htmlFor="roundnessProp">Roundness (0.0-1.0)</Label>
             <Input
                 id="roundnessProp"
                 type="number"
                 min="0"
+                max="1"
+                step="0.01"
                 value={roundness !== undefined ? roundness : ""}
                 onChange={(e) => {
-                    const value = e.target.value === "" ? undefined : Math.max(0, Number(e.target.value));
+                    const value = e.target.value === "" ? undefined : Math.max(0, Math.min(1, Number(e.target.value)));
                     setRoundness(value);
                 }}
             />

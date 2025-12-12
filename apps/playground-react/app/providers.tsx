@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { ThemeProvider } from "next-themes";
-import { AudioUiProvider, useAudioUiTheme } from "@cutoff/audio-ui-react";
+import { AudioUiProvider, useAudioUiTheme, DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-react";
 
 // Global state for audio UI theme
 export type AudioUiThemeState = {
@@ -15,7 +15,7 @@ export type AudioUiThemeState = {
 // Create a default state with no-op setters
 export const defaultAudioUiTheme: AudioUiThemeState = {
     color: undefined,
-    roundness: 12,
+    roundness: DEFAULT_ROUNDNESS,
     setColor: () => {},
     setRoundness: () => {},
 };
@@ -34,7 +34,7 @@ function ThemeConnector({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         audioUiThemeState.current = {
             color, // Can be undefined - components will use adaptive default
-            roundness: roundness ?? 12,
+            roundness: roundness ?? DEFAULT_ROUNDNESS,
             setColor,
             setRoundness,
         };
@@ -46,7 +46,7 @@ function ThemeConnector({ children }: { children: React.ReactNode }) {
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
-            <AudioUiProvider initialRoundness={12}>
+            <AudioUiProvider initialRoundness={DEFAULT_ROUNDNESS}>
                 <ThemeConnector>{children}</ThemeConnector>
             </AudioUiProvider>
         </ThemeProvider>

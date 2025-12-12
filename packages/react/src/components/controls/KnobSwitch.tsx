@@ -11,6 +11,8 @@ import { CLASSNAMES } from "../../styles/classNames";
 import { EnumParameter } from "../../models/AudioParameter";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
 import { useInteractiveControl } from "../../hooks/useInteractiveControl";
+import { clampNormalized } from "../utils/normalizedProps";
+import { DEFAULT_ROUNDNESS } from "../utils/themeDefaults";
 
 /**
  * Props for the option elements within KnobSwitch
@@ -43,7 +45,7 @@ export type KnobSwitchProps = AdaptiveSize &
         parameter?: EnumParameter;
         /** Custom renderer for options (Mode A) */
         renderOption?: (option: { value: any; label: string }) => React.ReactNode;
-        /** Thickness of the knob's stroke */
+        /** Thickness of the knob's stroke (normalized 0.0-1.0, maps to 1-20) */
         thickness?: number;
     };
 
@@ -72,14 +74,17 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
     roundness,
     parameter,
     renderOption,
-    thickness = 12,
+    thickness = 0.4,
     interactionMode,
     sensitivity,
 }) => {
         // Use the themable props hook to resolve color and roundness with proper fallbacks
+        // Clamp values to 0.0-1.0 range
+        const clampedRoundness = roundness !== undefined ? clampNormalized(roundness) : undefined;
+        const clampedThickness = clampNormalized(thickness);
         const { resolvedColor, resolvedRoundness } = useThemableProps(
-            { color, roundness },
-            { color: undefined, roundness: 12 }
+            { color, roundness: clampedRoundness },
+            { color: undefined, roundness: DEFAULT_ROUNDNESS }
         );
 
         // Mode B: Parse children to build parameter and visual map
@@ -351,8 +356,8 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
                         <SvgKnob
                             normalizedValue={normalizedValue}
                             bipolar={false} // Switches usually 0..1
-                            thickness={thickness}
-                            roundness={resolvedRoundness ?? 12}
+                            thickness={clampedThickness}
+                            roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
                             color={resolvedColor}
                         >
                             <div style={contentWrapperStyle}>

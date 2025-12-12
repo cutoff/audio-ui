@@ -3,6 +3,8 @@
 import React, { useMemo } from "react";
 import { generateColorVariants } from "../utils/colorUtils";
 import { computeFilledZone, Zone } from "../utils/svgHelpers";
+import { translateSliderRoundness, translateSliderThickness } from "../utils/normalizedProps";
+import { DEFAULT_ROUNDNESS } from "../utils/themeDefaults";
 
 /**
  * Props for the SvgSlider component
@@ -14,9 +16,9 @@ export type SvgSliderProps = {
     bipolar?: boolean;
     /** Orientation of the slider */
     orientation?: "horizontal" | "vertical";
-    /** Thickness of the slider in pixels */
+    /** Thickness of the slider (normalized 0.0-1.0, maps to 1-50) */
     thickness?: number;
-    /** Corner roundness (0 = square, > 0 = rounded) */
+    /** Corner roundness (normalized 0.0-1.0, maps to 0-20) */
     roundness?: number;
     /** Resolved color string */
     color?: string;
@@ -33,8 +35,8 @@ export type SvgSliderProps = {
  * @param normalizedValue - Value between 0 and 1
  * @param bipolar - Whether to fill from center (default false)
  * @param orientation - Horizontal or vertical (default 'vertical')
- * @param thickness - Slider thickness in pixels (default 20)
- * @param roundness - Corner radius (default half thickness for rounded, 0 for square)
+ * @param thickness - Normalized thickness 0.0-1.0 (default 0.4, maps to 1-50)
+ * @param roundness - Normalized roundness 0.0-1.0 (default 0.3, maps to 0-20)
  * @param color - Resolved color string
  * @param className - Optional CSS class
  */
@@ -42,37 +44,39 @@ function SvgSlider({
     normalizedValue,
     bipolar = false,
     orientation = "vertical",
-    thickness = 20,
-    roundness,
+    thickness = 0.4,
+    roundness = DEFAULT_ROUNDNESS,
     color,
     className,
 }: SvgSliderProps): JSX.Element {
-    // Ensure thickness is non-negative
-    const nonNegativeThickness = Math.max(0, thickness);
+    // Translate normalized thickness to legacy range (1-50)
+    const legacyThickness = useMemo(() => {
+        return translateSliderThickness(thickness);
+    }, [thickness]);
 
     // Calculate the dimensions of the slider's main zone based on orientation and thickness
     const mainZone = useMemo<Zone>(() => {
         if (orientation === "vertical") {
             // Center the slider based on its thickness
-            const x = 50 - nonNegativeThickness / 2;
+            const x = 50 - legacyThickness / 2;
             return {
                 x,
                 y: 20,
-                w: nonNegativeThickness,
+                w: legacyThickness,
                 h: 260,
             };
         } else {
             // For horizontal orientation
-            const y = 50 - nonNegativeThickness / 2;
+            const y = 50 - legacyThickness / 2;
             return {
                 x: 20,
                 y,
                 w: 260,
-                h: nonNegativeThickness,
-                maxH: nonNegativeThickness, // Add maxH to match Zone type if needed, or rely on w/h
+                h: legacyThickness,
+                maxH: legacyThickness, // Add maxH to match Zone type if needed, or rely on w/h
             };
         }
-    }, [nonNegativeThickness, orientation]);
+    }, [legacyThickness, orientation]);
 
     // Calculate the dimensions of the filled portion based on normalized value and orientation
     const filledZone = useMemo(() => {
@@ -81,20 +85,18 @@ function SvgSlider({
         return computeFilledZone(mainZone, normalizedValue, 0, 1, normalizedCenter, orientation === "horizontal");
     }, [normalizedValue, bipolar, mainZone, orientation]);
 
-    // Calculate corner radius based on roundness
+    // Translate normalized roundness to legacy range (0-20) and calculate corner radius
     const cornerRadius = useMemo(() => {
-        // Ensure roundness is non-negative if provided
-        const nonNegativeRoundness = roundness !== undefined ? Math.max(0, roundness) : undefined;
+        const legacyRoundness = translateSliderRoundness(roundness);
 
-        // If roundness is 0, use square caps (cornerRadius = 0)
-        if (nonNegativeRoundness === 0) {
+        // If roundness is 0, use square corners
+        if (legacyRoundness === 0) {
             return 0;
         }
 
-        // Use provided roundness or fall back to half the thickness for fully rounded corners
-        const dimension = orientation === "vertical" ? mainZone.w : mainZone.h;
-        return nonNegativeRoundness !== undefined ? nonNegativeRoundness : dimension / 2;
-    }, [mainZone, roundness, orientation]);
+        // Use the translated roundness value
+        return legacyRoundness;
+    }, [roundness]);
 
     // Generate color variants
     const colorVariants = useMemo(() => generateColorVariants(color ?? "var(--audioui-primary-color)", "transparency"), [color]);

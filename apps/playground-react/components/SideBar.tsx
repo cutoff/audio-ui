@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { audioUiThemeState } from "@/app/providers";
-import { themeColors } from "@cutoff/audio-ui-react";
+import { themeColors, DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-react";
 
 // Define types for components and theme colors
 type Page = {
@@ -70,7 +70,7 @@ export default function SideBar() {
     const [currentTheme, setCurrentTheme] = useState<string>(themeColors.default);
     const [isOpen, setIsOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
-    const [roundnessValue, setRoundnessValue] = useState(12);
+    const [roundnessValue, setRoundnessValue] = useState(DEFAULT_ROUNDNESS);
 
     // Function to change theme color - just set the color value, variants are computed automatically
     const changeTheme = (themeColor: string) => {
@@ -78,10 +78,11 @@ export default function SideBar() {
         audioUiThemeState.current.setColor(themeColor);
     };
 
-    // Function to change roundness
+    // Function to change roundness (clamp to 0.0-1.0)
     const changeRoundness = (value: number) => {
-        setRoundnessValue(value);
-        audioUiThemeState.current.setRoundness(value);
+        const clamped = Math.max(0.0, Math.min(1.0, value));
+        setRoundnessValue(clamped);
+        audioUiThemeState.current.setRoundness(clamped);
     };
 
     // Toggle theme between light, dark, and system
@@ -95,6 +96,11 @@ export default function SideBar() {
     useEffect(() => {
         // Use the adaptive default theme by default
         changeTheme(themeColors.default);
+        // Sync roundness with the provider's value
+        const currentRoundness = audioUiThemeState.current.roundness;
+        if (currentRoundness !== undefined) {
+            setRoundnessValue(currentRoundness);
+        }
         // Set mounted to true after component mounts to avoid hydration issues
         setMounted(true);
     }, []);
@@ -248,7 +254,8 @@ export default function SideBar() {
                                 value={roundnessValue}
                                 onChange={(e) => changeRoundness(Number(e.target.value))}
                                 min={0}
-                                max={50}
+                                max={1}
+                                step={0.01}
                                 className="w-[70px] h-9 bg-sidebar-accent border-sidebar-border"
                             />
                         </div>
@@ -257,8 +264,8 @@ export default function SideBar() {
                                 value={[roundnessValue]}
                                 onValueChange={(values) => changeRoundness(values[0])}
                                 min={0}
-                                max={50}
-                                step={1}
+                                max={1}
+                                step={0.01}
                                 className="w-full"
                             />
                         </div>

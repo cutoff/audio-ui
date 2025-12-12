@@ -70,6 +70,9 @@ export {
 // Export theme colors
 export { themeColors, themeColorsDirect } from "./themeColors";
 
+// Export theme defaults
+export { DEFAULT_ROUNDNESS, DEFAULT_THICKNESS } from "./components/utils/themeDefaults";
+
 // Export Audio Parameter Model and Hook
 export * from "./models/AudioParameter";
 export * from "./hooks/useAudioParameter";

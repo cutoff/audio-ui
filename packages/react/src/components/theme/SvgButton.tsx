@@ -2,6 +2,8 @@
 
 import { useMemo } from "react";
 import { generateColorVariants } from "../utils/colorUtils";
+import { translateButtonRoundness } from "../utils/normalizedProps";
+import { DEFAULT_ROUNDNESS } from "../utils/themeDefaults";
 
 /**
  * Props for the SvgButton component
@@ -11,7 +13,7 @@ export type SvgButtonProps = {
     normalizedValue: number;
     /** Threshold for determining "on" state (default 0.5) */
     threshold?: number;
-    /** Corner roundness (0 = square, > 0 = rounded) */
+    /** Corner roundness (normalized 0.0-1.0, maps to 0-50) */
     roundness?: number;
     /** Resolved color string */
     color: string;
@@ -25,14 +27,14 @@ export type SvgButtonProps = {
  *
  * @param normalizedValue - Value between 0 and 1
  * @param threshold - Threshold value (default 0.5), determines "on" state
- * @param roundness - Corner radius (default 10)
+ * @param roundness - Normalized roundness 0.0-1.0 (default 0.3, maps to 0-50)
  * @param color - Resolved color string
  * @param className - Optional CSS class
  */
 function SvgButton({
     normalizedValue,
     threshold = 0.5,
-    roundness = 10,
+    roundness = DEFAULT_ROUNDNESS,
     color,
     className,
 }: SvgButtonProps): JSX.Element {
@@ -42,8 +44,10 @@ function SvgButton({
     // Generate color variants
     const colorVariants = useMemo(() => generateColorVariants(color, "transparency"), [color]);
 
-    // Calculate corner radius (ensure non-negative)
-    const cornerRadius = useMemo(() => Math.max(0, roundness), [roundness]);
+    // Translate normalized roundness to legacy range (0-50)
+    const cornerRadius = useMemo(() => {
+        return translateButtonRoundness(roundness);
+    }, [roundness]);
 
     // Determine button styles based on state
     const buttonStyles = useMemo(

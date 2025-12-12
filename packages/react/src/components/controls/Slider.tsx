@@ -7,6 +7,8 @@ import { useThemableProps } from "../theme/AudioUiProvider";
 import { SvgVerticalSlider, SvgHorizontalSlider } from "../theme/SvgSlider";
 import SvgContinuousControl from "../primitives/SvgContinuousControl";
 import { ContinuousControlProps, Themable } from "../types";
+import { clampNormalized } from "../utils/normalizedProps";
+import { DEFAULT_ROUNDNESS } from "../utils/themeDefaults";
 
 /**
  * Props for the Slider component (built-in control with theming support)
@@ -16,8 +18,8 @@ export type SliderProps = ContinuousControlProps &
     /** Orientation of the slider
      * @default 'vertical' */
     orientation?: "horizontal" | "vertical";
-    /** Thickness of the slider in pixels
-     * @default 20 */
+    /** Thickness of the slider (normalized 0.0-1.0, maps to 1-50)
+     * @default 0.4 */
     thickness?: number;
 };
 
@@ -33,7 +35,7 @@ function Slider({
     bipolar = false,
     value,
     label,
-    thickness = 20,
+    thickness = 0.4,
     stretch = false,
     className,
     style,
@@ -52,9 +54,12 @@ function Slider({
     sensitivity,
 }: SliderProps) {
     // Use the themable props hook to resolve color and roundness with proper fallbacks
+    // Clamp values to 0.0-1.0 range
+    const clampedRoundness = roundness !== undefined ? clampNormalized(roundness) : undefined;
+    const clampedThickness = clampNormalized(thickness);
     const { resolvedColor, resolvedRoundness } = useThemableProps(
-        { color, roundness },
-        { color: undefined, roundness: undefined }
+        { color, roundness: clampedRoundness },
+        { color: undefined, roundness: DEFAULT_ROUNDNESS }
     );
 
     // Get the size class name based on the size prop and orientation
@@ -92,8 +97,8 @@ function Slider({
             parameter={parameter}
             interactionMode={interactionMode}
             sensitivity={sensitivity}
-            thickness={thickness}
-            roundness={resolvedRoundness}
+            thickness={clampedThickness}
+            roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
         />
     );
 }

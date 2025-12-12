@@ -10,6 +10,8 @@ import { getSizeClassForComponent, getSizeStyleForComponent } from "../utils/siz
 import { useThemableProps } from "../theme/AudioUiProvider";
 import SvgButton from "../theme/SvgButton";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
+import { clampNormalized } from "../utils/normalizedProps";
+import { DEFAULT_ROUNDNESS } from "../utils/themeDefaults";
 
 /**
  * Props for the Button component (built-in control with theming support)
@@ -40,9 +42,11 @@ function Button({
     parameter,
 }: ButtonProps) {
     // Use the themable props hook to resolve color and roundness with proper fallbacks
+    // Clamp roundness to 0.0-1.0 range
+    const clampedRoundness = roundness !== undefined ? clampNormalized(roundness) : undefined;
     const { resolvedColor, resolvedRoundness } = useThemableProps(
-        { color, roundness },
-        { color: undefined, roundness: 10 }
+        { color, roundness: clampedRoundness },
+        { color: undefined, roundness: DEFAULT_ROUNDNESS }
     );
 
     // Construct the configuration object
@@ -213,7 +217,7 @@ function Button({
                     normalizedValue={normalizedValue}
                     // Threshold is 0.5 for boolean
                     threshold={0.5}
-                    roundness={resolvedRoundness ?? 10}
+                    roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
                     color={resolvedColor}
                 />
             </AdaptiveBox.Svg>
