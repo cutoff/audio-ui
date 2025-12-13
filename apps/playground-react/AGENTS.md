@@ -17,7 +17,7 @@
 - `app/[route]/page.tsx`: Demo pages (e.g., app/controls/button/page.tsx for Button demo)
 - `app/layout/sizing/page.tsx`: Centralized sizing system showcase (all components, all sizes)
 - `app/providers.tsx`: Context providers (theme, etc.)
-- `components/ui/`: **shadcn components ONLY** - do not add custom components here
+- `components/ui/`: **shadcn components ONLY** - do not add custom components here; **NEVER modify shadcn components** - they are third-party stabilized code; work around type issues with type assertions/ts-expect-error if needed
 - `components/`: Custom playground components (e.g., ColorPickerField, ComponentSkeletonPage, ControlSkeletonPage)
 - `lib/`: Utils (e.g., cn for clsx)
 - `hooks/`: Custom hooks
@@ -32,7 +32,7 @@
 - Theming: next-themes in providers; toggle dark mode
 - Testing demos: Run pnpm dev; validate components from library
 - Building: pnpm build for prod; Next.js optimization
-- UI: Use shadcn; add if missing with `pnpm dlx shadcn@latest add [component]`; no alter unless told
+- UI: Use shadcn; add if missing with `pnpm dlx shadcn@latest add [component]`; **NEVER modify shadcn components** - they are third-party stabilized code; work around type issues with type assertions/ts-expect-error if needed
 - Component organization: shadcn components go in `components/ui/`; custom playground components go in `components/` (not in `components/ui/`)
 
 ## Agent Note

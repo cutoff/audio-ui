@@ -157,8 +157,8 @@ export default function SizingPage() {
                 <section className="mt-12 p-6 bg-muted rounded-lg">
                     <h2 className="text-xl font-semibold mb-3">Design System Consistency</h2>
                     <p className="text-muted-foreground">
-                        All components use the same base unit and size multipliers. This means a "small" knob will
-                        align perfectly with a "small" slider when placed side-by-side, creating harmonious layouts
+                        All components use the same base unit and size multipliers. This means a &quot;small&quot; knob will
+                        align perfectly with a &quot;small&quot; slider when placed side-by-side, creating harmonious layouts
                         without manual adjustments.
                     </p>
                     <p className="text-muted-foreground mt-3">

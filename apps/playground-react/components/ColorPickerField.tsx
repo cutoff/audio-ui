@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Color from "color";
-import { X, Paintbrush } from "lucide-react";
+import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -32,7 +32,7 @@ export function ColorPickerField({ value, onChange, label, id }: ColorPickerFiel
     React.useEffect(() => {
         try {
             setColor(value ? Color(value) : undefined);
-        } catch (e) {
+        } catch {
             console.error("Invalid color value provided to ColorPickerField:", value);
             setColor(undefined);
         }
@@ -88,7 +88,13 @@ export function ColorPickerField({ value, onChange, label, id }: ColorPickerFiel
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-full">
-                        <ColorPicker value={value} defaultValue={"#000000"} onChange={handleColorChange as any}>
+                        <ColorPicker
+                            value={value}
+                            defaultValue={"#000000"}
+                            // @ts-expect-error - ColorPicker's type definition doesn't match its implementation
+                            // It actually passes [r, g, b, alpha] but the type says Parameters<typeof Color.rgb>[0]
+                            onChange={handleColorChange}
+                        >
                             <div className="flex flex-col gap-4">
                                 <ColorPickerSelection className="h-36 w-full" />
                                 <div className="flex flex-col gap-2">

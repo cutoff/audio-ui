@@ -9,7 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 import { ColorPickerField } from "@/components/ColorPickerField";
-import { Checkbox } from "@/components/ui/checkbox";
 
 // Define the NoteName type to match the one in the Keybed component
 type NoteName = "C" | "D" | "E" | "F" | "G" | "A" | "B";
@@ -21,7 +20,7 @@ export default function KeybedPage() {
     const [notesOn, setNotesOn] = useState<(string | number)[]>(["C4", 64, 67]);
     const [color, setColor] = useState<string | undefined>(undefined);
     const [roundness, setRoundness] = useState<number | undefined>(undefined);
-    const [stretch, setStretch] = useState(true);
+    const [stretch] = useState(true);
     const [keyStyle, setKeyStyle] = useState<"theme" | "classic" | "classic-inverted">("theme");
 
     // MIDI related state

@@ -93,7 +93,7 @@ export const ColorPicker = ({
         setSaturation(s);
         setLightness(l);
         setAlpha(color.alpha() * 100);
-      } catch (e) {
+      } catch (_e) {
         // ignore invalid color string
       }
     }
@@ -317,7 +317,6 @@ export type ColorPickerOutputProps = ComponentProps<typeof SelectTrigger>;
 const formats = ['hex', 'rgb', 'css', 'hsl'];
 
 export const ColorPickerOutput = ({
-  className,
   ...props
 }: ColorPickerOutputProps) => {
   const { mode, setMode } = useColorPicker();
