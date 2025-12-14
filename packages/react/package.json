@@ -49,6 +49,7 @@
         "react-dom": "^18.2.0"
     },
     "dependencies": {
+        "@cutoff/audio-ui-core": "workspace:*",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21"
     },

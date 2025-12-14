@@ -112,7 +112,6 @@ svg foreignObject div > * svg {
     filter: none;
 }
 
-
 /* Base utility classes - only work if --audioui-primary-color is set by user */
 .audioui-stroke-primary {
     stroke: var(--audioui-primary-color);

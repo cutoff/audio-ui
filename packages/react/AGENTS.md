@@ -41,11 +41,7 @@
 - This separation allows custom controls to opt into theming only if needed
   - `Keybed.tsx`: Keyboard component
 - `src/index.ts`: Export all components, types, utilities, and theme colors
-- `src/themes.css`: Theme CSS variables (primary colors only; variants computed by components, all prefixed `--audioui-*`); size system CSS variables (base unit, multipliers, component-specific dimensions)
-- `src/styles.css`: Base styles, utility classes, imports themes.css; size utility classes for semantic purposes
-- `src/styles/`: Shared TS constants for class names and CSS variables (enforce `audioui-` prefix)
-- `src/themeColors.ts`: Exports predefined theme colors (themeColors, themeColorsDirect)
-- `src/components/utils/sizeMappings.ts`: Size class name mappings and utility functions (`getSizeClassForComponent`, `getSizeStyleForComponent`)
+- `src/hooks/`: React adapters for Core logic (`useAudioParameter`, `useInteractiveControl`)
 - `dist/`: Built output (index.js, index.d.ts, style.css)
 - `docs/`: Technical documentation (see Documentation section below)
 
@@ -111,7 +107,8 @@ The library provides a generic `SvgContinuousControl` component that decouples b
 
 **Quick Reference**:
 
-- **Hook Location**: `packages/react/src/hooks/useInteractiveControl.ts`
+- **Hook Location**: `packages/react/src/hooks/useInteractiveControl.ts` (wrapper around core's `InteractionController`)
+- **Core Logic**: `packages/core/src/controller/InteractionController.ts`
 - **Interaction Modes**: Controls support `interactionMode` ("drag" | "wheel" | "both") to restrict input methods.
 - **Sensitivity Tuning**:
   - Knob: `0.008` drag (increased for responsiveness)

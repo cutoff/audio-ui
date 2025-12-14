@@ -4,8 +4,8 @@ import React, { useMemo, useCallback } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "./primitives/AdaptiveBox";
 import { AdaptiveSize, BaseProps, Themable } from "./types";
-import { getSizeClassForComponent, getSizeStyleForComponent } from "./utils/sizeMappings";
-import { generateColorVariants } from "./utils/colorUtils";
+import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
+import { generateColorVariants } from "@cutoff/audio-ui-core";
 import {
     createNoteNumSet,
     DIATONIC_TO_CHROMATIC,
@@ -14,13 +14,13 @@ import {
     WHITE_KEY_NAMES,
     WHITE_KEY_POSITIONS,
     WHITE_KEY_TO_CHROMATIC,
-} from "./utils/noteUtils";
-import "../styles.css";
-import { CLASSNAMES } from "../styles/classNames";
-import { CSS_VARS } from "../styles/cssVars";
+} from "@cutoff/audio-ui-core";
+import "@cutoff/audio-ui-core/styles.css";
+import { CLASSNAMES } from "@cutoff/audio-ui-core";
+import { CSS_VARS } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "./theme/AudioUiProvider";
-import { translateKeybedRoundness } from "./utils/normalizedProps";
-import { DEFAULT_ROUNDNESS } from "./utils/themeDefaults";
+import { translateKeybedRoundness } from "@cutoff/audio-ui-core";
+import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
 /**
  * Type definition for note names (C to B)
@@ -415,7 +415,16 @@ function Keybed({
                 />
             );
         }).filter(Boolean);
-    }, [keybedDimensions, octaveShift, isNoteActive, correctBlackPass, legacyRoundness, colorVariants, keyColors, keyStyle]);
+    }, [
+        keybedDimensions,
+        octaveShift,
+        isNoteActive,
+        correctBlackPass,
+        legacyRoundness,
+        colorVariants,
+        keyColors,
+        keyStyle,
+    ]);
 
     // Get the size class name based on the size prop
     const sizeClassName = stretch ? undefined : getSizeClassForComponent("keybed", size);

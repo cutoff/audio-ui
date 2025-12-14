@@ -2,10 +2,10 @@
 
 import React, { useMemo } from "react";
 import classNames from "classnames";
-import { CLASSNAMES } from "../../styles/classNames";
+import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import { ContinuousControlProps, ControlComponent } from "../types";
 import AdaptiveBox from "./AdaptiveBox";
-import { AudioParameterFactory } from "../../models/AudioParameter";
+import { AudioParameterFactory } from "@cutoff/audio-ui-core";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
 import { useInteractiveControl } from "../../hooks/useInteractiveControl";
 
@@ -14,19 +14,19 @@ import { useInteractiveControl } from "../../hooks/useInteractiveControl";
 export type SvgContinuousControlProps<P extends object = {}> =
     // Base Control Props (includes all ContinuousControlProps)
     ContinuousControlProps &
-    // The "Extra Props" P are intersected here so they appear on the root component
-    P & {
-        /**
-         * The Visualization Component.
-         * Must adhere to ControlComponent contract.
-         */
-        view: ControlComponent<P>;
+        // The "Extra Props" P are intersected here so they appear on the root component
+        P & {
+            /**
+             * The Visualization Component.
+             * Must adhere to ControlComponent contract.
+             */
+            view: ControlComponent<P>;
 
-        /**
-         * Content passed to the View (e.g. center label for knobs)
-         */
-        children?: React.ReactNode;
-    };
+            /**
+             * Content passed to the View (e.g. center label for knobs)
+             */
+            children?: React.ReactNode;
+        };
 
 /**
  * A Generic Continuous Control that connects a Data Model (AudioParameter)
@@ -55,7 +55,6 @@ export function SvgContinuousControl<P extends object = {}>({
     sensitivity,
     ...viewProps // Capture all other props (color, thickness, etc.) to pass to View
 }: SvgContinuousControlProps<P>) {
-
     // 1. Parameter Model
     const paramConfig = useMemo(() => {
         if (parameter) return parameter;
@@ -86,7 +85,12 @@ export function SvgContinuousControl<P extends object = {}>({
     });
 
     const componentClassNames = useMemo(() => {
-        return classNames(className, CLASSNAMES.root, CLASSNAMES.container, (onChange || onClick) ? CLASSNAMES.highlight : "");
+        return classNames(
+            className,
+            CLASSNAMES.root,
+            CLASSNAMES.container,
+            onChange || onClick ? CLASSNAMES.highlight : ""
+        );
     }, [className, onChange, onClick]);
 
     const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
@@ -128,10 +132,7 @@ export function SvgContinuousControl<P extends object = {}>({
                     Render the View with normalized value + children + specific props (P)
                     Cast viewProps to P because TypeScript generic spread is tricky
                 */}
-                <View
-                    normalizedValue={normalizedValue}
-                    {...(viewProps as P)}
-                >
+                <View normalizedValue={normalizedValue} {...(viewProps as P)}>
                     {children}
                 </View>
             </AdaptiveBox.Svg>

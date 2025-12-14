@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useAudioParameter } from "./useAudioParameter";
-import { AudioParameterFactory } from "../models/AudioParameter";
+import { AudioParameterFactory } from "@cutoff/audio-ui-core";
 
 describe("useAudioParameter", () => {
     describe("Continuous Parameter", () => {

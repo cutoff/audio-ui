@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { generateColorVariants } from "../utils/colorUtils";
-import { computeFilledZone, Zone } from "../utils/svgHelpers";
-import { translateSliderRoundness, translateSliderThickness } from "../utils/normalizedProps";
-import { DEFAULT_ROUNDNESS } from "../utils/themeDefaults";
+import { generateColorVariants } from "@cutoff/audio-ui-core";
+import { computeFilledZone, Zone } from "@cutoff/audio-ui-core";
+import { translateSliderRoundness, translateSliderThickness } from "@cutoff/audio-ui-core";
+import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
 /**
  * Props for the SvgSlider component
@@ -99,7 +99,10 @@ function SvgSlider({
     }, [roundness]);
 
     // Generate color variants
-    const colorVariants = useMemo(() => generateColorVariants(color ?? "var(--audioui-primary-color)", "transparency"), [color]);
+    const colorVariants = useMemo(
+        () => generateColorVariants(color ?? "var(--audioui-primary-color)", "transparency"),
+        [color]
+    );
 
     return (
         <g className={className}>
@@ -147,12 +150,22 @@ SvgSlider.viewBox = {
 /**
  * Props for specialized slider views (without normalizedValue, children, className, style, orientation)
  */
-type SpecializedSliderProps = Omit<SvgSliderProps, "normalizedValue" | "children" | "className" | "style" | "orientation">;
+type SpecializedSliderProps = Omit<
+    SvgSliderProps,
+    "normalizedValue" | "children" | "className" | "style" | "orientation"
+>;
 
 /**
  * Specialized Vertical Slider for Generic Control System
  */
-function SvgVerticalSlider(props: SpecializedSliderProps & { normalizedValue: number; children?: React.ReactNode; className?: string; style?: React.CSSProperties }) {
+function SvgVerticalSlider(
+    props: SpecializedSliderProps & {
+        normalizedValue: number;
+        children?: React.ReactNode;
+        className?: string;
+        style?: React.CSSProperties;
+    }
+) {
     return <SvgSlider {...props} orientation="vertical" />;
 }
 
@@ -166,7 +179,14 @@ SvgVerticalSlider.interaction = {
 /**
  * Specialized Horizontal Slider for Generic Control System
  */
-function SvgHorizontalSlider(props: SpecializedSliderProps & { normalizedValue: number; children?: React.ReactNode; className?: string; style?: React.CSSProperties }) {
+function SvgHorizontalSlider(
+    props: SpecializedSliderProps & {
+        normalizedValue: number;
+        children?: React.ReactNode;
+        className?: string;
+        style?: React.CSSProperties;
+    }
+) {
     return <SvgSlider {...props} orientation="horizontal" />;
 }
 

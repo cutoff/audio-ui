@@ -3,6 +3,7 @@
  */
 
 import { generateColorVariants, generateLuminosityVariant, generateTransparencyVariant } from "./colorUtils";
+import { describe, it, expect } from "vitest";
 
 describe("colorUtils", () => {
     describe("generateLuminosityVariant", () => {

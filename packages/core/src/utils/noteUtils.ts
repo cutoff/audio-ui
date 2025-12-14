@@ -160,3 +160,17 @@ export const isNoteOn = (noteInput: string | number, notesOn: (string | number)[
     // If noteInput is a number (MIDI note number), check if it's in the Set
     return noteNumSet.has(noteInput);
 };
+
+/**
+ * Checks if a given MIDI note number corresponds to a black key
+ *
+ * @param noteNum - The MIDI note number
+ * @returns true if black key, false if white key
+ */
+export const isBlackKey = (noteNum: number): boolean => {
+    // 0=C (white), 1=C# (black), 2=D (white), 3=D# (black), 4=E (white)
+    // 5=F (white), 6=F# (black), 7=G (white), 8=G# (black), 9=A (white)
+    // 10=A# (black), 11=B (white)
+    const chromaticIndex = noteNum % 12;
+    return !WHITE_KEY_POSITIONS.has(chromaticIndex);
+};

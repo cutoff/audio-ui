@@ -1,4 +1,5 @@
-import { CSS_VARS } from "../../styles/cssVars";
+import { CSS_VARS } from "../constants/cssVars";
+
 /**
  * Utility functions for color manipulation
  *

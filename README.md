@@ -27,6 +27,7 @@ This monorepo contains the following packages:
 | Package / Path                               | Description                                                                 |
 | -------------------------------------------- | --------------------------------------------------------------------------- |
 | `@cutoff/audio-ui-react` (`packages/react`)  | The core component library, published to npm.                               |
+| `@cutoff/audio-ui-core` (`packages/core`)    | Core logic, models, and constants (internal/shared).                        |
 | `playground-react` (`apps/playground-react`) | A [Next.js](https://nextjs.org/) app for developing and testing components. |
 
 ## Getting Started
@@ -73,7 +74,10 @@ cd audio-ui
 pnpm install
 ```
 
-This monorepo uses `pnpm` workspaces. The two primary packages are `@cutoff/audio-ui-react` (the component library) and `playground-react` (the Next.js playground application).
+This monorepo uses `pnpm` workspaces. The primary packages are:
+- `@cutoff/audio-ui-react`: The React component library.
+- `@cutoff/audio-ui-core`: The framework-agnostic core logic.
+- `playground-react`: The Next.js playground application.
 
 To start the development server, run:
 

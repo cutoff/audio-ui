@@ -3,15 +3,15 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "../primitives/AdaptiveBox";
-import "../../styles.css";
-import { CLASSNAMES } from "../../styles/classNames";
+import "@cutoff/audio-ui-core/styles.css";
+import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import { BooleanControlProps, Themable } from "../types";
-import { getSizeClassForComponent, getSizeStyleForComponent } from "../utils/sizeMappings";
+import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import SvgButton from "../theme/SvgButton";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
-import { clampNormalized } from "../utils/normalizedProps";
-import { DEFAULT_ROUNDNESS } from "../utils/themeDefaults";
+import { clampNormalized } from "@cutoff/audio-ui-core";
+import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
 /**
  * Props for the Button component (built-in control with theming support)
@@ -65,14 +65,12 @@ function Button({
             name: label || "",
             mode: (latch ? "toggle" : "momentary") as "toggle" | "momentary",
             defaultValue: false,
-            midiResolution: 7 as const
+            midiResolution: 7 as const,
         };
     }, [parameter, label, latch, paramId]);
 
     // Use the hook to handle normalization
-    const {
-        normalizedValue
-    } = useAudioParameter(value, onChange, paramConfig);
+    const { normalizedValue } = useAudioParameter(value, onChange, paramConfig);
 
     // Ref to track if the button is currently pressed (for momentary mode)
     const isPressedRef = useRef(false);
@@ -152,7 +150,7 @@ function Button({
             sizeClassName,
             CLASSNAMES.root,
             CLASSNAMES.container,
-            (onChange || onClick) ? CLASSNAMES.highlight : "",
+            onChange || onClick ? CLASSNAMES.highlight : "",
             className
         );
     }, [sizeClassName, className, onChange, onClick]);
@@ -199,7 +197,7 @@ function Button({
                         if (onChange) {
                             onChange(latch ? !value : true);
                             if (!latch) {
-                                // Simulate release after delay or keyup? 
+                                // Simulate release after delay or keyup?
                                 // Standard button triggers on click (down+up).
                                 // For momentary, usually keydown=active, keyup=inactive
                             }

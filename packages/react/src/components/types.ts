@@ -1,32 +1,16 @@
 import React from "react";
-import { ContinuousParameter, BooleanParameter } from "../models/AudioParameter";
+import { ContinuousParameter, BooleanParameter } from "@cutoff/audio-ui-core";
+import { SizeType, InteractionMode } from "@cutoff/audio-ui-core";
 
 /**
  * Size options for control components
  */
-export type SizeType = "xsmall" | "small" | "normal" | "large" | "xlarge";
+// SizeType is imported from core now
 
 /**
  * Interface for themable components
  */
-export type Themable = {
-    /** Component primary color - any valid CSS color value
-     * @default "blue"
-     */
-    color?: string;
-
-    /** Roundness for component corners/caps
-     * Normalized value between 0.0 (square) and 1.0 (fully rounded)
-     * @default 0.3
-     */
-    roundness?: number;
-
-    /** Thickness for component strokes/widths
-     * Normalized value between 0.0 (smallest) and 1.0 (largest)
-     * @default 0.4
-     */
-    thickness?: number;
-};
+export type { Themable } from "@cutoff/audio-ui-core";
 
 /**
  * Base props for all components
@@ -66,7 +50,7 @@ export type AdaptiveSize = {
 /**
  * Interaction modes for controls
  */
-export type InteractionMode = "drag" | "wheel" | "both";
+// InteractionMode is imported from core now
 
 /**
  * Props for interactive controls (drag, wheel, keyboard)

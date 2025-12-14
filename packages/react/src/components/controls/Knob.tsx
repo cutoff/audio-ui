@@ -2,14 +2,14 @@
 
 import React, { useMemo } from "react";
 import classNames from "classnames";
-import { getSizeClassForComponent, getSizeStyleForComponent } from "../utils/sizeMappings";
+import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import SvgKnob from "../theme/SvgKnob";
 import SvgContinuousControl from "../primitives/SvgContinuousControl";
 import { ContinuousControlProps, Themable } from "../types";
-import { clampNormalized } from "../utils/normalizedProps";
-import { DEFAULT_ROUNDNESS } from "../utils/themeDefaults";
-import { AudioParameterFactory, ContinuousParameter } from "../../models/AudioParameter";
+import { clampNormalized } from "@cutoff/audio-ui-core";
+import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
+import { AudioParameterFactory, ContinuousParameter } from "@cutoff/audio-ui-core";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
 
 /**
@@ -17,13 +17,13 @@ import { useAudioParameter } from "../../hooks/useAudioParameter";
  */
 export type KnobProps = ContinuousControlProps &
     Themable & {
-    /** Content to display inside the knob (replaces the value display) */
-    children?: React.ReactNode;
-    /** Thickness of the knob's stroke (normalized 0.0-1.0, maps to 1-20)
-     * @default 0.4
-     */
-    thickness?: number;
-};
+        /** Content to display inside the knob (replaces the value display) */
+        children?: React.ReactNode;
+        /** Thickness of the knob's stroke (normalized 0.0-1.0, maps to 1-20)
+         * @default 0.4
+         */
+        thickness?: number;
+    };
 
 /**
  * Knob component provides a circular control for value adjustment.
@@ -124,23 +124,23 @@ function Knob({
         }
 
         // Determine text content: custom render prop or default display value
-        const textContent = renderValue
-            ? renderValue(value, parameterDef.min, parameterDef.max)
-            : displayValue;
+        const textContent = renderValue ? renderValue(value, parameterDef.min, parameterDef.max) : displayValue;
 
         // Default text rendering, now consistently applied
         return (
-            <div style={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "22px",
-                fontWeight: "500",
-                color: "var(--audioui-text-color)",
-                cursor: "inherit",
-            }}>
+            <div
+                style={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "22px",
+                    fontWeight: "500",
+                    color: "var(--audioui-text-color)",
+                    cursor: "inherit",
+                }}
+            >
                 {textContent}
             </div>
         );
@@ -151,7 +151,7 @@ function Knob({
 
     // Build merged style: size style (when not stretching), then user style (user takes precedence)
     const sizeStyle = stretch ? undefined : getSizeStyleForComponent("knob", size);
-    
+
     return (
         <SvgContinuousControl
             view={SvgKnob}

@@ -1,4 +1,5 @@
 import { createNoteNumSet, isNoteOn, noteNumToNote, noteToNoteNum } from "./noteUtils";
+import { describe, it, expect } from "vitest";
 
 describe("noteUtils", () => {
     describe("noteNumToNote", () => {

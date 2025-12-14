@@ -17,13 +17,13 @@ This hook abstracts the complexity of event handling and state management.
 
 ```typescript
 const handlers = useInteractiveControl({
-    adjustValue,       // Function to update the normalized value
-    value,             // Current normalized value (optional)
-    interactionMode,   // "drag" | "wheel" | "both"
-    direction,         // "vertical" | "horizontal"
-    sensitivity,       // Drag sensitivity (normalized value per pixel)
-    wheelSensitivity,  // Wheel sensitivity (normalized value per unit)
-    disabled           // Whether the control is disabled
+  adjustValue, // Function to update the normalized value
+  value, // Current normalized value (optional)
+  interactionMode, // "drag" | "wheel" | "both"
+  direction, // "vertical" | "horizontal"
+  sensitivity, // Drag sensitivity (normalized value per pixel)
+  wheelSensitivity, // Wheel sensitivity (normalized value per unit)
+  disabled, // Whether the control is disabled
 });
 ```
 
@@ -91,6 +91,6 @@ It returns a set of event handlers (`onMouseDown`, `onTouchStart`, `onWheel`, `o
 
 ## Performance
 
-- **Lazy Listeners**: Global `mousemove`/`touchmove` listeners are only attached *during* an active drag session and removed immediately after.
+- **Lazy Listeners**: Global `mousemove`/`touchmove` listeners are only attached _during_ an active drag session and removed immediately after.
 - **Refs**: Mutable state (drag start position, current value) is tracked in `useRef` to avoid stale closures and unnecessary re-renders during high-frequency events.
 - **Native Events**: Wheel handling uses native non-passive listeners (via `AdaptiveBox`) to reliably prevent page scrolling, which React's synthetic events cannot always guarantee.

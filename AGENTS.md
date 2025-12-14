@@ -40,7 +40,7 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 | React               | React 18 only; library as peer deps (`^18.2.0`), demo as direct (`^18.3.1`); never upgrade to 19                                                                                                                                                                                           |
 | TypeScript          | Strict mode; handle all errors; prefix unused params with \_; `@types/react:^18.3.23`                                                                                                                                                                                                      |
 | Package Manager     | pnpm                                                                                                                                                                                                                                                                                       |
-| UI Components       | Use shadcn/ui; add with `pnpm dlx shadcn@latest add [component]`; no custom if shadcn available; **NEVER modify shadcn components** - they are third-party stabilized code; work around type issues with type assertions/ts-expect-error if needed                                                                                                                                                                                  |
+| UI Components       | Use shadcn/ui; add with `pnpm dlx shadcn@latest add [component]`; no custom if shadcn available; **NEVER modify shadcn components** - they are third-party stabilized code; work around type issues with type assertions/ts-expect-error if needed                                         |
 | Testing             | Vitest; files `.test.tsx` alongside; mock deps; React 18 compat                                                                                                                                                                                                                            |
 | Build               | Library: Vite with TS decl; demo: Next.js 15 with Turbopack; run `pnpm build && pnpm typecheck`                                                                                                                                                                                            |
 | Dev Server          | Run `pnpm dev` at root for development; never in playground-app for testing                                                                                                                                                                                                                |
@@ -68,27 +68,16 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 
 ## Project Structure
 
-- `packages/react/`: Component library; src/, dist/; Vite build; React 18 peer
-  - `src/components/primitives/`: Base components for building final components (AdaptiveBox, Option, SvgContinuousControl) - excludes theme-specific
-  - `src/components/theme/`: Default theme system (AudioUiProvider, default SVG components: SvgButton, SvgKnob, SvgSlider)
-  - `src/components/controls/`: Interactive controls (Button, Knob, Slider, KnobSwitch) - built using primitives and theme components
-
-## Component Architecture: Built-in vs Customizable
-
-The library distinguishes between **built-in controls** and **customizable primitives**:
-
-- **Built-in Controls** (`src/components/controls/`): Ready-to-use components (Button, Knob, Slider, KnobSwitch) that include theming support via `Themable` props (`color`, `roundness`). These are opinionated, production-ready components with full theming integration.
-
-- **Customizable Primitives** (`src/components/primitives/`): Lower-level components (SvgContinuousControl, AdaptiveBox) that provide behavior and structure without built-in theming. Users can build custom controls by:
-  - Using `SvgContinuousControl` with custom view components
-  - Adding their own theming props as needed
-  - Not being forced into the library's theming model
-
-**Type System Distinction:**
-
-- `ContinuousControlProps` and `BooleanControlProps` are primitive types (no `Themable` included) - for building custom controls
-- `KnobProps`, `SliderProps`, `ButtonProps` extend the primitives with `Themable` - for built-in controls
-- This allows users to create custom controls without inheriting theming constraints they may not need
+- `packages/core/`: **Core Logic Package**; pure TypeScript, framework-agnostic.
+  - `src/model/`: Domain models (AudioParameter, AudioParameterConverter).
+  - `src/controller/`: Interaction logic (InteractionController).
+  - `src/constants/`: Shared constants (themeColors, cssVars, styles).
+  - `src/utils/`: Pure math and utility functions (math, sizing, colorUtils, noteUtils).
+  - `src/styles/`: Shared CSS files (styles.css, themes.css).
+- `packages/react/`: **React Component Library**; depends on `@cutoff/audio-ui-core`.
+  - `src/components/`: React View Components.
+  - `src/hooks/`: React adapters for Core logic (`useAudioParameter`, `useInteractiveControl`).
+  - `src/index.ts`: Re-exports core primitives alongside React components.
 - `apps/playground-react/`: Next.js playground; showcases components; app/components for pages (inferred)
 - `agents/`: Shared conventions (coding-conventions-2.0.md, typescript-guidelines-2.0.md, react-conventions-2.0.md, documentation-standards-2.0.md)
 - `packages/react/docs/`: Specialized tech docs (e.g., adaptive-box-layout.md)
@@ -140,6 +129,8 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 
 ## Interactive Controls System
 
+- **Core Architecture**: Interaction logic is centralized in `packages/core/src/controller/InteractionController.ts` (pure TS class).
+- **React Adapter**: `useInteractiveControl` hook in `packages/react` wraps `InteractionController` to bind it to React events.
 - **Generic Control Architecture**: `Knob` and `Slider` are implemented using `SvgContinuousControl`, a generic component that decouples behavior (AudioParameter, interaction logic) from visualization (SVG rendering). This architecture allows easy customization by providing custom view components that implement the `ControlComponentView` contract.
 - **Unified Interaction Hook**: All interactive controls (Knob, Slider, KnobSwitch, Button) use `useInteractiveControl` hook for consistent behavior
 - **Input Methods**: Supports drag (mouse/touch), wheel, and keyboard interactions
@@ -177,13 +168,13 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
   - Horizontal Slider: 1x3 (width:height) - width > height
   - Vertical Slider: 3x1 (width:height) - height > width
   - Keybed: 1x5 (width:height) - width > height
-- **Implementation**: Size defined via CSS variables in `themes.css`; size classes in `styles.css` for semantic purposes; inline styles (CSS variable references) override AdaptiveBox's default 100% sizing
+- **Implementation**: Size defined via CSS variables in `packages/core/src/styles/themes.css`; size classes in `packages/core/src/styles/styles.css` for semantic purposes; inline styles (CSS variable references) override AdaptiveBox's default 100% sizing
 - **Size Prop**: All controls support `size` prop ("xsmall" | "small" | "normal" | "large" | "xlarge", default "normal") and `stretch` prop (default false)
 - **When `stretch={false}`**: Size class and inline size styles applied; user `style` prop spreads last (takes precedence)
 - **When `stretch={true}`**: No size constraints; component fills its container (AdaptiveBox's default 100% behavior)
 - **User Override**: User `className` and `style` props take precedence over size classes/styles
 - **Utilities**: `getSizeClassForComponent()` returns CSS class names; `getSizeStyleForComponent()` returns inline style objects with CSS variable references
-- **Location**: Size mappings in `packages/react/src/components/utils/sizeMappings.ts`; CSS variables in `packages/react/src/themes.css`; size classes in `packages/react/src/styles.css`
+- **Location**: Size mappings in `packages/core/src/utils/sizing.ts`; CSS variables in `packages/core/src/styles/themes.css`; size classes in `packages/core/src/styles/styles.css`
 
 ## Icon Theming Best Practices
 

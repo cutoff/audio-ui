@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { generateColorVariants } from "../utils/colorUtils";
-import { calculateArcPath } from "../utils/svgHelpers";
+import { generateColorVariants } from "@cutoff/audio-ui-core";
+import { calculateArcPath } from "@cutoff/audio-ui-core";
 import { ControlComponent } from "../types";
-import { translateKnobRoundness, translateKnobThickness } from "../utils/normalizedProps";
-import { DEFAULT_ROUNDNESS } from "../utils/themeDefaults";
+import { translateKnobRoundness, translateKnobThickness } from "@cutoff/audio-ui-core";
+import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
 /**
  * Angular constants for the knob's arc
@@ -82,7 +82,10 @@ function SvgKnob({
     }, [roundness]);
 
     // Generate color variants
-    const colorVariants = useMemo(() => generateColorVariants(color ?? "var(--audioui-primary-color)", "transparency"), [color]);
+    const colorVariants = useMemo(
+        () => generateColorVariants(color ?? "var(--audioui-primary-color)", "transparency"),
+        [color]
+    );
 
     return (
         <g className={className}>

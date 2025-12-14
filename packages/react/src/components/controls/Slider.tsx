@@ -2,26 +2,26 @@
 
 import React from "react";
 import classNames from "classnames";
-import { getSizeClassForComponent, getSizeStyleForComponent } from "../utils/sizeMappings";
+import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import { SvgVerticalSlider, SvgHorizontalSlider } from "../theme/SvgSlider";
 import SvgContinuousControl from "../primitives/SvgContinuousControl";
 import { ContinuousControlProps, Themable } from "../types";
-import { clampNormalized } from "../utils/normalizedProps";
-import { DEFAULT_ROUNDNESS } from "../utils/themeDefaults";
+import { clampNormalized } from "@cutoff/audio-ui-core";
+import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
 /**
  * Props for the Slider component (built-in control with theming support)
  */
 export type SliderProps = ContinuousControlProps &
     Themable & {
-    /** Orientation of the slider
-     * @default 'vertical' */
-    orientation?: "horizontal" | "vertical";
-    /** Thickness of the slider (normalized 0.0-1.0, maps to 1-50)
-     * @default 0.4 */
-    thickness?: number;
-};
+        /** Orientation of the slider
+         * @default 'vertical' */
+        orientation?: "horizontal" | "vertical";
+        /** Thickness of the slider (normalized 0.0-1.0, maps to 1-50)
+         * @default 0.4 */
+        thickness?: number;
+    };
 
 /**
  * A vertical slider component for audio applications.

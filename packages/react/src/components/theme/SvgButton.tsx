@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo } from "react";
-import { generateColorVariants } from "../utils/colorUtils";
-import { translateButtonRoundness } from "../utils/normalizedProps";
-import { DEFAULT_ROUNDNESS } from "../utils/themeDefaults";
+import { generateColorVariants } from "@cutoff/audio-ui-core";
+import { translateButtonRoundness } from "@cutoff/audio-ui-core";
+import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
 /**
  * Props for the SvgButton component

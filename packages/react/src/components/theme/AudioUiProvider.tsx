@@ -1,10 +1,10 @@
 "use client";
 
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
-import { Themable } from "../types";
-import { getAdaptiveDefaultColor, isDarkMode } from "../utils/colorUtils";
-import { clampNormalized } from "../utils/normalizedProps";
-import { DEFAULT_ROUNDNESS } from "../utils/themeDefaults";
+import { createContext, useContext, useEffect, useMemo, useState, ReactNode } from "react";
+import { isDarkMode, getAdaptiveDefaultColor } from "@cutoff/audio-ui-core";
+import { clampNormalized } from "@cutoff/audio-ui-core";
+import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
+import { Themable } from "@cutoff/audio-ui-core";
 
 /**
  * Theme context type with setter functions
@@ -58,7 +58,11 @@ export interface AudioUiProviderProps {
  * </AudioUiProvider>
  * ```
  */
-export function AudioUiProvider({ children, initialColor, initialRoundness = DEFAULT_ROUNDNESS }: AudioUiProviderProps) {
+export function AudioUiProvider({
+    children,
+    initialColor,
+    initialRoundness = DEFAULT_ROUNDNESS,
+}: AudioUiProviderProps) {
     const [color, setColor] = useState<string | undefined>(initialColor);
     const [roundness, setRoundness] = useState<number>(clampNormalized(initialRoundness));
 

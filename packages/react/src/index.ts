@@ -33,13 +33,11 @@ export type { SvgSliderProps } from "./components/theme/SvgSlider";
 
 // Export common types
 export type {
-    SizeType,
     AdaptiveSize,
     BaseProps,
     ContinuousControlProps,
     BooleanControlProps,
     InteractiveControl,
-    InteractionMode,
     Themable,
     ControlComponent,
     ControlComponentView,
@@ -56,7 +54,7 @@ export {
     percentageFormatter,
     frequencyFormatter,
     calculateCenterValue,
-} from "./components/utils/valueFormatters";
+} from "@cutoff/audio-ui-core";
 
 // Export note utilities
 export {
@@ -65,14 +63,11 @@ export {
     noteToNoteNum,
     isNoteOn,
     createNoteNumSet,
-} from "./components/utils/noteUtils";
-
-// Export theme colors
-export { themeColors, themeColorsDirect } from "./themeColors";
+} from "@cutoff/audio-ui-core";
 
 // Export theme defaults
-export { DEFAULT_ROUNDNESS, DEFAULT_THICKNESS } from "./components/utils/themeDefaults";
+export { DEFAULT_ROUNDNESS, DEFAULT_THICKNESS } from "@cutoff/audio-ui-core";
 
 // Export Audio Parameter Model and Hook
-export * from "./models/AudioParameter";
+export * from "@cutoff/audio-ui-core";
 export * from "./hooks/useAudioParameter";

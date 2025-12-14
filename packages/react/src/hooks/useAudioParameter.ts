@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useRef } from "react";
-import { AudioParameter, AudioParameterConverter } from "../models/AudioParameter";
+import { AudioParameter, AudioParameterConverter } from "@cutoff/audio-ui-core";
 
 export interface UseAudioParameterResult {
     /** The normalized value (0..1) for UI rendering */
