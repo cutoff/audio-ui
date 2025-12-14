@@ -22,7 +22,7 @@
         "test": "turbo test",
         "lint": "turbo lint",
         "check": "turbo run typecheck build lint test",
-        "clean": "turbo clean && rm -rf node_modules .turbo",
+        "clean": "(pnpm exec turbo clean || true) && rm -rf node_modules .turbo",
         "format": "prettier --write ."
     },
     "keywords": [

@@ -1,10 +1,10 @@
-import { isEqual } from "lodash";
+import isEqual from "fast-deep-equal";
 
 /**
  * Creates a comparison function for React.memo to prevent unnecessary re-renders.
  *
  * This utility creates a function that performs shallow comparison of primitive props
- * and uses lodash's isEqual for deep comparison of objects like style.
+ * and uses fast-deep-equal for deep comparison of objects like style.
  *
  * @param options - Configuration options for the comparison
  * @param options.deepCompareProps - Array of prop names that should be deeply compared

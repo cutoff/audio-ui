@@ -12,7 +12,7 @@ export default defineConfig({
             fileName: "index",
         },
         rollupOptions: {
-            external: ["react", "react-dom", "react/jsx-runtime", "classnames", "lodash"],
+            external: ["react", "react-dom", "react/jsx-runtime", "classnames", "fast-deep-equal"],
             output: {
                 globals: {
                     react: "React",

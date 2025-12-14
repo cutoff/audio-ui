@@ -18,7 +18,9 @@
         "isolatedModules": true,
         "esModuleInterop": true,
         "lib": ["ESNext", "DOM"],
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "composite": false,
+        "incremental": false
     },
     "include": ["src"],
     "exclude": ["node_modules", "dist", "**/*.test.ts"]
