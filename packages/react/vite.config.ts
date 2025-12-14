@@ -2,9 +2,19 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import { resolve } from "path";
 import dts from "vite-plugin-dts";
+import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
-    plugins: [react(), dts({ include: ["src"] })],
+    plugins: [
+        react(),
+        dts({ include: ["src"] }),
+        visualizer({
+            filename: "dist/stats.html",
+            open: false,
+            gzipSize: true,
+            brotliSize: true,
+        }),
+    ],
     build: {
         lib: {
             entry: resolve(__dirname, "src/index.ts"),
@@ -12,7 +22,14 @@ export default defineConfig({
             fileName: "index",
         },
         rollupOptions: {
-            external: ["react", "react-dom", "react/jsx-runtime", "classnames", "fast-deep-equal"],
+            external: [
+                "react",
+                "react-dom",
+                "react/jsx-runtime",
+                "classnames",
+                "fast-deep-equal",
+                "@cutoff/audio-ui-core",
+            ],
             output: {
                 globals: {
                     react: "React",
@@ -23,5 +40,7 @@ export default defineConfig({
         },
         sourcemap: true,
         cssCodeSplit: false,
+        minify: "esbuild",
+        target: "es2020",
     },
 });

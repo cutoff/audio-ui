@@ -19,6 +19,9 @@
     "type": "module",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "sideEffects": [
+        "**/*.css"
+    ],
     "exports": {
         ".": {
             "import": "./dist/index.js",
@@ -36,7 +39,8 @@
         "test": "vitest run",
         "test:watch": "vitest",
         "test:coverage": "vitest run --coverage",
-        "lint:css": "stylelint \"src/**/*.css\""
+        "lint:css": "stylelint \"src/**/*.css\"",
+        "analyze": "pnpm build"
     },
     "keywords": [
         "react",
@@ -64,6 +68,7 @@
         "stylelint": "^16.26.1",
         "typescript": "^5.9.3",
         "vite": "^5.4.21",
+        "rollup-plugin-visualizer": "^5.12.0",
         "vite-plugin-dts": "^3.9.1",
         "vitest": "^1.6.1"
     }
