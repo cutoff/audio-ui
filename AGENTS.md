@@ -32,23 +32,24 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 
 ## Quick Rules Summary for Agents (Load This First)
 
-| Category            | Rule/Details                                                                                                                                                                                                                                                                               |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Git Operations      | **Do NOT commit changes automatically.** Always ask for user confirmation before running `git commit`, `git merge`, `git reset`, or modifying git history.                                                                                                                                 |
-| Documentation Style | **Write in present tense, declarative statements.** Avoid evolution phrasing: "now", "recently", "changed", "updated", "moved", "introduced", "added", "removed". Focus on current state, not history. Example: "Knob uses SvgContinuousControl" not "Knob now uses SvgContinuousControl". |
-| Performance Mandate | **Critical Priority.** Audio apps have heavy runtime constraints (e.g., avoiding UI stutters, ensuring low-latency response). Prioritize performance in all decisions: minimal re-renders, no JS for layout/sizing, efficient event handling.                                              |
-| React               | React 18 only; library as peer deps (`^18.2.0`), demo as direct (`^18.3.1`); never upgrade to 19                                                                                                                                                                                           |
-| TypeScript          | Strict mode; handle all errors; prefix unused params with \_; `@types/react:^18.3.23`                                                                                                                                                                                                      |
-| Package Manager     | pnpm                                                                                                                                                                                                                                                                                       |
-| UI Components       | Use shadcn/ui; add with `pnpm dlx shadcn@latest add [component]`; no custom if shadcn available; **NEVER modify shadcn components** - they are third-party stabilized code; work around type issues with type assertions/ts-expect-error if needed                                         |
-| Testing             | Vitest; files `.test.tsx` alongside; mock deps; React 18 compat                                                                                                                                                                                                                            |
-| Build               | Library: Vite with TS decl; demo: Next.js 15 with Turbopack; run `pnpm build && pnpm typecheck`                                                                                                                                                                                            |
-| Dev Server          | Run `pnpm dev` at root for development; never in playground-app for testing                                                                                                                                                                                                                |
-| Theming             | CSS vars with `--audioui-*`; default adaptive (black light, white dark); utility classes `.audioui-*`; named themes blue etc.                                                                                                                                                              |
-| Components          | Function declarations; props with JSDoc; default params; SVG for graphics                                                                                                                                                                                                                  |
-| Perf                | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveBox CSS-only); O(1) lookups for enum parameters; memoized styles/calculations; useRef for event handlers to avoid stale closures; lazy global event listeners (only during drag)                                                 |
-| Library Exports     | From packages/react/src/index.ts                                                                                                                                                                                                                                                           |
-| Demo Routing        | Next.js app router; app/[route]/page.tsx                                                                                                                                                                                                                                                   |
+| Category            | Rule/Details                                                                                                                                                                                                                                                                                        |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Architecture        | **CRITICAL**: `packages/core/` is framework-agnostic (pure TypeScript, no framework deps). `packages/react/` is the React implementation that wraps core. Future framework packages (e.g., `packages/solid/`) would follow the same pattern: depend on core, provide framework-specific components. |
+| Git Operations      | **Do NOT commit changes automatically.** Always ask for user confirmation before running `git commit`, `git merge`, `git reset`, or modifying git history.                                                                                                                                          |
+| Documentation Style | **Write in present tense, declarative statements.** Avoid evolution phrasing: "now", "recently", "changed", "updated", "moved", "introduced", "added", "removed". Focus on current state, not history. Example: "Knob uses SvgContinuousControl" not "Knob now uses SvgContinuousControl".          |
+| Performance Mandate | **Critical Priority.** Audio apps have heavy runtime constraints (e.g., avoiding UI stutters, ensuring low-latency response). Prioritize performance in all decisions: minimal re-renders, no JS for layout/sizing, efficient event handling.                                                       |
+| React               | React 18 only; library as peer deps (`^18.2.0`), demo as direct (`^18.3.1`); never upgrade to 19                                                                                                                                                                                                    |
+| TypeScript          | Strict mode; handle all errors; prefix unused params with \_; `@types/react:^18.3.23`                                                                                                                                                                                                               |
+| Package Manager     | pnpm                                                                                                                                                                                                                                                                                                |
+| UI Components       | Use shadcn/ui; add with `pnpm dlx shadcn@latest add [component]`; no custom if shadcn available; **NEVER modify shadcn components** - they are third-party stabilized code; work around type issues with type assertions/ts-expect-error if needed                                                  |
+| Testing             | Vitest; files `.test.tsx` alongside; mock deps; React 18 compat                                                                                                                                                                                                                                     |
+| Build               | Library: Vite with TS decl; demo: Next.js 15 with Turbopack; run `pnpm build && pnpm typecheck`                                                                                                                                                                                                     |
+| Dev Server          | Run `pnpm dev` at root for development; never in playground-app for testing                                                                                                                                                                                                                         |
+| Theming             | CSS vars with `--audioui-*`; default adaptive (black light, white dark); utility classes `.audioui-*`; named themes blue etc.                                                                                                                                                                       |
+| Components          | Function declarations; props with JSDoc; default params; SVG for graphics                                                                                                                                                                                                                           |
+| Perf                | ES modules; tree-shaking; CSS grid; no JS sizing (AdaptiveBox CSS-only); O(1) lookups for enum parameters; memoized styles/calculations; useRef for event handlers to avoid stale closures; lazy global event listeners (only during drag)                                                          |
+| Library Exports     | From packages/react/src/index.ts                                                                                                                                                                                                                                                                    |
+| Demo Routing        | Next.js app router; app/[route]/page.tsx                                                                                                                                                                                                                                                            |
 
 ## Rendering Strategy
 
@@ -68,16 +69,29 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 
 ## Project Structure
 
-- `packages/core/`: **Core Logic Package**; pure TypeScript, framework-agnostic.
+**CRITICAL ARCHITECTURE SEPARATION:**
+
+- `packages/core/`: **Framework-Agnostic Core Package**; pure TypeScript, no framework dependencies.
+  - **Purpose**: Contains all business logic, models, controllers, utilities, and styles that are independent of any UI framework.
+  - **Usage**: Can be used by any framework implementation (React, Solid, Vue, etc.) or in non-framework contexts.
   - `src/model/`: Domain models (AudioParameter, AudioParameterConverter).
   - `src/controller/`: Interaction logic (InteractionController).
   - `src/constants/`: Shared constants (themeColors, cssVars, styles).
   - `src/utils/`: Pure math and utility functions (math, sizing, colorUtils, noteUtils).
   - `src/styles/`: Shared CSS files (styles.css, themes.css).
-- `packages/react/`: **React Component Library**; depends on `@cutoff/audio-ui-core`.
-  - `src/components/`: React View Components.
+
+- `packages/react/`: **React Implementation Package**; React-specific component library that depends on `@cutoff/audio-ui-core`.
+  - **Purpose**: Provides React components, hooks, and React-specific adapters that wrap the framework-agnostic core logic.
+  - **Architecture**: React components use core's `InteractionController`, models, and utilities, but add React-specific rendering and hooks.
+  - `src/components/`: React View Components (Button, Knob, Slider, Keybed, etc.).
   - `src/hooks/`: React adapters for Core logic (`useAudioParameter`, `useInteractiveControl`).
   - `src/index.ts`: Re-exports core primitives alongside React components.
+
+- **Future Framework Implementations**: The architecture supports additional framework-specific packages (e.g., `packages/solid/` for SolidJS, `packages/vue/` for Vue, etc.). Each would:
+  - Depend on `@cutoff/audio-ui-core` for shared logic
+  - Provide framework-specific components and adapters
+  - Follow the same architectural pattern as `packages/react/`
+
 - `apps/playground-react/`: Next.js playground; showcases components; app/components for pages (inferred)
 - `agents/`: Shared conventions (coding-conventions-2.0.md, typescript-guidelines-2.0.md, react-conventions-2.0.md, documentation-standards-2.0.md)
 - `packages/react/docs/`: Specialized tech docs (e.g., adaptive-box-layout.md)

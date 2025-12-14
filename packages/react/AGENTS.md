@@ -1,5 +1,15 @@
 **Version**: 2.0 | **Meta**: Extends root AGENTS.md for library internals (component exports, build, env).
 
+## Architecture: React Implementation of Framework-Agnostic Core
+
+**CRITICAL**: This package (`packages/react/`) is the **React-specific implementation** of the AudioUI library.
+
+- **Framework-Agnostic Core**: `packages/core/` contains all business logic, models, controllers, utilities, and styles that are independent of any UI framework. It has zero framework dependencies and can be used by any framework implementation.
+- **React Implementation**: This package (`packages/react/`) provides React components, hooks, and React-specific adapters that wrap the framework-agnostic core logic from `@cutoff/audio-ui-core`.
+- **Future Implementations**: The architecture supports additional framework-specific packages (e.g., `packages/solid/` for SolidJS). Each would depend on `@cutoff/audio-ui-core` and provide framework-specific components following the same pattern.
+
+**Key Pattern**: React components use core's `InteractionController`, models, and utilities, but add React-specific rendering via hooks (`useInteractiveControl`, `useAudioParameter`) and React components.
+
 ## Quick Setup Summary (Load This First)
 
 | Category            | Details                                                                                                                                                                                                                                               |

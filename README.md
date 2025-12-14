@@ -24,11 +24,13 @@ AudioUI provides a range of components essential for building audio applications
 
 This monorepo contains the following packages:
 
-| Package / Path                               | Description                                                                 |
-| -------------------------------------------- | --------------------------------------------------------------------------- |
-| `@cutoff/audio-ui-react` (`packages/react`)  | The core component library, published to npm.                               |
-| `@cutoff/audio-ui-core` (`packages/core`)    | Core logic, models, and constants (internal/shared).                        |
-| `playground-react` (`apps/playground-react`) | A [Next.js](https://nextjs.org/) app for developing and testing components. |
+| Package / Path                               | Description                                                                                                                                                                                                                                            |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `@cutoff/audio-ui-react` (`packages/react`)  | The React component library implementation, published to npm. Provides React components, hooks, and React-specific adapters that wrap the framework-agnostic core.                                                                                     |
+| `@cutoff/audio-ui-core` (`packages/core`)    | Framework-agnostic core package. Contains all business logic, models, controllers, utilities, and styles that are independent of any UI framework. Can be used by any framework implementation (React, Solid, Vue, etc.) or in non-framework contexts. |
+| `playground-react` (`apps/playground-react`) | A [Next.js](https://nextjs.org/) app for developing and testing components.                                                                                                                                                                            |
+
+**Architecture Note**: The library is designed with a clear separation between framework-agnostic core logic (`packages/core/`) and framework-specific implementations (`packages/react/`). This architecture allows for future implementations in other frameworks (e.g., `packages/solid/` for SolidJS) that would share the same core logic.
 
 ## Getting Started
 
@@ -75,6 +77,7 @@ pnpm install
 ```
 
 This monorepo uses `pnpm` workspaces. The primary packages are:
+
 - `@cutoff/audio-ui-react`: The React component library.
 - `@cutoff/audio-ui-core`: The framework-agnostic core logic.
 - `playground-react`: The Next.js playground application.
