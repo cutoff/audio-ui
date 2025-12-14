@@ -301,8 +301,8 @@ const { resolvedColor, resolvedRoundness } = useThemableProps(
 
 ```typescript
 export function useThemableProps(
-  props: Partial<Themable>,
-  defaultValues: Partial<Themable>
+  props: Partial<ThemableProps>,
+  defaultValues: Partial<ThemableProps>
 ): { resolvedColor: string; resolvedRoundness: number | undefined } {
   const themeContext = useAudioUiTheme();
 

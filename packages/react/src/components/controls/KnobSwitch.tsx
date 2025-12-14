@@ -4,7 +4,7 @@ import React, { useMemo } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "../primitives/AdaptiveBox";
 import SvgKnob from "../theme/SvgKnob";
-import { AdaptiveSize, BaseProps, InteractiveControl, Themable } from "../types";
+import { AdaptiveSizeProps, BaseProps, InteractiveControlProps, ThemableProps } from "../types";
 import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
@@ -29,10 +29,10 @@ export type KnobSwitchOptionProps = {
 /**
  * Props for the KnobSwitch component
  */
-export type KnobSwitchProps = AdaptiveSize &
-    InteractiveControl &
+export type KnobSwitchProps = AdaptiveSizeProps &
+    InteractiveControlProps &
     BaseProps &
-    Themable & {
+    ThemableProps & {
         /** Label displayed below the component */
         label?: string;
         /** Current value of the component */

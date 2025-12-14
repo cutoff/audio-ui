@@ -6,7 +6,7 @@ import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audi
 import { useThemableProps } from "../theme/AudioUiProvider";
 import SvgKnob from "../theme/SvgKnob";
 import SvgContinuousControl from "../primitives/SvgContinuousControl";
-import { ContinuousControlProps, Themable } from "../types";
+import { ContinuousControlProps, ThemableProps } from "../types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import { AudioParameterFactory, ContinuousParameter } from "@cutoff/audio-ui-core";
@@ -16,7 +16,7 @@ import { useAudioParameter } from "../../hooks/useAudioParameter";
  * Props for the Knob component (built-in control with theming support)
  */
 export type KnobProps = ContinuousControlProps &
-    Themable & {
+    ThemableProps & {
         /** Content to display inside the knob (replaces the value display) */
         children?: React.ReactNode;
         /** Thickness of the knob's stroke (normalized 0.0-1.0, maps to 1-20)

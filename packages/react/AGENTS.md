@@ -23,21 +23,21 @@
 **Built-in Controls** (`src/components/controls/`):
 
 - Ready-to-use components (Button, Knob, Slider, KnobSwitch)
-- Include `Themable` props (`color`, `roundness`) via type extensions
+- Include `ThemableProps` (`color`, `roundness`) via type extensions
 - Opinionated, production-ready with full theming integration
-- Props: `KnobProps`, `SliderProps`, `ButtonProps` extend primitives with `Themable`
+- Props: `KnobProps`, `SliderProps`, `ButtonProps` extend primitives with `ThemableProps`
 
 **Customizable Primitives** (`src/components/primitives/`):
 
 - Lower-level components (SvgContinuousControl, AdaptiveBox)
 - No built-in theming - users add their own theming props as needed
 - For building custom controls without theming constraints
-- Props: `ContinuousControlProps`, `BooleanControlProps` (no `Themable` included)
+- Props: `ContinuousControlProps`, `BooleanControlProps` (no `ThemableProps` included)
 
 **Type System:**
 
-- Primitive types (`ContinuousControlProps`, `BooleanControlProps`) do NOT include `Themable`
-- Built-in control types (`KnobProps`, `SliderProps`, `ButtonProps`) extend primitives with `Themable`
+- Primitive types (`ContinuousControlProps`, `BooleanControlProps`) do NOT include `ThemableProps`
+- Built-in control types (`KnobProps`, `SliderProps`, `ButtonProps`) extend primitives with `ThemableProps`
 - This separation allows custom controls to opt into theming only if needed
   - `Keybed.tsx`: Keyboard component
 - `src/index.ts`: Export all components, types, utilities, and theme colors

@@ -6,7 +6,7 @@ import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audi
 import { useThemableProps } from "../theme/AudioUiProvider";
 import { SvgVerticalSlider, SvgHorizontalSlider } from "../theme/SvgSlider";
 import SvgContinuousControl from "../primitives/SvgContinuousControl";
-import { ContinuousControlProps, Themable } from "../types";
+import { ContinuousControlProps, ThemableProps } from "../types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
@@ -14,7 +14,7 @@ import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
  * Props for the Slider component (built-in control with theming support)
  */
 export type SliderProps = ContinuousControlProps &
-    Themable & {
+    ThemableProps & {
         /** Orientation of the slider
          * @default 'vertical' */
         orientation?: "horizontal" | "vertical";

@@ -2,8 +2,8 @@
 
 import React, { useMemo, useCallback } from "react";
 import classNames from "classnames";
-import AdaptiveBox from "./primitives/AdaptiveBox";
-import { AdaptiveSize, BaseProps, Themable } from "./types";
+import AdaptiveBox from "../primitives/AdaptiveBox";
+import { AdaptiveSizeProps, BaseProps, ThemableProps } from "../types";
 import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { generateColorVariants } from "@cutoff/audio-ui-core";
 import {
@@ -18,7 +18,7 @@ import {
 import "@cutoff/audio-ui-core/styles.css";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import { CSS_VARS } from "@cutoff/audio-ui-core";
-import { useThemableProps } from "./theme/AudioUiProvider";
+import { useThemableProps } from "../theme/AudioUiProvider";
 import { translateKeybedRoundness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
@@ -32,8 +32,8 @@ const notesCount = WHITE_KEY_NAMES.length;
  * Props for the Keybed component
  */
 export type KeybedProps = BaseProps &
-    AdaptiveSize &
-    Themable & {
+    AdaptiveSizeProps &
+    ThemableProps & {
         /** Number of keys on the keybed
          * @default 61 */
         nbKeys?: number;
@@ -458,3 +458,4 @@ function Keybed({
 
 // Wrap the component in React.memo to prevent unnecessary re-renders
 export default React.memo(Keybed);
+

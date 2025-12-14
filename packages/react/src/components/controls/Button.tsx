@@ -5,7 +5,7 @@ import classNames from "classnames";
 import AdaptiveBox from "../primitives/AdaptiveBox";
 import "@cutoff/audio-ui-core/styles.css";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
-import { BooleanControlProps, Themable } from "../types";
+import { BooleanControlProps, ThemableProps } from "../types";
 import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import SvgButton from "../theme/SvgButton";
@@ -16,7 +16,7 @@ import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 /**
  * Props for the Button component (built-in control with theming support)
  */
-export type ButtonProps = BooleanControlProps & Themable;
+export type ButtonProps = BooleanControlProps & ThemableProps;
 
 /**
  * A button component for audio applications.

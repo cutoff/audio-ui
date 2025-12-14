@@ -8,9 +8,26 @@ import { SizeType, InteractionMode } from "@cutoff/audio-ui-core";
 // SizeType is imported from core now
 
 /**
- * Interface for themable components
+ * Props for themable components
  */
-export type { Themable } from "@cutoff/audio-ui-core";
+export type ThemableProps = {
+    /** Component primary color - any valid CSS color value
+     * @default "blue"
+     */
+    color?: string;
+
+    /** Roundness for component corners/caps
+     * Normalized value between 0.0 (square) and 1.0 (fully rounded)
+     * @default 0.3
+     */
+    roundness?: number;
+
+    /** Thickness for component strokes/widths
+     * Normalized value between 0.0 (smallest) and 1.0 (largest)
+     * @default 0.4
+     */
+    thickness?: number;
+};
 
 /**
  * Base props for all components
@@ -35,7 +52,7 @@ export type BaseProps = {
 /**
  * Adaptive sizing props for responsive components
  */
-export type AdaptiveSize = {
+export type AdaptiveSizeProps = {
     /** Size of the component
      * @default 'normal'
      */
@@ -56,7 +73,7 @@ export type AdaptiveSize = {
  * Props for interactive controls (drag, wheel, keyboard)
  * Used by both continuous and enum controls
  */
-export type InteractiveControl = {
+export type InteractiveControlProps = {
     /** Handler for value changes
      * @param value The new value or a function to update the previous value
      */
@@ -80,7 +97,7 @@ export type InteractiveControl = {
  * Props for continuous value controls (primitives like SvgContinuousControl).
  *
  * Note: This is a primitive type for building customizable controls. Built-in controls
- * (Knob, Slider) extend this with Themable props. If you're building a custom control
+ * (Knob, Slider) extend this with ThemableProps. If you're building a custom control
  * using SvgContinuousControl, you can add your own theming props as needed.
  *
  * Supports two modes:
@@ -90,8 +107,8 @@ export type InteractiveControl = {
  * When `parameter` is provided, it takes precedence over ad-hoc props.
  */
 export type ContinuousControlProps = BaseProps &
-    AdaptiveSize &
-    InteractiveControl & {
+    AdaptiveSizeProps &
+    InteractiveControlProps & {
         /** Current value of the control */
         value: number;
 
@@ -143,7 +160,7 @@ export type ContinuousControlProps = BaseProps &
  * Props for boolean value controls (primitives).
  *
  * Note: This is a primitive type for building customizable controls. Built-in controls
- * (Button) extend this with Themable props. If you're building a custom control,
+ * (Button) extend this with ThemableProps. If you're building a custom control,
  * you can add your own theming props as needed.
  *
  * Supports two modes:
@@ -153,7 +170,7 @@ export type ContinuousControlProps = BaseProps &
  * When `parameter` is provided, it takes precedence over ad-hoc props.
  */
 export type BooleanControlProps = BaseProps &
-    AdaptiveSize & {
+    AdaptiveSizeProps & {
         /** Current value (must be boolean) */
         value: boolean;
 
