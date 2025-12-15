@@ -4,7 +4,7 @@ import React, { useMemo } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "../primitives/AdaptiveBox";
 import SvgKnob from "../theme/SvgKnob";
-import { AdaptiveSizeProps, BaseProps, InteractiveControlProps, ThemableProps } from "../types";
+import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, InteractiveControlProps, ThemableProps } from "../types";
 import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
@@ -30,6 +30,7 @@ export type KnobSwitchOptionProps = {
  * Props for the KnobSwitch component
  */
 export type KnobSwitchProps = AdaptiveSizeProps &
+    AdaptiveBoxProps &
     InteractiveControlProps &
     BaseProps &
     ThemableProps & {
@@ -56,27 +57,31 @@ export type KnobSwitchProps = AdaptiveSizeProps &
 const KnobSwitch: React.FC<KnobSwitchProps> & {
     Option: React.FC<KnobSwitchOptionProps>;
 } = ({
-    label,
     value,
-    children,
-    style,
-    className,
-    stretch = false,
     onChange,
+    renderOption,
+    label,
+    adaptiveSize = false,
+    size = "normal",
+    displayMode,
+    labelMode,
+    labelPosition,
+    labelAlign,
+    color,
+    roundness,
+    thickness = 0.4,
+    parameter,
+    paramId,
+    interactionMode,
+    sensitivity,
     onClick,
     onMouseDown,
     onMouseUp,
     onMouseEnter,
     onMouseLeave,
-    size = "normal",
-    paramId,
-    color,
-    roundness,
-    parameter,
-    renderOption,
-    thickness = 0.4,
-    interactionMode,
-    sensitivity,
+    className,
+    style,
+    children,
 }) => {
     // Use the themable props hook to resolve color and roundness with proper fallbacks
     // Clamp values to 0.0-1.0 range
@@ -184,8 +189,12 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
         editable: !!onChange || !!onClick,
     });
 
+    // Determine sizing behavior: adaptiveSize controls stretch behavior and
+    // takes precedence over size when both are provided.
+    const isStretch = adaptiveSize === true;
+
     // Get the size class name based on the size prop
-    const sizeClassName = stretch ? undefined : getSizeClassForComponent("knob", size);
+    const sizeClassName = isStretch ? undefined : getSizeClassForComponent("knob", size);
 
     // Memoize the classNames calculation: size class first, then base classes, then user className (user takes precedence)
     const componentClassNames = useMemo(() => {
@@ -199,7 +208,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
     }, [sizeClassName, className, onChange, onClick]);
 
     // Build merged style: size style (when not stretching), then interactive props style, then user style (user takes precedence)
-    const sizeStyle = stretch ? undefined : getSizeStyleForComponent("knob", size);
+    const sizeStyle = isStretch ? undefined : getSizeStyleForComponent("knob", size);
 
     // Memoize content wrapper style to avoid object recreation on every render
     const contentWrapperStyle = useMemo(
@@ -324,7 +333,8 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
 
     return (
         <AdaptiveBox
-            displayMode="scaleToFit"
+            displayMode={displayMode ?? "scaleToFit"}
+            labelMode={labelMode}
             className={componentClassNames}
             style={{
                 // Size style first
@@ -367,7 +377,11 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
                     </SvgKnob>
                 </AdaptiveBox.Svg>
 
-                {effectiveLabel && <AdaptiveBox.Label align="center">{effectiveLabel}</AdaptiveBox.Label>}
+                {effectiveLabel && (
+                    <AdaptiveBox.Label position={labelPosition} align={labelAlign ?? "center"}>
+                        {effectiveLabel}
+                    </AdaptiveBox.Label>
+                )}
             </>
         </AdaptiveBox>
     );

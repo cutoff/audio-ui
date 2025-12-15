@@ -5,7 +5,7 @@ import classNames from "classnames";
 import AdaptiveBox from "../primitives/AdaptiveBox";
 import "@cutoff/audio-ui-core/styles.css";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
-import { BooleanControlProps, ThemableProps } from "../types";
+import { AdaptiveBoxProps, AdaptiveSizeProps, BooleanControlProps, ThemableProps } from "../types";
 import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import SvgButton from "../theme/SvgButton";
@@ -16,30 +16,37 @@ import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 /**
  * Props for the Button component (built-in control with theming support)
  */
-export type ButtonProps = BooleanControlProps & ThemableProps;
+export type ButtonProps = BooleanControlProps &
+    AdaptiveSizeProps &
+    AdaptiveBoxProps &
+    ThemableProps;
 
 /**
  * A button component for audio applications.
  * ...
  */
 function Button({
-    value = false,
-    label,
-    stretch = false,
-    className,
-    style,
-    paramId,
-    onChange,
     latch = false,
-    roundness,
+    value = false,
+    onChange,
+    label,
+    adaptiveSize = false,
     size = "normal",
+    displayMode,
+    labelMode,
+    labelPosition,
+    labelAlign,
+    parameter,
+    paramId,
+    color,
+    roundness,
     onClick,
     onMouseDown,
     onMouseUp,
     onMouseEnter,
     onMouseLeave,
-    color,
-    parameter,
+    className,
+    style,
 }: ButtonProps) {
     // Use the themable props hook to resolve color and roundness with proper fallbacks
     // Clamp roundness to 0.0-1.0 range
@@ -141,8 +148,12 @@ function Button({
         return undefined;
     }, [paramConfig.mode, onChange, handleGlobalMouseUp]);
 
+    // Determine sizing behavior: adaptiveSize controls stretch behavior and
+    // takes precedence over size when both are provided.
+    const isStretch = adaptiveSize === true;
+
     // Get the size class name based on the size prop
-    const sizeClassName = stretch ? undefined : getSizeClassForComponent("button", size);
+    const sizeClassName = isStretch ? undefined : getSizeClassForComponent("button", size);
 
     // Memoize the classNames calculation: size class first, then base classes, then user className (user takes precedence)
     const componentClassNames = useMemo(() => {
@@ -159,14 +170,15 @@ function Button({
     const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
 
     // Build merged style: size style (when not stretching), then user style (user takes precedence)
-    const sizeStyle = stretch ? undefined : getSizeStyleForComponent("button", size);
+    const sizeStyle = isStretch ? undefined : getSizeStyleForComponent("button", size);
 
     // Determine if button is editable/clickable
     const isInteractive = !!(onChange || onClick);
 
     return (
         <AdaptiveBox
-            displayMode="scaleToFit"
+            displayMode={displayMode ?? "scaleToFit"}
+            labelMode={labelMode}
             className={componentClassNames}
             style={{ ...sizeStyle, ...style }}
             labelHeightUnits={30}
@@ -219,7 +231,11 @@ function Button({
                     color={resolvedColor}
                 />
             </AdaptiveBox.Svg>
-            {effectiveLabel && <AdaptiveBox.Label align="center">{effectiveLabel}</AdaptiveBox.Label>}
+            {effectiveLabel && (
+                <AdaptiveBox.Label position={labelPosition} align={labelAlign ?? "center"}>
+                    {effectiveLabel}
+                </AdaptiveBox.Label>
+            )}
         </AdaptiveBox>
     );
 }

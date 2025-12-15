@@ -3,7 +3,7 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
-import { ContinuousControlProps, ControlComponent } from "../types";
+import { AdaptiveBoxProps, ContinuousControlProps, ControlComponent } from "../types";
 import AdaptiveBox from "./AdaptiveBox";
 import { AudioParameterFactory } from "@cutoff/audio-ui-core";
 import { useAudioParameter } from "../../hooks/useAudioParameter";
@@ -14,6 +14,8 @@ import { useInteractiveControl } from "../../hooks/useInteractiveControl";
 export type SvgContinuousControlProps<P extends object = {}> =
     // Base Control Props (includes all ContinuousControlProps)
     ContinuousControlProps &
+        // Layout props that configure AdaptiveBox behavior
+        AdaptiveBoxProps &
         // The "Extra Props" P are intersected here so they appear on the root component
         P & {
             /**
@@ -41,6 +43,10 @@ export function SvgContinuousControl<P extends object = {}>({
     value,
     label,
     children,
+    displayMode,
+    labelMode,
+    labelPosition,
+    labelAlign,
     className,
     style,
     onChange,
@@ -102,7 +108,8 @@ export function SvgContinuousControl<P extends object = {}>({
 
     return (
         <AdaptiveBox
-            displayMode="scaleToFit"
+            displayMode={displayMode ?? "scaleToFit"}
+            labelMode={labelMode}
             className={componentClassNames}
             style={{
                 // Interactive style first (provides default cursor)
@@ -136,7 +143,11 @@ export function SvgContinuousControl<P extends object = {}>({
                     {children}
                 </View>
             </AdaptiveBox.Svg>
-            {effectiveLabel && <AdaptiveBox.Label>{effectiveLabel}</AdaptiveBox.Label>}
+            {effectiveLabel && (
+                <AdaptiveBox.Label position={labelPosition} align={labelAlign}>
+                    {effectiveLabel}
+                </AdaptiveBox.Label>
+            )}
         </AdaptiveBox>
     );
 }

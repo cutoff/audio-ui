@@ -88,32 +88,31 @@ Size utility classes are defined in `styles.css`. They provide the dimensions fo
 
 ## Implementation Details
 
-### Size Prop
+### Size Props
 
-All controls support a `size` prop:
+All controls support a `size` prop and an `adaptiveSize` prop:
 
 ```typescript
 type SizeType = "xsmall" | "small" | "normal" | "large" | "xlarge";
+
+type AdaptiveSizeProps = {
+  size?: SizeType;        // default: "normal"
+  adaptiveSize?: boolean; // default: false
+};
 ```
 
-Default: `"normal"`
-
-### Stretch Prop
-
-All controls support a `stretch` prop:
-
-- `stretch={false}` (default): Component uses size constraints from `size` prop
-- `stretch={true}`: Component fills its container (AdaptiveBox's default 100% behavior)
+When `adaptiveSize` is `false` or undefined, the component uses the `size` prop to apply size constraints. When
+`adaptiveSize` is `true`, the component fills its container and ignores `size` for layout constraints.
 
 ### Size Application
 
-When `stretch={false}` and `size` is provided:
+When `adaptiveSize={false}` (or omitted) and `size` is provided:
 
 1. **CSS Classes**: Size class is applied for semantic purposes and external styling
 2. **Inline Styles**: Size dimensions are applied as inline styles (CSS variable references) to override AdaptiveBox's default 100% sizing
 3. **Precedence**: User `className` and `style` props take precedence over size classes/styles
 
-When `stretch={true}`:
+When `adaptiveSize={true}`:
 
 1. No size class or inline size styles are applied
 2. AdaptiveBox's default `width: 100%; height: 100%` takes effect
@@ -151,21 +150,24 @@ All built-in controls (Button, Knob, Slider, KnobSwitch, Keybed) implement size 
 ### Example: Knob Component
 
 ```typescript
+// Determine sizing behavior from adaptiveSize
+const isStretch = adaptiveSize === true;
+
 // Get the size class name based on the size prop
-const sizeClassName = stretch ? undefined : getSizeClassForComponent("knob", size);
+const sizeClassName = isStretch ? undefined : getSizeClassForComponent("knob", size);
 
 // Merge class names: size class first, then user className (user takes precedence)
 const mergedClassName = classNames(sizeClassName, className);
 
 // Build merged style: size style (when not stretching), then user style (user takes precedence)
-const sizeStyle = stretch ? undefined : getSizeStyleForComponent("knob", size);
+const sizeStyle = isStretch ? undefined : getSizeStyleForComponent("knob", size);
 
 return (
-    <SvgContinuousControl
-        className={mergedClassName}
-        style={{ ...sizeStyle, ...style }}
-        // ... other props
-    />
+  <SvgContinuousControl
+    className={mergedClassName}
+    style={{ ...sizeStyle, ...style }}
+    // ... other props
+  />
 );
 ```
 

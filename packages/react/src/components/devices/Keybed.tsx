@@ -3,7 +3,7 @@
 import React, { useMemo, useCallback } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "../primitives/AdaptiveBox";
-import { AdaptiveSizeProps, BaseProps, ThemableProps } from "../types";
+import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, ThemableProps } from "../types";
 import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { generateColorVariants } from "@cutoff/audio-ui-core";
 import {
@@ -33,6 +33,9 @@ const notesCount = WHITE_KEY_NAMES.length;
  */
 export type KeybedProps = BaseProps &
     AdaptiveSizeProps &
+    // Keybed uses AdaptiveBox layout props but deliberately does not support labels.
+    // labelMode/labelPosition/labelAlign are omitted on purpose.
+    Omit<AdaptiveBoxProps, "labelMode" | "labelPosition" | "labelAlign"> &
     ThemableProps & {
         /** Number of keys on the keybed
          * @default 61 */
@@ -77,10 +80,7 @@ const positiveModulo = (number: number, modulus: number): number => {
  * - Responsive sizing through AdaptiveSvgComponent integration
  * - Multiple size variants (xsmall, small, normal, large, xlarge)
  *
- * This component inherits properties from:
- * - `Stretchable`: For responsive sizing
- *
- * @property {boolean} stretch - Whether the keybed should stretch to fill its container (from `Stretchable`)
+ * @property {boolean} adaptiveSize - Whether the keybed fills its container (ignores size constraints when true)
  * @property {number} nbKeys - Number of keys on the keybed (default 61)
  * @property {NoteName} startKey - Starting note name (A-G) (default 'C' for 61 keys, 'A' for 88 keys)
  * @property {number} octaveShift - Octave transpose index (default 0). Positive values shift notes up by that many octaves, negative values shift down.
@@ -131,14 +131,15 @@ function Keybed({
     nbKeys = 61,
     startKey = nbKeys === 88 ? "A" : "C",
     octaveShift = 0,
-    stretch = false,
     notesOn = [],
-    style = {},
-    className = "",
+    adaptiveSize = false,
     size = "normal",
+    displayMode,
+    keyStyle = "theme",
     color,
     roundness,
-    keyStyle = "theme",
+    className = "",
+    style = {},
 }: KeybedProps) {
     // Ensure nbKeys is within valid range (1-128)
     const validNbKeys = Math.max(1, Math.min(128, nbKeys));
@@ -426,8 +427,12 @@ function Keybed({
         keyStyle,
     ]);
 
+    // Determine sizing behavior: adaptiveSize controls stretch behavior and
+    // takes precedence over size when both are provided.
+    const isStretch = adaptiveSize === true;
+
     // Get the size class name based on the size prop
-    const sizeClassName = stretch ? undefined : getSizeClassForComponent("keybed", size);
+    const sizeClassName = isStretch ? undefined : getSizeClassForComponent("keybed", size);
 
     // Memoize the classNames calculation: size class first, then base classes, then user className (user takes precedence)
     const componentClassNames = useMemo(() => {
@@ -435,11 +440,13 @@ function Keybed({
     }, [sizeClassName, className]);
 
     // Build merged style: size style (when not stretching), then user style (user takes precedence)
-    const sizeStyle = stretch ? undefined : getSizeStyleForComponent("keybed", size);
+    const sizeStyle = isStretch ? undefined : getSizeStyleForComponent("keybed", size);
 
     return (
         <AdaptiveBox
-            displayMode="scaleToFit"
+            displayMode={displayMode ?? "scaleToFit"}
+            // Keybed does not expose labels; hide label row explicitly.
+            labelMode="none"
             className={componentClassNames}
             style={{ ...sizeStyle, ...style }}
             minWidth={40}

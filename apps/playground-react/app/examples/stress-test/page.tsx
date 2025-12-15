@@ -108,7 +108,7 @@ const AnimatedControl = ({
     buttonValue: boolean;
 }) => {
     const commonProps = {
-        stretch: true,
+        adaptiveSize: true,
         color: config.color,
     };
 

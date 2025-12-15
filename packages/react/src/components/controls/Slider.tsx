@@ -6,7 +6,7 @@ import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audi
 import { useThemableProps } from "../theme/AudioUiProvider";
 import { SvgVerticalSlider, SvgHorizontalSlider } from "../theme/SvgSlider";
 import SvgContinuousControl from "../primitives/SvgContinuousControl";
-import { ContinuousControlProps, ThemableProps } from "../types";
+import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps } from "../types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
@@ -14,6 +14,8 @@ import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
  * Props for the Slider component (built-in control with theming support)
  */
 export type SliderProps = ContinuousControlProps &
+    AdaptiveSizeProps &
+    AdaptiveBoxProps &
     ThemableProps & {
         /** Orientation of the slider
          * @default 'vertical' */
@@ -34,24 +36,28 @@ function Slider({
     step,
     bipolar = false,
     value,
-    label,
-    thickness = 0.4,
-    stretch = false,
-    className,
-    style,
     onChange,
-    roundness,
+    label,
+    adaptiveSize = false,
     size = "normal",
+    displayMode,
+    labelMode,
+    labelPosition,
+    labelAlign,
+    color,
+    roundness,
+    thickness = 0.4,
+    parameter,
     paramId,
+    interactionMode,
+    sensitivity,
     onClick,
     onMouseDown,
     onMouseUp,
     onMouseEnter,
     onMouseLeave,
-    color,
-    parameter,
-    interactionMode,
-    sensitivity,
+    className,
+    style,
 }: SliderProps) {
     // Use the themable props hook to resolve color and roundness with proper fallbacks
     // Clamp values to 0.0-1.0 range
@@ -62,14 +68,18 @@ function Slider({
         { color: undefined, roundness: DEFAULT_ROUNDNESS }
     );
 
+    // Determine sizing behavior: adaptiveSize controls stretch behavior and
+    // takes precedence over size when both are provided.
+    const isStretch = adaptiveSize === true;
+
     // Get the size class name based on the size prop and orientation
-    const sizeClassName = stretch ? undefined : getSizeClassForComponent("slider", size, orientation);
+    const sizeClassName = isStretch ? undefined : getSizeClassForComponent("slider", size, orientation);
 
     // Merge class names: size class first, then user className (user takes precedence)
     const mergedClassName = classNames(sizeClassName, className);
 
     // Build merged style: size style (when not stretching), then user style (user takes precedence)
-    const sizeStyle = stretch ? undefined : getSizeStyleForComponent("slider", size, orientation);
+    const sizeStyle = isStretch ? undefined : getSizeStyleForComponent("slider", size, orientation);
 
     // Select the appropriate view component based on orientation
     const ViewComponent = orientation === "vertical" ? SvgVerticalSlider : SvgHorizontalSlider;
@@ -83,7 +93,10 @@ function Slider({
             bipolar={bipolar}
             value={value}
             label={label}
-            stretch={stretch}
+            displayMode={displayMode}
+            labelMode={labelMode}
+            labelPosition={labelPosition}
+            labelAlign={labelAlign}
             className={mergedClassName}
             style={{ ...sizeStyle, ...style }}
             onChange={onChange}

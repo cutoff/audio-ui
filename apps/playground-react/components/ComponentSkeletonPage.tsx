@@ -5,7 +5,7 @@ import { CodeBlock } from "@/components/code-block";
 
 /** Type for components that can be rendered in the ComponentSkeletonPage */
 export type PageComponentProps = Record<string, unknown> & {
-    stretch?: boolean;
+    adaptiveSize?: boolean;
     onChange?: (value: number) => void;
 };
 
@@ -48,7 +48,7 @@ export default function ComponentSkeletonPage({
                     <div className="flex justify-center items-center h-40 md:h-60">
                         <PageComponent
                             key={`main-preview-${componentProps.orientation || "default"}`}
-                            stretch={true}
+                            adaptiveSize={true}
                             onChange={onChange}
                             {...componentProps}
                         />

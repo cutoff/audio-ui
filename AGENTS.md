@@ -183,9 +183,11 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
   - Vertical Slider: 3x1 (width:height) - height > width
   - Keybed: 1x5 (width:height) - width > height
 - **Implementation**: Size defined via CSS variables in `packages/core/src/styles/themes.css`; size classes in `packages/core/src/styles/styles.css` for semantic purposes; inline styles (CSS variable references) override AdaptiveBox's default 100% sizing
-- **Size Prop**: All controls support `size` prop ("xsmall" | "small" | "normal" | "large" | "xlarge", default "normal") and `stretch` prop (default false)
-- **When `stretch={false}`**: Size class and inline size styles applied; user `style` prop spreads last (takes precedence)
-- **When `stretch={true}`**: No size constraints; component fills its container (AdaptiveBox's default 100% behavior)
+- **Size Props**:
+  - `size`: `"xsmall" | "small" | "normal" | "large" | "xlarge"` (default `"normal"`)
+  - `adaptiveSize`: boolean (default `false`)
+- **When `adaptiveSize=false`**: Size class and inline size styles apply; user `style` prop spreads last (takes precedence)
+- **When `adaptiveSize=true`**: No size constraints from the size system; component fills its container (AdaptiveBox default `width: 100%; height: 100%`)
 - **User Override**: User `className` and `style` props take precedence over size classes/styles
 - **Utilities**: `getSizeClassForComponent()` returns CSS class names; `getSizeStyleForComponent()` returns inline style objects with CSS variable references
 - **Location**: Size mappings in `packages/core/src/utils/sizing.ts`; CSS variables in `packages/core/src/styles/themes.css`; size classes in `packages/core/src/styles/styles.css`

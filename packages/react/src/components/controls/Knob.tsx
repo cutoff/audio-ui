@@ -6,7 +6,7 @@ import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audi
 import { useThemableProps } from "../theme/AudioUiProvider";
 import SvgKnob from "../theme/SvgKnob";
 import SvgContinuousControl from "../primitives/SvgContinuousControl";
-import { ContinuousControlProps, ThemableProps } from "../types";
+import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps } from "../types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import { AudioParameterFactory, ContinuousParameter } from "@cutoff/audio-ui-core";
@@ -16,6 +16,8 @@ import { useAudioParameter } from "../../hooks/useAudioParameter";
  * Props for the Knob component (built-in control with theming support)
  */
 export type KnobProps = ContinuousControlProps &
+    AdaptiveSizeProps &
+    AdaptiveBoxProps &
     ThemableProps & {
         /** Content to display inside the knob (replaces the value display) */
         children?: React.ReactNode;
@@ -35,26 +37,30 @@ function Knob({
     step,
     bipolar = false,
     value,
-    label,
-    children,
-    stretch = false,
-    className,
-    style,
     onChange,
+    renderValue,
+    label,
+    adaptiveSize = false,
+    size = "normal",
+    displayMode,
+    labelMode,
+    labelPosition,
+    labelAlign,
+    color,
     roundness,
     thickness = 0.4,
-    size = "normal",
-    renderValue,
+    parameter,
     paramId,
+    interactionMode,
+    sensitivity,
     onClick,
     onMouseDown,
     onMouseUp,
     onMouseEnter,
     onMouseLeave,
-    color,
-    parameter,
-    interactionMode,
-    sensitivity,
+    className,
+    style,
+    children,
 }: KnobProps) {
     // Use the themable props hook to resolve color and roundness with proper fallbacks
     // Clamp values to 0.0-1.0 range
@@ -89,8 +95,12 @@ function Knob({
     // Get displayValue for default rendering
     const { displayValue } = useAudioParameter(value, onChange, parameterDef);
 
+    // Determine sizing behavior: adaptiveSize controls stretch behavior and
+    // takes precedence over size when both are provided.
+    const isStretch = adaptiveSize === true;
+
     // Get the size class name based on the size prop
-    const sizeClassName = stretch ? undefined : getSizeClassForComponent("knob", size);
+    const sizeClassName = isStretch ? undefined : getSizeClassForComponent("knob", size);
 
     // Prepare the content to display inside the knob
     const knobContent = useMemo(() => {
@@ -150,7 +160,7 @@ function Knob({
     const mergedClassName = classNames(sizeClassName, className);
 
     // Build merged style: size style (when not stretching), then user style (user takes precedence)
-    const sizeStyle = stretch ? undefined : getSizeStyleForComponent("knob", size);
+    const sizeStyle = isStretch ? undefined : getSizeStyleForComponent("knob", size);
 
     return (
         <SvgContinuousControl
@@ -161,7 +171,10 @@ function Knob({
             bipolar={bipolar}
             value={value}
             label={label}
-            stretch={stretch}
+            displayMode={displayMode}
+            labelMode={labelMode}
+            labelPosition={labelPosition}
+            labelAlign={labelAlign}
             className={mergedClassName}
             style={{ ...sizeStyle, ...style }}
             onChange={onChange}

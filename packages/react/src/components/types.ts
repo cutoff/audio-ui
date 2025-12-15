@@ -53,15 +53,60 @@ export type BaseProps = {
  * Adaptive sizing props for responsive components
  */
 export type AdaptiveSizeProps = {
+    /**
+     * Adaptive sizing mode for the component.
+     * When true, the component stretches to fill its container and
+     * ignores the `size` prop for sizing constraints.
+     *
+     * When both `adaptiveSize` and `size` are provided, `adaptiveSize`
+     * takes precedence for sizing behavior.
+     *
+     * @default false
+     */
+    adaptiveSize?: boolean;
+
     /** Size of the component
      * @default 'normal'
      */
     size?: SizeType;
+};
 
-    /** Whether the component should stretch to fill its container
-     *  @default false
+/**
+ * Layout props that control how AdaptiveBox behaves for a control.
+ */
+export type AdaptiveBoxProps = {
+    /**
+     * Layout mode for the control.
+     * - "scaleToFit": Preserve aspect ratio, letterbox within container.
+     * - "fill": Fill container, allowing horizontal stretching of the SVG.
+     *
+     * @default "scaleToFit"
      */
-    stretch?: boolean;
+    displayMode?: "scaleToFit" | "fill";
+
+    /**
+     * Visibility of the label row.
+     * - "visible": Render the label and reserve space.
+     * - "hidden": Reserve space but visually hide the label.
+     * - "none": Do not reserve label space.
+     *
+     * @default "visible"
+     */
+    labelMode?: "none" | "hidden" | "visible";
+
+    /**
+     * Vertical position of the label relative to the control.
+     *
+     * @default "below"
+     */
+    labelPosition?: "above" | "below";
+
+    /**
+     * Horizontal alignment of the label text within its row.
+     *
+     * @default "center"
+     */
+    labelAlign?: "start" | "center" | "end";
 };
 
 /**
@@ -96,9 +141,9 @@ export type InteractiveControlProps = {
 /**
  * Props for continuous value controls (primitives like SvgContinuousControl).
  *
- * Note: This is a primitive type for building customizable controls. Built-in controls
- * (Knob, Slider) extend this with ThemableProps. If you're building a custom control
- * using SvgContinuousControl, you can add your own theming props as needed.
+ * This type is size-agnostic: it does not include AdaptiveSizeProps.
+ * Built-in controls (Knob, Slider) combine this with AdaptiveSizeProps
+ * so only high-level components handle size and stretch.
  *
  * Supports two modes:
  * 1. Parameter model mode: Provide `parameter` (ContinuousParameter) - all range/label info comes from the model
@@ -107,7 +152,6 @@ export type InteractiveControlProps = {
  * When `parameter` is provided, it takes precedence over ad-hoc props.
  */
 export type ContinuousControlProps = BaseProps &
-    AdaptiveSizeProps &
     InteractiveControlProps & {
         /** Current value of the control */
         value: number;
@@ -159,9 +203,9 @@ export type ContinuousControlProps = BaseProps &
 /**
  * Props for boolean value controls (primitives).
  *
- * Note: This is a primitive type for building customizable controls. Built-in controls
- * (Button) extend this with ThemableProps. If you're building a custom control,
- * you can add your own theming props as needed.
+ * This type is size-agnostic: it does not include AdaptiveSizeProps.
+ * Built-in controls (Button) combine this with AdaptiveSizeProps
+ * so only high-level components handle size and stretch.
  *
  * Supports two modes:
  * 1. Parameter model mode: Provide `parameter` (BooleanParameter) - all config comes from the model
@@ -169,34 +213,33 @@ export type ContinuousControlProps = BaseProps &
  *
  * When `parameter` is provided, it takes precedence over ad-hoc props.
  */
-export type BooleanControlProps = BaseProps &
-    AdaptiveSizeProps & {
-        /** Current value (must be boolean) */
-        value: boolean;
+export type BooleanControlProps = BaseProps & {
+    /** Current value (must be boolean) */
+    value: boolean;
 
-        /** Handler for value changes */
-        onChange?: (value: boolean) => void;
+    /** Handler for value changes */
+    onChange?: (value: boolean) => void;
 
-        /** Label displayed below the component */
-        label?: string;
+    /** Label displayed below the component */
+    label?: string;
 
-        /** Identifier for the parameter this control represents
-         * Used when creating ad-hoc parameters
-         */
-        paramId?: string;
+    /** Identifier for the parameter this control represents
+     * Used when creating ad-hoc parameters
+     */
+    paramId?: string;
 
-        /**
-         * Audio Parameter definition (Model)
-         * If provided, overrides label/latch from ad-hoc props
-         */
-        parameter?: BooleanParameter;
+    /**
+     * Audio Parameter definition (Model)
+     * If provided, overrides label/latch from ad-hoc props
+     */
+    parameter?: BooleanParameter;
 
-        /** Whether the button should latch (toggle between states) or momentary (only active while pressed)
-         * Ad-hoc mode only, ignored if parameter provided
-         * @default false
-         */
-        latch?: boolean;
-    };
+    /** Whether the button should latch (toggle between states) or momentary (only active while pressed)
+     * Ad-hoc mode only, ignored if parameter provided
+     * @default false
+     */
+    latch?: boolean;
+};
 
 // --- GENERIC CONTRACTS ---
 

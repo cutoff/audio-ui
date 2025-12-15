@@ -20,7 +20,6 @@ export default function KeybedPage() {
     const [notesOn, setNotesOn] = useState<(string | number)[]>(["C4", 64, 67]);
     const [color, setColor] = useState<string | undefined>(undefined);
     const [roundness, setRoundness] = useState<number | undefined>(undefined);
-    const [stretch] = useState(true);
     const [keyStyle, setKeyStyle] = useState<"theme" | "classic" | "classic-inverted">("theme");
 
     // MIDI related state
@@ -111,7 +110,6 @@ export default function KeybedPage() {
         notesOn,
         color,
         roundness,
-        stretch,
         keyStyle,
     };
 
@@ -323,7 +321,7 @@ export default function KeybedPage() {
                                         color={undefined}
                                         roundness={undefined}
                                         size="large"
-                                        stretch={false}
+                                        adaptiveSize={false}
                                         style={{ cursor: "pointer" }}
                                     />
                                 </div>
@@ -338,7 +336,7 @@ export default function KeybedPage() {
                                         notesOn={["C4", "E4", "G4"]}
                                         color={undefined}
                                         size="large"
-                                        stretch={false}
+                                        adaptiveSize={false}
                                         style={{ cursor: "pointer" }}
                                     />
                                 </div>
@@ -353,7 +351,7 @@ export default function KeybedPage() {
                                         notesOn={["C4", "E4", "G4"]}
                                         color="#ff3366"
                                         size="large"
-                                        stretch={false}
+                                        adaptiveSize={false}
                                         style={{ cursor: "pointer" }}
                                     />
                                 </div>
@@ -369,7 +367,7 @@ export default function KeybedPage() {
                                         color="#33cc66"
                                         roundness={0.3}
                                         size="large"
-                                        stretch={false}
+                                        adaptiveSize={false}
                                         style={{ cursor: "pointer" }}
                                     />
                                 </div>
@@ -384,7 +382,7 @@ export default function KeybedPage() {
                                         notesOn={["C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4"]}
                                         color="#9966ff"
                                         size="large"
-                                        stretch={false}
+                                        adaptiveSize={false}
                                         style={{ cursor: "pointer" }}
                                     />
                                 </div>
@@ -399,7 +397,7 @@ export default function KeybedPage() {
                                         notesOn={[60, 64, 67]}
                                         color="#ff9933"
                                         size="large"
-                                        stretch={false}
+                                        adaptiveSize={false}
                                         style={{ cursor: "pointer" }}
                                     />
                                 </div>

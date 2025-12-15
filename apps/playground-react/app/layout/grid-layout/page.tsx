@@ -67,8 +67,11 @@ export default function GridLayoutPage() {
 
                             <p className="row-start-3 col-start-5 absolute left-2 text-sm text-muted-foreground">2x2</p>
                             <p className="row-start-2 col-start-8 absolute -top-8 left-2 text-sm text-muted-foreground">3x3</p>
-                            <p className="row-start-4 col-start-1 absolute bottom-3 left-2 text-sm text-muted-foreground">
-                                stretch=true
+                            <p className="row-start-1 col-start-1 absolute left-2 text-sm text-muted-foreground whitespace-nowrap">
+                                adaptiveSize=true && displayMode=scaleToFit
+                            </p>
+                            <p className="row-start-7 col-start-1 absolute bottom-3 left-2 text-sm text-muted-foreground">
+                                displayMode=fill
                             </p>
 
                             {/* 5 Annotated Knobs (keeping existing layout) */}
@@ -79,7 +82,7 @@ export default function GridLayoutPage() {
                                 step={1}
                                 label="Default"
                                 thickness={0.35}
-                                stretch={true}
+                                adaptiveSize={true}
                                 className="emphasized-bg"
                                 style={{
                                     gridArea: "2 / 1 / span 2 / span 1",
@@ -95,7 +98,7 @@ export default function GridLayoutPage() {
                                 step={1}
                                 label="Default"
                                 thickness={0.35}
-                                stretch={true}
+                                adaptiveSize={true}
                                 className="emphasized-bg"
                                 style={{
                                     gridArea: "2 / 2 / span 2 / span 1",
@@ -111,7 +114,7 @@ export default function GridLayoutPage() {
                                 step={1}
                                 label="Default"
                                 thickness={0.35}
-                                stretch={true}
+                                adaptiveSize={true}
                                 className="emphasized-bg"
                                 style={{
                                     gridArea: "2 / 3 / span 2 / span 1",
@@ -127,7 +130,7 @@ export default function GridLayoutPage() {
                                 step={1}
                                 label="Default"
                                 thickness={0.35}
-                                stretch={true}
+                                adaptiveSize={true}
                                 className="emphasized-bg"
                                 style={{
                                     gridArea: "1 / 5 / span 2 / span 2",
@@ -143,7 +146,7 @@ export default function GridLayoutPage() {
                                 step={1}
                                 label="Default"
                                 thickness={0.35}
-                                stretch={true}
+                                adaptiveSize={true}
                                 className="emphasized-bg"
                                 style={{
                                     gridArea: "2 / 7 / span 3 / span 3",
@@ -162,7 +165,7 @@ export default function GridLayoutPage() {
                                 label="Slider"
                                 thickness={0.25}
                                 orientation="horizontal"
-                                stretch={true}
+                                adaptiveSize={true}
                                 className="emphasized-bg"
                                 style={{
                                     gridArea: "5 / 1 / span 1 / span 2",
@@ -179,7 +182,7 @@ export default function GridLayoutPage() {
                                 label="Slider"
                                 thickness={0.25}
                                 orientation="horizontal"
-                                stretch={true}
+                                adaptiveSize={true}
                                 className="emphasized-bg"
                                 style={{
                                     gridArea: "5 / 3 / span 1 / span 3",
@@ -198,7 +201,7 @@ export default function GridLayoutPage() {
                                 label="Slider"
                                 thickness={0.25}
                                 orientation="vertical"
-                                stretch={true}
+                                adaptiveSize={true}
                                 className="emphasized-bg"
                                 style={{
                                     gridArea: "5 / 6 / span 2 / span 1",
@@ -215,7 +218,7 @@ export default function GridLayoutPage() {
                                 label="Slider"
                                 thickness={0.25}
                                 orientation="vertical"
-                                stretch={true}
+                                adaptiveSize={true}
                                 className="emphasized-bg"
                                 style={{
                                     gridArea: "5 / 7 / span 2 / span 1",
@@ -232,7 +235,7 @@ export default function GridLayoutPage() {
                                 label="Slider"
                                 thickness={0.25}
                                 orientation="vertical"
-                                stretch={true}
+                                adaptiveSize={true}
                                 className="emphasized-bg"
                                 style={{
                                     gridArea: "5 / 8 / span 2 / span 1",
@@ -249,7 +252,7 @@ export default function GridLayoutPage() {
                                 label="Slider"
                                 thickness={0.25}
                                 orientation="vertical"
-                                stretch={true}
+                                adaptiveSize={true}
                                 className="emphasized-bg"
                                 style={{
                                     gridArea: "5 / 9 / span 2 / span 1",
@@ -264,7 +267,7 @@ export default function GridLayoutPage() {
                                 value={buttonValue}
                                 label="Button"
                                 latch={false}
-                                stretch={true}
+                                adaptiveSize={true}
                                 className="emphasized-bg"
                                 style={{
                                     gridArea: "6 / 1 / span 1 / span 1",
@@ -277,7 +280,7 @@ export default function GridLayoutPage() {
                                 value={buttonValue}
                                 label="Button"
                                 latch={true}
-                                stretch={true}
+                                adaptiveSize={true}
                                 className="emphasized-bg"
                                 style={{
                                     gridArea: "6 / 2 / span 1 / span 1",
@@ -290,7 +293,7 @@ export default function GridLayoutPage() {
                                 value={buttonValue}
                                 label="Button"
                                 latch={false}
-                                stretch={true}
+                                adaptiveSize={true}
                                 className="emphasized-bg"
                                 style={{
                                     gridArea: "6 / 3 / span 1 / span 1",
@@ -303,7 +306,7 @@ export default function GridLayoutPage() {
                                 value={buttonValue}
                                 label="Button"
                                 latch={false}
-                                stretch={true}
+                                adaptiveSize={true}
                                 className="emphasized-bg"
                                 style={{
                                     gridArea: "6 / 4 / span 1 / span 1",
@@ -316,7 +319,7 @@ export default function GridLayoutPage() {
                                 value={buttonValue}
                                 label="Button"
                                 latch={false}
-                                stretch={true}
+                                adaptiveSize={true}
                                 className="emphasized-bg"
                                 style={{
                                     gridArea: "6 / 5 / span 1 / span 1",
@@ -332,10 +335,11 @@ export default function GridLayoutPage() {
                                 startKey="C"
                                 octaveShift={0}
                                 notesOn={[]}
-                                stretch={true}
+                                adaptiveSize={true}
+                                displayMode="fill"
                                 className="emphasized-bg"
                                 style={{
-                                    gridArea: "8 / 2 / span 2 / span 7",
+                                    gridArea: "8 / 1 / span 1 / span 9",
                                     justifySelf: "center",
                                     alignSelf: "center",
                                 }}

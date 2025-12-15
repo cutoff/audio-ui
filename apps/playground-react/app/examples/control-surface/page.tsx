@@ -114,7 +114,7 @@ export default function ControlSurfacePage() {
                                 min={0}
                                 max={100}
                                 step={1}
-                                stretch={true}
+                                adaptiveSize={true}
                             />
                         </div>
                         <div className="col-span-1">
@@ -125,7 +125,7 @@ export default function ControlSurfacePage() {
                                 min={0}
                                 max={100}
                                 step={1}
-                                stretch={true}
+                                adaptiveSize={true}
                             />
                         </div>
                         <div className="col-span-1">
@@ -136,7 +136,7 @@ export default function ControlSurfacePage() {
                                 min={0}
                                 max={100}
                                 step={1}
-                                stretch={true}
+                                adaptiveSize={true}
                             />
                         </div>
                         <div className="col-span-1">
@@ -147,7 +147,7 @@ export default function ControlSurfacePage() {
                                 min={0}
                                 max={100}
                                 step={1}
-                                stretch={true}
+                                adaptiveSize={true}
                             />
                         </div>
 
@@ -160,7 +160,7 @@ export default function ControlSurfacePage() {
                                 min={0}
                                 max={100}
                                 step={1}
-                                stretch={true}
+                                adaptiveSize={true}
                             />
                         </div>
                         <div className="col-span-1">
@@ -171,7 +171,7 @@ export default function ControlSurfacePage() {
                                 min={0}
                                 max={100}
                                 step={1}
-                                stretch={true}
+                                adaptiveSize={true}
                             />
                         </div>
                         <div className="col-span-1">
@@ -182,7 +182,7 @@ export default function ControlSurfacePage() {
                                 min={0}
                                 max={100}
                                 step={1}
-                                stretch={true}
+                                adaptiveSize={true}
                             />
                         </div>
                         <div className="col-span-1">
@@ -193,7 +193,7 @@ export default function ControlSurfacePage() {
                                 min={0}
                                 max={100}
                                 step={1}
-                                stretch={true}
+                                adaptiveSize={true}
                             />
                         </div>
 
@@ -207,7 +207,7 @@ export default function ControlSurfacePage() {
                                 step={1}
                                 orientation="vertical"
                                 label="Slider 1"
-                                stretch={true}
+                                adaptiveSize={true}
                             />
                         </div>
                         <div className="col-span-1">
@@ -219,7 +219,7 @@ export default function ControlSurfacePage() {
                                 step={1}
                                 orientation="vertical"
                                 label="Slider 2"
-                                stretch={true}
+                                adaptiveSize={true}
                             />
                         </div>
                         <div className="col-span-1">
@@ -231,7 +231,7 @@ export default function ControlSurfacePage() {
                                 step={1}
                                 orientation="vertical"
                                 label="Slider 3"
-                                stretch={true}
+                                adaptiveSize={true}
                             />
                         </div>
                         <div className="col-span-1">
@@ -243,7 +243,7 @@ export default function ControlSurfacePage() {
                                 step={1}
                                 orientation="vertical"
                                 label="Slider 4"
-                                stretch={true}
+                                adaptiveSize={true}
                             />
                         </div>
 
@@ -253,7 +253,7 @@ export default function ControlSurfacePage() {
                                 value={buttonAValue}
                                 onChange={setButtonAValue}
                                 label="A"
-                                stretch={true}
+                                adaptiveSize={true}
                                 latch={true}
                             />
                         </div>
@@ -262,7 +262,7 @@ export default function ControlSurfacePage() {
                                 value={buttonBValue}
                                 onChange={setButtonBValue}
                                 label="B"
-                                stretch={true}
+                                adaptiveSize={true}
                                 latch={true}
                             />
                         </div>
@@ -271,7 +271,7 @@ export default function ControlSurfacePage() {
                                 value={buttonCValue}
                                 onChange={setButtonCValue}
                                 label="C"
-                                stretch={true}
+                                adaptiveSize={true}
                                 latch={true}
                             />
                         </div>
@@ -280,7 +280,7 @@ export default function ControlSurfacePage() {
                                 value={buttonDValue}
                                 onChange={setButtonDValue}
                                 label="D"
-                                stretch={true}
+                                adaptiveSize={true}
                                 latch={true}
                             />
                         </div>

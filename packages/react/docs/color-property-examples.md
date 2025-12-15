@@ -102,7 +102,7 @@ The `color` property can be combined with other properties to create more comple
     color="green"
     roundness={0}  // Square corners
     size="large"
-    stretch={true}
+    adaptiveSize={true}
 />
 
 <Knob

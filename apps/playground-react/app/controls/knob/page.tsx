@@ -94,7 +94,7 @@ type KnobComponentProps = {
     useMidiBipolar?: boolean;
     roundness?: number;
     thickness?: number;
-    stretch?: boolean;
+    adaptiveSize?: boolean;
     style?: React.CSSProperties;
     className?: string;
     size?: "xsmall" | "small" | "normal" | "large" | "xlarge";
@@ -114,7 +114,7 @@ function KnobComponent({
     enableOptions,
     roundness,
     thickness,
-    stretch,
+    adaptiveSize,
     onChange,
     onClick,
     style,
@@ -126,7 +126,7 @@ function KnobComponent({
         return (
             <KnobSwitch
                 value={value}
-                stretch={stretch}
+                adaptiveSize={adaptiveSize}
                 label={label}
                 style={style}
                 className={className}
@@ -150,7 +150,7 @@ function KnobComponent({
                 bipolar={bipolar}
                 roundness={roundness}
                 thickness={thickness}
-                stretch={stretch}
+                adaptiveSize={adaptiveSize}
                 style={style}
                 className={className}
                 onClick={onClick}
