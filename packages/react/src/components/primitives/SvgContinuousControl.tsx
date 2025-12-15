@@ -59,6 +59,8 @@ export function SvgContinuousControl<P extends object = {}>(props: SvgContinuous
         parameter,
         interactionMode, // Override prop
         sensitivity,
+        unit,
+        scale,
         ...viewProps // Capture all other props (color, thickness, bipolar, etc.) to pass to View
     } = props;
 
@@ -73,8 +75,10 @@ export function SvgContinuousControl<P extends object = {}>(props: SvgContinuous
             max,
             step,
             bipolar,
+            unit,
+            scale,
         });
-    }, [parameter, label, min, max, step, bipolar, paramId]);
+    }, [parameter, label, min, max, step, bipolar, unit, scale, paramId]);
 
     // 2. Audio Logic Hook
     const { normalizedValue, adjustValue } = useAudioParameter(value, onChange, paramConfig);

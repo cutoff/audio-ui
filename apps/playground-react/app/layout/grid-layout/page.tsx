@@ -89,7 +89,7 @@ export default function GridLayoutPage() {
                                     justifySelf: "center",
                                     alignSelf: "start",
                                 }}
-                                onChange={(v) => setKnobValue(v)}
+                                onChange={(e) => setKnobValue(e.value as number)}
                             />
                             <Knob
                                 min={0}
@@ -105,7 +105,7 @@ export default function GridLayoutPage() {
                                     justifySelf: "center",
                                     alignSelf: "end",
                                 }}
-                                onChange={(v) => setKnobValue(v)}
+                                onChange={(e) => setKnobValue(e.value as number)}
                             />
                             <Knob
                                 min={0}
@@ -121,7 +121,7 @@ export default function GridLayoutPage() {
                                     justifySelf: "center",
                                     alignSelf: "center",
                                 }}
-                                onChange={(v) => setKnobValue(v)}
+                                onChange={(e) => setKnobValue(e.value as number)}
                             />
                             <Knob
                                 min={0}
@@ -137,7 +137,7 @@ export default function GridLayoutPage() {
                                     justifySelf: "center",
                                     alignSelf: "center",
                                 }}
-                                onChange={(v) => setKnobValue(v)}
+                                onChange={(e) => setKnobValue(e.value as number)}
                             />
                             <Knob
                                 min={0}
@@ -153,7 +153,7 @@ export default function GridLayoutPage() {
                                     justifySelf: "center",
                                     alignSelf: "center",
                                 }}
-                                onChange={(v) => setKnobValue(v)}
+                                onChange={(e) => setKnobValue(e.value as number)}
                             />
 
                             {/* Horizontal Sliders */}
@@ -172,7 +172,7 @@ export default function GridLayoutPage() {
                                     justifySelf: "center",
                                     alignSelf: "center",
                                 }}
-                                onChange={(v) => setHSliderValue(v)}
+                                onChange={(e) => setHSliderValue(e.value as number)}
                             />
                             <Slider
                                 min={0}
@@ -189,7 +189,7 @@ export default function GridLayoutPage() {
                                     justifySelf: "center",
                                     alignSelf: "center",
                                 }}
-                                onChange={(v) => setHSliderValue(v)}
+                                onChange={(e) => setHSliderValue(e.value as number)}
                             />
 
                             {/* Vertical Sliders */}
@@ -208,7 +208,7 @@ export default function GridLayoutPage() {
                                     justifySelf: "center",
                                     alignSelf: "center",
                                 }}
-                                onChange={(v) => setVSliderValue(v)}
+                                onChange={(e) => setVSliderValue(e.value as number)}
                             />
                             <Slider
                                 min={0}
@@ -225,7 +225,7 @@ export default function GridLayoutPage() {
                                     justifySelf: "center",
                                     alignSelf: "center",
                                 }}
-                                onChange={(v) => setVSliderValue(v)}
+                                onChange={(e) => setVSliderValue(e.value as number)}
                             />
                             <Slider
                                 min={0}
@@ -242,7 +242,7 @@ export default function GridLayoutPage() {
                                     justifySelf: "center",
                                     alignSelf: "center",
                                 }}
-                                onChange={(v) => setVSliderValue(v)}
+                                onChange={(e) => setVSliderValue(e.value as number)}
                             />
                             <Slider
                                 min={0}
@@ -259,7 +259,7 @@ export default function GridLayoutPage() {
                                     justifySelf: "center",
                                     alignSelf: "center",
                                 }}
-                                onChange={(v) => setVSliderValue(v)}
+                                onChange={(e) => setVSliderValue(e.value as number)}
                             />
 
                             {/* Buttons */}
@@ -274,7 +274,7 @@ export default function GridLayoutPage() {
                                     justifySelf: "center",
                                     alignSelf: "center",
                                 }}
-                                onChange={(v) => setButtonValue(Boolean(v))}
+                                onChange={(e) => setButtonValue(Boolean(e.value))}
                             />
                             <Button
                                 value={buttonValue}
@@ -287,7 +287,7 @@ export default function GridLayoutPage() {
                                     justifySelf: "center",
                                     alignSelf: "center",
                                 }}
-                                onChange={(v) => setButtonValue(Boolean(v))}
+                                onChange={(e) => setButtonValue(Boolean(e.value))}
                             />
                             <Button
                                 value={buttonValue}
@@ -300,7 +300,7 @@ export default function GridLayoutPage() {
                                     justifySelf: "center",
                                     alignSelf: "center",
                                 }}
-                                onChange={(v) => setButtonValue(Boolean(v))}
+                                onChange={(e) => setButtonValue(Boolean(e.value))}
                             />
                             <Button
                                 value={buttonValue}
@@ -313,7 +313,7 @@ export default function GridLayoutPage() {
                                     justifySelf: "center",
                                     alignSelf: "center",
                                 }}
-                                onChange={(v) => setButtonValue(Boolean(v))}
+                                onChange={(e) => setButtonValue(Boolean(e.value))}
                             />
                             <Button
                                 value={buttonValue}
@@ -326,7 +326,7 @@ export default function GridLayoutPage() {
                                     justifySelf: "center",
                                     alignSelf: "center",
                                 }}
-                                onChange={(v) => setButtonValue(Boolean(v))}
+                                onChange={(e) => setButtonValue(Boolean(e.value))}
                             />
 
                             {/* 61-key Keybed at the bottom spanning 7 columns x 2 rows, centered */}

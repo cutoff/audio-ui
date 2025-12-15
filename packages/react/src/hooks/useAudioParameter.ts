@@ -1,5 +1,6 @@
 import { useMemo, useCallback, useRef } from "react";
 import { AudioParameter, AudioParameterConverter } from "@cutoff/audio-ui-core";
+import { AudioControlEvent } from "../components/types";
 
 export interface UseAudioParameterResult {
     /** The normalized value (0..1) for UI rendering */
@@ -30,7 +31,7 @@ export interface UseAudioParameterResult {
  */
 export function useAudioParameter<T extends number | boolean | string>(
     value: T,
-    onChange: undefined | ((value: T) => void),
+    onChange: undefined | ((event: AudioControlEvent<T>) => void),
     parameterDef: AudioParameter
 ): UseAudioParameterResult {
     // 1. Ensure we always have an instance with methods
@@ -47,6 +48,26 @@ export function useAudioParameter<T extends number | boolean | string>(
     const valueRef = useRef(value);
     valueRef.current = value; // Sync with prop on every render
 
+    // Helper to commit value changes
+    const commitValue = useCallback(
+        (newValue: T) => {
+            if (!onChange) return;
+
+            // Compute all representations at the source of truth
+            // normalize() accepts T (number | boolean | string)
+            const normalized = converter.normalize(newValue);
+            const midi = converter.toMidi(newValue);
+
+            onChange({
+                value: newValue,
+                normalizedValue: normalized,
+                midiValue: midi,
+                parameter: parameterDef,
+            });
+        },
+        [converter, onChange, parameterDef]
+    );
+
     // 4. Provide a setter that takes the normalized value (from UI) and updates the real value
     const setNormalizedValue = useCallback(
         (newNormal: number) => {
@@ -57,11 +78,11 @@ export function useAudioParameter<T extends number | boolean | string>(
 
             // Only fire if value actually changed
             if (realValue !== valueRef.current) {
-                valueRef.current = realValue; // Optimistic update for subsequent calls in same tick
-                onChange(realValue);
+                valueRef.current = realValue; // Optimistic update
+                commitValue(realValue);
             }
         },
-        [converter, onChange]
+        [converter, onChange, commitValue]
     );
 
     // 5. Helper for incremental updates (wheel, keys)
@@ -70,12 +91,8 @@ export function useAudioParameter<T extends number | boolean | string>(
             if (!onChange) return;
 
             // Use Ref for calculation base to prevent stale closure jitter during rapid events
-            const currentReal = valueRef.current;
+            const currentReal = valueRef.current as number;
             const currentNormal = converter.normalize(currentReal);
-
-            // For Enum/Boolean, we might want stepping logic, but normalize/denormalize handles it.
-            // Adding delta to normalized value works generally if sensitivity is tuned.
-            // For enums, sensitivity usually needs to be large enough to jump an index.
 
             const newNormal = Math.max(0, Math.min(1, currentNormal + delta * sensitivity));
             setNormalizedValue(newNormal);

@@ -1,5 +1,5 @@
 import React from "react";
-import { ContinuousParameter, BooleanParameter } from "@cutoff/audio-ui-core";
+import { ContinuousParameter, BooleanParameter, ScaleType } from "@cutoff/audio-ui-core";
 import { SizeType, InteractionMode } from "@cutoff/audio-ui-core";
 
 /**
@@ -115,14 +115,30 @@ export type AdaptiveBoxProps = {
 // InteractionMode is imported from core now
 
 /**
+ * Standard event object emitted by all AudioUI controls.
+ * Provides the value in all three domain representations simultaneously.
+ */
+export type AudioControlEvent<T = number> = {
+    /** The real-world value (e.g. -6.0 dB, 440 Hz, true/false) */
+    value: T;
+    /** The normalized value (0.0 to 1.0) used for UI rendering and host automation */
+    normalizedValue: number;
+    /** The MIDI value (integer, e.g. 0-127 or 0-16383) used for hardware/protocol communication */
+    midiValue: number;
+    /** The parameter definition driving this value */
+    parameter?: any; // To avoid circular deps
+};
+
+/**
  * Props for interactive controls (drag, wheel, keyboard)
  * Used by both continuous and enum controls
  */
 export type InteractiveControlProps = {
-    /** Handler for value changes
-     * @param value The new value or a function to update the previous value
+    /**
+     * Handler for value changes.
+     * Receives a rich event object with real, normalized, and MIDI representations.
      */
-    onChange?: (value: number | ((prev: number) => number)) => void;
+    onChange?: (event: AudioControlEvent) => void;
 
     /**
      * Interaction mode: drag, wheel, or both.
@@ -188,6 +204,21 @@ export type ContinuousControlProps = BaseProps &
          */
         parameter?: ContinuousParameter;
 
+        /**
+         * Unit suffix for the value in ad-hoc mode (e.g. "dB", "Hz").
+         * Used only when the internal parameter model is created from the props.
+         * Ignored when a full `parameter` object is provided.
+         */
+        unit?: string;
+
+        /**
+         * Scale function or shortcut for the parameter in ad-hoc mode.
+         * Controls how the normalized 0..1 range maps to the real value domain.
+         * Common shortcuts are "linear", "log", and "exp".
+         * Ignored when a full `parameter` object is provided.
+         */
+        scale?: ScaleType;
+
         /** Minimum value (ad-hoc mode, ignored if parameter provided) */
         min?: number;
 
@@ -218,7 +249,7 @@ export type BooleanControlProps = BaseProps & {
     value: boolean;
 
     /** Handler for value changes */
-    onChange?: (value: boolean) => void;
+    onChange?: (event: AudioControlEvent<boolean>) => void;
 
     /** Label displayed below the component */
     label?: string;

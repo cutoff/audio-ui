@@ -6,7 +6,7 @@ import { CodeBlock } from "@/components/code-block";
 /** Type for components that can be rendered in the ComponentSkeletonPage */
 export type PageComponentProps = Record<string, unknown> & {
     adaptiveSize?: boolean;
-    onChange?: (value: number) => void;
+    onChange?: (event: any) => void;
 };
 
 export type ComponentSkeletonPageProps = {
@@ -22,12 +22,8 @@ export type ComponentSkeletonPageProps = {
     properties: React.ReactNode[];
     /**
      * Handler for value changes
-     * Note: This is a simplified version of the onChange handler expected by the control components.
-     * The actual control components expect an onChange handler with the signature:
-     * (paramId: string | undefined, value: number | ((prev: number) => number)) => void
-     * This component adapts this simplified handler to match the expected signature.
      */
-    onChange?: (value: number) => void;
+    onChange?: (event: any) => void;
 };
 
 export default function ComponentSkeletonPage({

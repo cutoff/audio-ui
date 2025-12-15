@@ -199,7 +199,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(newValue) => setValue(newValue)}
+            onChange={(e: any) => setValue(e.value)}
             orientation={orientation}
         />
     );

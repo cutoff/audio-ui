@@ -77,7 +77,23 @@ function Button({
     }, [parameter, label, latch, paramId]);
 
     // Use the hook to handle normalization
-    const { normalizedValue } = useAudioParameter(value, onChange, paramConfig);
+    const { normalizedValue, converter } = useAudioParameter(value, onChange, paramConfig);
+
+    // Helper to fire change events
+    const fireChange = useCallback(
+        (newValue: boolean) => {
+            if (!onChange) return;
+            const normalized = converter.normalize(newValue);
+            const midi = converter.toMidi(newValue);
+            onChange({
+                value: newValue,
+                normalizedValue: normalized,
+                midiValue: midi,
+                parameter: paramConfig,
+            });
+        },
+        [onChange, converter, paramConfig]
+    );
 
     // Ref to track if the button is currently pressed (for momentary mode)
     const isPressedRef = useRef(false);
@@ -88,15 +104,15 @@ function Button({
             if (onChange) {
                 if (paramConfig.mode === "toggle") {
                     // Toggle
-                    onChange(!value);
+                    fireChange(!value);
                 } else {
                     // Momentary Press -> True
                     isPressedRef.current = true;
-                    onChange(true);
+                    fireChange(true);
                 }
             }
         },
-        [onChange, paramConfig.mode, value]
+        [onChange, paramConfig.mode, value, fireChange]
     );
 
     // Internal handler for mouse up
@@ -105,10 +121,10 @@ function Button({
             // Momentary Release -> False
             if (onChange && paramConfig.mode === "momentary" && isPressedRef.current) {
                 isPressedRef.current = false;
-                onChange(false);
+                fireChange(false);
             }
         },
-        [onChange, paramConfig.mode]
+        [onChange, paramConfig.mode, fireChange]
     );
 
     // Combined handlers
@@ -136,9 +152,9 @@ function Button({
     const handleGlobalMouseUp = useCallback(() => {
         if (isPressedRef.current) {
             isPressedRef.current = false;
-            onChange?.(false);
+            fireChange(false);
         }
-    }, [onChange]);
+    }, [fireChange]);
 
     useEffect(() => {
         if (paramConfig.mode === "momentary" && onChange) {
@@ -207,7 +223,7 @@ function Button({
                     if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();
                         if (onChange) {
-                            onChange(latch ? !value : true);
+                            fireChange(latch ? !value : true);
                             if (!latch) {
                                 // Simulate release after delay or keyup?
                                 // Standard button triggers on click (down+up).
@@ -219,7 +235,7 @@ function Button({
                 onKeyUp={(e) => {
                     if (!latch && onChange && (e.key === "Enter" || e.key === " ")) {
                         e.preventDefault();
-                        onChange(false);
+                        fireChange(false);
                     }
                 }}
             >

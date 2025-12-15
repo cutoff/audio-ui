@@ -50,6 +50,8 @@ function Knob({
     roundness,
     thickness = 0.4,
     parameter,
+    unit,
+    scale,
     paramId,
     interactionMode,
     sensitivity,
@@ -89,8 +91,10 @@ function Knob({
             max,
             step,
             bipolar,
+            unit,
+            scale,
         });
-    }, [parameter, label, min, max, step, bipolar, paramId]);
+    }, [parameter, label, min, max, step, bipolar, unit, scale, paramId]);
 
     // Get displayValue for default rendering
     const { displayValue } = useAudioParameter(value, onChange, parameterDef);

@@ -42,6 +42,7 @@ export type {
     ControlComponent,
     ControlComponentView,
     ControlComponentViewProps,
+    AudioControlEvent,
 } from "./components/types";
 
 // Export value formatters

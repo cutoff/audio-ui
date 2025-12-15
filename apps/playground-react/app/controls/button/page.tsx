@@ -117,7 +117,7 @@ export default function Page() {
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(newValue) => setValue(Boolean(newValue))}
+            onChange={(e: any) => setValue(e.value)}
         />
     );
 }
