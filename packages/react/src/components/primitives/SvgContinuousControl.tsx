@@ -34,33 +34,35 @@ export type SvgContinuousControlProps<P extends object = {}> =
  * A Generic Continuous Control that connects a Data Model (AudioParameter)
  * to a Visualization View (ControlComponent).
  */
-export function SvgContinuousControl<P extends object = {}>({
-    view: View,
-    min,
-    max,
-    step,
-    bipolar = false,
-    value,
-    label,
-    children,
-    displayMode,
-    labelMode,
-    labelPosition,
-    labelAlign,
-    className,
-    style,
-    onChange,
-    paramId,
-    onClick,
-    onMouseDown,
-    onMouseUp,
-    onMouseEnter,
-    onMouseLeave,
-    parameter,
-    interactionMode, // Override prop
-    sensitivity,
-    ...viewProps // Capture all other props (color, thickness, etc.) to pass to View
-}: SvgContinuousControlProps<P>) {
+export function SvgContinuousControl<P extends object = {}>(props: SvgContinuousControlProps<P>) {
+    const {
+        view: View,
+        min,
+        max,
+        step,
+        value,
+        label,
+        children,
+        displayMode,
+        labelMode,
+        labelPosition,
+        labelAlign,
+        className,
+        style,
+        onChange,
+        paramId,
+        onClick,
+        onMouseDown,
+        onMouseUp,
+        onMouseEnter,
+        onMouseLeave,
+        parameter,
+        interactionMode, // Override prop
+        sensitivity,
+        ...viewProps // Capture all other props (color, thickness, bipolar, etc.) to pass to View
+    } = props;
+
+    const bipolar = props.bipolar ?? false;
     // 1. Parameter Model
     const paramConfig = useMemo(() => {
         if (parameter) return parameter;
