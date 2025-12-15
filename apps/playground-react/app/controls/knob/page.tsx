@@ -424,15 +424,14 @@ export default function KnobDemoPage() {
     };
 
     return (
-        <ControlSkeletonPage
+        <ControlSkeletonPage<number>
             componentName="Knob"
             codeSnippet={codeString}
-            // @ts-expect-error demo-only: simulating out-of-range value to showcase clamping behavior
             PageComponent={KnobComponent}
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(e: any) => setValue(e.value)}
+            onChange={(event) => setValue(event.value)}
         />
     );
 }

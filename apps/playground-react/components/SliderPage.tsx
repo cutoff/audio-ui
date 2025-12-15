@@ -191,15 +191,14 @@ export default function SliderPage({ orientation }: SliderPageProps) {
     ];
 
     return (
-        <ControlSkeletonPage
+        <ControlSkeletonPage<number>
             componentName="Slider"
             codeSnippet={codeString}
-            // @ts-expect-error demo-only: forcing controlled value transition for example
             PageComponent={Slider}
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(e: any) => setValue(e.value)}
+            onChange={(event) => setValue(event.value)}
             orientation={orientation}
         />
     );

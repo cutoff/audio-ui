@@ -109,15 +109,14 @@ export default function Page() {
     ];
 
     return (
-        <ControlSkeletonPage
+        <ControlSkeletonPage<boolean>
             componentName="Button"
             codeSnippet={codeString}
-            // @ts-expect-error demo-only: intentionally passing non-standard value shape for showcase
             PageComponent={Button}
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(e: any) => setValue(e.value)}
+            onChange={(event) => setValue(event.value)}
         />
     );
 }

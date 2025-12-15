@@ -131,14 +131,19 @@ export type AudioControlEvent<T = number> = {
 
 /**
  * Props for interactive controls (drag, wheel, keyboard)
- * Used by both continuous and enum controls
+ * Used by both continuous and enum controls.
+ *
+ * T is the real value type emitted by the control:
+ * - number for continuous controls (Knob, Slider)
+ * - boolean for boolean controls (not commonly using this type)
+ * - custom types for enum-like controls (e.g. KnobSwitch)
  */
-export type InteractiveControlProps = {
+export type InteractiveControlProps<T = number> = {
     /**
      * Handler for value changes.
      * Receives a rich event object with real, normalized, and MIDI representations.
      */
-    onChange?: (event: AudioControlEvent) => void;
+    onChange?: (event: AudioControlEvent<T>) => void;
 
     /**
      * Interaction mode: drag, wheel, or both.
@@ -168,7 +173,7 @@ export type InteractiveControlProps = {
  * When `parameter` is provided, it takes precedence over ad-hoc props.
  */
 export type ContinuousControlProps = BaseProps &
-    InteractiveControlProps & {
+    InteractiveControlProps<number> & {
         /** Current value of the control */
         value: number;
 

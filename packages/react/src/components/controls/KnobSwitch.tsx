@@ -31,7 +31,7 @@ export type KnobSwitchOptionProps = {
  */
 export type KnobSwitchProps = AdaptiveSizeProps &
     AdaptiveBoxProps &
-    InteractiveControlProps &
+    InteractiveControlProps<any> &
     BaseProps &
     ThemableProps & {
         /** Label displayed below the component */

@@ -24,7 +24,13 @@ describe("useAudioParameter", () => {
                 result.current.setNormalizedValue(1.0);
             });
 
-            expect(onChange).toHaveBeenCalledWith(127);
+            expect(onChange).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    value: 127,
+                    normalizedValue: 1,
+                    midiValue: 127,
+                })
+            );
         });
 
         it("adjusts value relatively", () => {
@@ -40,7 +46,11 @@ describe("useAudioParameter", () => {
             });
 
             // 0.1 of 127 is 12.7 -> Rounds to 13
-            expect(onChange).toHaveBeenCalledWith(13);
+            expect(onChange).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    value: 13,
+                })
+            );
         });
     });
 
@@ -70,7 +80,11 @@ describe("useAudioParameter", () => {
                 result.current.setNormalizedValue(0.9);
             });
 
-            expect(onChange).toHaveBeenCalledWith("sqr");
+            expect(onChange).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    value: "sqr",
+                })
+            );
         });
     });
 });

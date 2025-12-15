@@ -2,20 +2,16 @@
 
 import React from "react";
 import { CodeBlock } from "@/components/code-block";
+import type { AudioControlEvent } from "@cutoff/audio-ui-react";
 
-/** Type for components that can be rendered in the ComponentSkeletonPage */
-export type PageComponentProps = Record<string, unknown> & {
-    adaptiveSize?: boolean;
-    onChange?: (event: any) => void;
-};
-
-export type ComponentSkeletonPageProps = {
+export type ComponentSkeletonPageProps<TValue = number> = {
     /** Name of the component being demonstrated */
     componentName: string;
     /** Code example to display */
     codeSnippet: string;
     /** The component to render */
-    PageComponent: React.ComponentType<PageComponentProps>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    PageComponent: React.ComponentType<any>;
     /** Props to pass to the component */
     componentProps: Record<string, unknown>;
     /** Property controls to display */
@@ -23,17 +19,17 @@ export type ComponentSkeletonPageProps = {
     /**
      * Handler for value changes
      */
-    onChange?: (event: any) => void;
+    onChange?: (event: AudioControlEvent<TValue>) => void;
 };
 
-export default function ComponentSkeletonPage({
+export default function ComponentSkeletonPage<TValue = number>({
     componentName,
     codeSnippet,
     PageComponent,
     componentProps,
     properties,
     onChange,
-}: ComponentSkeletonPageProps) {
+}: ComponentSkeletonPageProps<TValue>) {
     return (
         <div className="w-full md:w-1/3 p-4 md:p-8 flex flex-col justify-between dark:bg-zinc-900/30 bg-zinc-100/70 overflow-auto">
             <div className="flex flex-col gap-6 md:gap-8">

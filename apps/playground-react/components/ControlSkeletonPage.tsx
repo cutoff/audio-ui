@@ -2,14 +2,14 @@
 
 import ComponentSkeletonPage, { ComponentSkeletonPageProps } from "@/components/ComponentSkeletonPage";
 
-export type ControlSkeletonPageProps = ComponentSkeletonPageProps & {
+export type ControlSkeletonPageProps<TValue = number> = ComponentSkeletonPageProps<TValue> & {
     /** Example instances to display */
     examples: React.ReactNode[];
     /** Layout orientation - horizontal for wide components, vertical for tall/square components */
     orientation?: "horizontal" | "vertical";
 };
 
-export default function ControlSkeletonPage(props: ControlSkeletonPageProps) {
+export default function ControlSkeletonPage<TValue = number>(props: ControlSkeletonPageProps<TValue>) {
     const {
         componentName,
         codeSnippet,
@@ -24,7 +24,7 @@ export default function ControlSkeletonPage(props: ControlSkeletonPageProps) {
     return (
         <div className="min-h-screen flex flex-col md:flex-row">
             {/* Left Column - Using ComponentSkeletonPage */}
-            <ComponentSkeletonPage
+            <ComponentSkeletonPage<TValue>
                 componentName={componentName}
                 codeSnippet={codeSnippet}
                 PageComponent={PageComponent}
