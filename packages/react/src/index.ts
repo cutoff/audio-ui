@@ -6,6 +6,10 @@ export { default as KnobSwitch } from "./components/controls/KnobSwitch";
 export { default as Slider } from "./components/controls/Slider";
 export { default as SvgContinuousControl } from "./components/primitives/SvgContinuousControl";
 
+// Export primitives
+export { default as Ring } from "./components/primitives/ring/Ring";
+export type { RingProps } from "./components/primitives/ring/Ring";
+
 // Export SVG presentation components
 export { default as SvgButton } from "./components/theme/SvgButton";
 export { default as SvgKnob } from "./components/theme/SvgKnob";

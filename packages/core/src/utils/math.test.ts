@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { polarToCartesian, calculateArcPath, calculateBoundedRatio, computeFilledZone } from "./math";
+import { polarToCartesian, calculateBoundedRatio, computeFilledZone } from "./math";
 
 describe("math", () => {
     describe("polarToCartesian", () => {
@@ -42,44 +42,6 @@ describe("math", () => {
             const result = polarToCartesian(50, 50, 10, -90);
             expect(result.x).toBeCloseTo(40); // 50 + 10*cos(-π) = 40
             expect(result.y).toBeCloseTo(50); // 50 + 10*sin(-π) = 50
-        });
-    });
-
-    describe("calculateArcPath", () => {
-        it("creates arc path for 0-90 degrees", () => {
-            const path = calculateArcPath(0, 90, 50);
-            expect(path).toContain("M");
-            expect(path).toContain("A");
-        });
-
-        it("swaps angles when start > end", () => {
-            const path1 = calculateArcPath(90, 0, 50);
-            const path2 = calculateArcPath(0, 90, 50);
-            expect(path1).toBe(path2);
-        });
-
-        it("handles full circle (0-360)", () => {
-            const path = calculateArcPath(0, 360, 50);
-            expect(path).toContain("M");
-            expect(path).toContain("A");
-        });
-
-        it("uses large arc flag for angles > 180", () => {
-            const path = calculateArcPath(0, 270, 50);
-            expect(path).toContain("1"); // large arc flag
-        });
-
-        it("uses small arc flag for angles <= 180", () => {
-            const path = calculateArcPath(0, 90, 50);
-            expect(path).toContain("0"); // small arc flag
-        });
-
-        it("handles different radius values", () => {
-            const path1 = calculateArcPath(0, 90, 25);
-            const path2 = calculateArcPath(0, 90, 50);
-            expect(path1).not.toBe(path2);
-            expect(path1).toContain("25");
-            expect(path2).toContain("50");
         });
     });
 

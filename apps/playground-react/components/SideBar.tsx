@@ -22,6 +22,7 @@ type ThemeColor = {
     color: string; // Tailwind class for display
     name: string;
     value: string; // CSS color value to use
+    // CSS color value to use
 };
 
 // List of components to display in the sidebar
@@ -31,6 +32,11 @@ const controls: Page[] = [
     { name: "Slider (horizontal)", path: "/controls/hslider" },
     { name: "Button", path: "/controls/button" },
     // More components can be added here in the future
+];
+
+// List of primitive components
+const primitives: Page[] = [
+    { name: "Ring", path: "/primitives/ring" },
 ];
 
 // List of device pages
@@ -146,6 +152,7 @@ export default function SideBar() {
                 </div>
 
                 <div className="flex-grow overflow-y-auto">
+                    
                     <h2 className="text-xl font-medium mb-4 text-sidebar-primary">Controls</h2>
                     <nav className="space-y-2 mb-6">
                         {controls.map((page) => (
@@ -166,6 +173,23 @@ export default function SideBar() {
                     <h2 className="text-xl font-medium mb-4 text-sidebar-primary">Devices</h2>
                     <nav className="space-y-2 mb-6">
                         {devices.map((page) => (
+                            <Link
+                                key={page.name}
+                                href={page.path}
+                                className={`block px-3 py-2 rounded-md transition-colors ${
+                                    pathname === page.path
+                                        ? "bg-sidebar-selected-bg text-sidebar-selected-text border-l-4 border-primary"
+                                        : "hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-primary-foreground"
+                                }`}
+                            >
+                                {page.name}
+                            </Link>
+                        ))}
+                    </nav>
+
+                    <h2 className="text-xl font-medium mb-4 text-sidebar-primary">Primitives</h2>
+                    <nav className="space-y-2 mb-6">
+                        {primitives.map((page) => (
                             <Link
                                 key={page.name}
                                 href={page.path}

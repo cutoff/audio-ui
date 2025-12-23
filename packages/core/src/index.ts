@@ -6,6 +6,7 @@ export * from "./constants/cssVars";
 export * from "./controller/InteractionController";
 export * from "./model/AudioParameter";
 export * from "./utils/math";
+export * from "./utils/svg";
 export * from "./utils/sizing";
 export * from "./utils/colorUtils";
 export * from "./utils/normalizedProps";

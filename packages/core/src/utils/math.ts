@@ -53,24 +53,6 @@ export const polarToCartesian = (
 };
 
 /**
- * Calculate SVG arc path for circular controls (like knobs)
- *
- * @param startAngle - Starting angle in degrees
- * @param endAngle - Ending angle in degrees
- * @param radius - Radius of the arc
- * @returns SVG path string for the arc
- */
-export const calculateArcPath = (startAngle: number, endAngle: number, radius: number): string => {
-    if (startAngle > endAngle) {
-        [startAngle, endAngle] = [endAngle, startAngle];
-    }
-    const start = polarToCartesian(50, 50, radius, endAngle);
-    const end = polarToCartesian(50, 50, radius, startAngle);
-    const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
-    return ["M", start.x, start.y, "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(" ");
-};
-
-/**
  * Helper function to calculate a bounded ratio between 0 and 1
  *
  * @param value - The value to convert to a ratio

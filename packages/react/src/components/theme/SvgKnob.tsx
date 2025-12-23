@@ -2,18 +2,10 @@
 
 import React, { useMemo } from "react";
 import { generateColorVariants } from "@cutoff/audio-ui-core";
-import { calculateArcPath } from "@cutoff/audio-ui-core";
 import { ControlComponent } from "../types";
 import { translateKnobRoundness, translateKnobThickness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
-
-/**
- * Angular constants for the knob's arc
- */
-const MAX_START_ANGLE = 220;
-const MAX_END_ANGLE = 500;
-const MAX_ARC_ANGLE = MAX_END_ANGLE - MAX_START_ANGLE;
-const CENTER_ANGLE = 360;
+import Ring from "../primitives/ring/Ring";
 
 /**
  * Props for the SvgKnob component
@@ -56,29 +48,14 @@ function SvgKnob({
     children,
     className,
 }: SvgKnobProps) {
-    // Convert normalized value to angle
-    const valueToAngle = useMemo(() => {
-        return normalizedValue * MAX_ARC_ANGLE + MAX_START_ANGLE;
-    }, [normalizedValue]);
-
-    // Translate normalized thickness to legacy range (1-20)
-    const legacyThickness = useMemo(() => {
+    // Translate normalized thickness to pixel range (1-20)
+    const pixelThickness = useMemo(() => {
         return translateKnobThickness(thickness);
     }, [thickness]);
 
-    // Use the translated thickness for stroke width
-    const strokeWidth = legacyThickness;
-
-    // Calculate radius to make stroke expand inward
-    // The outer edge stays at radius 50, and the stroke grows inward as thickness increases
-    const radius = useMemo(() => {
-        return 50 - strokeWidth / 2;
-    }, [strokeWidth]);
-
-    // Translate normalized roundness to legacy value and determine stroke linecap
-    const strokeLinecap = useMemo(() => {
-        const legacyRoundness = translateKnobRoundness(roundness);
-        return legacyRoundness === 0 ? "square" : "round";
+    // Translate normalized roundness to boolean (0 = square, >0 = round)
+    const isRound = useMemo(() => {
+        return translateKnobRoundness(roundness) !== 0;
     }, [roundness]);
 
     // Generate color variants
@@ -87,24 +64,28 @@ function SvgKnob({
         [color]
     );
 
+    // SvgKnob uses angles 220-500 (280 degree arc)
+    // Ring's openness = 360 - arc_angle = 360 - 280 = 80 degrees
+    const OPENNESS = 80;
+
+    // Center and radius for 100x100 viewBox
+    const cx = 50;
+    const cy = 50;
+    const radius = 50;
+
     return (
         <g className={className}>
-            {/* Background Arc */}
-            <path
-                style={{ stroke: colorVariants.primary50 }}
-                fill="none"
-                strokeWidth={strokeWidth}
-                strokeLinecap={strokeLinecap}
-                d={calculateArcPath(MAX_START_ANGLE, MAX_END_ANGLE, radius)}
-            />
-
-            {/* Foreground Arc */}
-            <path
-                style={{ stroke: colorVariants.primary }}
-                fill="none"
-                strokeWidth={strokeWidth}
-                strokeLinecap={strokeLinecap}
-                d={calculateArcPath(bipolar ? CENTER_ANGLE : MAX_START_ANGLE, valueToAngle, radius)}
+            <Ring
+                cx={cx}
+                cy={cy}
+                radius={radius}
+                normalizedValue={normalizedValue}
+                bipolar={bipolar}
+                thickness={pixelThickness}
+                roundness={isRound}
+                openness={OPENNESS}
+                fgArcStyle={{ stroke: colorVariants.primary }}
+                bgArcStyle={{ stroke: colorVariants.primary50 }}
             />
 
             {/* Value Display */}
