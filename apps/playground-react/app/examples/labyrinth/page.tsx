@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Slider } from "@/components/ui/slider";
-import LabyrinthControl from "@/components/examples/LabyrinthControl";
+import { AudioControlEvent } from "@cutoff/audio-ui-react";
+import CustomContinuousControl from "@/components/CustomContinuousControl";
+import LabyrinthControlView from "@/components/examples/LabyrinthControlView";
 
 export default function LabyrinthPage() {
-    const [value, setValue] = useState([0]);
-    const normalizedValue = value[0];
+    const [value, setValue] = useState(0);
 
     return (
         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] gap-12 p-8">
@@ -18,26 +18,16 @@ export default function LabyrinthPage() {
                 </p>
             </div>
 
-            <div className="relative w-[400px] h-[400px] shadow-xl rounded-lg overflow-hidden bg-white border border-slate-200 dark:bg-slate-900 dark:border-slate-800">
-                <LabyrinthControl
-                    normalizedValue={normalizedValue}
-                    className="w-full h-full"
-                />
-            </div>
-
-            <div className="w-full max-w-sm space-y-4">
-                <div className="flex justify-between text-sm font-medium">
-                    <span>Start</span>
-                    <span>Progress: {Math.round(normalizedValue * 100)}%</span>
-                    <span>Finish</span>
-                </div>
-                <Slider
-                    defaultValue={[0]}
-                    max={1}
-                    step={0.001}
+            <div className="relative w-[200px] h-[200px]">
+                <CustomContinuousControl
+                    view={LabyrinthControlView}
+                    min={0}
+                    max={16383}
+                    step={1}
                     value={value}
-                    onValueChange={setValue}
-                    className="w-full"
+                    onChange={(event: AudioControlEvent<number>) => setValue(event.value)}
+                    label="FunMaze Control"
+                    className="w-full h-full"
                 />
             </div>
         </div>

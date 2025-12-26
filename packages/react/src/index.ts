@@ -42,6 +42,7 @@ export type { SvgSliderProps } from "./components/theme/SvgSlider";
 // Export common types
 export type {
     AdaptiveSizeProps,
+    AdaptiveBoxProps,
     BaseProps,
     ContinuousControlProps,
     BooleanControlProps,
