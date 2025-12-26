@@ -17,6 +17,7 @@ type RingWrapperProps = {
     thickness?: number; // 1-20
     roundness?: number; // mapped to boolean for Ring
     openness?: number;
+    rotation?: number;
     fgGlow?: boolean;
     color?: string;
     style?: React.CSSProperties;
@@ -31,6 +32,7 @@ function RingWrapper({
     thickness = 6,
     roundness,
     openness = 90,
+    rotation = 0,
     fgGlow,
     color,
     style,
@@ -97,6 +99,7 @@ function RingWrapper({
                     thickness={thickness} // Pass thickness directly (1-20)
                     roundness={!!roundness} // Ring takes boolean for roundness
                     openness={openness}
+                    rotation={rotation}
                     fgArcStyle={fgStyle}
                     bgArcStyle={bgStyle}
                 />
@@ -111,6 +114,7 @@ function generateCodeSnippet(
     thickness: number,
     roundness: number | undefined,
     openness: number,
+    rotation: number,
     fgGlow: boolean,
     color: string | undefined
 ): string {
@@ -141,6 +145,7 @@ function generateCodeSnippet(
     if (thickness !== 6) code += `    thickness={${thickness}}\n`;
     if (roundness) code += `    roundness={true}\n`;
     if (openness !== 90) code += `    openness={${openness}}\n`;
+    if (rotation !== 0) code += `    rotation={${rotation}}\n`;
     
     code += `    fgArcStyle={{\n`;
     code += `      stroke: "${primaryColor}",\n`;
@@ -165,6 +170,7 @@ export default function RingDemoPage() {
     const [roundness, setRoundness] = useState<number | undefined>(1); // Default to true (1)
     const [thickness, setThickness] = useState(6); // Default 6px
     const [openness, setOpenness] = useState(90);
+    const [rotation, setRotation] = useState(0);
     const [fgGlow, setFgGlow] = useState(false);
     const [color, setColor] = useState<string | undefined>(undefined);
 
@@ -174,6 +180,7 @@ export default function RingDemoPage() {
         roundness?: number;
         thickness?: number;
         openness?: number;
+        rotation?: number;
         fgGlow?: boolean;
         color?: string;
     }) => {
@@ -182,6 +189,7 @@ export default function RingDemoPage() {
         setRoundness(config.roundness);
         setThickness(config.thickness ?? 6);
         setOpenness(config.openness ?? 90);
+        setRotation(config.rotation ?? 0);
         setFgGlow(config.fgGlow ?? false);
         setColor(config.color);
     }, []);
@@ -190,6 +198,7 @@ export default function RingDemoPage() {
     const normalizedValueArray = useMemo(() => [normalizedValue], [normalizedValue]);
     const thicknessArray = useMemo(() => [thickness], [thickness]);
     const opennessArray = useMemo(() => [openness], [openness]);
+    const rotationArray = useMemo(() => [rotation], [rotation]);
 
     const properties = useMemo(() => [
         <div key="normalizedValue" className="grid gap-2">
@@ -258,6 +267,28 @@ export default function RingDemoPage() {
                 onValueChange={(values) => setOpenness(values[0])}
             />
         </div>,
+        <div key="rotation" className="grid gap-2">
+            <div className="flex items-center justify-between">
+                <Label htmlFor="rotationProp">Rotation (degrees)</Label>
+                <Input
+                    id="rotationProp"
+                    type="number"
+                    min="-180"
+                    max="180"
+                    step="1"
+                    className="w-[70px] h-8 text-right"
+                    value={rotation}
+                    onChange={(e) => setRotation(Math.max(-180, Math.min(180, Number(e.target.value))))}
+                />
+            </div>
+            <Slider
+                value={rotationArray}
+                min={-180}
+                max={180}
+                step={1}
+                onValueChange={(values) => setRotation(values[0])}
+            />
+        </div>,
         <div key="color" className="grid gap-2">
             <ColorPickerField id="colorProp" label="Color" value={color} onChange={setColor} />
         </div>,
@@ -287,13 +318,15 @@ export default function RingDemoPage() {
         normalizedValue, 
         thickness, 
         openness, 
+        rotation,
         color, 
         roundness, 
         bipolar, 
         fgGlow, 
         normalizedValueArray,
         thicknessArray,
-        opennessArray
+        opennessArray,
+        rotationArray
     ]);
 
     const examples = useMemo(() => [
@@ -347,6 +380,7 @@ export default function RingDemoPage() {
         thickness,
         roundness,
         openness,
+        rotation,
         fgGlow,
         color
     );
@@ -357,6 +391,7 @@ export default function RingDemoPage() {
         thickness,
         roundness,
         openness,
+        rotation,
         fgGlow,
         color
     }), [
@@ -365,6 +400,7 @@ export default function RingDemoPage() {
         thickness,
         roundness,
         openness,
+        rotation,
         fgGlow,
         color
     ]);

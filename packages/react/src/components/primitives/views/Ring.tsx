@@ -21,6 +21,8 @@ export type RingProps = {
     roundness?: boolean;
     /** Openness of the ring in degrees (value between 0-360º; 0º: closed; 90º: 3/4 open; 180º: half-circle;) */
     openness?: number;
+    /** Optional rotation angle offset in degrees (default 0) */
+    rotation?: number;
     /** Optional style overrides for the foreground (value) arc */
     fgArcStyle?: CSSProperties;
     /** Optional style overrides for the background arc */
@@ -42,6 +44,7 @@ export default function Ring({
     thickness = 6,
     roundness,
     openness = 90,
+    rotation = 0,
     fgArcStyle,
     bgArcStyle,
 }: RingProps) {
@@ -51,12 +54,12 @@ export default function Ring({
      */
     const CENTER_ANGLE = 360;
 
-    // Calculate arc angles using shared hook
+    // Calculate arc angles using shared hook (rotation computation factored into hook)
     const {
-        maxStartAngle,
-        maxEndAngle,
+        startAngle,
+        endAngle,
         valueToAngle,
-    } = useArcAngle(normalizedValue, openness);
+    } = useArcAngle(normalizedValue, openness, rotation);
 
     const strokeLinecap = roundness ? "round" : "square";
 
@@ -68,14 +71,14 @@ export default function Ring({
         return Math.max(0, radius - thickness / 2);
     }, [radius, thickness]);
 
-    const fgStartAngle = bipolar ? CENTER_ANGLE : maxStartAngle;
+    const fgStartAngle = bipolar ? (CENTER_ANGLE - rotation) : startAngle;
 
     return (
         <>
             {/* Background Arc - displays the full range of the control */}
             <RingArc
-                startAngle={maxStartAngle}
-                endAngle={maxEndAngle}
+                startAngle={startAngle}
+                endAngle={endAngle}
                 style={bgArcStyle}
                 cx={cx}
                 cy={cy}

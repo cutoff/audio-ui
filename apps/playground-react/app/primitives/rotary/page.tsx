@@ -19,7 +19,7 @@ const GREY_BG_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53M
 type RotaryWrapperProps = {
     normalizedValue: number;
     openness?: number;
-    rotationZeroDeg?: number;
+    rotation?: number;
     imageHref?: string;
     style?: React.CSSProperties;
     className?: string;
@@ -54,7 +54,7 @@ const MixedOverlayContent = (
 function RotaryWrapper({
     normalizedValue,
     openness = 90,
-    rotationZeroDeg = 360,
+    rotation = 0,
     imageHref,
     style,
     className,
@@ -104,7 +104,7 @@ function RotaryWrapper({
                     radius={40}
                     normalizedValue={normalizedValue}
                     openness={openness}
-                    rotationZeroDeg={rotationZeroDeg}
+                    rotation={rotation}
                     imageHref={imageHref}
                 >
                     {children}
@@ -117,7 +117,7 @@ function RotaryWrapper({
 function generateCodeSnippet(
     normalizedValue: number,
     openness: number,
-    rotationZeroDeg: number,
+    rotation: number,
     imageHref: string | undefined,
     childMode: ChildMode
 ): string {
@@ -138,8 +138,8 @@ function generateCodeSnippet(
         normalizedValue={${normalizedValue}}
         openness={${openness}}`;
 
-    if (rotationZeroDeg !== 360) {
-        code += `\n        rotationZeroDeg={${rotationZeroDeg}}`;
+    if (rotation !== 0) {
+        code += `\n        rotation={${rotation}}`;
     }
 
     if (imageHref) {
@@ -167,7 +167,7 @@ function generateCodeSnippet(
 export default function RotaryDemoPage() {
     const [normalizedValue, setNormalizedValue] = useState(0.5);
     const [openness, setOpenness] = useState(90);
-    const [rotationZeroDeg, setRotationZeroDeg] = useState(360);
+    const [rotation, setRotation] = useState(0);
     const [imageHref, setImageHref] = useState<string | undefined>(undefined);
     // Initial state is now 'complex' since 'default' is removed
     const [childMode, setChildMode] = useState<ChildMode>('complex');
@@ -175,13 +175,13 @@ export default function RotaryDemoPage() {
     const handleExampleClick = useCallback((config: {
         normalizedValue?: number;
         openness?: number;
-        rotationZeroDeg?: number;
+        rotation?: number;
         imageHref?: string;
         childMode?: ChildMode;
     }) => {
         setNormalizedValue(config.normalizedValue ?? 0.5);
         setOpenness(config.openness ?? 90);
-        setRotationZeroDeg(config.rotationZeroDeg ?? 360);
+        setRotation(config.rotation ?? 0);
         setImageHref(config.imageHref);
         setChildMode(config.childMode ?? 'complex');
     }, []);
@@ -201,7 +201,7 @@ export default function RotaryDemoPage() {
             // Pixel URL example - using local PNG image
             setImageHref(VINTAGE_KNOB_IMAGE);
             setOpenness(33);
-            setRotationZeroDeg(194);
+            setRotation(-166);
         } else if (mode === 'mixed') {
             // Mixed mode
             setImageHref(GREY_BG_SVG);
@@ -235,15 +235,15 @@ export default function RotaryDemoPage() {
             normalizedValue={0.7}
             imageHref={VINTAGE_KNOB_IMAGE}
             childMode="pixel"
-            openness={0}
-            rotationZeroDeg={180}
+            openness={33}
+            rotation={-166}
             style={{ width: exampleSize, height: exampleSize }}
             onClick={() => handleExampleClick({ 
                 normalizedValue: 0.7, 
                 imageHref: VINTAGE_KNOB_IMAGE,
                 childMode: 'pixel',
                 openness: 33,
-                rotationZeroDeg: 194
+                rotation: -166
             })}
         />,
         <RotaryWrapper
@@ -263,7 +263,7 @@ export default function RotaryDemoPage() {
     const codeSnippet = generateCodeSnippet(
         normalizedValue,
         openness,
-        rotationZeroDeg,
+        rotation,
         imageHref,
         childMode
     );
@@ -271,10 +271,10 @@ export default function RotaryDemoPage() {
     const componentProps = useMemo(() => ({
         normalizedValue,
         openness,
-        rotationZeroDeg,
+        rotation,
         imageHref,
         childMode
-    }), [normalizedValue, openness, rotationZeroDeg, imageHref, childMode]);
+    }), [normalizedValue, openness, rotation, imageHref, childMode]);
 
     const properties = [
         <div key="normalizedValue" className="space-y-4">
@@ -301,15 +301,15 @@ export default function RotaryDemoPage() {
                 step={1}
             />
         </div>,
-        <div key="rotationZeroDeg" className="space-y-4">
+        <div key="rotation" className="space-y-4">
             <div className="flex justify-between items-center">
-                <Label>Rotation Zero Deg ({rotationZeroDeg}°)</Label>
+                <Label>Rotation ({rotation}°)</Label>
             </div>
             <Slider
-                value={[rotationZeroDeg]}
-                onValueChange={(vals) => setRotationZeroDeg(vals[0])}
-                min={0}
-                max={360}
+                value={[rotation]}
+                onValueChange={(vals) => setRotation(vals[0])}
+                min={-180}
+                max={180}
                 step={1}
             />
         </div>,

@@ -18,8 +18,8 @@ export type RotaryProps = {
     imageHref?: string;
     /** Optional SVG content to rotate */
     children?: React.ReactNode;
-    /** Optional zero-rotation angle offset (default 360 which corresponds to Up/12 o'clock in this system) */
-    rotationZeroDeg?: number;
+    /** Optional rotation angle offset in degrees (default 0) */
+    rotation?: number;
     /** Additional CSS class name */
     className?: string;
     /** Inline styles */
@@ -41,23 +41,18 @@ export default function Rotary({
     openness = 90,
     imageHref,
     children,
-    rotationZeroDeg = 360,
+    rotation = 0,
     className,
     style,
 }: RotaryProps) {
-    // Calculate arc angles using shared hook
-    const { valueToAngle } = useArcAngle(normalizedValue, openness);
-
-    // Calculate rotation transform
-    // If the content is "upright" at rotation 0, we need to offset by rotationZeroDeg
-    // For example, if valueToAngle is 360 (Up), and rotationZeroDeg is 360, result is 0 rotation.
-    const rotation = valueToAngle - rotationZeroDeg;
+    // Calculate arc angles using shared hook (rotation computation factored into hook)
+    const { valueToAngle } = useArcAngle(normalizedValue, openness, rotation);
 
     return (
         <g
             className={className}
             style={style}
-            transform={`rotate(${rotation}, ${cx}, ${cy})`}
+            transform={`rotate(${valueToAngle}, ${cx}, ${cy})`}
         >
             {imageHref && (
                 <image

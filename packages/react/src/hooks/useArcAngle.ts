@@ -5,13 +5,11 @@ export interface UseArcAngleResult {
     normalizedValue: number;
     /** Openness in degrees (0-360, clamped) */
     openness: number;
-    /** Start angle of the arc range in degrees */
-    maxStartAngle: number;
-    /** End angle of the arc range in degrees */
-    maxEndAngle: number;
-    /** Total arc angle span in degrees */
-    maxArcAngle: number;
-    /** Current angle in degrees based on normalized value */
+    /** Start angle of the arc range in degrees (offset by rotation) */
+    startAngle: number;
+    /** End angle of the arc range in degrees (offset by rotation) */
+    endAngle: number;
+    /** Current angle in degrees based on normalized value (offset by rotation) */
     valueToAngle: number;
 }
 
@@ -28,9 +26,10 @@ export interface UseArcAngleResult {
  *
  * @param normalizedValue Normalized value between 0 and 1
  * @param openness Openness of the arc in degrees (0-360, default 90)
+ * @param rotation Rotation angle offset in degrees (default 0)
  * @returns Calculated angles and normalized values
  */
-export function useArcAngle(normalizedValue: number, openness: number = 90): UseArcAngleResult {
+export function useArcAngle(normalizedValue: number, openness: number = 90, rotation: number = 0): UseArcAngleResult {
     // Clamp inputs
     const clampedValue = useMemo(() => {
         return Math.max(0, Math.min(1, normalizedValue));
@@ -54,16 +53,29 @@ export function useArcAngle(normalizedValue: number, openness: number = 90): Use
     }, [clampedOpenness]);
 
     // Convert normalized value (0-1) to an angle in degrees
-    const valueToAngle = useMemo(() => {
+    const baseValueToAngle = useMemo(() => {
         return clampedValue * maxArcAngle + maxStartAngle;
     }, [clampedValue, maxArcAngle, maxStartAngle]);
+
+    // Calculate rotated angles (offset by rotation)
+    // These are the angles that should be used by components
+    const startAngle = useMemo(() => {
+        return maxStartAngle - rotation;
+    }, [maxStartAngle, rotation]);
+
+    const endAngle = useMemo(() => {
+        return maxEndAngle - rotation;
+    }, [maxEndAngle, rotation]);
+
+    const valueToAngle = useMemo(() => {
+        return baseValueToAngle - rotation;
+    }, [baseValueToAngle, rotation]);
 
     return {
         normalizedValue: clampedValue,
         openness: clampedOpenness,
-        maxStartAngle,
-        maxEndAngle,
-        maxArcAngle,
+        startAngle,
+        endAngle,
         valueToAngle,
     };
 }

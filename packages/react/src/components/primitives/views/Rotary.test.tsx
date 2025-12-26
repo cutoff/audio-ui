@@ -25,11 +25,11 @@ describe("Rotary", () => {
         // end = 540 - 45 = 495
         // range = 270
         // value 0.5 -> angle = 225 + 0.5 * 270 = 225 + 135 = 360
-        // rotation = 360 - 360 (default zero) = 0
+        // rotation = 360 - 0 (default) = 360
         
         const group = container.querySelector("g");
         const transform = group?.getAttribute("transform");
-        expect(transform).toBe("rotate(0, 50, 50)");
+        expect(transform).toBe("rotate(360, 50, 50)");
     });
 
     it("applies correct rotation transform for value 0 (min)", () => {
@@ -41,11 +41,11 @@ describe("Rotary", () => {
         
         // At value 0:
         // angle = 225
-        // rotation = 225 - 360 = -135
+        // rotation = 225 - 0 = 225
         
         const group = container.querySelector("g");
         const transform = group?.getAttribute("transform");
-        expect(transform).toBe("rotate(-135, 50, 50)");
+        expect(transform).toBe("rotate(225, 50, 50)");
     });
 
     it("applies correct rotation transform for value 1 (max)", () => {
@@ -57,11 +57,11 @@ describe("Rotary", () => {
         
         // At value 1:
         // angle = 495
-        // rotation = 495 - 360 = 135
+        // rotation = 495 - 0 = 495
         
         const group = container.querySelector("g");
         const transform = group?.getAttribute("transform");
-        expect(transform).toBe("rotate(135, 50, 50)");
+        expect(transform).toBe("rotate(495, 50, 50)");
     });
 
     it("renders image if imageHref is provided", () => {
