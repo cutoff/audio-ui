@@ -24,6 +24,7 @@ type RingWrapperProps = {
     className?: string;
     onClick?: () => void;
     size?: string; // ControlSkeletonPage passes size, but we might ignore it or use it for container size
+    adaptiveSize?: boolean; // When true, component fills container; when false, uses fixed size
 };
 
 function RingWrapper({
@@ -38,11 +39,12 @@ function RingWrapper({
     style,
     className,
     onClick,
+    adaptiveSize = false,
 }: RingWrapperProps) {
     const value = Math.max(0, Math.min(1, normalizedValue));
     const filterId = useId().replace(/:/g, "");
     
-    // Fixed dimensions for the demo
+    // Fixed dimensions for examples; use full size when adaptiveSize is true
     const sizePx = 100;
     const cx = sizePx / 2;
     const cy = sizePx / 2;
@@ -66,11 +68,10 @@ function RingWrapper({
 
     return (
         <div 
-            className={className} 
+            className={`${adaptiveSize ? "w-full h-full" : ""} ${className || ""}`}
             style={{ 
                 ...style, 
-                width: sizePx, 
-                height: sizePx,
+                ...(adaptiveSize ? {} : { width: sizePx, height: sizePx }),
                 cursor: onClick ? "pointer" : "default",
                 display: "flex",
                 alignItems: "center",
@@ -78,7 +79,12 @@ function RingWrapper({
             }}
             onClick={onClick}
         >
-            <svg width={sizePx} height={sizePx} viewBox={`0 0 ${sizePx} ${sizePx}`} style={{ overflow: "visible" }}>
+            <svg 
+                width={adaptiveSize ? "100%" : sizePx} 
+                height={adaptiveSize ? "100%" : sizePx} 
+                viewBox={`0 0 ${sizePx} ${sizePx}`} 
+                style={{ overflow: "visible", display: "block" }}
+            >
                 {fgGlow && (
                     <defs>
                         <filter id={filterId} x="-50%" y="-50%" width="200%" height="200%">
