@@ -74,10 +74,13 @@ export default function Ring({
     // Check if we can use the optimized RevealingPath
     // We only use RevealingPath for unipolar, non-full-circle arcs
     // (Full circles require complex path construction to work with stroke-dasharray)
-    const isUnipolar = !bipolar;
-    const isFullCircle = Math.abs(endAngle - startAngle) >= 360;
-    const canOptimize = isUnipolar && !isFullCircle;
-
+    // PERFORMANCE NOTE: We explicitly AVOID the RevealingPath optimization (stroke-dasharray)
+    // here because in high-concurrency scenarios (hundreds of knobs), the React overhead
+    // of the extra component layer and DOM attribute updates proved slower than 
+    // simply recalculating the geometric path in JS.
+    
+    // Calculate start angle for the foreground arc
+    // For bipolar: start at top (or rotated center). For unipolar: start at min angle.
     const fgStartAngle = bipolar ? (CENTER_ANGLE - rotation) : startAngle;
 
     return (
@@ -95,36 +98,16 @@ export default function Ring({
             />
 
             {/* Foreground Arc */}
-            {canOptimize ? (
-                // Optimized Path for standard unipolar knobs
-                // We pass the FULL range angles (startAngle, endAngle) + normalizedValue
-                // RingArc will use RevealingPath to animate the fill
-                <RingArc
-                    startAngle={startAngle}
-                    endAngle={endAngle}
-                    normalizedValue={normalizedValue}
-                    style={fgArcStyle}
-                    cx={cx}
-                    cy={cy}
-                    radius={actualRadius}
-                    thickness={thickness}
-                    strokeLinecap={strokeLinecap}
-                />
-            ) : (
-                // Standard Arc for bipolar or full-circle knobs
-                // We pass the PARTIAL range angles (fgStartAngle, valueToAngle)
-                // RingArc will render the path geometrically
-                <RingArc
-                    startAngle={fgStartAngle}
-                    endAngle={valueToAngle}
-                    style={fgArcStyle}
-                    cx={cx}
-                    cy={cy}
-                    radius={actualRadius}
-                    thickness={thickness}
-                    strokeLinecap={strokeLinecap}
-                />
-            )}
+            <RingArc
+                startAngle={fgStartAngle}
+                endAngle={valueToAngle}
+                style={fgArcStyle}
+                cx={cx}
+                cy={cy}
+                radius={actualRadius}
+                thickness={thickness}
+                strokeLinecap={strokeLinecap}
+            />
         </>
     );
 }

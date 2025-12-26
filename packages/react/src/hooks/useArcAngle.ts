@@ -30,10 +30,8 @@ export interface UseArcAngleResult {
  * @returns Calculated angles and normalized values
  */
 export function useArcAngle(normalizedValue: number, openness: number = 90, rotation: number = 0): UseArcAngleResult {
-    // Clamp inputs
-    const clampedValue = useMemo(() => {
-        return Math.max(0, Math.min(1, normalizedValue));
-    }, [normalizedValue]);
+    // Clamp inputs - NO MEMO needed for value as it changes frequently (e.g. during animation)
+    const clampedValue = Math.max(0, Math.min(1, normalizedValue));
 
     const clampedOpenness = useMemo(() => {
         return Math.max(0, Math.min(360, openness));
@@ -53,9 +51,8 @@ export function useArcAngle(normalizedValue: number, openness: number = 90, rota
     }, [clampedOpenness]);
 
     // Convert normalized value (0-1) to an angle in degrees
-    const baseValueToAngle = useMemo(() => {
-        return clampedValue * maxArcAngle + maxStartAngle;
-    }, [clampedValue, maxArcAngle, maxStartAngle]);
+    // NO MEMO needed as clampedValue changes often
+    const baseValueToAngle = clampedValue * maxArcAngle + maxStartAngle;
 
     // Calculate rotated angles (offset by rotation)
     // These are the angles that should be used by components
@@ -67,9 +64,8 @@ export function useArcAngle(normalizedValue: number, openness: number = 90, rota
         return maxEndAngle - rotation;
     }, [maxEndAngle, rotation]);
 
-    const valueToAngle = useMemo(() => {
-        return baseValueToAngle - rotation;
-    }, [baseValueToAngle, rotation]);
+    // NO MEMO needed as baseValueToAngle changes often
+    const valueToAngle = baseValueToAngle - rotation;
 
     return {
         normalizedValue: clampedValue,
