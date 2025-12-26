@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { generateColorVariants } from "@cutoff/audio-ui-core";
 import { translateButtonRoundness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
@@ -80,9 +80,14 @@ function SvgButton({
  * ViewBox dimensions for the SvgButton component.
  * The parent component should use these values when setting up the SVG container.
  */
-SvgButton.viewBox = {
+const VIEW_BOX = {
     width: 100,
     height: 60,
 } as const;
 
-export default SvgButton;
+const SvgButtonMemo = React.memo(SvgButton);
+(SvgButtonMemo as any).viewBox = VIEW_BOX;
+
+export default SvgButtonMemo as unknown as React.MemoExoticComponent<typeof SvgButton> & {
+    viewBox: typeof VIEW_BOX;
+};

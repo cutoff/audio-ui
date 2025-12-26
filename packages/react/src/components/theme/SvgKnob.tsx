@@ -102,7 +102,7 @@ function SvgKnob({
  * ViewBox dimensions for the SvgKnob component.
  * The parent component should use these values when setting up the SVG container.
  */
-SvgKnob.viewBox = {
+const VIEW_BOX = {
     width: 100,
     height: 100,
 };
@@ -110,14 +110,22 @@ SvgKnob.viewBox = {
 /**
  * Label height for the SvgKnob component.
  */
-SvgKnob.labelHeightUnits = 20;
+const LABEL_HEIGHT_UNITS = 20;
 
 /**
  * Interaction contract for the SvgKnob component.
  */
-SvgKnob.interaction = {
+const INTERACTION = {
     mode: "both",
     direction: "vertical", // Knobs are typically adjusted via vertical drag
-};
+} as const;
 
-export default SvgKnob as ControlComponent<Omit<SvgKnobProps, "normalizedValue" | "children" | "className" | "style">>;
+// Create memoized component
+const MemoSvgKnob = React.memo(SvgKnob);
+
+// Explicitly attach static properties to the memoized component
+(MemoSvgKnob as any).viewBox = VIEW_BOX;
+(MemoSvgKnob as any).labelHeightUnits = LABEL_HEIGHT_UNITS;
+(MemoSvgKnob as any).interaction = INTERACTION;
+
+export default MemoSvgKnob as unknown as ControlComponent<Omit<SvgKnobProps, "normalizedValue" | "children" | "className" | "style">>;

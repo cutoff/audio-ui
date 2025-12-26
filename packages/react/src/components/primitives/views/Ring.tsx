@@ -1,6 +1,6 @@
 "use client";
 
-import { CSSProperties, useMemo } from "react";
+import React, { CSSProperties, useMemo } from "react";
 import { useArcAngle } from "../../../hooks/useArcAngle";
 import RingArc from "./RingArc";
 
@@ -35,7 +35,7 @@ export type RingProps = {
  * 
  * This component is designed to be used inside an <svg> element.
  */
-export default function Ring({
+function Ring({
     cx,
     cy,
     radius,
@@ -111,3 +111,6 @@ export default function Ring({
         </>
     );
 }
+
+export default React.memo(Ring);
+

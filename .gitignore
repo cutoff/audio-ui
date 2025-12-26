@@ -32,3 +32,6 @@ yarn-error.log*
 links/
 
 SPECIFICATIONS.md
+
+vite.config.ts.timestamp-*
+vitest.config.ts.timestamp-*

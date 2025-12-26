@@ -33,7 +33,7 @@ export type RotaryProps = {
  * This component renders a group <g> that rotates around (cx, cy).
  * It can display an image (via imageHref) or arbitrary SVG content (via children).
  */
-export default function Rotary({
+function Rotary({
     cx,
     cy,
     radius,
@@ -68,4 +68,7 @@ export default function Rotary({
         </g>
     );
 }
+
+export default React.memo(Rotary);
+
 

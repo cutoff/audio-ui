@@ -5,6 +5,7 @@ import { generateColorVariants } from "@cutoff/audio-ui-core";
 import { computeFilledZone, Zone } from "@cutoff/audio-ui-core";
 import { translateSliderRoundness, translateSliderThickness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
+import { ControlComponent } from "../types";
 
 /**
  * Props for the SvgSlider component
@@ -131,12 +132,7 @@ function SvgSlider({
     );
 }
 
-/**
- * ViewBox dimensions for the SvgSlider component.
- * The parent component should use these values when setting up the SVG container.
- * Dimensions vary based on orientation.
- */
-SvgSlider.viewBox = {
+const SLIDER_VIEWBOX = {
     vertical: {
         width: 100,
         height: 300,
@@ -146,6 +142,13 @@ SvgSlider.viewBox = {
         height: 100,
     },
 } as const;
+
+/**
+ * ViewBox dimensions for the SvgSlider component.
+ * The parent component should use these values when setting up the SVG container.
+ * Dimensions vary based on orientation.
+ */
+SvgSlider.viewBox = SLIDER_VIEWBOX;
 
 /**
  * Props for specialized slider views (without normalizedValue, children, className, style, orientation)
@@ -158,7 +161,7 @@ type SpecializedSliderProps = Omit<
 /**
  * Specialized Vertical Slider for Generic Control System
  */
-function SvgVerticalSlider(
+function SvgVerticalSliderComponent(
     props: SpecializedSliderProps & {
         normalizedValue: number;
         children?: React.ReactNode;
@@ -169,17 +172,22 @@ function SvgVerticalSlider(
     return <SvgSlider {...props} orientation="vertical" />;
 }
 
-SvgVerticalSlider.viewBox = SvgSlider.viewBox.vertical;
-SvgVerticalSlider.labelHeightUnits = 40;
-SvgVerticalSlider.interaction = {
+const SvgVerticalSliderMemo = React.memo(SvgVerticalSliderComponent);
+
+(SvgVerticalSliderMemo as any).viewBox = SLIDER_VIEWBOX.vertical;
+(SvgVerticalSliderMemo as any).labelHeightUnits = 40;
+(SvgVerticalSliderMemo as any).interaction = {
     mode: "both" as const,
     direction: "vertical" as const,
 };
 
+// Cast the memoized components to the ControlComponent type which includes the static properties
+const SvgVerticalSlider = SvgVerticalSliderMemo as unknown as ControlComponent<SpecializedSliderProps>;
+
 /**
  * Specialized Horizontal Slider for Generic Control System
  */
-function SvgHorizontalSlider(
+function SvgHorizontalSliderComponent(
     props: SpecializedSliderProps & {
         normalizedValue: number;
         children?: React.ReactNode;
@@ -190,12 +198,16 @@ function SvgHorizontalSlider(
     return <SvgSlider {...props} orientation="horizontal" />;
 }
 
-SvgHorizontalSlider.viewBox = SvgSlider.viewBox.horizontal;
-SvgHorizontalSlider.labelHeightUnits = 40;
-SvgHorizontalSlider.interaction = {
+const SvgHorizontalSliderMemo = React.memo(SvgHorizontalSliderComponent);
+
+(SvgHorizontalSliderMemo as any).viewBox = SLIDER_VIEWBOX.horizontal;
+(SvgHorizontalSliderMemo as any).labelHeightUnits = 40;
+(SvgHorizontalSliderMemo as any).interaction = {
     mode: "both" as const,
     direction: "horizontal" as const,
 };
 
+const SvgHorizontalSlider = SvgHorizontalSliderMemo as unknown as ControlComponent<SpecializedSliderProps>;
+
 export { SvgVerticalSlider, SvgHorizontalSlider };
-export default SvgSlider;
+export default React.memo(SvgSlider);

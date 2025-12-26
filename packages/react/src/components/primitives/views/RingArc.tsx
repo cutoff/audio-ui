@@ -1,7 +1,7 @@
 "use client";
 
+import React, { CSSProperties, useMemo } from "react";
 import { calculateArcPath } from "@cutoff/audio-ui-core";
-import { CSSProperties, useMemo } from "react";
 
 export type RingArcProps = {
     startAngle: number;
@@ -19,7 +19,7 @@ export type RingArcProps = {
  *
  * @internal
  */
-export default function RingArc({
+function RingArc({
     startAngle,
     endAngle,
     style,
@@ -65,3 +65,5 @@ export default function RingArc({
         />
     );
 }
+
+export default React.memo(RingArc);

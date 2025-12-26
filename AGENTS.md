@@ -103,9 +103,10 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 1. Load root AGENTS.md.
 2. Read sub-AGENTS.md for specifics (library/playground).
 3. Consult `agents/` for conventions.
-4. Use tools: `pnpm typecheck/build/test`; edit code; run diagnostics.
-5. Test in playground app.
-6. Update docs if needed.
+4. Use tools: `pnpm typecheck`, `pnpm build`, `pnpm test`; edit code; run diagnostics.
+5. **Final Verification**: Run `pnpm check` (runs typecheck, build, lint, and test) to ensure overall project health.
+6. Test in playground app.
+7. Update docs if needed.
 
 ## React Version Compatibility
 
