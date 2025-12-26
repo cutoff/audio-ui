@@ -165,12 +165,12 @@ function generateCodeSnippet(
 }
 
 export default function RotaryDemoPage() {
-    const [normalizedValue, setNormalizedValue] = useState(0.5);
+    const [normalizedValue, setNormalizedValue] = useState(0.3);
     const [openness, setOpenness] = useState(90);
     const [rotation, setRotation] = useState(0);
-    const [imageHref, setImageHref] = useState<string | undefined>(undefined);
-    // Initial state is now 'complex' since 'default' is removed
-    const [childMode, setChildMode] = useState<ChildMode>('complex');
+    const [imageHref, setImageHref] = useState<string | undefined>(VINTAGE_KNOB_SVG);
+    // Initial state matches the first example (svg-data)
+    const [childMode, setChildMode] = useState<ChildMode>('none');
 
     const handleExampleClick = useCallback((config: {
         normalizedValue?: number;
@@ -212,13 +212,6 @@ export default function RotaryDemoPage() {
     const exampleSize = 100; // Fixed size for examples, matching Ring demo
     const examples = useMemo(() => [
         <RotaryWrapper
-            key="complex-vector"
-            normalizedValue={0.5}
-            childMode="complex"
-            style={{ width: exampleSize, height: exampleSize }}
-            onClick={() => handleExampleClick({ normalizedValue: 0.5, childMode: 'complex', imageHref: undefined })}
-        />,
-        <RotaryWrapper
             key="svg-data"
             normalizedValue={0.3}
             imageHref={VINTAGE_KNOB_SVG}
@@ -229,6 +222,13 @@ export default function RotaryDemoPage() {
                 imageHref: VINTAGE_KNOB_SVG,
                 childMode: 'none'
             })}
+        />,
+        <RotaryWrapper
+            key="complex-vector"
+            normalizedValue={0.5}
+            childMode="complex"
+            style={{ width: exampleSize, height: exampleSize }}
+            onClick={() => handleExampleClick({ normalizedValue: 0.5, childMode: 'complex', imageHref: undefined })}
         />,
         <RotaryWrapper
             key="pixel-image"
