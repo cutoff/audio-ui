@@ -1,6 +1,7 @@
 "use client";
 
 import { CSSProperties, useMemo } from "react";
+import { useArcAngle } from "../../../hooks/useArcAngle";
 import RingArc from "./RingArc";
 
 export type RingProps = {
@@ -50,28 +51,12 @@ export default function Ring({
      */
     const CENTER_ANGLE = 360;
 
-    // Sanitize inputs
-    const clampedValue = Math.max(0, Math.min(1, normalizedValue));
-    const clampedOpenness = Math.max(0, Math.min(360, openness));
-
-    // Memoize angular calculations based on openness
-    // Calculate the start and end angles based on the openness prop.
-    // 0 degrees is at 3 o'clock, increasing clockwise.
-    // Standard knob (90 openness) goes from approx 225 deg (7:30) to 495 deg (4:30).
-    const { maxStartAngle, maxEndAngle, maxArcAngle } = useMemo(() => {
-        const start = 180 + (clampedOpenness / 2);
-        const end = 540 - (clampedOpenness / 2);
-        return {
-            maxStartAngle: start,
-            maxEndAngle: end,
-            maxArcAngle: end - start
-        };
-    }, [clampedOpenness]);
-
-    // Convert normalized value (0-1) to an angle in degrees
-    const valueToAngle = useMemo(() => {
-        return clampedValue * maxArcAngle + maxStartAngle;
-    }, [clampedValue, maxArcAngle, maxStartAngle]);
+    // Calculate arc angles using shared hook
+    const {
+        maxStartAngle,
+        maxEndAngle,
+        valueToAngle,
+    } = useArcAngle(normalizedValue, openness);
 
     const strokeLinecap = roundness ? "round" : "square";
 

@@ -7,8 +7,10 @@ export { default as Slider } from "./components/controls/Slider";
 export { default as SvgContinuousControl } from "./components/primitives/SvgContinuousControl";
 
 // Export primitives
-export { default as Ring } from "./components/primitives/ring/Ring";
-export type { RingProps } from "./components/primitives/ring/Ring";
+export { default as Ring } from "./components/primitives/views/Ring";
+export type { RingProps } from "./components/primitives/views/Ring";
+export { default as Rotary } from "./components/primitives/views/Rotary";
+export type { RotaryProps } from "./components/primitives/views/Rotary";
 
 // Export SVG presentation components
 export { default as SvgButton } from "./components/theme/SvgButton";

@@ -1,0 +1,69 @@
+import { useMemo } from "react";
+
+export interface UseArcAngleResult {
+    /** Normalized value (0-1, clamped) */
+    normalizedValue: number;
+    /** Openness in degrees (0-360, clamped) */
+    openness: number;
+    /** Start angle of the arc range in degrees */
+    maxStartAngle: number;
+    /** End angle of the arc range in degrees */
+    maxEndAngle: number;
+    /** Total arc angle span in degrees */
+    maxArcAngle: number;
+    /** Current angle in degrees based on normalized value */
+    valueToAngle: number;
+}
+
+/**
+ * Hook to calculate arc angles for rotary controls (Ring, Rotary components).
+ *
+ * Calculates the angular range based on openness and converts a normalized value (0-1)
+ * to an angle within that range.
+ *
+ * The angle system:
+ * - 0 degrees is at 3 o'clock, increasing clockwise
+ * - Standard knob (90° openness) goes from ~225° (7:30) to ~495° (4:30)
+ * - 360° corresponds to UP (12 o'clock)
+ *
+ * @param normalizedValue Normalized value between 0 and 1
+ * @param openness Openness of the arc in degrees (0-360, default 90)
+ * @returns Calculated angles and normalized values
+ */
+export function useArcAngle(normalizedValue: number, openness: number = 90): UseArcAngleResult {
+    // Clamp inputs
+    const clampedValue = useMemo(() => {
+        return Math.max(0, Math.min(1, normalizedValue));
+    }, [normalizedValue]);
+
+    const clampedOpenness = useMemo(() => {
+        return Math.max(0, Math.min(360, openness));
+    }, [openness]);
+
+    // Calculate angular range based on openness
+    // 0 degrees is at 3 o'clock, increasing clockwise.
+    // Standard knob (90 openness) goes from approx 225 deg (7:30) to 495 deg (4:30).
+    const { maxStartAngle, maxEndAngle, maxArcAngle } = useMemo(() => {
+        const start = 180 + clampedOpenness / 2;
+        const end = 540 - clampedOpenness / 2;
+        return {
+            maxStartAngle: start,
+            maxEndAngle: end,
+            maxArcAngle: end - start,
+        };
+    }, [clampedOpenness]);
+
+    // Convert normalized value (0-1) to an angle in degrees
+    const valueToAngle = useMemo(() => {
+        return clampedValue * maxArcAngle + maxStartAngle;
+    }, [clampedValue, maxArcAngle, maxStartAngle]);
+
+    return {
+        normalizedValue: clampedValue,
+        openness: clampedOpenness,
+        maxStartAngle,
+        maxEndAngle,
+        maxArcAngle,
+        valueToAngle,
+    };
+}

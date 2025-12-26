@@ -20,13 +20,13 @@ interface CodeBlockProps {
     theme?: "oneDark" | "atomDark";
 }
 
-export const CodeBlock = ({
+export default function CodeBlock({
     code,
     language = "jsx",
     className,
     showLineNumbers = false,
     theme = "oneDark",
-}: CodeBlockProps) => {
+}: CodeBlockProps) {
     const [copied, setCopied] = React.useState(false);
 
     const onCopy = () => {
@@ -125,4 +125,4 @@ export const CodeBlock = ({
             </div>
         </div>
     );
-};
+}

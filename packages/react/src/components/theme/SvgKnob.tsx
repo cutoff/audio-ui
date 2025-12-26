@@ -5,7 +5,7 @@ import { generateColorVariants } from "@cutoff/audio-ui-core";
 import { ControlComponent } from "../types";
 import { translateKnobRoundness, translateKnobThickness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
-import Ring from "../primitives/ring/Ring";
+import Ring from "../primitives/views/Ring";
 
 /**
  * Props for the SvgKnob component

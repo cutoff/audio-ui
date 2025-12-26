@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CodeBlock } from "@/components/code-block";
+import CodeBlock from "@/components/code-block";
 import type { AudioControlEvent } from "@cutoff/audio-ui-react";
 
 export type ComponentSkeletonPageProps<TValue = number> = {
@@ -20,6 +20,8 @@ export type ComponentSkeletonPageProps<TValue = number> = {
      * Handler for value changes
      */
     onChange?: (event: AudioControlEvent<TValue>) => void;
+    /** Optional children content to render */
+    children?: React.ReactNode;
 };
 
 export default function ComponentSkeletonPage<TValue = number>({
@@ -29,6 +31,7 @@ export default function ComponentSkeletonPage<TValue = number>({
     componentProps,
     properties,
     onChange,
+    children,
 }: ComponentSkeletonPageProps<TValue>) {
     return (
         <div className="w-full md:w-1/3 p-4 md:p-8 flex flex-col justify-between dark:bg-zinc-900/30 bg-zinc-100/70 overflow-auto">
@@ -59,6 +62,7 @@ export default function ComponentSkeletonPage<TValue = number>({
                 <h2 className="text-base font-semibold pt-2">Properties</h2>
                 <div className="space-y-4 w-full">{properties}</div>
             </div>
+            {children}
         </div>
     );
 }
