@@ -71,11 +71,18 @@ export default function Ring({
         return Math.max(0, radius - thickness / 2);
     }, [radius, thickness]);
 
+    // Check if we can use the optimized RevealingPath
+    // We only use RevealingPath for unipolar, non-full-circle arcs
+    // (Full circles require complex path construction to work with stroke-dasharray)
+    const isUnipolar = !bipolar;
+    const isFullCircle = Math.abs(endAngle - startAngle) >= 360;
+    const canOptimize = isUnipolar && !isFullCircle;
+
     const fgStartAngle = bipolar ? (CENTER_ANGLE - rotation) : startAngle;
 
     return (
         <>
-            {/* Background Arc - displays the full range of the control */}
+            {/* Background Arc - Always the same regardless of optimization */}
             <RingArc
                 startAngle={startAngle}
                 endAngle={endAngle}
@@ -87,18 +94,37 @@ export default function Ring({
                 strokeLinecap={strokeLinecap}
             />
 
-            {/* Foreground Arc - displays the current value */}
-            <RingArc
-                startAngle={fgStartAngle}
-                endAngle={valueToAngle}
-                style={fgArcStyle}
-                cx={cx}
-                cy={cy}
-                radius={actualRadius}
-                thickness={thickness}
-                strokeLinecap={strokeLinecap}
-            />
+            {/* Foreground Arc */}
+            {canOptimize ? (
+                // Optimized Path for standard unipolar knobs
+                // We pass the FULL range angles (startAngle, endAngle) + normalizedValue
+                // RingArc will use RevealingPath to animate the fill
+                <RingArc
+                    startAngle={startAngle}
+                    endAngle={endAngle}
+                    normalizedValue={normalizedValue}
+                    style={fgArcStyle}
+                    cx={cx}
+                    cy={cy}
+                    radius={actualRadius}
+                    thickness={thickness}
+                    strokeLinecap={strokeLinecap}
+                />
+            ) : (
+                // Standard Arc for bipolar or full-circle knobs
+                // We pass the PARTIAL range angles (fgStartAngle, valueToAngle)
+                // RingArc will render the path geometrically
+                <RingArc
+                    startAngle={fgStartAngle}
+                    endAngle={valueToAngle}
+                    style={fgArcStyle}
+                    cx={cx}
+                    cy={cy}
+                    radius={actualRadius}
+                    thickness={thickness}
+                    strokeLinecap={strokeLinecap}
+                />
+            )}
         </>
     );
 }
-
