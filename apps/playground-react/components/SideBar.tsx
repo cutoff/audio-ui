@@ -48,6 +48,7 @@ const devices: Page[] = [
 
 // List of example pages
 const examples: Page[] = [
+    { name: "Customization", path: "/examples/labyrinth" },
     { name: "Control Surface", path: "/examples/control-surface" },
     { name: "Stress Test", path: "/examples/stress-test" },
     // More example pages can be added here in the future
