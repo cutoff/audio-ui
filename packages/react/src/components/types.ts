@@ -330,4 +330,17 @@ export interface ControlComponentViewProps {
  * A Generic Component Type that enforces the contract + props.
  * P = Additional custom props specific to the visualization (e.g. color, thickness).
  */
-export type ControlComponent<P = {}> = React.ComponentType<ControlComponentViewProps & P> & ControlComponentView;
+export type ControlComponent<P = {}> = React.ComponentType<ControlComponentViewProps & P> &
+    ControlComponentView &
+    Partial<ControlComponentMetadata>;
+
+/**
+ * Metadata for a control component.
+ * Used for display in customization interfaces and documentation.
+ */
+export interface ControlComponentMetadata {
+    /** Display name/title for the component */
+    title: string;
+    /** Optional description of what the component does */
+    description?: string;
+}

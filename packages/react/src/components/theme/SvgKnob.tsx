@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { generateColorVariants } from "@cutoff/audio-ui-core";
+import { generateColorVariants, getAdaptiveDefaultColor } from "@cutoff/audio-ui-core";
 import { ControlComponent } from "../types";
 import { translateKnobRoundness, translateKnobThickness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
@@ -60,7 +60,7 @@ function SvgKnob({
 
     // Generate color variants
     const colorVariants = useMemo(
-        () => generateColorVariants(color ?? "var(--audioui-primary-color)", "transparency"),
+        () => generateColorVariants(color ?? getAdaptiveDefaultColor(), "transparency"),
         [color]
     );
 
@@ -127,5 +127,7 @@ const MemoSvgKnob = React.memo(SvgKnob);
 (MemoSvgKnob as any).viewBox = VIEW_BOX;
 (MemoSvgKnob as any).labelHeightUnits = LABEL_HEIGHT_UNITS;
 (MemoSvgKnob as any).interaction = INTERACTION;
+(MemoSvgKnob as any).title = "Knob";
+(MemoSvgKnob as any).description = "A rotary knob control with circular arc indicator";
 
 export default MemoSvgKnob as unknown as ControlComponent<Omit<SvgKnobProps, "normalizedValue" | "children" | "className" | "style">>;

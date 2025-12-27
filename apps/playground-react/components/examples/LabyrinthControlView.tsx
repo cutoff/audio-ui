@@ -107,7 +107,11 @@ const WALLS_PATH_DATA = (() => {
  * A control component that renders a labyrinth maze with a revealing solution path.
  * The solution path is revealed based on the normalizedValue prop (0..1).
  */
-function LabyrinthControlView({ normalizedValue, className, style }: LabyrinthControlViewProps) {
+function LabyrinthControlView(props: LabyrinthControlViewProps) {
+    // Defensive check to prevent build errors if called without props
+    if (!props) return null;
+    
+    const { normalizedValue, className, style } = props;
 
     // Memoize style object to prevent recreation on every render
     const groupStyle = useMemo(() => {
@@ -172,6 +176,12 @@ LabyrinthControlView.interaction = {
     mode: "both",
     direction: "vertical",
 };
+
+/**
+ * Metadata for the LabyrinthControlView component.
+ */
+LabyrinthControlView.title = "Labyrinth Maze";
+LabyrinthControlView.description = "A maze with a revealing solution path controlled by the value";
 
 export default LabyrinthControlView as ControlComponent;
 

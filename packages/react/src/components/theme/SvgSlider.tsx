@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { generateColorVariants } from "@cutoff/audio-ui-core";
+import { generateColorVariants, getAdaptiveDefaultColor } from "@cutoff/audio-ui-core";
 import { computeFilledZone, Zone } from "@cutoff/audio-ui-core";
 import { translateSliderRoundness, translateSliderThickness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
@@ -101,7 +101,7 @@ function SvgSlider({
 
     // Generate color variants
     const colorVariants = useMemo(
-        () => generateColorVariants(color ?? "var(--audioui-primary-color)", "transparency"),
+        () => generateColorVariants(color ?? getAdaptiveDefaultColor(), "transparency"),
         [color]
     );
 
@@ -180,6 +180,8 @@ const SvgVerticalSliderMemo = React.memo(SvgVerticalSliderComponent);
     mode: "both" as const,
     direction: "vertical" as const,
 };
+(SvgVerticalSliderMemo as any).title = "Vertical Slider";
+(SvgVerticalSliderMemo as any).description = "A vertical fader control with linear fill indicator";
 
 // Cast the memoized components to the ControlComponent type which includes the static properties
 const SvgVerticalSlider = SvgVerticalSliderMemo as unknown as ControlComponent<SpecializedSliderProps>;
@@ -206,6 +208,8 @@ const SvgHorizontalSliderMemo = React.memo(SvgHorizontalSliderComponent);
     mode: "both" as const,
     direction: "horizontal" as const,
 };
+(SvgHorizontalSliderMemo as any).title = "Horizontal Slider";
+(SvgHorizontalSliderMemo as any).description = "A horizontal fader control with linear fill indicator";
 
 const SvgHorizontalSlider = SvgHorizontalSliderMemo as unknown as ControlComponent<SpecializedSliderProps>;
 
