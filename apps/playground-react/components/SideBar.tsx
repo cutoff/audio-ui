@@ -139,7 +139,7 @@ export default function SideBar() {
             <div
                 className={`
           fixed md:sticky top-0 z-40
-          h-screen md:h-screen bg-sidebar-background border-r border-sidebar-border p-4 flex flex-col
+          h-screen md:h-screen bg-background border-r border-border p-4 flex flex-col
           w-64 transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
@@ -147,7 +147,7 @@ export default function SideBar() {
                 <div className="flex-shrink-0">
                     <Link
                         href="/"
-                        className="block text-2xl font-inter font-bold mb-6 text-sidebar-primary hover:text-primary-color transition-colors"
+                        className="block text-2xl font-inter font-bold mb-6 text-foreground hover:text-primary transition-colors"
                     >
                         AudioUI Playground
                     </Link>
@@ -155,7 +155,7 @@ export default function SideBar() {
 
                 <div className="flex-grow overflow-y-auto">
                     
-                    <h2 className="text-xl font-medium mb-4 text-sidebar-primary">Controls</h2>
+                    <h2 className="text-xl font-medium mb-4 text-foreground">Controls</h2>
                     <nav className="space-y-2 mb-6">
                         {controls.map((page) => (
                             <Link
@@ -163,8 +163,8 @@ export default function SideBar() {
                                 href={page.path}
                                 className={`block px-3 py-2 rounded-md transition-colors ${
                                     pathname === page.path
-                                        ? "bg-sidebar-selected-bg text-sidebar-selected-text border-l-4 border-primary"
-                                        : "hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-primary-foreground"
+                                        ? "bg-accent text-accent-foreground border-l-4 border-primary"
+                                        : "hover:bg-accent text-muted-foreground hover:text-accent-foreground"
                                 }`}
                             >
                                 {page.name}
@@ -172,7 +172,7 @@ export default function SideBar() {
                         ))}
                     </nav>
 
-                    <h2 className="text-xl font-medium mb-4 text-sidebar-primary">Devices</h2>
+                    <h2 className="text-xl font-medium mb-4 text-foreground">Devices</h2>
                     <nav className="space-y-2 mb-6">
                         {devices.map((page) => (
                             <Link
@@ -180,8 +180,8 @@ export default function SideBar() {
                                 href={page.path}
                                 className={`block px-3 py-2 rounded-md transition-colors ${
                                     pathname === page.path
-                                        ? "bg-sidebar-selected-bg text-sidebar-selected-text border-l-4 border-primary"
-                                        : "hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-primary-foreground"
+                                        ? "bg-accent text-accent-foreground border-l-4 border-primary"
+                                        : "hover:bg-accent text-muted-foreground hover:text-accent-foreground"
                                 }`}
                             >
                                 {page.name}
@@ -189,7 +189,7 @@ export default function SideBar() {
                         ))}
                     </nav>
 
-                    <h2 className="text-xl font-medium mb-4 text-sidebar-primary">Primitives</h2>
+                    <h2 className="text-xl font-medium mb-4 text-foreground">Primitives</h2>
                     <nav className="space-y-2 mb-6">
                         {primitives.map((page) => (
                             <Link
@@ -197,8 +197,8 @@ export default function SideBar() {
                                 href={page.path}
                                 className={`block px-3 py-2 rounded-md transition-colors ${
                                     pathname === page.path
-                                        ? "bg-sidebar-selected-bg text-sidebar-selected-text border-l-4 border-primary"
-                                        : "hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-primary-foreground"
+                                        ? "bg-accent text-accent-foreground border-l-4 border-primary"
+                                        : "hover:bg-accent text-muted-foreground hover:text-accent-foreground"
                                 }`}
                             >
                                 {page.name}
@@ -206,7 +206,7 @@ export default function SideBar() {
                         ))}
                     </nav>
 
-                    <h2 className="text-xl font-medium mb-4 text-sidebar-primary">Layout</h2>
+                    <h2 className="text-xl font-medium mb-4 text-foreground">Layout</h2>
                     <nav className="space-y-2 mb-6">
                         {layoutPages.map((page) => (
                             <Link
@@ -214,8 +214,8 @@ export default function SideBar() {
                                 href={page.path}
                                 className={`block px-3 py-2 rounded-md transition-colors ${
                                     pathname === page.path
-                                        ? "bg-sidebar-selected-bg text-sidebar-selected-text border-l-4 border-primary"
-                                        : "hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-primary-foreground"
+                                        ? "bg-accent text-accent-foreground border-l-4 border-primary"
+                                        : "hover:bg-accent text-muted-foreground hover:text-accent-foreground"
                                 }`}
                             >
                                 {page.name}
@@ -223,7 +223,7 @@ export default function SideBar() {
                         ))}
                     </nav>
 
-                    <h2 className="text-xl font-medium mb-4 text-sidebar-primary">Examples</h2>
+                    <h2 className="text-xl font-medium mb-4 text-foreground">Examples</h2>
                     <nav className="space-y-2 mb-6">
                         {examples.map((page) => (
                             <Link
@@ -231,8 +231,8 @@ export default function SideBar() {
                                 href={page.path}
                                 className={`block px-3 py-2 rounded-md transition-colors ${
                                     pathname === page.path
-                                        ? "bg-sidebar-selected-bg text-sidebar-selected-text border-l-4 border-primary"
-                                        : "hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-primary-foreground"
+                                        ? "bg-accent text-accent-foreground border-l-4 border-primary"
+                                        : "hover:bg-accent text-muted-foreground hover:text-accent-foreground"
                                 }`}
                             >
                                 {page.name}
@@ -242,14 +242,14 @@ export default function SideBar() {
                 </div>
 
                 {/* Theme Selector at the bottom of sidebar */}
-                <div className="flex-shrink-0 mt-auto pt-4 border-t border-sidebar-border">
+                <div className="flex-shrink-0 mt-auto pt-4 border-t border-border">
                     {/* Color Theme Selector */}
                     <div className="flex items-center justify-between gap-2 mb-4">
-                        <span className="text-sm text-sidebar-foreground flex items-center h-9 px-3 leading-none">
+                        <span className="text-sm text-foreground flex items-center h-9 px-3 leading-none">
                             Color
                         </span>
                         <Select value={currentTheme} onValueChange={(value) => changeTheme(value)}>
-                            <SelectTrigger className="w-[120px] bg-sidebar-accent border-sidebar-border">
+                            <SelectTrigger className="w-[120px] bg-background border-input">
                                 <SelectValue placeholder="Select theme" />
                             </SelectTrigger>
                             <SelectContent>
@@ -272,7 +272,7 @@ export default function SideBar() {
                     {/* Roundness Selector */}
                     <div className="flex flex-col gap-2 mb-4">
                         <div className="flex items-center justify-between">
-                            <span className="text-sm text-sidebar-foreground flex items-center h-9 px-3 leading-none">
+                            <span className="text-sm text-foreground flex items-center h-9 px-3 leading-none">
                                 Roundness
                             </span>
                             <Input
@@ -282,7 +282,7 @@ export default function SideBar() {
                                 min={0}
                                 max={1}
                                 step={0.01}
-                                className="w-[70px] h-9 bg-sidebar-accent border-sidebar-border"
+                                className="w-[70px] h-9 bg-background border-input"
                             />
                         </div>
                         <div className="px-3">
@@ -300,7 +300,7 @@ export default function SideBar() {
                     {/* Theme Mode Toggle */}
                     {mounted && (
                         <div className="flex items-center justify-between gap-2">
-                            <span className="text-sm text-sidebar-foreground flex items-center h-9 px-3 leading-none">
+                            <span className="text-sm text-foreground flex items-center h-9 px-3 leading-none">
                                 Mode
                             </span>
                             <Button
