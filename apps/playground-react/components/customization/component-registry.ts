@@ -1,4 +1,4 @@
-import { ControlComponent, SvgHorizontalSlider, SvgKnob, SvgSlider, SvgVerticalSlider } from "@cutoff/audio-ui-react";
+import { ControlComponent, SvgHorizontalSlider, SvgKnob, SvgVerticalSlider } from "@cutoff/audio-ui-react";
 import LabyrinthControlView from "../examples/LabyrinthControlView";
 
 /**

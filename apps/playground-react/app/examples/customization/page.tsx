@@ -21,7 +21,7 @@ export default function CustomizationPage() {
         if (index >= 0) {
             setSelectedComponentIndex(index);
         }
-    }, [componentRegistry]);
+    }, []);
 
     return (
         <div className="flex flex-col min-h-[calc(100vh-4rem)] p-2 sm:p-4 md:p-6 lg:p-8 gap-3 sm:gap-6 md:gap-8 lg:gap-12">

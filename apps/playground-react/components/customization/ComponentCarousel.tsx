@@ -18,11 +18,11 @@ function ComponentPreview({ component: Component }: { component: ControlComponen
                 <Component 
                     normalizedValue={0.5} 
                     className="text-foreground"
-                    {...({ color: "currentColor" } as any)}
+                    {...({ color: "currentColor" } as Record<string, unknown>)}
                 />
             </svg>
         );
-    } catch (error) {
+    } catch {
         return (
             <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
                 Preview
@@ -201,7 +201,7 @@ export default function ComponentCarousel({
                             onKeyDown={(e) => {
                                 if (e.key === "Enter" || e.key === " ") {
                                     e.preventDefault();
-                                    handleClick(e as any);
+                                    handleClick(e as unknown as React.MouseEvent);
                                 }
                             }}
                         >
