@@ -66,7 +66,7 @@ export default function ComponentCarousel({
 
     const getScrollAmount = useCallback(() => {
         const container = scrollContainerRef.current;
-        if (!container) return 280;
+        if (!container) return 300;
         
         // Find the first card element to measure its width
         const firstCard = container.querySelector('[role="button"]');
@@ -75,7 +75,7 @@ export default function ComponentCarousel({
             return firstCard.offsetWidth + 16;
         }
         
-        return 280;
+        return 300;
     }, []);
 
     const scrollLeft = useCallback(() => {
@@ -159,12 +159,12 @@ export default function ComponentCarousel({
     }, [updateScrollState]);
 
     return (
-        <div className="w-full relative flex items-center gap-3 sm:gap-4">
+        <div className="w-full relative flex items-center gap-3 sm:gap-4" role="region" aria-label="Component carousel">
             {canScrollLeft && (
                 <Button
                     variant="outline"
                     size="icon"
-                    className="shrink-0 h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm shadow-md hover:bg-background"
+                    className="shrink-0 h-9 w-9 rounded-full bg-background/90 backdrop-blur-sm shadow-md hover:bg-background border-border/50 transition-all"
                     onClick={scrollLeft}
                     aria-label="Scroll left"
                 >
@@ -175,6 +175,8 @@ export default function ComponentCarousel({
                 ref={scrollContainerRef}
                 className="flex-1 flex overflow-x-auto gap-4 py-4 px-1 no-scrollbar scroll-smooth cursor-grab active:cursor-grabbing select-none"
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none", userSelect: "none" }}
+                role="group"
+                aria-label="Component cards"
             >
                 {components.map((Component, index) => {
                     const title = Component.title || `Component ${index + 1}`;
@@ -189,15 +191,20 @@ export default function ComponentCarousel({
 
                     return (
                         <Card 
-                            key={title}
+                            key={`${title}-${index}`}
                             className={cn(
-                                "min-w-[200px] sm:min-w-[240px] md:min-w-[280px] max-w-[200px] sm:max-w-[240px] md:max-w-[280px] shrink-0 cursor-pointer transition-all duration-200 hover:bg-accent/50 select-none",
-                                isSelected ? "border-primary/60 ring-1 ring-primary/40 bg-accent/10" : "hover:border-primary/50"
+                                "min-w-[200px] sm:min-w-[250px] md:min-w-[300px] max-w-[200px] sm:max-w-[250px] md:max-w-[300px] shrink-0 cursor-pointer transition-all duration-200 select-none flex flex-col",
+                                "hover:bg-accent/50 hover:shadow-md hover:-translate-y-0.5",
+                                isSelected 
+                                    ? "border-primary/60 ring-2 ring-primary/40 bg-accent/10 shadow-md" 
+                                    : "hover:border-primary/50"
                             )}
                             style={{ userSelect: "none", WebkitUserSelect: "none" }}
                             onClick={handleClick}
                             role="button"
                             tabIndex={0}
+                            aria-label={`Select ${title}`}
+                            aria-pressed={isSelected}
                             onKeyDown={(e) => {
                                 if (e.key === "Enter" || e.key === " ") {
                                     e.preventDefault();
@@ -205,14 +212,14 @@ export default function ComponentCarousel({
                                 }
                             }}
                         >
-                            <CardHeader className="p-3 sm:p-4 md:p-6">
-                                <CardTitle className="text-sm sm:text-base">{title}</CardTitle>
-                                <CardDescription className="line-clamp-2 text-[10px] sm:text-xs">
+                            <CardHeader className="p-3 sm:p-4 md:p-6 pb-2 sm:pb-3 md:pb-4">
+                                <CardTitle className="text-sm sm:text-base font-semibold mb-1">{title}</CardTitle>
+                                <CardDescription className="line-clamp-4 text-[10px] sm:text-xs leading-relaxed min-h-[3em] text-muted-foreground/90">
                                     {description}
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent className="flex justify-center items-center py-3 sm:py-4 md:py-6 px-3 sm:px-4 md:px-6">
-                                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded overflow-hidden">
+                            <CardContent className="flex justify-center items-center py-3 sm:py-4 md:py-6 px-3 sm:px-4 md:px-6 mt-auto pb-4 sm:pb-5 md:pb-6">
+                                <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded overflow-hidden bg-muted/30">
                                     <ComponentPreview component={Component} />
                                 </div>
                             </CardContent>
@@ -224,7 +231,7 @@ export default function ComponentCarousel({
                 <Button
                     variant="outline"
                     size="icon"
-                    className="shrink-0 h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm shadow-md hover:bg-background"
+                    className="shrink-0 h-9 w-9 rounded-full bg-background/90 backdrop-blur-sm shadow-md hover:bg-background border-border/50 transition-all"
                     onClick={scrollRight}
                     aria-label="Scroll right"
                 >
@@ -233,12 +240,11 @@ export default function ComponentCarousel({
             )}
             
             {showLeftGradient && (
-                <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent pointer-events-none" />
+                <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background via-background/80 to-transparent pointer-events-none z-10" />
             )}
             {showRightGradient && (
-                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none" />
+                <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background via-background/80 to-transparent pointer-events-none z-10" />
             )}
         </div>
     );
 }
-

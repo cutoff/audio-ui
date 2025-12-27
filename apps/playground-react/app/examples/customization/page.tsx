@@ -46,7 +46,7 @@ export default function CustomizationPage() {
 
                 {selectedComponent ? (
                     <div className="flex flex-col items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 z-10 w-full max-w-full px-2">
-                        <div className="relative w-full max-w-[200px] sm:max-w-[250px] md:max-w-[280px] lg:max-w-[300px] aspect-square bg-background/50 rounded-lg shadow-sm border border-border/20 p-2 sm:p-3 md:p-4 flex items-center justify-center">
+                        <div className="relative w-full max-w-[200px] sm:max-w-[250px] md:max-w-[280px] lg:max-w-[300px] aspect-square flex items-center justify-center">
                             <CustomContinuousControl
                                 view={selectedComponent}
                                 min={0}

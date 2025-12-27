@@ -175,8 +175,8 @@ LabyrinthControlView.interaction = {
 /**
  * Metadata for the LabyrinthControlView component.
  */
-LabyrinthControlView.title = "Labyrinth Maze";
-LabyrinthControlView.description = "A maze with a revealing solution path controlled by the value";
+LabyrinthControlView.title = "Maze Control";
+LabyrinthControlView.description = "A maze with a path revealing as the value increases (RevealingPath primitive), showcasing limitless creativity for component design.";
 
 export default LabyrinthControlView as ControlComponent;
 
