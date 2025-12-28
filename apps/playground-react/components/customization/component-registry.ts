@@ -1,16 +1,22 @@
 import { ControlComponent, SvgHorizontalSlider, SvgKnob, SvgVerticalSlider } from "@cutoff/audio-ui-react";
-import LabyrinthControlView from "../examples/LabyrinthControlView";
+import LabyrinthControl from "../examples/LabyrinthControl";
 import ClassicVectorKnob from "../examples/ClassicVectorKnob";
-import GuitarPixelKnob from "../examples/GuitarPixelKnob";
+import GuitarKnob from "../examples/GuitarKnob";
+import IconKnob from "../examples/IconKnob";
+import HifiKnob from "../examples/HifiKnob";
+import TextValueKnob from "../examples/TextValueKnob";
 
 /**
  * Registry of available custom control components for the customization laboratory.
  * Components should implement ControlComponentMetadata (title, description) for display.
  */
 export const componentRegistry: ControlComponent[] = [
-    LabyrinthControlView,
+    IconKnob,
+    HifiKnob,
+    TextValueKnob,
+    LabyrinthControl,
     ClassicVectorKnob,
-    GuitarPixelKnob,
+    GuitarKnob,
     SvgKnob,
     SvgVerticalSlider,
     SvgHorizontalSlider,

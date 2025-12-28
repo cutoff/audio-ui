@@ -12,7 +12,7 @@ const VINTAGE_KNOB_IMAGE = "/knob-volume.png";
  * A control component that renders a vintage knob using a pixel image with custom rotation.
  * Based on Rotary demo example 3.
  */
-function GuitarPixelKnob({ normalizedValue, className, style }: GuitarPixelKnobProps) {
+function GuitarKnob({ normalizedValue, className, style }: GuitarPixelKnobProps) {
     // Memoize style object to prevent recreation on every render
     const groupStyle = useMemo(() => {
         return { ...style };
@@ -28,12 +28,10 @@ function GuitarPixelKnob({ normalizedValue, className, style }: GuitarPixelKnobP
             className={className}
             style={groupStyle}
         >
-            {/* Background circle */}
-            <circle 
-                cx={50} 
-                cy={50} 
-                r={40} 
-                fill="var(--audioui-surface-1)" 
+            {/* Triangle indicator */}
+            <polygon 
+                points="50,7 48,3 52,3" 
+                fill="grey" 
             />
 
             {/* Rotary with pixel image and custom rotation */}
@@ -43,7 +41,7 @@ function GuitarPixelKnob({ normalizedValue, className, style }: GuitarPixelKnobP
                 radius={40}
                 normalizedValue={normalizedValue}
                 openness={33}
-                rotation={-166}
+                rotation={-164}
                 imageHref={VINTAGE_KNOB_IMAGE}
             />
         </g>
@@ -54,7 +52,7 @@ function GuitarPixelKnob({ normalizedValue, className, style }: GuitarPixelKnobP
  * ViewBox dimensions for the GuitarPixelKnob component.
  * The parent component should use these values when setting up the SVG container.
  */
-GuitarPixelKnob.viewBox = {
+GuitarKnob.viewBox = {
     width: 100,
     height: 100,
 };
@@ -62,12 +60,12 @@ GuitarPixelKnob.viewBox = {
 /**
  * Label height for the GuitarPixelKnob component.
  */
-GuitarPixelKnob.labelHeightUnits = 20;
+GuitarKnob.labelHeightUnits = 10;
 
 /**
  * Interaction contract for the GuitarPixelKnob component.
  */
-GuitarPixelKnob.interaction = {
+GuitarKnob.interaction = {
     mode: "both",
     direction: "vertical",
 };
@@ -75,8 +73,8 @@ GuitarPixelKnob.interaction = {
 /**
  * Metadata for the GuitarPixelKnob component.
  */
-GuitarPixelKnob.title = "Guitar Pixel Knob";
-GuitarPixelKnob.description = "A retro guitar amplifier-style knob featuring pixel art graphics with custom rotation and openness settings. Note how the component value is always located on top of the component.";
+GuitarKnob.title = "Guitar Knob";
+GuitarKnob.description = "A retro guitar amplifier-style knob featuring pixel art graphics with custom rotation and openness settings. Note how the component value is always located on top of the component.";
 
-export default GuitarPixelKnob as ControlComponent;
+export default GuitarKnob as ControlComponent;
 

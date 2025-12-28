@@ -107,7 +107,7 @@ const WALLS_PATH_DATA = (() => {
  * A control component that renders a labyrinth maze with a revealing solution path.
  * The solution path is revealed based on the normalizedValue prop (0..1).
  */
-function LabyrinthControlView({ normalizedValue, className, style }: LabyrinthControlViewProps) {
+function LabyrinthControl({ normalizedValue, className, style }: LabyrinthControlViewProps) {
     // Memoize style object to prevent recreation on every render
     const groupStyle = useMemo(() => {
         return { strokeLinecap: "square" as const, strokeLinejoin: "miter" as const, ...style };
@@ -154,7 +154,7 @@ function LabyrinthControlView({ normalizedValue, className, style }: LabyrinthCo
  * Note: The viewBox is expanded to account for stroke width (8px) to prevent clipping.
  * Content area is 400x400, but viewBox includes padding for half the stroke width on each side.
  */
-LabyrinthControlView.viewBox = {
+LabyrinthControl.viewBox = {
     width: 400 + 8, // 408 to include stroke overflow (8px stroke / 2 = 4px padding on each side)
     height: 400 + 8, // 408 to include stroke overflow
 };
@@ -162,12 +162,12 @@ LabyrinthControlView.viewBox = {
 /**
  * Label height for the LabyrinthControlView component.
  */
-LabyrinthControlView.labelHeightUnits = 40;
+LabyrinthControl.labelHeightUnits = 40;
 
 /**
  * Interaction contract for the LabyrinthControlView component.
  */
-LabyrinthControlView.interaction = {
+LabyrinthControl.interaction = {
     mode: "both",
     direction: "vertical",
 };
@@ -175,8 +175,8 @@ LabyrinthControlView.interaction = {
 /**
  * Metadata for the LabyrinthControlView component.
  */
-LabyrinthControlView.title = "Maze Control";
-LabyrinthControlView.description = "A maze with a path revealing as the value increases (RevealingPath primitive), showcasing limitless creativity for component design.";
+LabyrinthControl.title = "Maze Control";
+LabyrinthControl.description = "A maze with a path revealing as the value increases (RevealingPath primitive), showcasing limitless creativity for component design.";
 
-export default LabyrinthControlView as ControlComponent;
+export default LabyrinthControl as ControlComponent;
 

@@ -52,7 +52,17 @@ function RadialImage({
                     preserveAspectRatio="xMidYMid meet"
                 />
             )}
-            {children}
+            {children && (
+                <svg
+                    x={cx - radius}
+                    y={cy - radius}
+                    width={radius * 2}
+                    height={radius * 2}
+                    style={{ overflow: "visible" }}
+                >
+                    {children}
+                </svg>
+            )}
         </g>
     );
 }
