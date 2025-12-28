@@ -11,6 +11,10 @@ export { default as Ring } from "./components/primitives/views/Ring";
 export type { RingProps } from "./components/primitives/views/Ring";
 export { default as Rotary } from "./components/primitives/views/Rotary";
 export type { RotaryProps } from "./components/primitives/views/Rotary";
+export { default as RadialImage } from "./components/primitives/views/RadialImage";
+export type { RadialImageProps } from "./components/primitives/views/RadialImage";
+export { default as RadialText } from "./components/primitives/views/RadialText";
+export type { RadialTextProps } from "./components/primitives/views/RadialText";
 export { default as RevealingPath } from "./components/primitives/views/RevealingPath";
 export type { RevealingPathProps } from "./components/primitives/views/RevealingPath";
 

@@ -2,6 +2,7 @@
 
 import React, { CSSProperties } from "react";
 import { useArcAngle } from "../../../hooks/useArcAngle";
+import RadialImage from "./RadialImage";
 
 export type RotaryProps = {
     /** X coordinate of the center point */
@@ -30,7 +31,7 @@ export type RotaryProps = {
  * A primitive component that rotates its content based on a normalized value.
  * Designed to work with the same angle logic as Ring.tsx.
  * 
- * This component renders a group <g> that rotates around (cx, cy).
+ * This component wraps RadialImage and applies rotation based on the normalized value.
  * It can display an image (via imageHref) or arbitrary SVG content (via children).
  */
 function Rotary({
@@ -49,23 +50,17 @@ function Rotary({
     const { valueToAngle } = useArcAngle(normalizedValue, openness, rotation);
 
     return (
-        <g
+        <RadialImage
+            cx={cx}
+            cy={cy}
+            radius={radius}
+            imageHref={imageHref}
+            transform={`rotate(${valueToAngle}, ${cx}, ${cy})`}
             className={className}
             style={style}
-            transform={`rotate(${valueToAngle}, ${cx}, ${cy})`}
         >
-            {imageHref && (
-                <image
-                    href={imageHref}
-                    x={cx - radius}
-                    y={cy - radius}
-                    width={radius * 2}
-                    height={radius * 2}
-                    preserveAspectRatio="xMidYMid meet"
-                />
-            )}
             {children}
-        </g>
+        </RadialImage>
     );
 }
 
