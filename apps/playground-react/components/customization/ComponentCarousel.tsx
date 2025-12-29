@@ -15,8 +15,8 @@ function ComponentPreview({ component: Component }: { component: ControlComponen
                 className="w-full h-full"
                 preserveAspectRatio="xMidYMid meet"
             >
-                <Component 
-                    normalizedValue={0.5} 
+                <Component
+                    normalizedValue={0.5}
                     className="text-foreground"
                     {...({ color: "currentColor" } as Record<string, unknown>)}
                 />
@@ -24,9 +24,7 @@ function ComponentPreview({ component: Component }: { component: ControlComponen
         );
     } catch {
         return (
-            <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
-                Preview
-            </div>
+            <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">Preview</div>
         );
     }
 }
@@ -37,11 +35,7 @@ interface ComponentCarouselProps {
     onSelect: (component: ControlComponent) => void;
 }
 
-export default function ComponentCarousel({
-    components,
-    selectedComponent,
-    onSelect,
-}: ComponentCarouselProps) {
+export default function ComponentCarousel({ components, selectedComponent, onSelect }: ComponentCarouselProps) {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const [showLeftGradient, setShowLeftGradient] = useState(false);
     const [showRightGradient, setShowRightGradient] = useState(false);
@@ -67,36 +61,36 @@ export default function ComponentCarousel({
     const getScrollAmount = useCallback(() => {
         const container = scrollContainerRef.current;
         if (!container) return 300;
-        
+
         // Find the first card element to measure its width
         const firstCard = container.querySelector('[role="button"]');
         if (firstCard instanceof HTMLElement) {
             // Add 16px for gap-4
             return firstCard.offsetWidth + 16;
         }
-        
+
         return 300;
     }, []);
 
     const scrollLeft = useCallback(() => {
         const container = scrollContainerRef.current;
         if (!container) return;
-        
+
         const scrollAmount = getScrollAmount();
         container.scrollBy({
             left: -scrollAmount,
-            behavior: "smooth"
+            behavior: "smooth",
         });
     }, [getScrollAmount]);
 
     const scrollRight = useCallback(() => {
         const container = scrollContainerRef.current;
         if (!container) return;
-        
+
         const scrollAmount = getScrollAmount();
         container.scrollBy({
             left: scrollAmount,
-            behavior: "smooth"
+            behavior: "smooth",
         });
     }, [getScrollAmount]);
 
@@ -112,18 +106,18 @@ export default function ComponentCarousel({
             const scrollWidth = container.scrollWidth;
             const clientWidth = container.clientWidth;
             const maxScroll = scrollWidth - clientWidth;
-            
+
             const atLeft = scrollLeft <= 0;
             const atRight = scrollLeft >= maxScroll - 1;
-            
+
             // Use horizontal scroll delta (deltaX) for horizontal carousel
             // Also support vertical scroll (deltaY) converted to horizontal for convenience
             const deltaX = e.deltaX;
             const deltaY = e.deltaY;
-            
+
             // Prefer horizontal scroll, fall back to vertical if no horizontal movement
             const scrollDelta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
-            
+
             const scrollingLeft = scrollDelta < 0;
             const scrollingRight = scrollDelta > 0;
 
@@ -135,10 +129,10 @@ export default function ComponentCarousel({
             if (Math.abs(scrollDelta) > 0) {
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 container.scrollBy({
                     left: scrollDelta,
-                    behavior: "smooth"
+                    behavior: "smooth",
                 });
             }
         };
@@ -171,7 +165,7 @@ export default function ComponentCarousel({
                     <ArrowLeft className="h-4 w-4" />
                 </Button>
             )}
-            <div 
+            <div
                 ref={scrollContainerRef}
                 className="flex-1 flex overflow-x-auto gap-4 py-4 px-1 no-scrollbar scroll-smooth cursor-grab active:cursor-grabbing select-none"
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none", userSelect: "none" }}
@@ -190,13 +184,13 @@ export default function ComponentCarousel({
                     };
 
                     return (
-                        <Card 
+                        <Card
                             key={`${title}-${index}`}
                             className={cn(
                                 "min-w-[200px] sm:min-w-[250px] md:min-w-[300px] max-w-[200px] sm:max-w-[250px] md:max-w-[300px] shrink-0 cursor-pointer transition-all duration-200 select-none flex flex-col",
                                 "hover:bg-accent/50 hover:shadow-md hover:-translate-y-0.5",
-                                isSelected 
-                                    ? "border-primary/60 ring-2 ring-primary/40 bg-accent/10 shadow-md" 
+                                isSelected
+                                    ? "border-primary/60 ring-2 ring-primary/40 bg-accent/10 shadow-md"
                                     : "hover:border-primary/50"
                             )}
                             style={{ userSelect: "none", WebkitUserSelect: "none" }}
@@ -219,7 +213,7 @@ export default function ComponentCarousel({
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="flex justify-center items-center py-3 sm:py-4 md:py-6 px-3 sm:px-4 md:px-6 mt-auto pb-4 sm:pb-5 md:pb-6">
-                                <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded overflow-hidden bg-muted/30">
+                                <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded overflow-hidden">
                                     <ComponentPreview component={Component} />
                                 </div>
                             </CardContent>
@@ -238,7 +232,7 @@ export default function ComponentCarousel({
                     <ArrowRight className="h-4 w-4" />
                 </Button>
             )}
-            
+
             {showLeftGradient && (
                 <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background via-background/80 to-transparent pointer-events-none z-10" />
             )}
