@@ -1,13 +1,20 @@
 "use client";
 
 import { useMemo } from "react";
-import { RotaryImage, RadialImage, ControlComponentViewProps, ControlComponent } from "@cutoff/audio-ui-react";
+import {
+    RotaryImage,
+    RadialImage,
+    ControlComponentViewProps,
+    ControlComponent,
+    TickRing,
+} from "@cutoff/audio-ui-react";
 
 export type SelectorKnobProps = ControlComponentViewProps;
 
 // Image assets
 const KNOB_SELECTOR_IMAGE = "/knob-selector.png";
 const KNOB_SELECTOR_BODY_IMAGE = "/knob-selector-body.png";
+const TICKS_STYLE = { stroke: "var(--audioui-adaptive-default-color)", strokeWidth: 0.5 };
 
 /**
  * A custom knob component composed of two superimposed images.
@@ -23,11 +30,34 @@ function SelectorKnob({ normalizedValue, className, style }: SelectorKnobProps) 
 
     return (
         <g className={className} style={groupStyle}>
+            <TickRing
+                cx={50}
+                cy={50}
+                radius={45}
+                thickness={0}
+                openness={180}
+                style={TICKS_STYLE}
+                count={5}
+                className="text-foreground font-mono text-[6px] font-medium"
+                renderTick={({ x, y, index }) => (
+                    <text
+                        x={x}
+                        y={y}
+                        dy="0.3em" // Vertical center correction
+                        textAnchor="middle"
+                        fill="currentColor"
+                    >
+                        {index + 1}
+                    </text>
+                )}
+            />
+            <TickRing cx={50} cy={50} radius={35} thickness={5} openness={180} style={TICKS_STYLE} count={5} />
+
             {/* Layer 1: Rotating Selector (Bottom) */}
             <RotaryImage
                 cx={50}
                 cy={50}
-                radius={50}
+                radius={35}
                 normalizedValue={normalizedValue}
                 openness={180}
                 positions={5}
@@ -35,7 +65,7 @@ function SelectorKnob({ normalizedValue, className, style }: SelectorKnobProps) 
             />
 
             {/* Layer 2: Static Body (Top) */}
-            <RadialImage cx={50} cy={50} radius={16} imageHref={KNOB_SELECTOR_BODY_IMAGE} />
+            <RadialImage cx={50} cy={50} radius={10} imageHref={KNOB_SELECTOR_BODY_IMAGE} />
         </g>
     );
 }
@@ -66,6 +96,6 @@ SelectorKnob.interaction = {
  */
 SelectorKnob.title = "Selector Knob";
 SelectorKnob.description =
-    "A knob composed of two images: a rotating selector underneath a static body. Uses 180-degree openness with 5 discrete positions.";
+    "A multi-layer knob with discrete positions, featuring a rotating selector image, static body overlay, and custom-rendered text labels via TickRing.";
 
 export default SelectorKnob as ControlComponent;
