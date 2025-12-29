@@ -23,6 +23,8 @@ export type RingProps = {
     openness?: number;
     /** Optional rotation angle offset in degrees (default 0) */
     rotation?: number;
+    /** Optional number of discrete positions. When defined, the value will snap to the nearest position. */
+    positions?: number;
     /** Optional style overrides for the foreground (value) arc */
     fgArcStyle?: CSSProperties;
     /** Optional style overrides for the background arc */
@@ -45,6 +47,7 @@ function Ring({
     roundness,
     openness = 90,
     rotation = 0,
+    positions,
     fgArcStyle,
     bgArcStyle,
 }: RingProps) {
@@ -53,7 +56,8 @@ function Ring({
         normalizedValue,
         openness,
         rotation,
-        bipolar
+        bipolar,
+        positions
     );
 
     const strokeLinecap = roundness ? "round" : "square";

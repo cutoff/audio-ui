@@ -119,4 +119,81 @@ describe("useArcAngle", () => {
         // Center 360 - rotation 180 = 180
         expect(result.current.valueStartAngle).toBe(180);
     });
+
+    describe("discrete positions", () => {
+        it("snaps to nearest position with 5 positions", () => {
+            // 5 positions: 0, 0.25, 0.5, 0.75, 1.0
+            const { result: result1 } = renderHook(() => useArcAngle(0.1, 90, 0, false, 5));
+            expect(result1.current.normalizedValue).toBe(0); // Snaps to position 0
+
+            const { result: result2 } = renderHook(() => useArcAngle(0.3, 90, 0, false, 5));
+            expect(result2.current.normalizedValue).toBe(0.25); // Snaps to position 1
+
+            const { result: result3 } = renderHook(() => useArcAngle(0.5, 90, 0, false, 5));
+            expect(result3.current.normalizedValue).toBe(0.5); // Snaps to position 2
+
+            const { result: result4 } = renderHook(() => useArcAngle(0.7, 90, 0, false, 5));
+            expect(result4.current.normalizedValue).toBe(0.75); // Snaps to position 3
+
+            const { result: result5 } = renderHook(() => useArcAngle(0.9, 90, 0, false, 5));
+            expect(result5.current.normalizedValue).toBe(1.0); // Snaps to position 4
+        });
+
+        it("handles single position (always center)", () => {
+            const { result } = renderHook(() => useArcAngle(0.3, 90, 0, false, 1));
+            expect(result.current.normalizedValue).toBe(0.5);
+        });
+
+        it("handles two positions (binary)", () => {
+            // 2 positions: 0, 1.0
+            const { result: result1 } = renderHook(() => useArcAngle(0.3, 90, 0, false, 2));
+            expect(result1.current.normalizedValue).toBe(0); // Snaps to position 0
+
+            const { result: result2 } = renderHook(() => useArcAngle(0.7, 90, 0, false, 2));
+            expect(result2.current.normalizedValue).toBe(1.0); // Snaps to position 1
+        });
+
+        it("works with bipolar mode and discrete positions", () => {
+            // 5 positions in bipolar mode
+            const { result: resultCenter } = renderHook(() => useArcAngle(0.5, 90, 0, true, 5));
+            expect(resultCenter.current.normalizedValue).toBe(0.5);
+            expect(resultCenter.current.valueStartAngle).toBe(360); // Bipolar starts at center
+
+            const { result: resultMin } = renderHook(() => useArcAngle(0.1, 90, 0, true, 5));
+            expect(resultMin.current.normalizedValue).toBe(0);
+            expect(resultMin.current.valueStartAngle).toBe(360); // Still starts at center for bipolar
+
+            const { result: resultMax } = renderHook(() => useArcAngle(0.9, 90, 0, true, 5));
+            expect(resultMax.current.normalizedValue).toBe(1.0);
+            expect(resultMax.current.valueStartAngle).toBe(360); // Still starts at center for bipolar
+        });
+
+        it("works with unipolar mode and discrete positions", () => {
+            // 5 positions in unipolar mode
+            const { result: resultMin } = renderHook(() => useArcAngle(0.1, 90, 0, false, 5));
+            expect(resultMin.current.normalizedValue).toBe(0);
+            expect(resultMin.current.valueStartAngle).toBe(225); // Unipolar starts at startAngle
+
+            const { result: resultMax } = renderHook(() => useArcAngle(0.9, 90, 0, false, 5));
+            expect(resultMax.current.normalizedValue).toBe(1.0);
+            expect(resultMax.current.valueStartAngle).toBe(225); // Unipolar starts at startAngle
+        });
+
+        it("maintains continuous mode when positions is undefined", () => {
+            const { result } = renderHook(() => useArcAngle(0.37, 90, 0, false, undefined));
+            expect(result.current.normalizedValue).toBe(0.37); // No snapping
+        });
+
+        it("maintains continuous mode when positions is less than 1", () => {
+            const { result } = renderHook(() => useArcAngle(0.37, 90, 0, false, 0));
+            expect(result.current.normalizedValue).toBe(0.37); // No snapping
+        });
+
+        it("calculates correct angles for discrete positions", () => {
+            // 5 positions, position 2 (0.5) should map to angle 360 for 90 openness
+            const { result } = renderHook(() => useArcAngle(0.5, 90, 0, false, 5));
+            expect(result.current.normalizedValue).toBe(0.5);
+            expect(result.current.valueToAngle).toBe(360);
+        });
+    });
 });

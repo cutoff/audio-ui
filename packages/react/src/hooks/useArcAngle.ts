@@ -30,16 +30,34 @@ export interface UseArcAngleResult {
  * @param openness Openness of the arc in degrees (0-360, default 90)
  * @param rotation Rotation angle offset in degrees (default 0)
  * @param bipolar Whether to start the value arc from the center (12 o'clock) instead of the start angle (default false)
+ * @param positions Optional number of discrete positions. When defined, the value will snap to the nearest position. Defaults to undefined (continuous mode).
  * @returns Calculated angles and normalized values
  */
 export function useArcAngle(
     normalizedValue: number,
     openness: number = 90,
     rotation: number = 0,
-    bipolar: boolean = false
+    bipolar: boolean = false,
+    positions?: number
 ): UseArcAngleResult {
     // Clamp inputs - NO MEMO needed for value as it changes frequently (e.g. during animation)
     const clampedValue = Math.max(0, Math.min(1, normalizedValue));
+
+    // Snap to discrete positions if specified
+    const snappedValue = useMemo(() => {
+        if (positions === undefined || positions < 1) {
+            return clampedValue;
+        }
+        if (positions === 1) {
+            // Single position: always center (0.5)
+            return 0.5;
+        }
+        // For N positions, we have positions 0 to N-1
+        // Position i maps to normalizedValue = i / (N - 1)
+        // Snap to nearest position
+        const position = Math.round(clampedValue * (positions - 1));
+        return position / (positions - 1);
+    }, [clampedValue, positions]);
 
     const clampedOpenness = useMemo(() => {
         return Math.max(0, Math.min(360, openness));
@@ -59,8 +77,9 @@ export function useArcAngle(
     }, [clampedOpenness]);
 
     // Convert normalized value (0-1) to an angle in degrees
-    // NO MEMO needed as clampedValue changes often
-    const baseValueToAngle = clampedValue * maxArcAngle + maxStartAngle;
+    // Use snappedValue for angle calculation when positions are defined
+    // NO MEMO needed as snappedValue changes often
+    const baseValueToAngle = snappedValue * maxArcAngle + maxStartAngle;
 
     // Calculate rotated angles (offset by rotation)
     // These are the angles that should be used by components
@@ -86,7 +105,7 @@ export function useArcAngle(
     const valueToAngle = baseValueToAngle - rotation;
 
     return {
-        normalizedValue: clampedValue,
+        normalizedValue: snappedValue,
         openness: clampedOpenness,
         startAngle,
         endAngle,

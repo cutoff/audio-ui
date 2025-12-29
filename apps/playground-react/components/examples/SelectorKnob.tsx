@@ -10,11 +10,10 @@ const KNOB_SELECTOR_IMAGE = "/knob-selector.png";
 const KNOB_SELECTOR_BODY_IMAGE = "/knob-selector-body.png";
 
 /**
- * A custom bipolar knob component composed of two superimposed images.
+ * A custom knob component composed of two superimposed images.
  * - The "body" image is static and sits on top.
  * - The "selector" image is underneath and rotates.
- * - Configured as bipolar (0.5 is center).
- * - Uses 180-degree openness.
+ * - Uses 180-degree openness with 5 discrete positions.
  */
 function SelectorKnob({ normalizedValue, className, style }: SelectorKnobProps) {
     // Memoize style object to prevent recreation on every render
@@ -30,8 +29,8 @@ function SelectorKnob({ normalizedValue, className, style }: SelectorKnobProps) 
                 cy={50}
                 radius={50}
                 normalizedValue={normalizedValue}
-                bipolar={true}
                 openness={180}
+                positions={5}
                 imageHref={KNOB_SELECTOR_IMAGE}
             />
 
@@ -67,6 +66,6 @@ SelectorKnob.interaction = {
  */
 SelectorKnob.title = "Selector Knob";
 SelectorKnob.description =
-    "A bipolar knob composed of two images: a rotating selector underneath a static body. Uses 180-degree openness.";
+    "A knob composed of two images: a rotating selector underneath a static body. Uses 180-degree openness with 5 discrete positions.";
 
 export default SelectorKnob as ControlComponent;

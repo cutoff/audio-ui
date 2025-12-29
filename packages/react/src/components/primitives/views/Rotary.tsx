@@ -23,6 +23,8 @@ export type RotaryProps = {
     children?: React.ReactNode;
     /** Optional rotation angle offset in degrees (default 0) */
     rotation?: number;
+    /** Optional number of discrete positions. When defined, the value will snap to the nearest position. */
+    positions?: number;
     /** Optional X coordinate for the center of rotation (defaults to cx) */
     pivotX?: number;
     /** Optional Y coordinate for the center of rotation (defaults to cy) */
@@ -50,13 +52,14 @@ function Rotary({
     imageHref,
     children,
     rotation = 0,
+    positions,
     pivotX,
     pivotY,
     className,
     style,
 }: RotaryProps) {
     // Calculate arc angles using shared hook (rotation computation factored into hook)
-    const { valueToAngle } = useArcAngle(normalizedValue, openness, rotation, bipolar);
+    const { valueToAngle } = useArcAngle(normalizedValue, openness, rotation, bipolar, positions);
 
     // Use explicit pivot point if provided, otherwise default to center (cx, cy)
     const rotateX = pivotX ?? cx;
