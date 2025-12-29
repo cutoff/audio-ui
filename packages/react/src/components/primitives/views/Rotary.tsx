@@ -23,6 +23,10 @@ export type RotaryProps = {
     children?: React.ReactNode;
     /** Optional rotation angle offset in degrees (default 0) */
     rotation?: number;
+    /** Optional X coordinate for the center of rotation (defaults to cx) */
+    pivotX?: number;
+    /** Optional Y coordinate for the center of rotation (defaults to cy) */
+    pivotY?: number;
     /** Additional CSS class name */
     className?: string;
     /** Inline styles */
@@ -46,11 +50,17 @@ function Rotary({
     imageHref,
     children,
     rotation = 0,
+    pivotX,
+    pivotY,
     className,
     style,
 }: RotaryProps) {
     // Calculate arc angles using shared hook (rotation computation factored into hook)
     const { valueToAngle } = useArcAngle(normalizedValue, openness, rotation, bipolar);
+
+    // Use explicit pivot point if provided, otherwise default to center (cx, cy)
+    const rotateX = pivotX ?? cx;
+    const rotateY = pivotY ?? cy;
 
     return (
         <RadialImage
@@ -58,7 +68,7 @@ function Rotary({
             cy={cy}
             radius={radius}
             imageHref={imageHref}
-            transform={`rotate(${valueToAngle}, ${cx}, ${cy})`}
+            transform={`rotate(${valueToAngle}, ${rotateX}, ${rotateY})`}
             className={className}
             style={style}
         >
