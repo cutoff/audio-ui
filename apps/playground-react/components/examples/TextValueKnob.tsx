@@ -1,10 +1,15 @@
 "use client";
 
 import { useMemo } from "react";
-import { Rotary, Ring, RadialText, ControlComponentViewProps, ControlComponent } from "@cutoff/audio-ui-react";
-import { withPrecision } from "@cutoff/audio-ui-react";
+import { Ring, Rotary, RadialText, ControlComponentViewProps, ControlComponent, withPrecision } from "@cutoff/audio-ui-react";
 
 export type TextValueKnobProps = ControlComponentViewProps;
+
+// Constants & Styles
+const PRIMARY_COLOR = "var(--audioui-adaptive-default-color)";
+const FG_ARC_STYLE = { stroke: PRIMARY_COLOR };
+const BG_ARC_STYLE = { stroke: `color-mix(in srgb, ${PRIMARY_COLOR} 50%, transparent)`, opacity: 1 };
+const REFERENCE_TEXT = ["100.0", "%"];
 
 /**
  * A control component that renders a knob with text displaying the normalized value.
@@ -27,12 +32,6 @@ function TextValueKnob({ normalizedValue, className, style }: TextValueKnobProps
         return [formattedValue, "%"];
     }, [formattedValue]);
 
-    // Primary color for the ring
-    const primaryColor = "var(--audioui-adaptive-default-color)";
-
-    // ============================================================================
-    // Render
-    // ============================================================================
     return (
         <g className={className} style={groupStyle}>
             {/* Ring indicator */}
@@ -44,8 +43,8 @@ function TextValueKnob({ normalizedValue, className, style }: TextValueKnobProps
                 thickness={4}
                 roundness={false}
                 openness={90}
-                fgArcStyle={{ stroke: primaryColor }}
-                bgArcStyle={{ stroke: `color-mix(in srgb, ${primaryColor} 50%, transparent)`, opacity: 1 }}
+                fgArcStyle={FG_ARC_STYLE}
+                bgArcStyle={BG_ARC_STYLE}
             />
 
             {/* Rotating indicator line */}
@@ -60,7 +59,7 @@ function TextValueKnob({ normalizedValue, className, style }: TextValueKnobProps
                 cy={50}
                 radius={20}
                 text={textLines}
-                referenceText={["100.0", "%"]}
+                referenceText={REFERENCE_TEXT}
             />
         </g>
     );

@@ -19,6 +19,7 @@
 - `app/providers.tsx`: Context providers (theme, etc.)
 - `components/ui/`: **shadcn components ONLY** - do not add custom components here; **NEVER modify shadcn components** - they are third-party stabilized code; work around type issues with type assertions/ts-expect-error if needed
 - `components/`: Custom playground components (e.g., ColorPickerField, ComponentSkeletonPage, ControlSkeletonPage)
+- `components/examples/`: Custom library component examples (see `components/examples/README.md` for creation guide)
 - `lib/`: Utils (e.g., cn for clsx)
 - `hooks/`: Custom hooks
 - `types/`: TypeScript types

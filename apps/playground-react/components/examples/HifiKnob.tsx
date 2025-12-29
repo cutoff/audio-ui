@@ -5,8 +5,12 @@ import { Rotary, Ring, RadialImage, ControlComponentViewProps, ControlComponent 
 
 export type ImageBackgroundKnobProps = ControlComponentViewProps;
 
-// Background image for the knob
+// Constants & Styles
 const KNOB_BACKGROUND_IMAGE = "/knob-metal.png";
+
+const FG_ARC_STYLE = { stroke: "#7100FF" };
+const BG_ARC_STYLE = { stroke: "var(--audioui-adaptive-default-color)", opacity: 0.15 };
+const LINE_STYLE = { stroke: "white" };
 
 /**
  * A control component that renders a knob with a static background image.
@@ -18,14 +22,8 @@ function HifiKnob({ normalizedValue, className, style }: ImageBackgroundKnobProp
         return { ...style };
     }, [style]);
 
-    // ============================================================================
-    // Render
-    // ============================================================================
     return (
-        <g 
-            className={className}
-            style={groupStyle}
-        >
+        <g className={className} style={groupStyle}>
             {/* Ring indicator on top */}
             <Ring
                 cx={50}
@@ -35,27 +33,15 @@ function HifiKnob({ normalizedValue, className, style }: ImageBackgroundKnobProp
                 thickness={2}
                 roundness={true}
                 openness={0}
-                fgArcStyle={{ stroke: "#7100FF" }}
-                bgArcStyle={{ stroke: "var(--audioui-adaptive-default-color)", opacity: 0.15 }}
+                fgArcStyle={FG_ARC_STYLE}
+                bgArcStyle={BG_ARC_STYLE}
             />
 
             {/* Static background image using RadialImage */}
-            <RadialImage
-                cx={50}
-                cy={50}
-                radius={47}
-                imageHref={KNOB_BACKGROUND_IMAGE}
-            />
+            <RadialImage cx={50} cy={50} radius={47} imageHref={KNOB_BACKGROUND_IMAGE} />
 
             {/* Rotating indicator line */}
-            <Rotary
-                cx={50}
-                cy={50}
-                radius={50}
-                normalizedValue={normalizedValue}
-                openness={0}
-            >
-
+            <Rotary cx={50} cy={50} radius={50} normalizedValue={normalizedValue} openness={0}>
                 <line
                     x1="50"
                     y1="15"
@@ -64,7 +50,7 @@ function HifiKnob({ normalizedValue, className, style }: ImageBackgroundKnobProp
                     stroke="white"
                     strokeWidth={2}
                     strokeLinecap="round"
-                    style={{ stroke: "white" }}
+                    style={LINE_STYLE}
                 />
             </Rotary>
         </g>
@@ -96,7 +82,7 @@ HifiKnob.interaction = {
  * Metadata for the ImageBackgroundKnob component.
  */
 HifiKnob.title = "Hi-Fi Knob";
-HifiKnob.description = "A knob with a static background image using RadialImage primitive. The image provides visual texture while the Ring and Rotary primitives show the current value.";
+HifiKnob.description =
+    "A knob with a static background image using RadialImage primitive. The image provides visual texture while the Ring and Rotary primitives show the current value.";
 
 export default HifiKnob as ControlComponent;
-

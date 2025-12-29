@@ -20,10 +20,35 @@ const PADDING = STROKE_WIDTH / 2; // Half stroke extends outside content area
 // Coordinates are offset by PADDING to account for viewBox expansion
 const SOLUTION_PATH_DATA = [
     `M ${0 + PADDING} ${220 + PADDING}`,
-    `L ${140 + PADDING} ${220 + PADDING}`, `L ${140 + PADDING} ${260 + PADDING}`, `L ${180 + PADDING} ${260 + PADDING}`, `L ${180 + PADDING} ${180 + PADDING}`, `L ${140 + PADDING} ${180 + PADDING}`, `L ${140 + PADDING} ${140 + PADDING}`, `L ${220 + PADDING} ${140 + PADDING}`, `L ${220 + PADDING} ${100 + PADDING}`,
-    `L ${180 + PADDING} ${100 + PADDING}`, `L ${180 + PADDING} ${60 + PADDING}`, `L ${220 + PADDING} ${60 + PADDING}`, `L ${220 + PADDING} ${20 + PADDING}`, `L ${300 + PADDING} ${20 + PADDING}`, `L ${300 + PADDING} ${60 + PADDING}`, `L ${260 + PADDING} ${60 + PADDING}`, `L ${260 + PADDING} ${140 + PADDING}`, `L ${300 + PADDING} ${140 + PADDING}`,
-    `L ${300 + PADDING} ${100 + PADDING}`, `L ${340 + PADDING} ${100 + PADDING}`, `L ${340 + PADDING} ${180 + PADDING}`, `L ${220 + PADDING} ${180 + PADDING}`, `L ${220 + PADDING} ${220 + PADDING}`, `L ${300 + PADDING} ${220 + PADDING}`, `L ${300 + PADDING} ${260 + PADDING}`, `L ${340 + PADDING} ${260 + PADDING}`,
-    `L ${340 + PADDING} ${220 + PADDING}`, `L ${380 + PADDING} ${220 + PADDING}`, `L ${380 + PADDING} ${180 + PADDING}`, `L ${400 + PADDING} ${180 + PADDING}`
+    `L ${140 + PADDING} ${220 + PADDING}`,
+    `L ${140 + PADDING} ${260 + PADDING}`,
+    `L ${180 + PADDING} ${260 + PADDING}`,
+    `L ${180 + PADDING} ${180 + PADDING}`,
+    `L ${140 + PADDING} ${180 + PADDING}`,
+    `L ${140 + PADDING} ${140 + PADDING}`,
+    `L ${220 + PADDING} ${140 + PADDING}`,
+    `L ${220 + PADDING} ${100 + PADDING}`,
+    `L ${180 + PADDING} ${100 + PADDING}`,
+    `L ${180 + PADDING} ${60 + PADDING}`,
+    `L ${220 + PADDING} ${60 + PADDING}`,
+    `L ${220 + PADDING} ${20 + PADDING}`,
+    `L ${300 + PADDING} ${20 + PADDING}`,
+    `L ${300 + PADDING} ${60 + PADDING}`,
+    `L ${260 + PADDING} ${60 + PADDING}`,
+    `L ${260 + PADDING} ${140 + PADDING}`,
+    `L ${300 + PADDING} ${140 + PADDING}`,
+    `L ${300 + PADDING} ${100 + PADDING}`,
+    `L ${340 + PADDING} ${100 + PADDING}`,
+    `L ${340 + PADDING} ${180 + PADDING}`,
+    `L ${220 + PADDING} ${180 + PADDING}`,
+    `L ${220 + PADDING} ${220 + PADDING}`,
+    `L ${300 + PADDING} ${220 + PADDING}`,
+    `L ${300 + PADDING} ${260 + PADDING}`,
+    `L ${340 + PADDING} ${260 + PADDING}`,
+    `L ${340 + PADDING} ${220 + PADDING}`,
+    `L ${380 + PADDING} ${220 + PADDING}`,
+    `L ${380 + PADDING} ${180 + PADDING}`,
+    `L ${400 + PADDING} ${180 + PADDING}`,
 ].join(" ");
 
 // ============================================================================
@@ -71,8 +96,6 @@ const WALLS_PATH_DATA = (() => {
     const paths: string[] = [];
 
     // Generate vertical wall segments
-    // Grid lines run vertically at x = column * CELL_SIZE
-    // Coordinates are offset by PADDING to account for viewBox expansion
     for (let col = 0; col < GRID_SIZE + 1; col++) {
         for (let row = 0; row < GRID_SIZE; row++) {
             const wallId = `v-${col}-${row}`;
@@ -86,8 +109,6 @@ const WALLS_PATH_DATA = (() => {
     }
 
     // Generate horizontal wall segments
-    // Grid lines run horizontally at y = row * CELL_SIZE
-    // Coordinates are offset by PADDING to account for viewBox expansion
     for (let row = 0; row < GRID_SIZE + 1; row++) {
         for (let col = 0; col < GRID_SIZE; col++) {
             const wallId = `h-${row}-${col}`;
@@ -113,22 +134,14 @@ function LabyrinthControl({ normalizedValue, className, style }: LabyrinthContro
         return { strokeLinecap: "square" as const, strokeLinejoin: "miter" as const, ...style };
     }, [style]);
 
-    // ============================================================================
-    // Render
-    // ============================================================================
-    // Note: The <svg> element is provided by ContinuousControl via AdaptiveBox.Svg
-    // This component only renders the SVG content (paths, shapes) inside a <g> group
     return (
-        <g 
-            className={className}
-            style={groupStyle}
-        >
+        <g className={className} style={groupStyle}>
             {/* Maze walls */}
-            <path 
-                d={WALLS_PATH_DATA} 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth={8} 
+            <path
+                d={WALLS_PATH_DATA}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={8}
                 className="text-slate-900 dark:text-slate-100"
             />
 
@@ -149,10 +162,6 @@ function LabyrinthControl({ normalizedValue, className, style }: LabyrinthContro
 
 /**
  * ViewBox dimensions for the LabyrinthControlView component.
- * The parent component should use these values when setting up the SVG container.
- * 
- * Note: The viewBox is expanded to account for stroke width (8px) to prevent clipping.
- * Content area is 400x400, but viewBox includes padding for half the stroke width on each side.
  */
 LabyrinthControl.viewBox = {
     width: 400 + 8, // 408 to include stroke overflow (8px stroke / 2 = 4px padding on each side)
@@ -176,7 +185,7 @@ LabyrinthControl.interaction = {
  * Metadata for the LabyrinthControlView component.
  */
 LabyrinthControl.title = "Maze Control";
-LabyrinthControl.description = "A maze with a path revealing as the value increases (RevealingPath primitive), showcasing limitless creativity for component design.";
+LabyrinthControl.description =
+    "A maze with a path revealing as the value increases (RevealingPath primitive), showcasing limitless creativity for component design.";
 
 export default LabyrinthControl as ControlComponent;
-

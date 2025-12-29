@@ -18,21 +18,10 @@ function GuitarKnob({ normalizedValue, className, style }: GuitarPixelKnobProps)
         return { ...style };
     }, [style]);
 
-    // ============================================================================
-    // Render
-    // ============================================================================
-    // Note: The <svg> element is provided by ContinuousControl via AdaptiveBox.Svg
-    // This component only renders the SVG content (Rotary primitive) inside a <g> group
     return (
-        <g 
-            className={className}
-            style={groupStyle}
-        >
+        <g className={className} style={groupStyle}>
             {/* Triangle indicator */}
-            <polygon 
-                points="50,7 48,3 52,3" 
-                fill="grey" 
-            />
+            <polygon points="50,7 48,3 52,3" fill="grey" />
 
             {/* Rotary with pixel image and custom rotation */}
             <Rotary
@@ -50,7 +39,6 @@ function GuitarKnob({ normalizedValue, className, style }: GuitarPixelKnobProps)
 
 /**
  * ViewBox dimensions for the GuitarPixelKnob component.
- * The parent component should use these values when setting up the SVG container.
  */
 GuitarKnob.viewBox = {
     width: 100,
@@ -74,7 +62,7 @@ GuitarKnob.interaction = {
  * Metadata for the GuitarPixelKnob component.
  */
 GuitarKnob.title = "Guitar Knob";
-GuitarKnob.description = "A retro guitar amplifier-style knob featuring pixel art graphics with custom rotation and openness settings. Note how the component value is always located on top of the component.";
+GuitarKnob.description =
+    "A retro guitar amplifier-style knob featuring pixel art graphics with custom rotation and openness settings. Note how the component value is always located on top of the component.";
 
 export default GuitarKnob as ControlComponent;
-
