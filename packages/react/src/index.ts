@@ -17,6 +17,8 @@ export { default as RadialText } from "./components/primitives/views/RadialText"
 export type { RadialTextProps } from "./components/primitives/views/RadialText";
 export { default as RevealingPath } from "./components/primitives/views/RevealingPath";
 export type { RevealingPathProps } from "./components/primitives/views/RevealingPath";
+export { default as TickRing } from "./components/primitives/views/TickRing";
+export type { TickRingProps } from "./components/primitives/views/TickRing";
 
 // Export SVG presentation components
 export { default as SvgButton } from "./components/theme/SvgButton";

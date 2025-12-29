@@ -37,6 +37,7 @@ const controls: Page[] = [
 // List of primitive components
 const primitives: Page[] = [
     { name: "ValueRing", path: "/primitives/ring" },
+    { name: "TickRing", path: "/primitives/tick-ring" },
     { name: "RotaryImage", path: "/primitives/rotary" },
 ];
 

@@ -13,6 +13,7 @@ The library provides five SVG View Primitives:
 | **RadialImage**   | Static content     | Displays image or SVG at radial coordinates   |
 | **RadialText**    | Auto-fitting text  | Measures and scales text to fit within radius |
 | **RevealingPath** | Path animation     | Reveals an arbitrary SVG path based on value  |
+| **TickRing**      | Scale decoration   | Renders a ring of ticks/markers               |
 
 All primitives share a common coordinate system:
 
@@ -314,6 +315,80 @@ type RevealingPathProps = SVGProps<SVGPathElement> & {
 - GPU-friendly (uses `stroke-dashoffset`)
 - Ideal for complex shapes where `ValueRing` (arc) is insufficient
 
+## TickRing
+
+Renders a ring of tick marks, useful for creating scales on knobs and dials. It renders as a single optimized SVG path.
+
+### Props
+
+```typescript
+type TickRingProps = {
+  cx: number; // X coordinate of center
+  cy: number; // Y coordinate of center
+  radius: number; // Outer radius of the ring
+  thickness: number; // Length of ticks (line/pill) or diameter (dot)
+  openness?: number; // Openness in degrees (default: 90)
+  rotation?: number; // Rotation offset in degrees (default: 0)
+  count?: number; // Total number of ticks
+  step?: number; // Angle between ticks
+  variant?: "line" | "dot" | "pill"; // Shape type (default: "line")
+  renderTick?: (data: TickData) => ReactNode; // Custom renderer
+  className?: string;
+  style?: CSSProperties;
+};
+
+type TickData = {
+  x: number; // X coordinate at outer radius
+  y: number; // Y coordinate at outer radius
+  angle: number; // Angle in degrees
+  index: number; // Index of the tick
+};
+```
+
+### Usage
+
+```tsx
+// 11 ticks (0-10) for a standard knob
+<TickRing
+  cx={50} cy={50} radius={45} thickness={5}
+  count={11}
+  style={{ stroke: "var(--audioui-foreground)", strokeWidth: 1 }}
+/>
+
+// Ring of dots
+<TickRing
+  cx={50} cy={50} radius={45} thickness={4}
+  count={11}
+  variant="dot"
+  className="text-primary"
+/>
+
+// Custom shapes (e.g., text numbers)
+<TickRing
+  cx={50} cy={50} radius={45} thickness={0}
+  count={11}
+  renderTick={({ x, y, angle, index }) => (
+    <text
+      x={x} y={y}
+      textAnchor="middle"
+      dominantBaseline="middle"
+      transform={`rotate(${angle + 90}, ${x}, ${y})`}
+      fontSize={6}
+      fill="currentColor"
+    >
+      {index}
+    </text>
+  )}
+/>
+```
+
+### Design Notes
+
+- **Optimized Mode**: When `renderTick` is omitted, `line`, `pill`, and `dot` variants render as a single optimized `<path>` element.
+- **Custom Mode**: Providing `renderTick` allows arbitrary content but renders individual elements (less optimized for high counts).
+- **Dots**: In `dot` mode, `thickness` determines the dot diameter. Dots are centered at `radius - thickness/2`.
+- **Pills**: `pill` variant is a line with `stroke-linecap: round`.
+
 ## Composing Custom Knobs
 
 These primitives are designed to be composed together to create custom knob designs:
@@ -369,6 +444,7 @@ RadialText handles the browser-only measurement gracefully:
 - **RotaryImage**: `packages/react/src/components/primitives/views/RotaryImage.tsx`
 - **RadialImage**: `packages/react/src/components/primitives/views/RadialImage.tsx`
 - **RadialText**: `packages/react/src/components/primitives/views/RadialText.tsx`
+- **TickRing**: `packages/react/src/components/primitives/views/TickRing.tsx`
 - **Text Measurement Utilities**: `packages/core/src/utils/textMeasurement.ts`
 - **Example Components**: `apps/playground-react/components/examples/`
 
