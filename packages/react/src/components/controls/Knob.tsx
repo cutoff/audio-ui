@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import SvgKnob from "../theme/SvgKnob";
-import ContinuousControl from "../primitives/ContinuousControl";
+import ContinuousControl from "../primitives/controls/ContinuousControl";
 import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps } from "../types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";

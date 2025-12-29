@@ -32,7 +32,9 @@ packages/react/
 ├── src/
 │   ├── components/      # React components
 │   │   ├── controls/    # Interactive controls (Button, Knob, Slider, etc.)
-│   │   ├── primitives/  # Base components for building final components (AdaptiveBox, Option)
+│   │   ├── primitives/  # Base components for building final components
+│   │   │   ├── controls/  # Control primitives (ContinuousControl, Option)
+│   │   │   └── views/  # SVG view primitives (ValueRing, RotaryImage, etc.)
 │   │   ├── theme/       # Default theme system (AudioUiProvider, default SVG components)
 │   │   └── Keybed.tsx   # Keyboard component composed of SVG primitives
 │   ├── hooks/           # Hooks wrapping core logic (useInteractiveControl, useAudioParameter)

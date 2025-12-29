@@ -25,7 +25,9 @@
 
 - `src/components/`: Component .tsx with .test.tsx
   - `controls/`: Interactive controls (Button, Knob, Slider, KnobSwitch). Knob and Slider use ContinuousControl internally.
-  - `primitives/`: Base components for building final components, excluding theme-specific (AdaptiveBox, Option, ContinuousControl)
+  - `primitives/`: Base components for building final components, excluding theme-specific
+    - `controls/`: Control primitives (ContinuousControl, Option)
+    - `views/`: SVG view primitives (ValueRing, RotaryImage, RadialImage, RadialText, etc.)
   - `theme/`: Default theme system (AudioUiProvider, default SVG components: SvgButton, SvgKnob, SvgSlider with SvgVerticalSlider/SvgHorizontalSlider variants)
 
 ## Component Architecture: Built-in vs Customizable
@@ -39,7 +41,9 @@
 
 **Customizable Primitives** (`src/components/primitives/`):
 
-- Lower-level components (ContinuousControl, AdaptiveBox)
+- Lower-level components organized by purpose:
+  - `controls/`: Control primitives (ContinuousControl, Option)
+  - `views/`: SVG view primitives (ValueRing, RotaryImage, RadialImage, RadialText, etc.)
 - No built-in theming - users add their own theming props as needed
 - For building custom controls without theming constraints
 - Props: `ContinuousControlProps`, `BooleanControlProps` (no `ThemableProps` included)
@@ -98,7 +102,7 @@ Technical documentation is located in `docs/`:
 The library provides a generic `ContinuousControl` component that decouples behavior from visualization. `Knob` and `Slider` use `ContinuousControl` internally, eliminating code duplication.
 
 - **Purpose**: Allows users to use any SVG component as a continuous control (knob, fader, etc.) without reimplementing interaction logic. Also used internally by `Knob` and `Slider` for shared behavior.
-- **Location**: `packages/react/src/components/primitives/ContinuousControl.tsx`
+- **Location**: `packages/react/src/components/primitives/controls/ContinuousControl.tsx`
 - **Contract**: The view component must implement `ControlComponentView` interface, defining:
   - `viewBox`: Dimensions for the SVG (required)
   - `labelHeightUnits`: Label height in viewBox units (optional, defaults to 20)
