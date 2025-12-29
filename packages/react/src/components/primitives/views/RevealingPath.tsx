@@ -1,8 +1,11 @@
 "use client";
 
-import { SVGProps } from "react";
+import React, { SVGProps } from "react";
 
-export interface RevealingPathProps extends Omit<SVGProps<SVGPathElement>, "strokeDasharray" | "strokeDashoffset" | "pathLength"> {
+export interface RevealingPathProps extends Omit<
+    SVGProps<SVGPathElement>,
+    "strokeDasharray" | "strokeDashoffset" | "pathLength"
+> {
     /**
      * Normalized value between 0 and 1 indicating how much of the path to reveal.
      * 0 = path is completely hidden
@@ -34,13 +37,7 @@ export interface RevealingPathProps extends Omit<SVGProps<SVGPathElement>, "stro
  * />
  * ```
  */
-export default function RevealingPath({
-    normalizedValue,
-    resolution = 100,
-    className,
-    style,
-    ...props
-}: RevealingPathProps) {
+function RevealingPath({ normalizedValue, resolution = 100, className, style, ...props }: RevealingPathProps) {
     // Clamp value to ensure it stays within 0-1 range
     const clampedValue = Math.max(0, Math.min(1, normalizedValue));
 
@@ -66,3 +63,5 @@ export default function RevealingPath({
         />
     );
 }
+
+export default React.memo(RevealingPath);

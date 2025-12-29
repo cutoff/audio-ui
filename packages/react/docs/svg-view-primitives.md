@@ -12,6 +12,7 @@ The library provides five SVG View Primitives:
 | **Rotary**      | Rotating content   | Rotates children based on normalized value    |
 | **RadialImage** | Static content     | Displays image or SVG at radial coordinates   |
 | **RadialText**  | Auto-fitting text  | Measures and scales text to fit within radius |
+| **RevealingPath** | Path animation   | Reveals an arbitrary SVG path based on value  |
 
 All primitives share a common coordinate system:
 
@@ -272,6 +273,46 @@ RadialText uses `dominantBaseline="central"` with a baseline correction factor (
 | Value change        | 0 (cached)                 | 1 render (scale unchanged) |
 | 100 identical knobs | 1 measurement total        | 100 renders                |
 | Font/style change   | 1 new measurement          | 1 render                   |
+
+## RevealingPath
+
+Reveals an arbitrary SVG path from start to end using `stroke-dashoffset`. This is useful for custom indicators, non-circular tracks, or creative visualizations like mazes.
+
+### Props
+
+```typescript
+type RevealingPathProps = SVGProps<SVGPathElement> & {
+  normalizedValue: number; // Value between 0 and 1
+  resolution?: number; // Internal path resolution (default: 100)
+};
+```
+
+### Usage
+
+```tsx
+// Basic usage
+<RevealingPath
+  d="M 10 10 L 90 90"
+  normalizedValue={0.5} // Half the line is visible
+  stroke="red"
+  strokeWidth={4}
+/>
+
+// Complex path (e.g. maze solution)
+<RevealingPath
+  d={COMPLEX_PATH_DATA}
+  normalizedValue={progress}
+  stroke="blue"
+  pathLength={100} // Optional override
+/>
+```
+
+### Design Notes
+
+- Uses the `pathLength` SVG attribute to normalize dash calculations
+- Avoids expensive JS path measurement (`getTotalLength()`)
+- GPU-friendly (uses `stroke-dashoffset`)
+- Ideal for complex shapes where `Ring` (arc) is insufficient
 
 ## Composing Custom Knobs
 
