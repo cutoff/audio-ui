@@ -102,7 +102,7 @@ The library provides a generic `ContinuousControl` component that decouples beha
 - **Contract**: The view component must implement `ControlComponentView` interface, defining:
   - `viewBox`: Dimensions for the SVG (required)
   - `labelHeightUnits`: Label height in viewBox units (optional, defaults to 20)
-  - `interaction`: Preferred mode ("drag" | "wheel" | "both") and direction ("vertical" | "horizontal")
+  - `interaction`: Preferred mode ("drag" | "wheel" | "both") and direction ("vertical" | "horizontal" | "circular")
 - **Props**: The view receives `ControlComponentViewProps` (normalizedValue, children, className, style) plus any custom props (passed through generic type parameter `P`).
 - **Reference Implementations**:
   - `SvgKnob` - implements contract with `viewBox: {width: 100, height: 100}`, `labelHeightUnits: 20`, `interaction: {mode: "both", direction: "vertical"}`
@@ -120,6 +120,8 @@ The library provides a generic `ContinuousControl` component that decouples beha
 - **Hook Location**: `packages/react/src/hooks/useInteractiveControl.ts` (wrapper around core's `InteractionController`)
 - **Core Logic**: `packages/core/src/controller/InteractionController.ts`
 - **Interaction Modes**: Controls support `interactionMode` ("drag" | "wheel" | "both") to restrict input methods.
+- **Interaction Direction**: High-level components (Knob, KnobSwitch, Slider) support `interactionDirection` ("vertical" | "horizontal" | "circular") to define drag behavior. Knobs default to "circular" for rotary behavior.
+- **Interaction Sensitivity**: High-level components support `interactionSensitivity` to tune drag responsiveness. Lower-level components use `direction` and `sensitivity` internally.
 - **Sensitivity Tuning**:
   - Knob: `0.008` drag (increased for responsiveness)
   - Slider: `0.005` drag (standard)

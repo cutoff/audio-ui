@@ -50,7 +50,8 @@ function Slider({
     parameter,
     paramId,
     interactionMode,
-    sensitivity,
+    interactionDirection,
+    interactionSensitivity,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -109,7 +110,8 @@ function Slider({
             color={resolvedColor}
             parameter={parameter}
             interactionMode={interactionMode}
-            sensitivity={sensitivity}
+            interactionDirection={interactionDirection}
+            interactionSensitivity={interactionSensitivity}
             thickness={clampedThickness}
             roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
         />

@@ -36,11 +36,6 @@ describe("InteractionController", () => {
 
             // Simulate global mouse move
             const moveEvent = new MouseEvent("mousemove", { clientX: 100, clientY: 90 });
-            // We need to access private method or trigger the listener.
-            // Since we mock window.addEventListener, we can't easily trigger the real event flow unless we attach it to a real window (jsdom).
-            // However, InteractionController binds handleGlobalMouseMove.
-            // Let's test the public API if possible or cast to any to access private methods for unit testing.
-
             // Accessing private method for testing purpose
             (controller as any).handleGlobalMouseMove(moveEvent);
 
@@ -73,6 +68,80 @@ describe("InteractionController", () => {
             (controller as any).handleGlobalMouseMove(moveEvent);
 
             expect(adjustValue).not.toHaveBeenCalled();
+        });
+    });
+
+    describe("Circular Interaction", () => {
+        it("should calculate angle delta correctly", () => {
+            controller.updateConfig({ direction: "circular" });
+
+            // Mock element with rect at 100,100 size 100x100. Center at 150, 150.
+            const target = document.createElement("div");
+            target.getBoundingClientRect = vi.fn(() => ({
+                left: 100,
+                top: 100,
+                width: 100,
+                height: 100,
+                right: 200,
+                bottom: 200,
+                x: 100,
+                y: 100,
+                toJSON: () => {},
+            })) as any;
+
+            // Start at 3 o'clock relative to center (150, 150) -> Position (200, 150)
+            controller.handleMouseDown(200, 150, target);
+
+            // Move to 6 o'clock -> Position (150, 200)
+            // 3 o'clock is 0 rads. 6 o'clock is PI/2 rads.
+            // Delta is +PI/2 rads = +90 degrees.
+            // Value change = 90 * sensitivity (0.01) = 0.9
+
+            const moveEvent = new MouseEvent("mousemove", { clientX: 150, clientY: 200 });
+            (controller as any).handleGlobalMouseMove(moveEvent);
+
+            // Allow for small floating point differences
+            expect(adjustValue).toHaveBeenCalled();
+            const args = adjustValue.mock.calls[0];
+            expect(args[0]).toBeCloseTo(90, 1);
+            expect(args[1]).toBe(0.01);
+        });
+
+        it("should handle wrapping around PI (Left side crossing)", () => {
+            controller.updateConfig({ direction: "circular" });
+            const target = document.createElement("div");
+            target.getBoundingClientRect = vi.fn(() => ({
+                left: 100,
+                top: 100,
+                width: 100,
+                height: 100,
+                right: 200,
+                bottom: 200,
+                x: 100,
+                y: 100,
+                toJSON: () => {},
+            })) as any;
+            // Center 150, 150
+
+            // Start at slightly Up-Left (Angle approx -3.12 rads / -179 deg)
+            // dx = -50, dy = -1.
+            controller.handleMouseDown(100, 149, target);
+
+            // Move to slightly Down-Left (Angle approx +3.12 rads / +179 deg)
+            // dx = -50, dy = 1.
+            const moveEvent = new MouseEvent("mousemove", { clientX: 100, clientY: 151 });
+            (controller as any).handleGlobalMouseMove(moveEvent);
+
+            // Movement is CCW (Up-Left to Down-Left on the left edge).
+            // Expect negative delta.
+            // Delta Rads: 3.12 - (-3.12) = 6.24.
+            // Wrap: 6.24 > PI. 6.24 - 2PI = -0.04 rads.
+            // Degrees: -0.04 * 180/PI approx -2.3 degrees.
+
+            expect(adjustValue).toHaveBeenCalled();
+            const delta = adjustValue.mock.calls[0][0];
+            expect(delta).toBeLessThan(0); // Should be negative
+            expect(Math.abs(delta)).toBeLessThan(5); // Should be small
         });
     });
 

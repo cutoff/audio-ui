@@ -54,7 +54,8 @@ function Knob({
     scale,
     paramId,
     interactionMode,
-    sensitivity,
+    interactionDirection,
+    interactionSensitivity,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -191,7 +192,8 @@ function Knob({
             color={resolvedColor}
             parameter={parameter}
             interactionMode={interactionMode}
-            sensitivity={sensitivity ?? 0.008}
+            interactionDirection={interactionDirection}
+            interactionSensitivity={interactionSensitivity ?? 0.008}
             thickness={clampedThickness}
             roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
         >

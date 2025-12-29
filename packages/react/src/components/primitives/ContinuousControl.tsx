@@ -58,7 +58,8 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
         onMouseLeave,
         parameter,
         interactionMode, // Override prop
-        sensitivity,
+        interactionDirection, // Override prop (maps to internal direction)
+        interactionSensitivity, // Override prop (maps to internal sensitivity)
         unit,
         scale,
         ...viewProps // Capture all other props (color, thickness, bipolar, etc.) to pass to View
@@ -85,14 +86,14 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
 
     // 3. Determine Interaction Settings (View default vs Override)
     const effectiveInteractionMode = interactionMode ?? View.interaction.mode ?? "both";
-    const effectiveDirection = View.interaction.direction ?? "vertical";
+    const effectiveDirection = interactionDirection ?? View.interaction.direction ?? "vertical";
 
     // 4. Interaction Hook
     const interactiveProps = useInteractiveControl({
         adjustValue,
         interactionMode: effectiveInteractionMode,
         direction: effectiveDirection,
-        sensitivity,
+        sensitivity: interactionSensitivity,
         editable: !!onChange || !!onClick,
     });
 
@@ -159,4 +160,3 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
 }
 
 export default React.memo(ContinuousControl) as typeof ContinuousControl;
-

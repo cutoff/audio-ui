@@ -62,7 +62,7 @@ IconKnob.labelHeightUnits = 20;
  */
 IconKnob.interaction = {
     mode: "both",
-    direction: "vertical",
+    direction: "circular",
 };
 
 /**

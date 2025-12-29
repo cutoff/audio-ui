@@ -117,7 +117,7 @@ const LABEL_HEIGHT_UNITS = 20;
  */
 const INTERACTION = {
     mode: "both",
-    direction: "vertical", // Knobs are typically adjusted via vertical drag
+    direction: "circular", // Knobs use circular/rotary drag behavior
 } as const;
 
 // Create memoized component
@@ -130,4 +130,6 @@ const MemoSvgKnob = React.memo(SvgKnob);
 (MemoSvgKnob as any).title = "Knob";
 (MemoSvgKnob as any).description = "A rotary knob control with circular arc indicator";
 
-export default MemoSvgKnob as unknown as ControlComponent<Omit<SvgKnobProps, "normalizedValue" | "children" | "className" | "style">>;
+export default MemoSvgKnob as unknown as ControlComponent<
+    Omit<SvgKnobProps, "normalizedValue" | "children" | "className" | "style">
+>;

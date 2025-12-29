@@ -1,8 +1,9 @@
-import { InteractionMode } from "../types";
+import { InteractionDirection, InteractionMode } from "../types";
 
 export interface InteractionConfig {
     /**
      * Function to adjust the value based on a delta.
+     * ...
      */
     adjustValue: (delta: number, sensitivity?: number) => void;
 
@@ -16,10 +17,11 @@ export interface InteractionConfig {
      * Direction of the drag interaction.
      * @default "vertical"
      */
-    direction?: "vertical" | "horizontal";
+    direction?: InteractionDirection;
 
     /**
      * Sensitivity of the control.
+     * ...
      * @default 0.005
      */
     sensitivity?: number;
@@ -50,6 +52,8 @@ export class InteractionController {
     private config: Required<Omit<InteractionConfig, "wheelSensitivity">> & { wheelSensitivity?: number };
     private startX = 0;
     private startY = 0;
+    private centerX = 0;
+    private centerY = 0;
     private isDragging = false;
 
     constructor(config: InteractionConfig) {
@@ -75,27 +79,38 @@ export class InteractionController {
 
     // --- Drag Handling ---
 
-    public handleMouseDown = (clientX: number, clientY: number) => {
+    public handleMouseDown = (clientX: number, clientY: number, target?: EventTarget) => {
         if (this.config.interactionMode === "wheel") return;
-        this.startDrag(clientX, clientY);
+        this.startDrag(clientX, clientY, target);
     };
 
-    public handleTouchStart = (clientX: number, clientY: number) => {
+    public handleTouchStart = (clientX: number, clientY: number, target?: EventTarget) => {
         if (this.config.interactionMode === "wheel") return;
-        this.startDrag(clientX, clientY);
+        this.startDrag(clientX, clientY, target);
     };
 
-    private startDrag(x: number, y: number) {
+    private startDrag(x: number, y: number, target?: EventTarget) {
         if (this.config.disabled) return;
 
         this.startX = x;
         this.startY = y;
         this.isDragging = true;
 
+        if (this.config.direction === "circular" && target && (target as HTMLElement).getBoundingClientRect) {
+            const rect = (target as HTMLElement).getBoundingClientRect();
+            this.centerX = rect.left + rect.width / 2;
+            this.centerY = rect.top + rect.height / 2;
+        }
+
         // Apply global cursor and user-select styles
         document.body.style.userSelect = "none";
         document.body.style.webkitUserSelect = "none";
-        document.body.style.cursor = this.config.direction === "vertical" ? "ns-resize" : "ew-resize";
+
+        let cursor = "ns-resize";
+        if (this.config.direction === "horizontal") cursor = "ew-resize";
+        if (this.config.direction === "circular") cursor = "pointer"; // Or a specific cursor?
+
+        document.body.style.cursor = cursor;
 
         // Attach global listeners
         window.addEventListener("mousemove", this.handleGlobalMouseMove);
@@ -123,9 +138,29 @@ export class InteractionController {
             // Up is negative Y, but usually means positive value
             // So we invert Y delta: (StartY - CurrentY)
             delta = this.startY - y;
-        } else {
+        } else if (this.config.direction === "horizontal") {
             // Right is positive X
             delta = x - this.startX;
+        } else if (this.config.direction === "circular") {
+            // Calculate angle relative to center
+            // Y is down, so we invert Y for standard math if we wanted standard cartesian,
+            // but atan2(y, x) works with screen coords.
+            // 0 is Right (x+, y0). PI/2 is Down (x0, y+).
+            // Rotation is Clockwise.
+            // We want Clockwise to increase value.
+
+            const currentAngle = Math.atan2(y - this.centerY, x - this.centerX);
+            const startAngle = Math.atan2(this.startY - this.centerY, this.startX - this.centerX);
+
+            let angleDelta = currentAngle - startAngle;
+
+            // Handle wrapping
+            if (angleDelta > Math.PI) angleDelta -= 2 * Math.PI;
+            else if (angleDelta < -Math.PI) angleDelta += 2 * Math.PI;
+
+            // Convert to "pixels equivalent" (degrees)
+            // 1 degree ~ 1 pixel
+            delta = angleDelta * (180 / Math.PI);
         }
 
         if (delta !== 0) {

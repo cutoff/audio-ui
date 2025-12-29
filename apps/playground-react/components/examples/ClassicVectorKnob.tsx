@@ -56,7 +56,7 @@ ClassicVectorKnob.labelHeightUnits = 20;
  */
 ClassicVectorKnob.interaction = {
     mode: "both",
-    direction: "vertical",
+    direction: "circular",
 };
 
 /**

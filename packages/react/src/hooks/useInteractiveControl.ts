@@ -72,10 +72,10 @@ export function useInteractiveControl({
         const ctrl = controllerRef.current!;
 
         return {
-            onMouseDown: (e: React.MouseEvent) => ctrl.handleMouseDown(e.clientX, e.clientY),
+            onMouseDown: (e: React.MouseEvent) => ctrl.handleMouseDown(e.clientX, e.clientY, e.currentTarget),
             onTouchStart: (e: React.TouchEvent) => {
                 const touch = e.touches[0];
-                ctrl.handleTouchStart(touch.clientX, touch.clientY);
+                ctrl.handleTouchStart(touch.clientX, touch.clientY, e.currentTarget);
             },
             onWheel: (e: React.WheelEvent) => ctrl.handleWheel(e as unknown as WheelEvent),
             onKeyDown: (e: React.KeyboardEvent) => ctrl.handleKeyDown(e as unknown as KeyboardEvent),
@@ -88,7 +88,11 @@ export function useInteractiveControl({
           ? "default"
           : interactionMode === "wheel"
             ? "ns-resize"
-            : "pointer";
+            : direction === "horizontal"
+              ? "ew-resize"
+              : direction === "vertical"
+                ? "ns-resize"
+                : "pointer"; // circular or default
 
     return {
         ...handlers,

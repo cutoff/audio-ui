@@ -75,7 +75,7 @@ HifiKnob.labelHeightUnits = 15;
  */
 HifiKnob.interaction = {
     mode: "both",
-    direction: "vertical",
+    direction: "circular",
 };
 
 /**

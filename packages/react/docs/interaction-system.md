@@ -20,12 +20,14 @@ const handlers = useInteractiveControl({
   adjustValue, // Function to update the normalized value
   value, // Current normalized value (optional)
   interactionMode, // "drag" | "wheel" | "both"
-  direction, // "vertical" | "horizontal"
-  sensitivity, // Drag sensitivity (normalized value per pixel)
+  direction, // "vertical" | "horizontal" | "circular" (internal prop name)
+  sensitivity, // Drag sensitivity (normalized value per pixel) (internal prop name)
   wheelSensitivity, // Wheel sensitivity (normalized value per unit)
   disabled, // Whether the control is disabled
 });
 ```
+
+**Note**: High-level components (Knob, KnobSwitch, Slider) expose these props as `interactionDirection` and `interactionSensitivity` for clarity. The internal hook uses `direction` and `sensitivity`.
 
 It returns a set of event handlers (`onMouseDown`, `onTouchStart`, `onWheel`, `onKeyDown`) and accessibility props (`tabIndex`, `role`, `aria-*`) that should be spread onto the interactive element.
 
@@ -35,8 +37,10 @@ It returns a set of event handlers (`onMouseDown`, `onTouchStart`, `onWheel`, `o
 
 - **Behavior**: Click/Touch and drag to adjust value.
 - **Direction**:
-  - **Knobs/Vertical Sliders**: Vertical drag (Up = Increase, Down = Decrease).
+  - **Knobs**: Defaults to Circular drag (Rotational drag around the center: Clockwise = Increase, Counter-Clockwise = Decrease). Can be configured to "vertical" or "horizontal" for linear behavior.
+  - **Vertical Sliders**: Defaults to Vertical drag (Up = Increase, Down = Decrease).
   - **Horizontal Sliders**: Horizontal drag (Right = Increase, Left = Decrease).
+  - **Circular Mode**: Rotational drag around the center of the element (Clockwise = Increase, Counter-Clockwise = Decrease).
 - **Text Selection**: Automatically disabled (`user-select: none`) during drag operations to prevent accidental selection.
 - **Focus**: Clicking a control gives it focus, enabling keyboard interaction.
 - **Sensitivity**: Configurable per component. Default is tuned for precision (`0.005` for continuous, `0.1` for discrete).

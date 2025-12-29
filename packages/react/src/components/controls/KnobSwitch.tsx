@@ -73,7 +73,8 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
     parameter,
     paramId,
     interactionMode,
-    sensitivity,
+    interactionDirection,
+    interactionSensitivity,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -171,11 +172,11 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
     const interactiveProps = useInteractiveControl({
         adjustValue,
         interactionMode: interactionMode ?? "both",
-        direction: "vertical",
+        direction: interactionDirection ?? "vertical",
         // For enumerations, drag sensitivity needs to be higher to feel responsive,
         // otherwise you have to drag extremely far to change one step.
         // 0.05 was still too low. Increasing to 0.1 (approx 10px per step if step is 1/N).
-        sensitivity: sensitivity ?? 0.1,
+        sensitivity: interactionSensitivity ?? 0.1,
         // Wheel sensitivity: 1 notch (100 delta) = 1 step
         // We want 1 notch (delta ~100) to equal exactly one step (stepSize).
         // adjustValue does: delta * sensitivity.

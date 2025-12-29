@@ -58,7 +58,7 @@ SelectorKnob.labelHeightUnits = 20;
  */
 SelectorKnob.interaction = {
     mode: "both",
-    direction: "vertical",
+    direction: "circular",
 };
 
 /**

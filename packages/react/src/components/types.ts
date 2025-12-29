@@ -1,6 +1,6 @@
 import React from "react";
 import { ContinuousParameter, BooleanParameter, ScaleType } from "@cutoff/audio-ui-core";
-import { SizeType, InteractionMode } from "@cutoff/audio-ui-core";
+import { SizeType, InteractionMode, InteractionDirection } from "@cutoff/audio-ui-core";
 
 /**
  * Size options for control components
@@ -115,6 +115,11 @@ export type AdaptiveBoxProps = {
 // InteractionMode is imported from core now
 
 /**
+ * Interaction directions for controls
+ */
+// InteractionDirection is imported from core now
+
+/**
  * Standard event object emitted by all AudioUI controls.
  * Provides the value in all three domain representations simultaneously.
  */
@@ -156,7 +161,13 @@ export type InteractiveControlProps<T = number> = {
      * Represents the amount of normalized value change per pixel (drag) or unit (wheel).
      * @default Component-specific
      */
-    sensitivity?: number;
+    interactionSensitivity?: number;
+
+    /**
+     * Direction of the interaction.
+     * Overrides the default direction defined by the component's view.
+     */
+    interactionDirection?: InteractionDirection;
 };
 
 /**
@@ -304,8 +315,9 @@ export interface ControlComponentView {
          * Direction of the interaction gesture.
          * - vertical: Drag up/down changes value (Standard Faders/Knobs)
          * - horizontal: Drag left/right changes value
+         * - circular: Drag in a circle around the center changes value (Rotary Knobs)
          */
-        direction?: "vertical" | "horizontal";
+        direction?: InteractionDirection;
     };
 }
 

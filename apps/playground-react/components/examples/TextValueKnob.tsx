@@ -1,7 +1,14 @@
 "use client";
 
 import { useMemo } from "react";
-import { Ring, Rotary, RadialText, ControlComponentViewProps, ControlComponent, withPrecision } from "@cutoff/audio-ui-react";
+import {
+    Ring,
+    Rotary,
+    RadialText,
+    ControlComponentViewProps,
+    ControlComponent,
+    withPrecision,
+} from "@cutoff/audio-ui-react";
 
 export type TextValueKnobProps = ControlComponentViewProps;
 
@@ -83,7 +90,7 @@ TextValueKnob.labelHeightUnits = 15;
  */
 TextValueKnob.interaction = {
     mode: "both",
-    direction: "vertical",
+    direction: "circular",
 };
 
 /**

@@ -37,7 +37,8 @@ function CustomContinuousControl({
     parameter,
     paramId,
     interactionMode,
-    sensitivity,
+    interactionDirection,
+    interactionSensitivity,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -72,7 +73,8 @@ function CustomContinuousControl({
             onMouseLeave={onMouseLeave}
             parameter={parameter}
             interactionMode={interactionMode}
-            sensitivity={sensitivity}
+            interactionDirection={interactionDirection}
+            interactionSensitivity={interactionSensitivity}
             renderValue={renderValue}
             unit={unit}
             scale={scale}
@@ -81,4 +83,3 @@ function CustomContinuousControl({
 }
 
 export default React.memo(CustomContinuousControl) as typeof CustomContinuousControl;
-

@@ -32,7 +32,7 @@ function MyKnob({ normalizedValue, className, style }: MyKnobProps) {
 
 // 3. Static Configuration (Required)
 MyKnob.viewBox = { width: 100, height: 100 }; // Coordinate system
-MyKnob.interaction = { mode: "both", direction: "vertical" }; // Interaction behavior
+MyKnob.interaction = { mode: "both", direction: "circular" }; // Interaction behavior (circular for rotary knobs)
 MyKnob.labelHeightUnits = 15; // Space reserved for label/value text
 
 // 4. Metadata (Documentation)
@@ -118,5 +118,5 @@ Leverage the library's optimized primitives instead of writing raw SVG where pos
     - Use `Rotary` for rotating elements.
     - Use `Ring` for value indicators.
     - Use standard SVG (`path`, `circle`, `rect`) for static elements.
-4.  **Tune Interaction**: Set `direction` ("vertical", "horizontal", "circular") to match the visual metaphor.
+4.  **Tune Interaction**: Set `direction` in the `interaction` contract ("vertical", "horizontal", "circular") to match the visual metaphor. Knobs typically use "circular" for rotary behavior.
 5.  **Optimize**: Review against the guidelines above.

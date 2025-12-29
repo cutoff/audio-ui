@@ -55,7 +55,7 @@ GuitarKnob.labelHeightUnits = 10;
  */
 GuitarKnob.interaction = {
     mode: "both",
-    direction: "vertical",
+    direction: "circular",
 };
 
 /**

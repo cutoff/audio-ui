@@ -18,7 +18,7 @@ describe("useInteractiveControl", () => {
         expect(result.current.role).toBe("slider");
         expect(result.current.tabIndex).toBe(0);
         expect(result.current["aria-disabled"]).toBe(false);
-        expect(result.current.style?.cursor).toBe("pointer");
+        expect(result.current.style?.cursor).toBe("ns-resize");
     });
 
     it("handles disabled state correctly", () => {
@@ -50,7 +50,7 @@ describe("useInteractiveControl", () => {
     it("handles editable state correctly (with onChange)", () => {
         const { result } = renderHook(() => useInteractiveControl({ adjustValue, editable: true }));
 
-        expect(result.current.style?.cursor).toBe("pointer");
+        expect(result.current.style?.cursor).toBe("ns-resize");
     });
 
     describe("Drag Interaction", () => {
