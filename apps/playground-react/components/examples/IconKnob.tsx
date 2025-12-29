@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Ring, RadialImage, ControlComponentViewProps, ControlComponent } from "@cutoff/audio-ui-react";
+import { ValueRing, RadialImage, ControlComponentViewProps, ControlComponent } from "@cutoff/audio-ui-react";
 import { Volume2 } from "lucide-react";
 
 export type IconKnobProps = ControlComponentViewProps;
@@ -23,8 +23,8 @@ function IconKnob({ normalizedValue, className, style }: IconKnobProps) {
 
     return (
         <g className={className} style={groupStyle}>
-            {/* Ring indicator */}
-            <Ring
+            {/* ValueRing indicator */}
+            <ValueRing
                 cx={50}
                 cy={50}
                 radius={40}

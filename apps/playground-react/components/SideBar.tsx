@@ -36,7 +36,7 @@ const controls: Page[] = [
 
 // List of primitive components
 const primitives: Page[] = [
-    { name: "Ring", path: "/primitives/ring" },
+    { name: "ValueRing", path: "/primitives/ring" },
     { name: "Rotary", path: "/primitives/rotary" },
 ];
 
@@ -154,7 +154,6 @@ export default function SideBar() {
                 </div>
 
                 <div className="flex-grow overflow-y-auto">
-                    
                     <h2 className="text-xl font-medium mb-4 text-foreground">Controls</h2>
                     <nav className="space-y-2 mb-6">
                         {controls.map((page) => (
@@ -245,9 +244,7 @@ export default function SideBar() {
                 <div className="flex-shrink-0 mt-auto pt-4 border-t border-border">
                     {/* Color Theme Selector */}
                     <div className="flex items-center justify-between gap-2 mb-4">
-                        <span className="text-sm text-foreground flex items-center h-9 px-3 leading-none">
-                            Color
-                        </span>
+                        <span className="text-sm text-foreground flex items-center h-9 px-3 leading-none">Color</span>
                         <Select value={currentTheme} onValueChange={(value) => changeTheme(value)}>
                             <SelectTrigger className="w-[120px] bg-background border-input">
                                 <SelectValue placeholder="Select theme" />

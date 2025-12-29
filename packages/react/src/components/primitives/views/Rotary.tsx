@@ -37,7 +37,7 @@ export type RotaryProps = {
 
 /**
  * A primitive component that rotates its content based on a normalized value.
- * Designed to work with the same angle logic as Ring.tsx.
+ * Designed to work with the same angle logic as ValueRing.tsx.
  *
  * This component wraps RadialImage and applies rotation based on the normalized value.
  * It can display an image (via imageHref) or arbitrary SVG content (via children).

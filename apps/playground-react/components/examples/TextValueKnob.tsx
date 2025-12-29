@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import {
-    Ring,
+    ValueRing,
     Rotary,
     RadialText,
     ControlComponentViewProps,
@@ -41,8 +41,8 @@ function TextValueKnob({ normalizedValue, className, style }: TextValueKnobProps
 
     return (
         <g className={className} style={groupStyle}>
-            {/* Ring indicator */}
-            <Ring
+            {/* ValueRing indicator */}
+            <ValueRing
                 cx={50}
                 cy={50}
                 radius={40}

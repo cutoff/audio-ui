@@ -5,7 +5,7 @@ import { generateColorVariants, getAdaptiveDefaultColor } from "@cutoff/audio-ui
 import { ControlComponent } from "../types";
 import { translateKnobRoundness, translateKnobThickness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
-import Ring from "../primitives/views/Ring";
+import ValueRing from "../primitives/views/ValueRing";
 
 /**
  * Props for the SvgKnob component
@@ -65,7 +65,7 @@ function SvgKnob({
     );
 
     // SvgKnob uses angles 220-500 (280 degree arc)
-    // Ring's openness = 360 - arc_angle = 360 - 280 = 80 degrees
+    // ValueRing's openness = 360 - arc_angle = 360 - 280 = 80 degrees
     const OPENNESS = 80;
 
     // Center and radius for 100x100 viewBox
@@ -75,7 +75,7 @@ function SvgKnob({
 
     return (
         <g className={className}>
-            <Ring
+            <ValueRing
                 cx={cx}
                 cy={cy}
                 radius={radius}

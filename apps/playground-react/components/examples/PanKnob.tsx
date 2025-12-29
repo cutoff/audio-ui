@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Ring, ControlComponentViewProps, ControlComponent } from "@cutoff/audio-ui-react";
+import { ValueRing, ControlComponentViewProps, ControlComponent } from "@cutoff/audio-ui-react";
 
 export type PanKnobProps = ControlComponentViewProps;
 
@@ -93,8 +93,8 @@ function PanKnob({ normalizedValue, className, style }: PanKnobProps) {
 
     return (
         <g className={className} style={groupStyle}>
-            {/* Ring indicator - subtle background track */}
-            <Ring
+            {/* ValueRing indicator - subtle background track */}
+            <ValueRing
                 cx={50}
                 cy={50}
                 radius={44}

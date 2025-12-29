@@ -4,7 +4,7 @@ import React, { CSSProperties, useMemo } from "react";
 import { useArcAngle } from "../../../hooks/useArcAngle";
 import RingArc from "./RingArc";
 
-export type RingProps = {
+export type ValueRingProps = {
     /** X coordinate of the center point */
     cx: number;
     /** Y coordinate of the center point */
@@ -37,7 +37,7 @@ export type RingProps = {
  *
  * This component is designed to be used inside an <svg> element.
  */
-function Ring({
+function ValueRing({
     cx,
     cy,
     radius,
@@ -50,7 +50,7 @@ function Ring({
     positions,
     fgArcStyle,
     bgArcStyle,
-}: RingProps) {
+}: ValueRingProps) {
     // Calculate arc angles using shared hook (rotation computation factored into hook)
     const { startAngle, endAngle, valueToAngle, valueStartAngle } = useArcAngle(
         normalizedValue,
@@ -107,4 +107,4 @@ function Ring({
     );
 }
 
-export default React.memo(Ring);
+export default React.memo(ValueRing);

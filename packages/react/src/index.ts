@@ -7,8 +7,8 @@ export { default as Slider } from "./components/controls/Slider";
 export { default as ContinuousControl } from "./components/primitives/ContinuousControl";
 
 // Export primitives
-export { default as Ring } from "./components/primitives/views/Ring";
-export type { RingProps } from "./components/primitives/views/Ring";
+export { default as ValueRing } from "./components/primitives/views/ValueRing";
+export type { ValueRingProps } from "./components/primitives/views/ValueRing";
 export { default as Rotary } from "./components/primitives/views/Rotary";
 export type { RotaryProps } from "./components/primitives/views/Rotary";
 export { default as RadialImage } from "./components/primitives/views/RadialImage";

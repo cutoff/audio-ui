@@ -6,27 +6,27 @@ SVG View Primitives are low-level building blocks for composing custom radial co
 
 The library provides five SVG View Primitives:
 
-| Primitive       | Purpose            | Key Feature                                   |
-| --------------- | ------------------ | --------------------------------------------- |
-| **Ring**        | Arc/ring indicator | Shows value progress as a circular arc        |
-| **Rotary**      | Rotating content   | Rotates children based on normalized value    |
-| **RadialImage** | Static content     | Displays image or SVG at radial coordinates   |
-| **RadialText**  | Auto-fitting text  | Measures and scales text to fit within radius |
-| **RevealingPath** | Path animation   | Reveals an arbitrary SVG path based on value  |
+| Primitive         | Purpose            | Key Feature                                   |
+| ----------------- | ------------------ | --------------------------------------------- |
+| **ValueRing**     | Arc/ring indicator | Shows value progress as a circular arc        |
+| **Rotary**        | Rotating content   | Rotates children based on normalized value    |
+| **RadialImage**   | Static content     | Displays image or SVG at radial coordinates   |
+| **RadialText**    | Auto-fitting text  | Measures and scales text to fit within radius |
+| **RevealingPath** | Path animation     | Reveals an arbitrary SVG path based on value  |
 
 All primitives share a common coordinate system:
 
 - `cx`, `cy`: Center point coordinates
 - `radius`: Distance from center to content boundary
 
-## Ring
+## ValueRing
 
 Renders a circular arc indicator, commonly used for showing parameter values on knobs.
 
 ### Props
 
 ```typescript
-type RingProps = {
+type ValueRingProps = {
   cx: number; // X coordinate of center
   cy: number; // Y coordinate of center
   radius: number; // Outer radius of the ring
@@ -45,7 +45,7 @@ type RingProps = {
 
 ```tsx
 // Basic unipolar ring
-<Ring
+<ValueRing
   cx={50} cy={50} radius={40}
   normalizedValue={0.75}
   thickness={4}
@@ -54,7 +54,7 @@ type RingProps = {
 />
 
 // Bipolar ring (starts from center)
-<Ring
+<ValueRing
   cx={50} cy={50} radius={40}
   normalizedValue={0.3}
   bipolar={true}
@@ -71,7 +71,7 @@ type RingProps = {
 
 ## Rotary
 
-Rotates its content based on a normalized value. Shares angle logic with Ring for consistent behavior.
+Rotates its content based on a normalized value. Shares angle logic with ValueRing for consistent behavior.
 
 ### Props
 
@@ -109,7 +109,7 @@ type RotaryProps = {
 ### Design Notes
 
 - Wraps `RadialImage` internally
-- Uses `useArcAngle` hook for angle calculations (same as Ring)
+- Uses `useArcAngle` hook for angle calculations (same as ValueRing)
 - Children are rendered inside a nested `<svg>` element for proper coordinate handling
 
 ## RadialImage
@@ -312,7 +312,7 @@ type RevealingPathProps = SVGProps<SVGPathElement> & {
 - Uses the `pathLength` SVG attribute to normalize dash calculations
 - Avoids expensive JS path measurement (`getTotalLength()`)
 - GPU-friendly (uses `stroke-dashoffset`)
-- Ideal for complex shapes where `Ring` (arc) is insufficient
+- Ideal for complex shapes where `ValueRing` (arc) is insufficient
 
 ## Composing Custom Knobs
 
@@ -323,7 +323,7 @@ function CustomKnob({ normalizedValue, className, style }: ControlComponentViewP
   return (
     <g className={className} style={style}>
       {/* Background ring track */}
-      <Ring
+      <ValueRing
         cx={50}
         cy={50}
         radius={45}
@@ -365,7 +365,7 @@ RadialText handles the browser-only measurement gracefully:
 
 ## File Locations
 
-- **Ring**: `packages/react/src/components/primitives/views/Ring.tsx`
+- **ValueRing**: `packages/react/src/components/primitives/views/ValueRing.tsx`
 - **Rotary**: `packages/react/src/components/primitives/views/Rotary.tsx`
 - **RadialImage**: `packages/react/src/components/primitives/views/RadialImage.tsx`
 - **RadialText**: `packages/react/src/components/primitives/views/RadialText.tsx`

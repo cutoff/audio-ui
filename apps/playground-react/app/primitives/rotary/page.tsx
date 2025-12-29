@@ -30,9 +30,9 @@ type RotaryWrapperProps = {
 // Complex Vector Shape (Polygon Pointer)
 const ComplexVectorContent = (
     <g>
-        <polygon 
-            points="50,15 45,30 55,30" 
-            fill="var(--audioui-adaptive-default-color)" 
+        <polygon
+            points="50,15 45,30 55,30"
+            fill="var(--audioui-adaptive-default-color)"
         />
         <circle cx="50" cy="50" r="3" fill="var(--audioui-adaptive-default-color)" />
     </g>
@@ -40,12 +40,12 @@ const ComplexVectorContent = (
 
 // Mixed Content Overlay (Simple Rect)
 const MixedOverlayContent = (
-    <rect 
-        x="48" 
-        y="10" 
-        width="4" 
-        height="20" 
-        fill="var(--audioui-adaptive-default-color)" 
+    <rect
+        x="48"
+        y="10"
+        width="4"
+        height="20"
+        fill="var(--audioui-adaptive-default-color)"
         rx="2"
     />
 );
@@ -61,10 +61,10 @@ function RotaryWrapper({
     childMode = 'default',
     onClick,
 }: RotaryWrapperProps) {
-    
+
     // Determine what children to render based on mode
     let children: React.ReactNode = null;
-    
+
     if (childMode === 'complex') {
         children = ComplexVectorContent;
     } else if (childMode === 'mixed') {
@@ -73,8 +73,8 @@ function RotaryWrapper({
     // 'none' and 'pixel' mean children = null (just the image)
 
     return (
-        <div 
-            className={`w-full h-full relative ${className || ""}`} 
+        <div
+            className={`w-full h-full relative ${className || ""}`}
             style={style}
             onClick={onClick}
         >
@@ -84,12 +84,12 @@ function RotaryWrapper({
                      <g>
                          {childMode === 'complex' ? (
                              // Track for complex example
-                             <path 
-                                d="M 21.7 78.3 A 40 40 0 1 1 78.3 78.3" 
-                                fill="none" 
-                                stroke="var(--audioui-surface-2)" 
-                                strokeWidth="4" 
-                                strokeLinecap="round" 
+                             <path
+                                d="M 21.7 78.3 A 40 40 0 1 1 78.3 78.3"
+                                fill="none"
+                                stroke="var(--audioui-surface-2)"
+                                strokeWidth="4"
+                                strokeLinecap="round"
                              />
                          ) : (
                              // Standard circle background
@@ -122,7 +122,7 @@ function generateCodeSnippet(
     childMode: ChildMode
 ): string {
     let code = `<svg width="100%" height="100%" viewBox="0 0 100 100">\n`;
-    
+
     if (!imageHref) {
          if (childMode === 'complex') {
              code += `    {/* Background Track */}\n    <path d="..." stroke="var(--audioui-surface-2)" />\n`;
@@ -145,18 +145,18 @@ function generateCodeSnippet(
     if (imageHref) {
         code += `\n        imageHref="${imageHref}"`;
     }
-    
+
     if ((childMode === 'none' || childMode === 'pixel') && imageHref) {
         code += `\n    />`;
     } else {
         code += `\n    >`;
-        
+
         if (childMode === 'complex') {
             code += `\n        <polygon points="..." fill="..." />\n        <circle ... />`;
         } else if (childMode === 'mixed') {
             code += `\n        <rect ... />`;
         }
-        
+
         code += `\n    </Rotary>`;
     }
 
@@ -190,7 +190,7 @@ export default function RotaryDemoPage() {
     const handleContentChange = (value: string) => {
         const mode = value as ChildMode;
         setChildMode(mode);
-        
+
         // Auto-configure imageHref based on selection
         if (mode === 'complex') {
             setImageHref(undefined);
@@ -209,7 +209,7 @@ export default function RotaryDemoPage() {
     };
 
     // Memoize examples to prevent re-renders
-    const exampleSize = 100; // Fixed size for examples, matching Ring demo
+    const exampleSize = 100; // Fixed size for examples, matching ValueRing demo
     const examples = useMemo(() => [
         <RotaryWrapper
             key="svg-data"
@@ -217,8 +217,8 @@ export default function RotaryDemoPage() {
             imageHref={VINTAGE_KNOB_SVG}
             childMode="none"
             style={{ width: exampleSize, height: exampleSize }}
-            onClick={() => handleExampleClick({ 
-                normalizedValue: 0.3, 
+            onClick={() => handleExampleClick({
+                normalizedValue: 0.3,
                 imageHref: VINTAGE_KNOB_SVG,
                 childMode: 'none'
             })}
@@ -238,8 +238,8 @@ export default function RotaryDemoPage() {
             openness={33}
             rotation={-166}
             style={{ width: exampleSize, height: exampleSize }}
-            onClick={() => handleExampleClick({ 
-                normalizedValue: 0.7, 
+            onClick={() => handleExampleClick({
+                normalizedValue: 0.7,
                 imageHref: VINTAGE_KNOB_IMAGE,
                 childMode: 'pixel',
                 openness: 33,
@@ -329,8 +329,8 @@ export default function RotaryDemoPage() {
         </div>,
         <div key="imageHref" className="space-y-4">
             <Label>Custom Image URL (Optional)</Label>
-            <Input 
-                value={imageHref || ""} 
+            <Input
+                value={imageHref || ""}
                 onChange={(e) => {
                     const val = e.target.value;
                     setImageHref(val || undefined);

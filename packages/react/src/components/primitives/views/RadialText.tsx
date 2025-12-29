@@ -68,7 +68,7 @@ function extractMeasurementStyle(style?: CSSProperties): TextMeasurementStyle {
  * - Supports arbitrary font styling
  *
  * This component renders a <g> element containing a <text> element (with <tspan> for multiline).
- * It is designed to work alongside Ring and Rotary components in composing knobs.
+ * It is designed to work alongside ValueRing and Rotary components in composing knobs.
  *
  * @example
  * ```tsx

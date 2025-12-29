@@ -57,7 +57,7 @@ Move all static objects, arrays, and primitive values **outside** the component 
 function BadKnob() {
     // Created on every render!
     const arcStyle = { stroke: "blue", opacity: 0.5 };
-    return <Ring fgArcStyle={arcStyle} ... />;
+    return <ValueRing fgArcStyle={arcStyle} ... />;
 }
 ```
 
@@ -68,7 +68,7 @@ function BadKnob() {
 const FG_ARC_STYLE = { stroke: "blue", opacity: 0.5 };
 
 function GoodKnob() {
-    return <Ring fgArcStyle={FG_ARC_STYLE} ... />;
+    return <ValueRing fgArcStyle={FG_ARC_STYLE} ... />;
 }
 ```
 
@@ -105,7 +105,7 @@ const groupStyle = useMemo(() => {
 
 Leverage the library's optimized primitives instead of writing raw SVG where possible:
 
-- **`Ring`**: Optimized arc drawing.
+- **`ValueRing`**: Optimized arc drawing.
 - **`Rotary`**: Handles rotation logic.
 - **`RadialImage`**: Handles centered images with proper aspect ratio.
 - **`RadialText`**: Handles text centering and scaling.
@@ -116,7 +116,7 @@ Leverage the library's optimized primitives instead of writing raw SVG where pos
 2.  **Define ViewBox**: Set your coordinate system (usually 100x100 for knobs).
 3.  **Implement Visuals**:
     - Use `Rotary` for rotating elements.
-    - Use `Ring` for value indicators.
+    - Use `ValueRing` for value indicators.
     - Use standard SVG (`path`, `circle`, `rect`) for static elements.
 4.  **Tune Interaction**: Set `direction` in the `interaction` contract ("vertical", "horizontal", "circular") to match the visual metaphor. Knobs typically use "circular" for rotary behavior.
 5.  **Optimize**: Review against the guidelines above.

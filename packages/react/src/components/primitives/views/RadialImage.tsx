@@ -24,10 +24,10 @@ export type RadialImageProps = {
 /**
  * A primitive component that displays static content at radial coordinates.
  * The content is sized to fit within the specified radius and centered at (cx, cy).
- * 
+ *
  * This component can display an image (via imageHref) or arbitrary SVG content (via children).
- * It is designed to work alongside Ring and Rotary components in composing knobs.
- * 
+ * It is designed to work alongside ValueRing and Rotary components in composing knobs.
+ *
  * Useful for displaying icons or static images within knob compositions.
  */
 function RadialImage({
@@ -68,4 +68,3 @@ function RadialImage({
 }
 
 export default React.memo(RadialImage);
-
