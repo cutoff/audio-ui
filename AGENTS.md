@@ -19,7 +19,7 @@
 - **Do NOT preserve deprecated APIs** - remove them entirely if they're no longer needed
 - **Always prioritize clean, modern code** over maintaining old patterns
 - **Refactor freely** - if a better approach exists, use it without worrying about existing code
-- **Do NOT use evolution phrasing** - Avoid words like "now", "recently", "changed", "updated", "moved", "introduced", "added", "removed". Write in present tense, declarative statements. Example: Instead of "Knob now uses SvgContinuousControl", write "Knob uses SvgContinuousControl" or "Knob is implemented using SvgContinuousControl"
+- **Do NOT use evolution phrasing** - Avoid words like "now", "recently", "changed", "updated", "moved", "introduced", "added", "removed". Write in present tense, declarative statements. Example: Instead of "Knob now uses ContinuousControl", write "Knob uses ContinuousControl" or "Knob is implemented using ContinuousControl"
 
 When making changes, focus on:
 
@@ -36,7 +36,7 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Architecture        | **CRITICAL**: `packages/core/` is framework-agnostic (pure TypeScript, no framework deps). `packages/react/` is the React implementation that wraps core. Future framework packages (e.g., `packages/solid/`) would follow the same pattern: depend on core, provide framework-specific components. |
 | Git Operations      | **Do NOT commit changes automatically.** Always ask for user confirmation before running `git commit`, `git merge`, `git reset`, or modifying git history.                                                                                                                                          |
-| Documentation Style | **Write in present tense, declarative statements.** Avoid evolution phrasing: "now", "recently", "changed", "updated", "moved", "introduced", "added", "removed". Focus on current state, not history. Example: "Knob uses SvgContinuousControl" not "Knob now uses SvgContinuousControl".          |
+| Documentation Style | **Write in present tense, declarative statements.** Avoid evolution phrasing: "now", "recently", "changed", "updated", "moved", "introduced", "added", "removed". Focus on current state, not history. Example: "Knob uses ContinuousControl" not "Knob now uses ContinuousControl".                |
 | Performance Mandate | **Critical Priority.** Audio apps have heavy runtime constraints (e.g., avoiding UI stutters, ensuring low-latency response). Prioritize performance in all decisions: minimal re-renders, no JS for layout/sizing, efficient event handling.                                                       |
 | React               | React 18 only; library as peer deps (`^18.2.0`), demo as direct (`^18.3.1`); never upgrade to 19                                                                                                                                                                                                    |
 | TypeScript          | Strict mode; handle all errors; prefix unused params with \_; `@types/react:^18.3.23`                                                                                                                                                                                                               |
@@ -146,7 +146,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 
 - **Core Architecture**: Interaction logic is centralized in `packages/core/src/controller/InteractionController.ts` (pure TS class).
 - **React Adapter**: `useInteractiveControl` hook in `packages/react` wraps `InteractionController` to bind it to React events.
-- **Generic Control Architecture**: `Knob` and `Slider` are implemented using `SvgContinuousControl`, a generic component that decouples behavior (AudioParameter, interaction logic) from visualization (SVG rendering). This architecture allows easy customization by providing custom view components that implement the `ControlComponentView` contract.
+- **Generic Control Architecture**: `Knob` and `Slider` are implemented using `ContinuousControl`, a generic component that decouples behavior (AudioParameter, interaction logic) from visualization (SVG rendering). This architecture allows easy customization by providing custom view components that implement the `ControlComponentView` contract.
 - **Unified Interaction Hook**: All interactive controls (Knob, Slider, KnobSwitch, Button) use `useInteractiveControl` hook for consistent behavior
 - **Input Methods**: Supports drag (mouse/touch), wheel, and keyboard interactions
 - **Interaction Modes**: Configurable via `interactionMode` prop ("drag" | "wheel" | "both")

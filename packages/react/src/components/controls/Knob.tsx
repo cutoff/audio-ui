@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import SvgKnob from "../theme/SvgKnob";
-import SvgContinuousControl from "../primitives/SvgContinuousControl";
+import ContinuousControl from "../primitives/ContinuousControl";
 import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps } from "../types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
@@ -167,7 +167,7 @@ function Knob({
     const sizeStyle = isStretch ? undefined : getSizeStyleForComponent("knob", size);
 
     return (
-        <SvgContinuousControl
+        <ContinuousControl
             view={SvgKnob}
             min={min}
             max={max}
@@ -196,7 +196,7 @@ function Knob({
             roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
         >
             {knobContent}
-        </SvgContinuousControl>
+        </ContinuousControl>
     );
 }
 

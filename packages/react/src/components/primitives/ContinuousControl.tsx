@@ -11,7 +11,7 @@ import { useInteractiveControl } from "../../hooks/useInteractiveControl";
 
 // 1. Define Props with Generics
 // P represents the "Extra Props" required by the specific View component
-export type SvgContinuousControlProps<P extends object = {}> =
+export type ContinuousControlComponentProps<P extends object = {}> =
     // Base Control Props (includes all ContinuousControlProps)
     ContinuousControlProps &
         // Layout props that configure AdaptiveBox behavior
@@ -34,7 +34,7 @@ export type SvgContinuousControlProps<P extends object = {}> =
  * A Generic Continuous Control that connects a Data Model (AudioParameter)
  * to a Visualization View (ControlComponent).
  */
-export function SvgContinuousControl<P extends object = {}>(props: SvgContinuousControlProps<P>) {
+export function ContinuousControl<P extends object = {}>(props: ContinuousControlComponentProps<P>) {
     const {
         view: View,
         min,
@@ -158,4 +158,5 @@ export function SvgContinuousControl<P extends object = {}>(props: SvgContinuous
     );
 }
 
-export default React.memo(SvgContinuousControl) as typeof SvgContinuousControl;
+export default React.memo(ContinuousControl) as typeof ContinuousControl;
+

@@ -4,7 +4,7 @@ export { default as Button } from "./components/controls/Button";
 export { default as Knob } from "./components/controls/Knob";
 export { default as KnobSwitch } from "./components/controls/KnobSwitch";
 export { default as Slider } from "./components/controls/Slider";
-export { default as SvgContinuousControl } from "./components/primitives/SvgContinuousControl";
+export { default as ContinuousControl } from "./components/primitives/ContinuousControl";
 
 // Export primitives
 export { default as Ring } from "./components/primitives/views/Ring";
@@ -35,7 +35,7 @@ export type { KnobSwitchProps, KnobSwitchOptionProps } from "./components/contro
 export type { KnobProps } from "./components/controls/Knob";
 export type { SliderProps } from "./components/controls/Slider";
 export type { ButtonProps } from "./components/controls/Button";
-export type { SvgContinuousControlProps } from "./components/primitives/SvgContinuousControl";
+export type { ContinuousControlComponentProps } from "./components/primitives/ContinuousControl";
 export type { KeybedProps } from "./components/devices/Keybed";
 
 // Export SVG component types

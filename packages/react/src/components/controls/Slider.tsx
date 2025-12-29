@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "../theme/AudioUiProvider";
 import { SvgVerticalSlider, SvgHorizontalSlider } from "../theme/SvgSlider";
-import SvgContinuousControl from "../primitives/SvgContinuousControl";
+import ContinuousControl from "../primitives/ContinuousControl";
 import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps } from "../types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
@@ -85,7 +85,7 @@ function Slider({
     const ViewComponent = orientation === "vertical" ? SvgVerticalSlider : SvgHorizontalSlider;
 
     return (
-        <SvgContinuousControl
+        <ContinuousControl
             view={ViewComponent}
             min={min}
             max={max}

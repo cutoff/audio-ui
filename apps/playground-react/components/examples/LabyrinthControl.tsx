@@ -116,7 +116,7 @@ function LabyrinthControl({ normalizedValue, className, style }: LabyrinthContro
     // ============================================================================
     // Render
     // ============================================================================
-    // Note: The <svg> element is provided by SvgContinuousControl via AdaptiveBox.Svg
+    // Note: The <svg> element is provided by ContinuousControl via AdaptiveBox.Svg
     // This component only renders the SVG content (paths, shapes) inside a <g> group
     return (
         <g 

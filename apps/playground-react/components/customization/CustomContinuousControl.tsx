@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { SvgContinuousControl, ContinuousControlProps, AdaptiveBoxProps, ControlComponent } from "@cutoff/audio-ui-react";
+import { ContinuousControl, ContinuousControlProps, AdaptiveBoxProps, ControlComponent } from "@cutoff/audio-ui-react";
 
 /**
  * Props for the CustomContinuousControl component (generic wrapper around any ControlComponent view)
@@ -18,7 +18,7 @@ export type CustomContinuousControlProps = ContinuousControlProps &
 /**
  * CustomContinuousControl component provides a generic wrapper for any ControlComponent view.
  * It connects a Data Model (AudioParameter) to a Visualization View (ControlComponent),
- * similar to SvgContinuousControl but as a playground example component.
+ * similar to ContinuousControl but as a playground example component.
  */
 function CustomContinuousControl({
     view: View,
@@ -49,7 +49,7 @@ function CustomContinuousControl({
     scale,
 }: CustomContinuousControlProps) {
     return (
-        <SvgContinuousControl
+        <ContinuousControl
             view={View}
             min={min}
             max={max}

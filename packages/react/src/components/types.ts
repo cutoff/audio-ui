@@ -160,7 +160,7 @@ export type InteractiveControlProps<T = number> = {
 };
 
 /**
- * Props for continuous value controls (primitives like SvgContinuousControl).
+ * Props for continuous value controls (primitives like ContinuousControl).
  *
  * This type is size-agnostic: it does not include AdaptiveSizeProps.
  * Built-in controls (Knob, Slider) combine this with AdaptiveSizeProps

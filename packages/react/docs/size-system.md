@@ -96,7 +96,7 @@ All controls support a `size` prop and an `adaptiveSize` prop:
 type SizeType = "xsmall" | "small" | "normal" | "large" | "xlarge";
 
 type AdaptiveSizeProps = {
-  size?: SizeType;        // default: "normal"
+  size?: SizeType; // default: "normal"
   adaptiveSize?: boolean; // default: false
 };
 ```
@@ -163,7 +163,7 @@ const mergedClassName = classNames(sizeClassName, className);
 const sizeStyle = isStretch ? undefined : getSizeStyleForComponent("knob", size);
 
 return (
-  <SvgContinuousControl
+  <ContinuousControl
     className={mergedClassName}
     style={{ ...sizeStyle, ...style }}
     // ... other props
