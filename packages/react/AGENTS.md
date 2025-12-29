@@ -75,7 +75,7 @@ Technical documentation is located in `docs/`:
 
 - **`docs/color-property-examples.md`**: Practical examples of using the `color` property with components. Includes basic usage, color animation, combining with other properties, dynamic colors, and component-specific color handling (Keybed luminosity variants).
 
-- **`docs/Keybed-MiddleC-Positions.md`**: Specifications for middle C positions on physical MIDI keyboards. Documents standard layouts for common keyboard sizes (25-88 keys), MIDI note numbering conventions, visual representations, and transposition considerations.
+- **`docs/keybed-middle-c-positions.md`**: Specifications for middle C positions on physical MIDI keyboards. Documents standard layouts for common keyboard sizes (25-88 keys), MIDI note numbering conventions, visual representations, and transposition considerations.
 
 - **`docs/interaction-system.md`**: Complete interaction system architecture documentation. Covers the `useInteractiveControl` hook, interaction modes, sensitivity tuning, input methods (drag/touch, wheel, keyboard), focus management, accessibility, performance considerations, and component-specific behavior. **Essential reference for understanding how all interactive controls handle user input.**
 

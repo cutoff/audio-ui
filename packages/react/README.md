@@ -131,7 +131,7 @@ Technical documentation is located in `docs/`:
 - **`docs/adaptive-box-layout.md`**: AdaptiveBox layout system specification
 - **`docs/color-system.md`**: Complete color system architecture
 - **`docs/color-property-examples.md`**: Practical color property usage examples
-- **`docs/Keybed-MiddleC-Positions.md`**: MIDI keyboard positioning specifications
+- **`docs/keybed-middle-c-positions.md`**: MIDI keyboard positioning specifications
 
 ## Common Development Tasks
 
