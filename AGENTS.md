@@ -131,7 +131,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 
 ## Strategic Roadmap
 
-**Primary Directive:** The project's strategic direction, priorities, and release plan are defined in `ROADMAP.md`. All tasks and development efforts must align with the goals and milestones outlined in this document. Consult it at the beginning of any session to understand the current priorities.
+**Primary Directive:** The project's strategic direction, priorities, and release plan are defined in `docs/internal/ROADMAP.md`. All tasks and development efforts must align with the goals and milestones outlined in this document. Consult it at the beginning of any session to understand the current priorities.
 
 ## AdaptiveBox Component
 
@@ -174,7 +174,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - Provider: AudioUiProvider defaults color; useThemableProps fallback
 - **Comprehensive Documentation**: See `packages/react/docs/color-system.md` for complete color system architecture, and `apps/playground-react/docs/color-integration.md` for playground integration details
 - **Styling System Guidelines**: See `agents/audioui-styling-system.md` for complete styling conventions, naming patterns, constants usage, and Stylelint enforcement
-- **Performance Guidelines**: See `PERFORMANCE.md` for centralized performance findings, optimization best practices (SVG geometry vs CSS, memoization strategy, event handling), and benchmarking procedures.
+- **Performance Guidelines**: See `docs/internal/PERFORMANCE.md` for centralized performance findings, optimization best practices (SVG geometry vs CSS, memoization strategy, event handling), and benchmarking procedures.
 
 ## Size System
 
