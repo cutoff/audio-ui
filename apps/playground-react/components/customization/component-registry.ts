@@ -4,6 +4,7 @@ import ClassicVectorKnob from "../examples/ClassicVectorKnob";
 import GuitarKnob from "../examples/GuitarKnob";
 import IconKnob from "../examples/IconKnob";
 import HifiKnob from "../examples/HifiKnob";
+import HifiBipolarKnob from "../examples/HifiBipolarKnob";
 import TextValueKnob from "../examples/TextValueKnob";
 
 /**
@@ -13,6 +14,7 @@ import TextValueKnob from "../examples/TextValueKnob";
 export const componentRegistry: ControlComponent[] = [
     IconKnob,
     HifiKnob,
+    HifiBipolarKnob,
     TextValueKnob,
     LabyrinthControl,
     ClassicVectorKnob,

@@ -6,11 +6,11 @@ import RingArc from "./RingArc";
 
 export type RingProps = {
     /** X coordinate of the center point */
-    cx: number,
+    cx: number;
     /** Y coordinate of the center point */
-    cy: number,
+    cy: number;
     /** Radius of the ring */
-    radius: number,
+    radius: number;
     /** Normalized value between 0 and 1 */
     normalizedValue: number;
     /** Whether to start the arc from center (bipolar mode) */
@@ -32,7 +32,7 @@ export type RingProps = {
 /**
  * A reusable SVG fragment that renders a ring (arc) used in circular controls like knobs.
  * It handles the calculation of SVG paths for both the background track and the foreground value indicator.
- * 
+ *
  * This component is designed to be used inside an <svg> element.
  */
 function Ring({
@@ -48,18 +48,13 @@ function Ring({
     fgArcStyle,
     bgArcStyle,
 }: RingProps) {
-
-    /**
-     * Angular values for the knob's arc
-     */
-    const CENTER_ANGLE = 360;
-
     // Calculate arc angles using shared hook (rotation computation factored into hook)
-    const {
-        startAngle,
-        endAngle,
-        valueToAngle,
-    } = useArcAngle(normalizedValue, openness, rotation);
+    const { startAngle, endAngle, valueToAngle, valueStartAngle } = useArcAngle(
+        normalizedValue,
+        openness,
+        rotation,
+        bipolar
+    );
 
     const strokeLinecap = roundness ? "round" : "square";
 
@@ -76,12 +71,8 @@ function Ring({
     // (Full circles require complex path construction to work with stroke-dasharray)
     // PERFORMANCE NOTE: We explicitly AVOID the RevealingPath optimization (stroke-dasharray)
     // here because in high-concurrency scenarios (hundreds of knobs), the React overhead
-    // of the extra component layer and DOM attribute updates proved slower than 
+    // of the extra component layer and DOM attribute updates proved slower than
     // simply recalculating the geometric path in JS.
-    
-    // Calculate start angle for the foreground arc
-    // For bipolar: start at top (or rotated center). For unipolar: start at min angle.
-    const fgStartAngle = bipolar ? (CENTER_ANGLE - rotation) : startAngle;
 
     return (
         <>
@@ -99,7 +90,7 @@ function Ring({
 
             {/* Foreground Arc */}
             <RingArc
-                startAngle={fgStartAngle}
+                startAngle={valueStartAngle}
                 endAngle={valueToAngle}
                 style={fgArcStyle}
                 cx={cx}
@@ -113,4 +104,3 @@ function Ring({
 }
 
 export default React.memo(Ring);
-

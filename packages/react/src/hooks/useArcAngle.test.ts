@@ -99,4 +99,24 @@ describe("useArcAngle", () => {
         expect(result.current.endAngle).toBe(315);
         expect(result.current.valueToAngle).toBe(180);
     });
+
+    it("handles bipolar mode correctly", () => {
+        // Default bipolar=false (unipolar)
+        const { result: resultUnipolar } = renderHook(() => useArcAngle(0.5, 90, 0, false));
+        // Unipolar starts at startAngle (225 for 90 openness)
+        expect(resultUnipolar.current.valueStartAngle).toBe(resultUnipolar.current.startAngle);
+        expect(resultUnipolar.current.valueStartAngle).toBe(225);
+
+        // bipolar=true
+        const { result: resultBipolar } = renderHook(() => useArcAngle(0.5, 90, 0, true));
+        // Bipolar starts at center (360)
+        expect(resultBipolar.current.valueStartAngle).toBe(360);
+    });
+
+    it("handles bipolar mode with rotation", () => {
+        // bipolar=true, rotation=180
+        const { result } = renderHook(() => useArcAngle(0.5, 90, 180, true));
+        // Center 360 - rotation 180 = 180
+        expect(result.current.valueStartAngle).toBe(180);
+    });
 });

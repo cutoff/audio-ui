@@ -13,6 +13,8 @@ export type RotaryProps = {
     radius: number;
     /** Normalized value between 0 and 1 */
     normalizedValue: number;
+    /** Whether to start the arc from center (bipolar mode) */
+    bipolar?: boolean;
     /** Openness of the arc in degrees (default 90) */
     openness?: number;
     /** Optional image URL to display */
@@ -30,7 +32,7 @@ export type RotaryProps = {
 /**
  * A primitive component that rotates its content based on a normalized value.
  * Designed to work with the same angle logic as Ring.tsx.
- * 
+ *
  * This component wraps RadialImage and applies rotation based on the normalized value.
  * It can display an image (via imageHref) or arbitrary SVG content (via children).
  */
@@ -39,6 +41,7 @@ function Rotary({
     cy,
     radius,
     normalizedValue,
+    bipolar = false,
     openness = 90,
     imageHref,
     children,
@@ -47,7 +50,7 @@ function Rotary({
     style,
 }: RotaryProps) {
     // Calculate arc angles using shared hook (rotation computation factored into hook)
-    const { valueToAngle } = useArcAngle(normalizedValue, openness, rotation);
+    const { valueToAngle } = useArcAngle(normalizedValue, openness, rotation, bipolar);
 
     return (
         <RadialImage
@@ -65,5 +68,3 @@ function Rotary({
 }
 
 export default React.memo(Rotary);
-
-
