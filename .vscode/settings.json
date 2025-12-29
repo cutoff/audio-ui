@@ -1,0 +1,31 @@
+{
+    "vitest.include": ["**/vitest.config.{ts,js,mjs,cjs}", "**/vite.config.{ts,js,mjs,cjs}"],
+    "vitest.exclude": [
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/*.timestamp-*.mjs",
+        "**/vite.config.ts.timestamp-*",
+        "**/vitest.config.ts.timestamp-*"
+    ],
+    "files.exclude": {
+        "**/*.timestamp-*.mjs": true,
+        "**/vite.config.ts.timestamp-*": true,
+        "**/vitest.config.ts.timestamp-*": true
+    },
+    "search.exclude": {
+        "**/*.timestamp-*.mjs": true,
+        "**/vite.config.ts.timestamp-*": true,
+        "**/vitest.config.ts.timestamp-*": true
+    },
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+}

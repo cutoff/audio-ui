@@ -29,10 +29,10 @@ export type RadialTextProps = {
  * A primitive component that displays static text at radial coordinates.
  * The text is centered at (cx, cy) and sized to fit within the specified radius.
  * Supports multiline text via an array of strings.
- * 
+ *
  * This component renders a <text> element (with <tspan> for multiline).
  * It is designed to work alongside Ring and Rotary components in composing knobs.
- * 
+ *
  * Note: It is the user's responsibility to ensure text fits within the radius.
  * The component sizes text based on radius but does not prevent overflow.
  */
@@ -87,12 +87,7 @@ function RadialText({
             style={style}
         >
             {textLines.map((line, index) => (
-                <tspan
-                    key={index}
-                    x={cx}
-                    dy={index === 0 ? verticalOffset : lineHeight}
-                    textAnchor={textAnchor}
-                >
+                <tspan key={index} x={cx} dy={index === 0 ? verticalOffset : lineHeight} textAnchor={textAnchor}>
                     {line}
                 </tspan>
             ))}
@@ -101,4 +96,3 @@ function RadialText({
 }
 
 export default React.memo(RadialText);
-
