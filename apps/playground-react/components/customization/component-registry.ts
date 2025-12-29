@@ -4,8 +4,8 @@ import ClassicVectorKnob from "../examples/ClassicVectorKnob";
 import GuitarKnob from "../examples/GuitarKnob";
 import IconKnob from "../examples/IconKnob";
 import HifiKnob from "../examples/HifiKnob";
-import HifiBipolarKnob from "../examples/HifiBipolarKnob";
 import TextValueKnob from "../examples/TextValueKnob";
+import SelectorKnob from "../examples/SelectorKnob";
 
 /**
  * Registry of available custom control components for the customization laboratory.
@@ -14,7 +14,7 @@ import TextValueKnob from "../examples/TextValueKnob";
 export const componentRegistry: ControlComponent[] = [
     IconKnob,
     HifiKnob,
-    HifiBipolarKnob,
+    SelectorKnob,
     TextValueKnob,
     LabyrinthControl,
     ClassicVectorKnob,
