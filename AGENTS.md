@@ -194,6 +194,17 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - **Utilities**: `getSizeClassForComponent()` returns CSS class names; `getSizeStyleForComponent()` returns inline style objects with CSS variable references
 - **Location**: Size mappings in `packages/core/src/utils/sizing.ts`; CSS variables in `packages/core/src/styles/themes.css`; size classes in `packages/core/src/styles/styles.css`
 
+## SVG View Primitives
+
+Low-level building blocks for composing custom radial controls (knobs, dials, rotary encoders). All primitives share a common coordinate system (`cx`, `cy`, `radius`).
+
+- **Ring**: Arc/ring indicator showing value progress; supports bipolar mode, configurable thickness/openness/roundness; stroke expands inward from radius
+- **Rotary**: Rotates children based on normalized value; shares angle logic with Ring via `useArcAngle` hook; wraps RadialImage internally
+- **RadialImage**: Static image or SVG content at radial coordinates; uses `preserveAspectRatio="xMidYMid meet"`
+- **RadialText**: Auto-fitting text with measure-once pattern; uses reference text for consistent sizing; GPU-accelerated CSS `transform: scale()`; global font metrics cache for performance (100+ knobs = 1 measurement); `dominantBaseline="central"` with baseline correction for vertical centering
+- **SSR**: Not a priority; audio/MIDI apps require client-side processing; RadialText/RadialContent fall back gracefully
+- **Comprehensive Documentation**: See `packages/react/docs/svg-view-primitives.md` for complete API, design decisions, and composition examples
+
 ## Icon Theming Best Practices
 
 - **Use Inline SVGs with `currentColor`**: Icons should be provided as React components that render inline `<svg>` elements with `fill="currentColor"`. This allows icons to automatically inherit text color and adapt to light/dark mode.
@@ -246,6 +257,7 @@ Agents docs are living documentation; update continuously for agent efficiency. 
 - `./apps/playground-react/AGENTS.md`: Playground app details (routing, integrations, env, sizing showcase).
 - `./packages/react/docs/interaction-system.md`: Complete interaction system architecture, design decisions, sensitivity tuning, and implementation details for all interactive controls.
 - `./packages/react/docs/size-system.md`: Complete size system architecture, base unit system, component aspect ratios, CSS variable structure, implementation details, and customization options.
+- `./packages/react/docs/svg-view-primitives.md`: SVG View Primitives (Ring, Rotary, RadialImage, RadialText, RadialContent) for composing custom radial controls; includes RadialText measure-once pattern, global font cache, AudioParameterConverter integration, and RadialContent foreignObject approach for rich HTML content.
 
 ## Documentation Files
 

@@ -91,4 +91,140 @@ describe("AudioParameterConverter", () => {
             expect(converter.denormalize(1)).toBe("three");
         });
     });
+
+    describe("getMaxDisplayText", () => {
+        describe("Continuous Parameter", () => {
+            it("returns longer of min/max formatted values", () => {
+                const param = AudioParameterFactory.createControl({
+                    id: "test",
+                    min: -100,
+                    max: 100,
+                    step: 1,
+                });
+                const converter = new AudioParameterConverter(param);
+                // "-100" is longer than "100"
+                expect(converter.getMaxDisplayText()).toBe("-100");
+            });
+
+            it("includes unit in comparison", () => {
+                const param = AudioParameterFactory.createControl({
+                    id: "test",
+                    min: 0,
+                    max: 20000,
+                    step: 1,
+                    unit: "Hz",
+                });
+                const converter = new AudioParameterConverter(param);
+                // "20000 Hz" is longer than "0 Hz"
+                expect(converter.getMaxDisplayText()).toBe("20000 Hz");
+            });
+
+            it("handles decimal precision", () => {
+                const param = AudioParameterFactory.createControl({
+                    id: "test",
+                    min: -60.0,
+                    max: 6.0,
+                    step: 0.1,
+                    unit: "dB",
+                });
+                const converter = new AudioParameterConverter(param);
+                // "-60 dB" is longer than "6 dB"
+                expect(converter.getMaxDisplayText()).toBe("-60 dB");
+            });
+
+            it("handles bipolar parameters", () => {
+                const param = AudioParameterFactory.createMidiBipolar14Bit("Pan");
+                const converter = new AudioParameterConverter(param);
+                // "-8192" is longer than "8191"
+                expect(converter.getMaxDisplayText()).toBe("-8192");
+            });
+
+            it("excludes unit when includeUnit is false", () => {
+                const param = AudioParameterFactory.createControl({
+                    id: "test",
+                    min: 0,
+                    max: 20000,
+                    step: 1,
+                    unit: "Hz",
+                });
+                const converter = new AudioParameterConverter(param);
+                // Without unit: "20000" is longer than "0"
+                expect(converter.getMaxDisplayText({ includeUnit: false })).toBe("20000");
+            });
+
+            it("excludes unit with decimal precision", () => {
+                const param = AudioParameterFactory.createControl({
+                    id: "test",
+                    min: -60.0,
+                    max: 6.0,
+                    step: 0.1,
+                    unit: "dB",
+                });
+                const converter = new AudioParameterConverter(param);
+                // Without unit: "-60" is longer than "6"
+                expect(converter.getMaxDisplayText({ includeUnit: false })).toBe("-60");
+            });
+
+            it("returns same result with includeUnit true (default)", () => {
+                const param = AudioParameterFactory.createControl({
+                    id: "test",
+                    min: 0,
+                    max: 100,
+                    step: 1,
+                    unit: "%",
+                });
+                const converter = new AudioParameterConverter(param);
+                // Default behavior includes unit
+                expect(converter.getMaxDisplayText()).toBe("100 %");
+                expect(converter.getMaxDisplayText({ includeUnit: true })).toBe("100 %");
+            });
+        });
+
+        describe("Boolean Parameter", () => {
+            it("returns longer of true/false labels", () => {
+                const param = AudioParameterFactory.createSwitch("test");
+                const converter = new AudioParameterConverter(param);
+                // Default labels are "On" and "Off" - same length, returns first (On)
+                expect(converter.getMaxDisplayText()).toBe("Off");
+            });
+
+            it("uses custom labels when provided", () => {
+                const param: Parameters<typeof AudioParameterFactory.createSwitch>[1] & {
+                    id: string;
+                    name: string;
+                    type: "boolean";
+                } = {
+                    id: "test",
+                    name: "Test",
+                    type: "boolean",
+                    trueLabel: "Enabled",
+                    falseLabel: "Off",
+                };
+                const converter = new AudioParameterConverter(param);
+                // "Enabled" is longer than "Off"
+                expect(converter.getMaxDisplayText()).toBe("Enabled");
+            });
+        });
+
+        describe("Enum Parameter", () => {
+            it("returns longest option label", () => {
+                const param = AudioParameterFactory.createSelector("test", [
+                    { value: "a", label: "Short" },
+                    { value: "b", label: "Medium Length" },
+                    { value: "c", label: "Very Long Label Here" },
+                ]);
+                const converter = new AudioParameterConverter(param);
+                expect(converter.getMaxDisplayText()).toBe("Very Long Label Here");
+            });
+
+            it("uses value as fallback when label is missing", () => {
+                const param = AudioParameterFactory.createSelector("test", [
+                    { value: "short" },
+                    { value: "longer_value" },
+                ]);
+                const converter = new AudioParameterConverter(param);
+                expect(converter.getMaxDisplayText()).toBe("longer_value");
+            });
+        });
+    });
 });

@@ -382,6 +382,70 @@ export class AudioParameterConverter {
             }
         }
     }
+
+    /**
+     * Get the maximum display text for sizing purposes.
+     * Returns the longest formatted string among all possible values.
+     * Useful for RadialText referenceText prop to ensure consistent sizing.
+     *
+     * @param options - Optional configuration
+     * @param options.includeUnit - Whether to include the unit in the result (default: true).
+     *                              Set to false when displaying value and unit on separate lines.
+     * @returns The longest formatted display string
+     *
+     * @example
+     * ```ts
+     * const converter = new AudioParameterConverter(volumeParam);
+     * // Single line with unit
+     * <RadialText text={currentValue} referenceText={converter.getMaxDisplayText()} />
+     *
+     * // Multiline: value on first line, unit on second
+     * <RadialText
+     *   text={[formattedValue, unit]}
+     *   referenceText={[converter.getMaxDisplayText({ includeUnit: false }), unit]}
+     * />
+     * ```
+     */
+    getMaxDisplayText(options?: { includeUnit?: boolean }): string {
+        const includeUnit = options?.includeUnit ?? true;
+
+        switch (this.config.type) {
+            case "continuous": {
+                const conf = this.config as ContinuousParameter;
+                if (includeUnit) {
+                    const minStr = this.format(conf.min);
+                    const maxStr = this.format(conf.max);
+                    // Return the longer string
+                    return minStr.length >= maxStr.length ? minStr : maxStr;
+                } else {
+                    // Format without unit
+                    const precision = conf.step ? Math.max(0, Math.ceil(Math.log10(1 / conf.step))) : 1;
+                    const minFixed = conf.min.toFixed(precision);
+                    const maxFixed = conf.max.toFixed(precision);
+                    const minStr = parseFloat(minFixed).toString();
+                    const maxStr = parseFloat(maxFixed).toString();
+                    return minStr.length >= maxStr.length ? minStr : maxStr;
+                }
+            }
+            case "boolean": {
+                const conf = this.config as BooleanParameter;
+                const trueStr = conf.trueLabel ?? "On";
+                const falseStr = conf.falseLabel ?? "Off";
+                return trueStr.length >= falseStr.length ? trueStr : falseStr;
+            }
+            case "enum": {
+                const conf = this.config as EnumParameter;
+                let longest = "";
+                for (const opt of conf.options) {
+                    const label = opt.label ?? String(opt.value);
+                    if (label.length > longest.length) {
+                        longest = label;
+                    }
+                }
+                return longest;
+            }
+        }
+    }
 }
 
 /**

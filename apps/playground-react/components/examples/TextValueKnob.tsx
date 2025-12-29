@@ -34,10 +34,7 @@ function TextValueKnob({ normalizedValue, className, style }: TextValueKnobProps
     // Render
     // ============================================================================
     return (
-        <g 
-            className={className}
-            style={groupStyle}
-        >
+        <g className={className} style={groupStyle}>
             {/* Ring indicator */}
             <Ring
                 cx={50}
@@ -52,32 +49,18 @@ function TextValueKnob({ normalizedValue, className, style }: TextValueKnobProps
             />
 
             {/* Rotating indicator line */}
-            <Rotary
-                cx={50}
-                cy={50}
-                radius={35}
-                normalizedValue={normalizedValue}
-                openness={90}
-            >
-                <line
-                    x1="50%"
-                    y1="10%"
-                    x2="50%"
-                    y2="0%"
-                    stroke="currentColor"
-                    strokeWidth={4}
-                    strokeLinecap="round"
-                />
+            <Rotary cx={50} cy={50} radius={35} normalizedValue={normalizedValue} openness={90}>
+                <line x1="50%" y1="10%" x2="50%" y2="0%" stroke="currentColor" strokeWidth={4} strokeLinecap="round" />
             </Rotary>
 
             {/* Static text displaying value using RadialText */}
             <RadialText
+                className="font-medium fill-current"
                 cx={50}
                 cy={50}
-                radius={30}
+                radius={20}
                 text={textLines}
-                fontSizeScale={0.25}
-                className="fill-current"
+                referenceText={["100.0", "%"]}
             />
         </g>
     );
@@ -108,7 +91,7 @@ TextValueKnob.interaction = {
  * Metadata for the TextValueKnob component.
  */
 TextValueKnob.title = "Text Value Knob";
-TextValueKnob.description = "A knob with text displaying the current normalized value as a percentage. Demonstrates RadialText primitive with multiline text support (value and unit on separate lines).";
+TextValueKnob.description =
+    "A knob with text displaying the current normalized value as a percentage. Demonstrates RadialText primitive with multiline text support (value and unit on separate lines).";
 
 export default TextValueKnob as ControlComponent;
-
