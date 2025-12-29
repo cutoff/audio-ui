@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Rotary, ValueRing, RadialImage, ControlComponentViewProps, ControlComponent } from "@cutoff/audio-ui-react";
+import { RotaryImage, ValueRing, RadialImage, ControlComponentViewProps, ControlComponent } from "@cutoff/audio-ui-react";
 
 export type ImageBackgroundKnobProps = ControlComponentViewProps;
 
@@ -41,7 +41,7 @@ function HifiKnob({ normalizedValue, className, style }: ImageBackgroundKnobProp
             <RadialImage cx={50} cy={50} radius={47} imageHref={KNOB_BACKGROUND_IMAGE} />
 
             {/* Rotating indicator line */}
-            <Rotary cx={50} cy={50} radius={50} normalizedValue={normalizedValue} openness={0}>
+            <RotaryImage cx={50} cy={50} radius={50} normalizedValue={normalizedValue} openness={0}>
                 <line
                     x1="50"
                     y1="15"
@@ -52,7 +52,7 @@ function HifiKnob({ normalizedValue, className, style }: ImageBackgroundKnobProp
                     strokeLinecap="round"
                     style={LINE_STYLE}
                 />
-            </Rotary>
+            </RotaryImage>
         </g>
     );
 }
@@ -83,6 +83,6 @@ HifiKnob.interaction = {
  */
 HifiKnob.title = "Hi-Fi Knob";
 HifiKnob.description =
-    "A knob with a static background image using RadialImage primitive. The image provides visual texture while the ValueRing and Rotary primitives show the current value.";
+    "A knob with a static background image using RadialImage primitive. The image provides visual texture while the ValueRing and RotaryImage primitives show the current value.";
 
 export default HifiKnob as ControlComponent;

@@ -26,7 +26,7 @@ export type RadialImageProps = {
  * The content is sized to fit within the specified radius and centered at (cx, cy).
  *
  * This component can display an image (via imageHref) or arbitrary SVG content (via children).
- * It is designed to work alongside ValueRing and Rotary components in composing knobs.
+ * It is designed to work alongside ValueRing and RotaryImage components in composing knobs.
  *
  * Useful for displaying icons or static images within knob compositions.
  */

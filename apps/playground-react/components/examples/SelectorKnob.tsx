@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Rotary, RadialImage, ControlComponentViewProps, ControlComponent } from "@cutoff/audio-ui-react";
+import { RotaryImage, RadialImage, ControlComponentViewProps, ControlComponent } from "@cutoff/audio-ui-react";
 
 export type SelectorKnobProps = ControlComponentViewProps;
 
@@ -24,7 +24,7 @@ function SelectorKnob({ normalizedValue, className, style }: SelectorKnobProps) 
     return (
         <g className={className} style={groupStyle}>
             {/* Layer 1: Rotating Selector (Bottom) */}
-            <Rotary
+            <RotaryImage
                 cx={50}
                 cy={50}
                 radius={50}

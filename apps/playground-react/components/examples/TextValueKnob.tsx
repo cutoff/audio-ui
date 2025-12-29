@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import {
     ValueRing,
-    Rotary,
+    RotaryImage,
     RadialText,
     ControlComponentViewProps,
     ControlComponent,
@@ -55,9 +55,9 @@ function TextValueKnob({ normalizedValue, className, style }: TextValueKnobProps
             />
 
             {/* Rotating indicator line */}
-            <Rotary cx={50} cy={50} radius={35} normalizedValue={normalizedValue} openness={90}>
+            <RotaryImage cx={50} cy={50} radius={35} normalizedValue={normalizedValue} openness={90}>
                 <line x1="50%" y1="10%" x2="50%" y2="0%" stroke="currentColor" strokeWidth={4} strokeLinecap="round" />
-            </Rotary>
+            </RotaryImage>
 
             {/* Static text displaying value using RadialText */}
             <RadialText

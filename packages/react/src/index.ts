@@ -9,8 +9,8 @@ export { default as ContinuousControl } from "./components/primitives/Continuous
 // Export primitives
 export { default as ValueRing } from "./components/primitives/views/ValueRing";
 export type { ValueRingProps } from "./components/primitives/views/ValueRing";
-export { default as Rotary } from "./components/primitives/views/Rotary";
-export type { RotaryProps } from "./components/primitives/views/Rotary";
+export { default as RotaryImage } from "./components/primitives/views/RotaryImage";
+export type { RotaryImageProps } from "./components/primitives/views/RotaryImage";
 export { default as RadialImage } from "./components/primitives/views/RadialImage";
 export type { RadialImageProps } from "./components/primitives/views/RadialImage";
 export { default as RadialText } from "./components/primitives/views/RadialText";

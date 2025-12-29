@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import { Rotary } from "@cutoff/audio-ui-react";
+import { RotaryImage } from "@cutoff/audio-ui-react";
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,7 +15,7 @@ const VINTAGE_KNOB_IMAGE = "/knob-volume.png";
 const VINTAGE_KNOB_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iIzMzMyIgc3Ryb2tlPSIjMTExIiBzdHJva2Utd2lkdGg9IjIiIC8+CiAgPGxpbmUgeDE9IjUwIiB5MT0iNTAiIHgyPSI1MCIgeTI9IjEwIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgLz4KPC9zdmc+";
 const GREY_BG_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iI2Q0ZDRkNCIgLz4KPC9zdmc+";
 
-// Wrapper to render the Rotary inside an SVG
+// Wrapper to render the RotaryImage inside an SVG
 type RotaryWrapperProps = {
     normalizedValue: number;
     openness?: number;
@@ -98,7 +98,7 @@ function RotaryWrapper({
                      </g>
                  )}
 
-                <Rotary
+                <RotaryImage
                     cx={50}
                     cy={50}
                     radius={40}
@@ -108,7 +108,7 @@ function RotaryWrapper({
                     imageHref={imageHref}
                 >
                     {children}
-                </Rotary>
+                </RotaryImage>
             </svg>
         </div>
     );
@@ -131,7 +131,7 @@ function generateCodeSnippet(
          }
     }
 
-    code += `    <Rotary
+    code += `    <RotaryImage
         cx={50}
         cy={50}
         radius={40}
@@ -157,7 +157,7 @@ function generateCodeSnippet(
             code += `\n        <rect ... />`;
         }
 
-        code += `\n    </Rotary>`;
+        code += `\n    </RotaryImage>`;
     }
 
     code += `\n</svg>`;
@@ -349,7 +349,7 @@ export default function RotaryDemoPage() {
 
     return (
         <ControlSkeletonPage<number>
-            componentName="Rotary"
+            componentName="RotaryImage"
             codeSnippet={codeSnippet}
             PageComponent={RotaryWrapper}
             componentProps={componentProps}

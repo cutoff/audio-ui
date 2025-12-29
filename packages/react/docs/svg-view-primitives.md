@@ -9,7 +9,7 @@ The library provides five SVG View Primitives:
 | Primitive         | Purpose            | Key Feature                                   |
 | ----------------- | ------------------ | --------------------------------------------- |
 | **ValueRing**     | Arc/ring indicator | Shows value progress as a circular arc        |
-| **Rotary**        | Rotating content   | Rotates children based on normalized value    |
+| **RotaryImage**   | Rotating content   | Rotates children based on normalized value    |
 | **RadialImage**   | Static content     | Displays image or SVG at radial coordinates   |
 | **RadialText**    | Auto-fitting text  | Measures and scales text to fit within radius |
 | **RevealingPath** | Path animation     | Reveals an arbitrary SVG path based on value  |
@@ -69,14 +69,14 @@ type ValueRingProps = {
 - Uses `RingArc` sub-component for path generation
 - Memoized with `React.memo` for performance
 
-## Rotary
+## RotaryImage
 
 Rotates its content based on a normalized value. Shares angle logic with ValueRing for consistent behavior.
 
 ### Props
 
 ```typescript
-type RotaryProps = {
+type RotaryImageProps = {
   cx: number; // X coordinate of center
   cy: number; // Y coordinate of center
   radius: number; // Radius for content bounds
@@ -94,12 +94,12 @@ type RotaryProps = {
 
 ```tsx
 // Rotating indicator line
-<Rotary cx={50} cy={50} radius={35} normalizedValue={value} openness={90}>
+<RotaryImage cx={50} cy={50} radius={35} normalizedValue={value} openness={90}>
   <line x1="50%" y1="10%" x2="50%" y2="0%" stroke="currentColor" strokeWidth={4} />
-</Rotary>
+</RotaryImage>
 
 // Rotating image
-<Rotary
+<RotaryImage
   cx={50} cy={50} radius={40}
   normalizedValue={value}
   imageHref="/knob-texture.png"
@@ -150,7 +150,7 @@ type RadialImageProps = {
 
 - Image uses `preserveAspectRatio="xMidYMid meet"` for proper scaling
 - Children are wrapped in a nested `<svg>` with `overflow: visible`
-- Commonly used as a base layer for Rotary
+- Commonly used as a base layer for RotaryImage
 
 ## RadialText
 
@@ -337,9 +337,9 @@ function CustomKnob({ normalizedValue, className, style }: ControlComponentViewP
       <RadialImage cx={50} cy={50} radius={40} imageHref="/knob-texture.png" />
 
       {/* Rotating indicator */}
-      <Rotary cx={50} cy={50} radius={35} normalizedValue={normalizedValue}>
+      <RotaryImage cx={50} cy={50} radius={35} normalizedValue={normalizedValue}>
         <line x1="50%" y1="15%" x2="50%" y2="5%" stroke="white" strokeWidth={2} />
-      </Rotary>
+      </RotaryImage>
 
       {/* Value display */}
       <RadialText cx={50} cy={50} radius={20} text={[formattedValue, "dB"]} referenceText={["-60.0", "dB"]} />
@@ -366,7 +366,7 @@ RadialText handles the browser-only measurement gracefully:
 ## File Locations
 
 - **ValueRing**: `packages/react/src/components/primitives/views/ValueRing.tsx`
-- **Rotary**: `packages/react/src/components/primitives/views/Rotary.tsx`
+- **RotaryImage**: `packages/react/src/components/primitives/views/RotaryImage.tsx`
 - **RadialImage**: `packages/react/src/components/primitives/views/RadialImage.tsx`
 - **RadialText**: `packages/react/src/components/primitives/views/RadialText.tsx`
 - **Text Measurement Utilities**: `packages/core/src/utils/textMeasurement.ts`

@@ -106,7 +106,7 @@ const groupStyle = useMemo(() => {
 Leverage the library's optimized primitives instead of writing raw SVG where possible:
 
 - **`ValueRing`**: Optimized arc drawing.
-- **`Rotary`**: Handles rotation logic.
+- **`RotaryImage`**: Handles rotation logic.
 - **`RadialImage`**: Handles centered images with proper aspect ratio.
 - **`RadialText`**: Handles text centering and scaling.
 
@@ -115,7 +115,7 @@ Leverage the library's optimized primitives instead of writing raw SVG where pos
 1.  **Duplicate an Example**: Start by copying `PanKnob.tsx` or `IconKnob.tsx`.
 2.  **Define ViewBox**: Set your coordinate system (usually 100x100 for knobs).
 3.  **Implement Visuals**:
-    - Use `Rotary` for rotating elements.
+    - Use `RotaryImage` for rotating elements.
     - Use `ValueRing` for value indicators.
     - Use standard SVG (`path`, `circle`, `rect`) for static elements.
 4.  **Tune Interaction**: Set `direction` in the `interaction` contract ("vertical", "horizontal", "circular") to match the visual metaphor. Knobs typically use "circular" for rotary behavior.

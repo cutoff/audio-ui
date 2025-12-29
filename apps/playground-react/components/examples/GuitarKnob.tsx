@@ -1,16 +1,16 @@
 "use client";
 
 import { useMemo } from "react";
-import { Rotary, ControlComponentViewProps, ControlComponent } from "@cutoff/audio-ui-react";
+import { RotaryImage, ControlComponentViewProps, ControlComponent } from "@cutoff/audio-ui-react";
 
 export type GuitarPixelKnobProps = ControlComponentViewProps;
 
-// Pixel image URL for vintage knob (from Rotary demo example 3)
+// Pixel image URL for vintage knob (from RotaryImage demo example 3)
 const VINTAGE_KNOB_IMAGE = "/knob-volume.png";
 
 /**
  * A control component that renders a vintage knob using a pixel image with custom rotation.
- * Based on Rotary demo example 3.
+ * Based on RotaryImage demo example 3.
  */
 function GuitarKnob({ normalizedValue, className, style }: GuitarPixelKnobProps) {
     // Memoize style object to prevent recreation on every render
@@ -23,8 +23,8 @@ function GuitarKnob({ normalizedValue, className, style }: GuitarPixelKnobProps)
             {/* Triangle indicator */}
             <polygon points="50,7 48,3 52,3" fill="grey" />
 
-            {/* Rotary with pixel image and custom rotation */}
-            <Rotary
+            {/* RotaryImage with pixel image and custom rotation */}
+            <RotaryImage
                 cx={50}
                 cy={50}
                 radius={40}

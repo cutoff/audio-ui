@@ -4,7 +4,7 @@ import React, { CSSProperties } from "react";
 import { useArcAngle } from "../../../hooks/useArcAngle";
 import RadialImage from "./RadialImage";
 
-export type RotaryProps = {
+export type RotaryImageProps = {
     /** X coordinate of the center point */
     cx: number;
     /** Y coordinate of the center point */
@@ -42,7 +42,7 @@ export type RotaryProps = {
  * This component wraps RadialImage and applies rotation based on the normalized value.
  * It can display an image (via imageHref) or arbitrary SVG content (via children).
  */
-function Rotary({
+function RotaryImage({
     cx,
     cy,
     radius,
@@ -57,7 +57,7 @@ function Rotary({
     pivotY,
     className,
     style,
-}: RotaryProps) {
+}: RotaryImageProps) {
     // Calculate arc angles using shared hook (rotation computation factored into hook)
     const { valueToAngle } = useArcAngle(normalizedValue, openness, rotation, bipolar, positions);
 
@@ -80,4 +80,4 @@ function Rotary({
     );
 }
 
-export default React.memo(Rotary);
+export default React.memo(RotaryImage);

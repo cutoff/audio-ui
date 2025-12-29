@@ -16,7 +16,7 @@ export interface UseArcAngleResult {
 }
 
 /**
- * Hook to calculate arc angles for rotary controls (ValueRing, Rotary components, or any other circular control).
+ * Hook to calculate arc angles for rotary controls (ValueRing, RotaryImage components, or any other circular control).
  *
  * Calculates the angular range based on openness and converts a normalized value (0-1)
  * to an angle within that range.
