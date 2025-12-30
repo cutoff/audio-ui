@@ -18,7 +18,7 @@ export type TickRingProps = {
     /** Outer radius of the ring (ticks extend inward) */
     radius: number;
     /** Length of the ticks in pixels (or diameter of dots) */
-    thickness: number;
+    thickness?: number;
     /** Openness of the ring in degrees (default 90) */
     openness?: number;
     /** Rotation offset in degrees (default 0) */
@@ -56,7 +56,7 @@ function TickRing({
     cx,
     cy,
     radius,
-    thickness,
+    thickness = 4,
     openness = 90,
     rotation = 0,
     count,
@@ -77,9 +77,20 @@ function TickRing({
         let numTicks = 0;
         let angleStep = 0;
 
+        // Handle full circle case (openness = 0 or 360)
+        // If openness is 0, we have a full circle (360 degrees range).
+        // For full circles, we distribute ticks evenly around 360 degrees,
+        // ensuring the last tick doesn't overlap the first.
+        const isFullCircle = clampedOpenness <= 0.01;
+
         if (count !== undefined && count > 1) {
             numTicks = count;
-            angleStep = totalAngle / (count - 1);
+            if (isFullCircle) {
+                // For full circle, distribute evenly around 360
+                angleStep = 360 / count;
+            } else {
+                angleStep = totalAngle / (count - 1);
+            }
         } else if (step !== undefined && step > 0) {
             numTicks = Math.floor(totalAngle / step) + 1;
             angleStep = step;
@@ -97,15 +108,7 @@ function TickRing({
         for (let i = 0; i < numTicks; i++) {
             const angle = startAngle + i * angleStep;
 
-            // For custom rendering, we typically want the center point of where the tick would be.
-            // For lines, the "center" is usually the midpoint between inner and outer?
-            // Or maybe just the outer point?
-            // Let's provide the outer point (radius) as (x,y) because that's the "anchor".
-            // Users can subtract radius if they need inward positioning.
-            // Actually, for "dot", we use radius - thickness/2 as center.
-            // For consistency, let's return coordinates at 'radius' (outer edge).
-            // Users can derive inner points using polarToCartesian if needed, or we can provide more data.
-            // Let's provide the point on the ring at 'radius'.
+            // Calculate position at outer radius
             const pos = polarToCartesian(cx, cy, radius, angle);
 
             results.push({
@@ -146,7 +149,6 @@ function TickRing({
 
                 // Draw circle using two arcs
                 // M cx-r cy A r r 0 1 0 cx+r cy A r r 0 1 0 cx-r cy
-                // We use local coordinates relative to the calculated center
                 commands.push(
                     `M ${r(center.x - rx)} ${r(center.y)} ` +
                         `A ${r(rx)} ${r(ry)} 0 1 0 ${r(center.x + rx)} ${r(center.y)} ` +

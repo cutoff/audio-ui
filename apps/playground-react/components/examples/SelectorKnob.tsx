@@ -7,6 +7,7 @@ import {
     ControlComponentViewProps,
     ControlComponent,
     TickRing,
+    LabelRing,
 } from "@cutoff/audio-ui-react";
 
 export type SelectorKnobProps = ControlComponentViewProps;
@@ -30,26 +31,14 @@ function SelectorKnob({ normalizedValue, className, style }: SelectorKnobProps) 
 
     return (
         <g className={className} style={groupStyle}>
-            <TickRing
+            <LabelRing
                 cx={50}
                 cy={50}
                 radius={45}
-                thickness={0}
                 openness={180}
-                style={TICKS_STYLE}
-                count={5}
-                className="text-foreground font-mono text-[6px] font-medium"
-                renderTick={({ x, y, index }) => (
-                    <text
-                        x={x}
-                        y={y}
-                        dy="0.3em" // Vertical center correction
-                        textAnchor="middle"
-                        fill="currentColor"
-                    >
-                        {index + 1}
-                    </text>
-                )}
+                labels={[1, 2, 3, 4, 5]}
+                labelClassName="text-foreground font-mono text-[6px] font-medium"
+                labelStyle={{ fill: "currentColor" }}
             />
             <TickRing cx={50} cy={50} radius={35} thickness={5} openness={180} style={TICKS_STYLE} count={5} />
 

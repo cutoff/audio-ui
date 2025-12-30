@@ -19,6 +19,8 @@ export { default as RevealingPath } from "./components/primitives/views/Revealin
 export type { RevealingPathProps } from "./components/primitives/views/RevealingPath";
 export { default as TickRing } from "./components/primitives/views/TickRing";
 export type { TickRingProps } from "./components/primitives/views/TickRing";
+export { default as LabelRing } from "./components/primitives/views/LabelRing";
+export type { LabelRingProps } from "./components/primitives/views/LabelRing";
 
 // Export SVG presentation components
 export { default as SvgButton } from "./components/theme/SvgButton";

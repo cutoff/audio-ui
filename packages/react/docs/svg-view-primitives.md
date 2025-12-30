@@ -14,6 +14,7 @@ The library provides five SVG View Primitives:
 | **RadialText**    | Auto-fitting text  | Measures and scales text to fit within radius |
 | **RevealingPath** | Path animation     | Reveals an arbitrary SVG path based on value  |
 | **TickRing**      | Scale decoration   | Renders a ring of ticks/markers               |
+| **LabelRing**     | Scale labels       | Renders text or icons at radial positions     |
 
 All primitives share a common coordinate system:
 
@@ -388,6 +389,57 @@ type TickData = {
 - **Custom Mode**: Providing `renderTick` allows arbitrary content but renders individual elements (less optimized for high counts).
 - **Dots**: In `dot` mode, `thickness` determines the dot diameter. Dots are centered at `radius - thickness/2`.
 - **Pills**: `pill` variant is a line with `stroke-linecap: round`.
+
+## LabelRing
+
+A specialized wrapper around `TickRing` designed for rendering text labels or icons at radial positions. It simplifies the creation of numeric scales or labeled indicators.
+
+### Props
+
+```typescript
+type LabelRingProps = Omit<TickRingProps, "renderTick" | "variant" | "thickness" | "count" | "step"> & {
+  /** Array of content to render at each tick position */
+  labels: (string | number | ReactNode)[];
+  /** Orientation of the labels */
+  orientation?: "upright" | "radial"; // default: "upright"
+  /** CSS class name for text elements (only applies to string/number labels) */
+  labelClassName?: string;
+  /** Inline styles for text elements (only applies to string/number labels) */
+  labelStyle?: CSSProperties;
+};
+```
+
+### Usage
+
+```tsx
+// Numeric scale (1-10)
+<LabelRing
+  cx={50} cy={50} radius={45}
+  labels={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+  labelClassName="text-xs font-medium"
+/>
+
+// Radial text orientation
+<LabelRing
+  cx={50} cy={50} radius={45}
+  labels={["Min", "Low", "Mid", "High", "Max"]}
+  orientation="radial"
+/>
+
+// Icon labels
+<LabelRing
+  cx={50} cy={50} radius={40}
+  labels={[<Icon1 />, <Icon2 />, <Icon3 />]}
+/>
+```
+
+### Design Notes
+
+- **Wrapper Component**: Internally uses `TickRing` with `thickness={0}` and custom `renderTick` logic.
+- **Orientation**:
+  - `upright`: Text remains horizontal regardless of position (standard for readable numbers).
+  - `radial`: Text rotates to match the angle (like tick marks).
+- **React Nodes**: When passing React components as labels, they are wrapped in a `<g>` element that handles positioning and rotation. The components themselves should be centered (e.g., icons).
 
 ## Composing Custom Knobs
 

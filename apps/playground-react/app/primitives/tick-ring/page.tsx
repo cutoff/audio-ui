@@ -48,6 +48,24 @@ export default function TickRingPage() {
                         </div>
                         <p className="text-sm text-muted-foreground">Step: 10 degrees</p>
                     </div>
+
+                    {/* Full Circle */}
+                    <div className="space-y-2 text-center">
+                        <div className="relative w-32 h-32 border rounded-full bg-secondary/20 flex items-center justify-center">
+                            <svg width="100%" height="100%" viewBox="0 0 100 100" className="w-full h-full">
+                                <TickRing
+                                    cx={50}
+                                    cy={50}
+                                    radius={45}
+                                    thickness={6}
+                                    openness={0}
+                                    count={12}
+                                    className="text-foreground"
+                                />
+                            </svg>
+                        </div>
+                        <p className="text-sm text-muted-foreground">Full Circle (0° Openness)</p>
+                    </div>
                 </div>
             </section>
 
@@ -170,7 +188,6 @@ export default function TickRingPage() {
                                     cx={50}
                                     cy={50}
                                     radius={35}
-                                    thickness={0} // Not used for custom
                                     count={11}
                                     className="text-foreground font-mono text-[8px] font-bold"
                                     renderTick={({ x, y, index }) => (
@@ -198,7 +215,6 @@ export default function TickRingPage() {
                                     cx={50}
                                     cy={50}
                                     radius={42}
-                                    thickness={0}
                                     count={11}
                                     className="text-orange-500"
                                     renderTick={({ x, y, angle }) => (

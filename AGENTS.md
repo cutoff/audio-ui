@@ -202,6 +202,8 @@ Low-level building blocks for composing custom radial controls (knobs, dials, ro
 - **RotaryImage**: Rotates children based on normalized value; shares angle logic with ValueRing via `useArcAngle` hook; wraps RadialImage internally
 - **RadialImage**: Static image or SVG content at radial coordinates; uses `preserveAspectRatio="xMidYMid meet"`
 - **RadialText**: Auto-fitting text with measure-once pattern; uses reference text for consistent sizing; GPU-accelerated CSS `transform: scale()`; global font metrics cache for performance (100+ knobs = 1 measurement); `dominantBaseline="central"` with baseline correction for vertical centering
+- **TickRing**: Scale decoration (ticks/lines/dots); supports optimized single-path rendering or custom content
+- **LabelRing**: Scale labels (text/icons); wrapper around TickRing for easy positioning and rotation
 - **SSR**: Not a priority; audio/MIDI apps require client-side processing; RadialText/RadialContent fall back gracefully
 - **Comprehensive Documentation**: See `packages/react/docs/svg-view-primitives.md` for complete API, design decisions, and composition examples
 
@@ -258,9 +260,3 @@ Agents docs are living documentation; update continuously for agent efficiency. 
 - `./packages/react/docs/interaction-system.md`: Complete interaction system architecture, design decisions, sensitivity tuning, and implementation details for all interactive controls.
 - `./packages/react/docs/size-system.md`: Complete size system architecture, base unit system, component aspect ratios, CSS variable structure, implementation details, and customization options.
 - `./packages/react/docs/svg-view-primitives.md`: SVG View Primitives (ValueRing, RotaryImage, RadialImage, RadialText, RadialContent) for composing custom radial controls; includes RadialText measure-once pattern, global font cache, AudioParameterConverter integration, and RadialContent foreignObject approach for rich HTML content.
-
-## Documentation Files
-
-### Library Documentation
-
-- `
