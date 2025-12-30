@@ -157,9 +157,7 @@ function ControlSurfacePage() {
                             >
                                 <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
                                     <span>CH {id}</span>
-                                    <span className="tabular-nums">
-                                        {formatDb(channelFaderDb[id])}
-                                    </span>
+                                    <span className="tabular-nums">{formatDb(channelFaderDb[id])}</span>
                                 </div>
 
                                 {/* Top row: Pan + Trim / Gain */}
@@ -252,9 +250,7 @@ function ControlSurfacePage() {
                         <div className="flex flex-col items-stretch gap-3 border border-zinc-200/70 dark:border-zinc-800/70 rounded-md px-3 py-3">
                             <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
                                 <span>MASTER</span>
-                                <span className="tabular-nums">
-                                    {formatDb(masterFaderDb)}
-                                </span>
+                                <span className="tabular-nums">{formatDb(masterFaderDb)}</span>
                             </div>
 
                             <div className="grid grid-cols-1 gap-2 h-[96px]">
@@ -392,8 +388,8 @@ function ControlSurfacePage() {
             <div className="mt-8 text-sm text-muted-foreground">
                 <p>
                     This demo showcases a mixer-style control surface built from AudioUI components: bipolar knobs
-                    (pan), gain knobs with dB units, vertical sliders for channel and master levels, simple level
-                    meters and latch buttons for mute/solo.
+                    (pan), gain knobs with dB units, vertical sliders for channel and master levels, simple level meters
+                    and latch buttons for mute/solo.
                 </p>
                 <p>Use the controls at the top of the page to adjust the zoom and perspective of the surface.</p>
                 <p>

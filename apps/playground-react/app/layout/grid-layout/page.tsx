@@ -61,12 +61,20 @@ export default function GridLayoutPage() {
                             </div>
 
                             {/* Grid labels */}
-                            <p className="row-start-2 col-start-1 absolute -top-8 left-2 text-sm text-muted-foreground">start</p>
-                            <p className="row-start-2 col-start-2 absolute -top-8 left-2 text-sm text-muted-foreground">end</p>
-                            <p className="row-start-2 col-start-3 absolute -top-8 left-2 text-sm text-muted-foreground">center</p>
+                            <p className="row-start-2 col-start-1 absolute -top-8 left-2 text-sm text-muted-foreground">
+                                start
+                            </p>
+                            <p className="row-start-2 col-start-2 absolute -top-8 left-2 text-sm text-muted-foreground">
+                                end
+                            </p>
+                            <p className="row-start-2 col-start-3 absolute -top-8 left-2 text-sm text-muted-foreground">
+                                center
+                            </p>
 
                             <p className="row-start-3 col-start-5 absolute left-2 text-sm text-muted-foreground">2x2</p>
-                            <p className="row-start-2 col-start-8 absolute -top-8 left-2 text-sm text-muted-foreground">3x3</p>
+                            <p className="row-start-2 col-start-8 absolute -top-8 left-2 text-sm text-muted-foreground">
+                                3x3
+                            </p>
                             <p className="row-start-1 col-start-1 absolute left-2 text-sm text-muted-foreground whitespace-nowrap">
                                 adaptiveSize=true && displayMode=scaleToFit
                             </p>
@@ -352,8 +360,8 @@ export default function GridLayoutPage() {
                         <div className="dark:bg-zinc-800/50 bg-zinc-200/50 dark:border-zinc-700 border-zinc-300 rounded-lg p-6 text-center">
                             <h2 className="text-lg font-medium mb-3 text-primary-color">Screen Size Notice</h2>
                             <p className="dark:text-zinc-300 text-zinc-700">
-                                Control surface examples are not suitable for small screens. Please use a wider screen to view the
-                                grid layout examples.
+                                Control surface examples are not suitable for small screens. Please use a wider screen
+                                to view the grid layout examples.
                             </p>
                         </div>
                     </div>

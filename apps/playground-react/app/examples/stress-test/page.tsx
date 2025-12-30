@@ -11,11 +11,11 @@ const modulators = {
     sine: (time: number, frequency: number, phase: number = 0) =>
         (Math.sin(time * frequency * Math.PI * 2 + phase) + 1) / 2,
     triangle: (time: number, frequency: number, phase: number = 0) => {
-        const t = ((time * frequency + phase / (Math.PI * 2)) % 1 + 1) % 1;
+        const t = (((time * frequency + phase / (Math.PI * 2)) % 1) + 1) % 1;
         return t < 0.5 ? t * 2 : 2 - t * 2;
     },
     sawtooth: (time: number, frequency: number, phase: number = 0) =>
-        ((time * frequency + phase / (Math.PI * 2)) % 1 + 1) % 1,
+        (((time * frequency + phase / (Math.PI * 2)) % 1) + 1) % 1,
     square: (time: number, frequency: number, phase: number = 0) =>
         Math.sin(time * frequency * Math.PI * 2 + phase) >= 0 ? 1 : 0,
     random: () => Math.random(),
@@ -70,7 +70,7 @@ function generateControlConfigs(count: number): ControlConfig[] {
         const modIndex = Math.floor(seededRandom(seed * 13) * modulatorTypes.length);
         const colorIndex = Math.floor(seededRandom(seed * 19) * COLORS.length);
         const type = types[typeIndex];
-        
+
         // Determine thickness based on control type
         let thickness: number;
         if (type === "knob") {
@@ -155,15 +155,7 @@ const AnimatedControl = ({
                 />
             );
         case "button":
-            return (
-                <Button
-                    {...commonProps}
-                    value={buttonValue}
-                    label={config.label}
-                    latch={true}
-                    size="small"
-                />
-            );
+            return <Button {...commonProps} value={buttonValue} label={config.label} latch={true} size="small" />;
         default:
             return null;
     }
@@ -182,9 +174,7 @@ export default function StressTestPage() {
     // Control values state - using refs for performance during animation
     const [values, setValues] = useState<number[]>(() => new Array(controlCount).fill(50));
     const [buttonValues, setButtonValues] = useState<boolean[]>(() => new Array(controlCount).fill(false));
-    const [keybedNotes, setKeybedNotes] = useState<number[][]>(() =>
-        new Array(keybedCount).fill(null).map(() => [])
-    );
+    const [keybedNotes, setKeybedNotes] = useState<number[][]>(() => new Array(keybedCount).fill(null).map(() => []));
 
     // Pre-generated control configurations
     const controlConfigs = useMemo(() => generateControlConfigs(controlCount), [controlCount]);
@@ -192,7 +182,7 @@ export default function StressTestPage() {
     // Animation frame reference
     const animationRef = useRef<number | null>(null);
     const startTimeRef = useRef<number>(performance.now());
-    
+
     // FPS calculation refs
     const frameCountRef = useRef(0);
     const lastFpsUpdateRef = useRef(performance.now());
@@ -239,7 +229,7 @@ export default function StressTestPage() {
             const startKeyOffset = noteOffsets[config.startKey] || 0;
             // Use octave 3-4 range (MIDI 48-72) for all keybeds
             const baseNote = 48 + startKeyOffset;
-            
+
             const notes: number[] = [];
 
             // Generate 2-4 notes based on time
@@ -343,19 +333,11 @@ export default function StressTestPage() {
                     <div className="flex items-center gap-6">
                         <div className="flex items-center gap-2">
                             <Label htmlFor="animation-toggle">Animation</Label>
-                            <Switch
-                                id="animation-toggle"
-                                checked={isAnimating}
-                                onCheckedChange={setIsAnimating}
-                            />
+                            <Switch id="animation-toggle" checked={isAnimating} onCheckedChange={setIsAnimating} />
                         </div>
                         <div className="flex items-center gap-2">
                             <Label htmlFor="fps-toggle">FPS</Label>
-                            <Switch
-                                id="fps-toggle"
-                                checked={showFps}
-                                onCheckedChange={setShowFps}
-                            />
+                            <Switch id="fps-toggle" checked={showFps} onCheckedChange={setShowFps} />
                         </div>
                     </div>
 
@@ -393,11 +375,7 @@ export default function StressTestPage() {
                     <div className="space-y-2">
                         <div className="flex items-center justify-between gap-4">
                             <Label htmlFor="keybed-toggle">Keybeds</Label>
-                            <Switch
-                                id="keybed-toggle"
-                                checked={showKeybeds}
-                                onCheckedChange={setShowKeybeds}
-                            />
+                            <Switch id="keybed-toggle" checked={showKeybeds} onCheckedChange={setShowKeybeds} />
                         </div>
                         {showKeybeds && (
                             <Slider
@@ -414,17 +392,27 @@ export default function StressTestPage() {
                 {/* Stats */}
                 <div className="mt-3 pt-3 border-t border-zinc-300 dark:border-zinc-700">
                     <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-                        <span><strong>{stats.knobs}</strong> Knobs</span>
+                        <span>
+                            <strong>{stats.knobs}</strong> Knobs
+                        </span>
                         <span>•</span>
-                        <span><strong>{stats.vSliders}</strong> V-Sliders</span>
+                        <span>
+                            <strong>{stats.vSliders}</strong> V-Sliders
+                        </span>
                         <span>•</span>
-                        <span><strong>{stats.hSliders}</strong> H-Sliders</span>
+                        <span>
+                            <strong>{stats.hSliders}</strong> H-Sliders
+                        </span>
                         <span>•</span>
-                        <span><strong>{stats.buttons}</strong> Buttons</span>
+                        <span>
+                            <strong>{stats.buttons}</strong> Buttons
+                        </span>
                         {showKeybeds && (
                             <>
                                 <span>•</span>
-                                <span><strong>{stats.keybeds}</strong> Keybeds</span>
+                                <span>
+                                    <strong>{stats.keybeds}</strong> Keybeds
+                                </span>
                             </>
                         )}
                     </div>
@@ -462,16 +450,16 @@ export default function StressTestPage() {
                         // Horizontal sliders span 2 columns, vertical sliders span 2 rows
                         const isHorizontal = config.type === "slider-h";
                         const isVertical = config.type === "slider-v";
-                        
+
                         return (
                             <div
                                 key={`control-${i}`}
                                 className={`flex items-center justify-center ${
                                     isHorizontal ? "col-span-2" : ""
                                 } ${isVertical ? "row-span-2" : ""}`}
-                                style={{ 
+                                style={{
                                     height: isHorizontal ? "45px" : isVertical ? "120px" : "60px",
-                                    minWidth: isHorizontal ? "100px" : "50px"
+                                    minWidth: isHorizontal ? "100px" : "50px",
                                 }}
                             >
                                 <AnimatedControl
@@ -488,8 +476,8 @@ export default function StressTestPage() {
             {/* Description */}
             <div className="text-xs text-muted-foreground">
                 <p>
-                    Each control is modulated by a different LFO waveform (sine, triangle, sawtooth, square) to simulate real-time MIDI automation.
-                    All components use CSS for layout and SVG for graphics.
+                    Each control is modulated by a different LFO waveform (sine, triangle, sawtooth, square) to simulate
+                    real-time MIDI automation. All components use CSS for layout and SVG for graphics.
                 </p>
             </div>
 
@@ -505,4 +493,3 @@ export default function StressTestPage() {
         </div>
     );
 }
-

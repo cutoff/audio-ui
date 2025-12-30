@@ -58,6 +58,8 @@ const SOLUTION_PATH_DATA = [
 // Format: "v-x-y" = Vertical wall at grid line x (0..10), row y (0..9)
 //         "h-y-x" = Horizontal wall at grid line y (0..10), col x (0..9)
 // Note: Grid lines are between cells. x=1 is between col 0 and 1.
+//
+// prettier-ignore
 const PASSAGES = [
     // Vertical walls (grouped by grid line)
     "v-0-5",

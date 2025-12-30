@@ -133,4 +133,3 @@ export function ColorPickerField({ value, onChange, label, id }: ColorPickerFiel
         </div>
     );
 }
-

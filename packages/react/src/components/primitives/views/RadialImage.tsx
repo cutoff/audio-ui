@@ -30,16 +30,7 @@ export type RadialImageProps = {
  *
  * Useful for displaying icons or static images within knob compositions.
  */
-function RadialImage({
-    cx,
-    cy,
-    radius,
-    imageHref,
-    children,
-    transform,
-    className,
-    style,
-}: RadialImageProps) {
+function RadialImage({ cx, cy, radius, imageHref, children, transform, className, style }: RadialImageProps) {
     return (
         <g className={className} style={style} transform={transform}>
             {imageHref && (

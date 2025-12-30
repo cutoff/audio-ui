@@ -19,22 +19,13 @@ export type RingArcProps = {
  *
  * @internal
  */
-function RingArc({
-    startAngle,
-    endAngle,
-    style,
-    cx,
-    cy,
-    radius,
-    thickness,
-    strokeLinecap,
-}: RingArcProps) {
+function RingArc({ startAngle, endAngle, style, cx, cy, radius, thickness, strokeLinecap }: RingArcProps) {
     // Determine if it's a full circle based on angular difference (>= 360 degrees)
     const isFullCircle = Math.abs(endAngle - startAngle) >= 360;
 
     const path = useMemo(() => {
         if (isFullCircle) return undefined;
-        
+
         // Use default "counter-clockwise" (End -> Start) for standard static shapes.
         return calculateArcPath(cx, cy, startAngle, endAngle, radius, "counter-clockwise");
     }, [isFullCircle, cx, cy, startAngle, endAngle, radius]);
@@ -55,15 +46,7 @@ function RingArc({
 
     if (!path) return null;
 
-    return (
-        <path
-            d={path}
-            fill="none"
-            strokeWidth={thickness}
-            strokeLinecap={strokeLinecap}
-            style={style}
-        />
-    );
+    return <path d={path} fill="none" strokeWidth={thickness} strokeLinecap={strokeLinecap} style={style} />;
 }
 
 export default React.memo(RingArc);

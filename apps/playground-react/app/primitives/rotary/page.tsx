@@ -8,12 +8,14 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-type ChildMode = 'default' | 'complex' | 'none' | 'pixel' | 'mixed';
+type ChildMode = "default" | "complex" | "none" | "pixel" | "mixed";
 
 // Sample Images
 const VINTAGE_KNOB_IMAGE = "/knob-volume.png";
-const VINTAGE_KNOB_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iIzMzMyIgc3Ryb2tlPSIjMTExIiBzdHJva2Utd2lkdGg9IjIiIC8+CiAgPGxpbmUgeDE9IjUwIiB5MT0iNTAiIHgyPSI1MCIgeTI9IjEwIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgLz4KPC9zdmc+";
-const GREY_BG_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iI2Q0ZDRkNCIgLz4KPC9zdmc+";
+const VINTAGE_KNOB_SVG =
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iIzMzMyIgc3Ryb2tlPSIjMTExIiBzdHJva2Utd2lkdGg9IjIiIC8+CiAgPGxpbmUgeDE9IjUwIiB5MT0iNTAiIHgyPSI1MCIgeTI9IjEwIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgLz4KPC9zdmc+";
+const GREY_BG_SVG =
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iI2Q0ZDRkNCIgLz4KPC9zdmc+";
 
 // Wrapper to render the RotaryImage inside an SVG
 type RotaryWrapperProps = {
@@ -30,24 +32,14 @@ type RotaryWrapperProps = {
 // Complex Vector Shape (Polygon Pointer)
 const ComplexVectorContent = (
     <g>
-        <polygon
-            points="50,15 45,30 55,30"
-            fill="var(--audioui-adaptive-default-color)"
-        />
+        <polygon points="50,15 45,30 55,30" fill="var(--audioui-adaptive-default-color)" />
         <circle cx="50" cy="50" r="3" fill="var(--audioui-adaptive-default-color)" />
     </g>
 );
 
 // Mixed Content Overlay (Simple Rect)
 const MixedOverlayContent = (
-    <rect
-        x="48"
-        y="10"
-        width="4"
-        height="20"
-        fill="var(--audioui-adaptive-default-color)"
-        rx="2"
-    />
+    <rect x="48" y="10" width="4" height="20" fill="var(--audioui-adaptive-default-color)" rx="2" />
 );
 
 // Helper for the page wrapper
@@ -58,45 +50,40 @@ function RotaryWrapper({
     imageHref,
     style,
     className,
-    childMode = 'default',
+    childMode = "default",
     onClick,
 }: RotaryWrapperProps) {
-
     // Determine what children to render based on mode
     let children: React.ReactNode = null;
 
-    if (childMode === 'complex') {
+    if (childMode === "complex") {
         children = ComplexVectorContent;
-    } else if (childMode === 'mixed') {
+    } else if (childMode === "mixed") {
         children = MixedOverlayContent;
     }
     // 'none' and 'pixel' mean children = null (just the image)
 
     return (
-        <div
-            className={`w-full h-full relative ${className || ""}`}
-            style={style}
-            onClick={onClick}
-        >
-            <svg width="100%" height="100%" viewBox="0 0 100 100" style={{ display: 'block' }}>
+        <div className={`w-full h-full relative ${className || ""}`} style={style} onClick={onClick}>
+            <svg width="100%" height="100%" viewBox="0 0 100 100" style={{ display: "block" }}>
                 {/* Background context if no image is present */}
-                 {!imageHref && (
-                     <g>
-                         {childMode === 'complex' ? (
-                             // Track for complex example
-                             <path
+                {!imageHref && (
+                    <g>
+                        {childMode === "complex" ? (
+                            // Track for complex example
+                            <path
                                 d="M 21.7 78.3 A 40 40 0 1 1 78.3 78.3"
                                 fill="none"
                                 stroke="var(--audioui-surface-2)"
                                 strokeWidth="4"
                                 strokeLinecap="round"
-                             />
-                         ) : (
-                             // Standard circle background
-                             <circle cx="50" cy="50" r="40" fill="var(--audioui-surface-1)" />
-                         )}
-                     </g>
-                 )}
+                            />
+                        ) : (
+                            // Standard circle background
+                            <circle cx="50" cy="50" r="40" fill="var(--audioui-surface-1)" />
+                        )}
+                    </g>
+                )}
 
                 <RotaryImage
                     cx={50}
@@ -124,11 +111,11 @@ function generateCodeSnippet(
     let code = `<svg width="100%" height="100%" viewBox="0 0 100 100">\n`;
 
     if (!imageHref) {
-         if (childMode === 'complex') {
-             code += `    {/* Background Track */}\n    <path d="..." stroke="var(--audioui-surface-2)" />\n`;
-         } else {
-             code += `    <circle cx="50" cy="50" r="40" fill="var(--audioui-surface-1)" />\n`;
-         }
+        if (childMode === "complex") {
+            code += `    {/* Background Track */}\n    <path d="..." stroke="var(--audioui-surface-2)" />\n`;
+        } else {
+            code += `    <circle cx="50" cy="50" r="40" fill="var(--audioui-surface-1)" />\n`;
+        }
     }
 
     code += `    <RotaryImage
@@ -146,14 +133,14 @@ function generateCodeSnippet(
         code += `\n        imageHref="${imageHref}"`;
     }
 
-    if ((childMode === 'none' || childMode === 'pixel') && imageHref) {
+    if ((childMode === "none" || childMode === "pixel") && imageHref) {
         code += `\n    />`;
     } else {
         code += `\n    >`;
 
-        if (childMode === 'complex') {
+        if (childMode === "complex") {
             code += `\n        <polygon points="..." fill="..." />\n        <circle ... />`;
-        } else if (childMode === 'mixed') {
+        } else if (childMode === "mixed") {
             code += `\n        <rect ... />`;
         }
 
@@ -170,21 +157,24 @@ export default function RotaryDemoPage() {
     const [rotation, setRotation] = useState(0);
     const [imageHref, setImageHref] = useState<string | undefined>(VINTAGE_KNOB_SVG);
     // Initial state matches the first example (svg-data)
-    const [childMode, setChildMode] = useState<ChildMode>('none');
+    const [childMode, setChildMode] = useState<ChildMode>("none");
 
-    const handleExampleClick = useCallback((config: {
-        normalizedValue?: number;
-        openness?: number;
-        rotation?: number;
-        imageHref?: string;
-        childMode?: ChildMode;
-    }) => {
-        setNormalizedValue(config.normalizedValue ?? 0.5);
-        setOpenness(config.openness ?? 90);
-        setRotation(config.rotation ?? 0);
-        setImageHref(config.imageHref);
-        setChildMode(config.childMode ?? 'complex');
-    }, []);
+    const handleExampleClick = useCallback(
+        (config: {
+            normalizedValue?: number;
+            openness?: number;
+            rotation?: number;
+            imageHref?: string;
+            childMode?: ChildMode;
+        }) => {
+            setNormalizedValue(config.normalizedValue ?? 0.5);
+            setOpenness(config.openness ?? 90);
+            setRotation(config.rotation ?? 0);
+            setImageHref(config.imageHref);
+            setChildMode(config.childMode ?? "complex");
+        },
+        []
+    );
 
     // Function to handle content selection change
     const handleContentChange = (value: string) => {
@@ -192,17 +182,17 @@ export default function RotaryDemoPage() {
         setChildMode(mode);
 
         // Auto-configure imageHref based on selection
-        if (mode === 'complex') {
+        if (mode === "complex") {
             setImageHref(undefined);
-        } else if (mode === 'none') {
+        } else if (mode === "none") {
             // SVG Data example
             setImageHref(VINTAGE_KNOB_SVG);
-        } else if (mode === 'pixel') {
+        } else if (mode === "pixel") {
             // Pixel URL example - using local PNG image
             setImageHref(VINTAGE_KNOB_IMAGE);
             setOpenness(33);
             setRotation(-166);
-        } else if (mode === 'mixed') {
+        } else if (mode === "mixed") {
             // Mixed mode
             setImageHref(GREY_BG_SVG);
         }
@@ -210,71 +200,77 @@ export default function RotaryDemoPage() {
 
     // Memoize examples to prevent re-renders
     const exampleSize = 100; // Fixed size for examples, matching ValueRing demo
-    const examples = useMemo(() => [
-        <RotaryWrapper
-            key="svg-data"
-            normalizedValue={0.3}
-            imageHref={VINTAGE_KNOB_SVG}
-            childMode="none"
-            style={{ width: exampleSize, height: exampleSize }}
-            onClick={() => handleExampleClick({
-                normalizedValue: 0.3,
-                imageHref: VINTAGE_KNOB_SVG,
-                childMode: 'none'
-            })}
-        />,
-        <RotaryWrapper
-            key="complex-vector"
-            normalizedValue={0.5}
-            childMode="complex"
-            style={{ width: exampleSize, height: exampleSize }}
-            onClick={() => handleExampleClick({ normalizedValue: 0.5, childMode: 'complex', imageHref: undefined })}
-        />,
-        <RotaryWrapper
-            key="pixel-image"
-            normalizedValue={0.7}
-            imageHref={VINTAGE_KNOB_IMAGE}
-            childMode="pixel"
-            openness={33}
-            rotation={-166}
-            style={{ width: exampleSize, height: exampleSize }}
-            onClick={() => handleExampleClick({
-                normalizedValue: 0.7,
-                imageHref: VINTAGE_KNOB_IMAGE,
-                childMode: 'pixel',
-                openness: 33,
-                rotation: -166
-            })}
-        />,
-        <RotaryWrapper
-            key="mixed-content"
-            normalizedValue={0.5}
-            imageHref={GREY_BG_SVG}
-            childMode="mixed"
-            style={{ width: exampleSize, height: exampleSize }}
-            onClick={() => handleExampleClick({
-                normalizedValue: 0.5,
-                imageHref: GREY_BG_SVG,
-                childMode: 'mixed'
-            })}
-        />
-    ], [handleExampleClick]);
-
-    const codeSnippet = generateCodeSnippet(
-        normalizedValue,
-        openness,
-        rotation,
-        imageHref,
-        childMode
+    const examples = useMemo(
+        () => [
+            <RotaryWrapper
+                key="svg-data"
+                normalizedValue={0.3}
+                imageHref={VINTAGE_KNOB_SVG}
+                childMode="none"
+                style={{ width: exampleSize, height: exampleSize }}
+                onClick={() =>
+                    handleExampleClick({
+                        normalizedValue: 0.3,
+                        imageHref: VINTAGE_KNOB_SVG,
+                        childMode: "none",
+                    })
+                }
+            />,
+            <RotaryWrapper
+                key="complex-vector"
+                normalizedValue={0.5}
+                childMode="complex"
+                style={{ width: exampleSize, height: exampleSize }}
+                onClick={() => handleExampleClick({ normalizedValue: 0.5, childMode: "complex", imageHref: undefined })}
+            />,
+            <RotaryWrapper
+                key="pixel-image"
+                normalizedValue={0.7}
+                imageHref={VINTAGE_KNOB_IMAGE}
+                childMode="pixel"
+                openness={33}
+                rotation={-166}
+                style={{ width: exampleSize, height: exampleSize }}
+                onClick={() =>
+                    handleExampleClick({
+                        normalizedValue: 0.7,
+                        imageHref: VINTAGE_KNOB_IMAGE,
+                        childMode: "pixel",
+                        openness: 33,
+                        rotation: -166,
+                    })
+                }
+            />,
+            <RotaryWrapper
+                key="mixed-content"
+                normalizedValue={0.5}
+                imageHref={GREY_BG_SVG}
+                childMode="mixed"
+                style={{ width: exampleSize, height: exampleSize }}
+                onClick={() =>
+                    handleExampleClick({
+                        normalizedValue: 0.5,
+                        imageHref: GREY_BG_SVG,
+                        childMode: "mixed",
+                    })
+                }
+            />,
+        ],
+        [handleExampleClick]
     );
 
-    const componentProps = useMemo(() => ({
-        normalizedValue,
-        openness,
-        rotation,
-        imageHref,
-        childMode
-    }), [normalizedValue, openness, rotation, imageHref, childMode]);
+    const codeSnippet = generateCodeSnippet(normalizedValue, openness, rotation, imageHref, childMode);
+
+    const componentProps = useMemo(
+        () => ({
+            normalizedValue,
+            openness,
+            rotation,
+            imageHref,
+            childMode,
+        }),
+        [normalizedValue, openness, rotation, imageHref, childMode]
+    );
 
     const properties = [
         <div key="normalizedValue" className="space-y-4">
@@ -293,29 +289,17 @@ export default function RotaryDemoPage() {
             <div className="flex justify-between items-center">
                 <Label>Openness ({openness}°)</Label>
             </div>
-            <Slider
-                value={[openness]}
-                onValueChange={(vals) => setOpenness(vals[0])}
-                min={0}
-                max={360}
-                step={1}
-            />
+            <Slider value={[openness]} onValueChange={(vals) => setOpenness(vals[0])} min={0} max={360} step={1} />
         </div>,
         <div key="rotation" className="space-y-4">
             <div className="flex justify-between items-center">
                 <Label>Rotation ({rotation}°)</Label>
             </div>
-            <Slider
-                value={[rotation]}
-                onValueChange={(vals) => setRotation(vals[0])}
-                min={-180}
-                max={180}
-                step={1}
-            />
+            <Slider value={[rotation]} onValueChange={(vals) => setRotation(vals[0])} min={-180} max={180} step={1} />
         </div>,
         <div key="content" className="space-y-4">
-             <Label>Content Type</Label>
-             <Select value={childMode} onValueChange={handleContentChange}>
+            <Label>Content Type</Label>
+            <Select value={childMode} onValueChange={handleContentChange}>
                 <SelectTrigger>
                     <SelectValue placeholder="Select content type" />
                 </SelectTrigger>
@@ -334,17 +318,15 @@ export default function RotaryDemoPage() {
                 onChange={(e) => {
                     const val = e.target.value;
                     setImageHref(val || undefined);
-                    if (!val && (childMode === 'none' || childMode === 'pixel')) {
+                    if (!val && (childMode === "none" || childMode === "pixel")) {
                         // Fallback to complex if image is cleared in image mode
-                        setChildMode('complex');
+                        setChildMode("complex");
                     }
                 }}
                 placeholder="https://..."
             />
-            <p className="text-xs text-muted-foreground mt-1">
-                Enter any URL (SVG, PNG, JPG)
-            </p>
-        </div>
+            <p className="text-xs text-muted-foreground mt-1">Enter any URL (SVG, PNG, JPG)</p>
+        </div>,
     ];
 
     return (

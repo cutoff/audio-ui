@@ -16,10 +16,7 @@ import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 /**
  * Props for the Button component (built-in control with theming support)
  */
-export type ButtonProps = BooleanControlProps &
-    AdaptiveSizeProps &
-    AdaptiveBoxProps &
-    ThemableProps;
+export type ButtonProps = BooleanControlProps & AdaptiveSizeProps & AdaptiveBoxProps & ThemableProps;
 
 /**
  * A button component for audio applications.

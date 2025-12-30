@@ -86,8 +86,8 @@ export default function SizingPage() {
                 <section className="mb-12">
                     <h2 className="text-2xl font-semibold mb-6">Slider Components</h2>
                     <p className="text-muted-foreground mb-6">
-                        Sliders maintain consistent track widths across sizes, with height/width ratios of 3:1 (vertical)
-                        and 1:3 (horizontal).
+                        Sliders maintain consistent track widths across sizes, with height/width ratios of 3:1
+                        (vertical) and 1:3 (horizontal).
                     </p>
 
                     {/* Vertical Slider */}
@@ -157,9 +157,9 @@ export default function SizingPage() {
                 <section className="mt-12 p-6 bg-muted rounded-lg">
                     <h2 className="text-xl font-semibold mb-3">Design System Consistency</h2>
                     <p className="text-muted-foreground">
-                        All components use the same base unit and size multipliers. This means a &quot;small&quot; knob will
-                        align perfectly with a &quot;small&quot; slider when placed side-by-side, creating harmonious layouts
-                        without manual adjustments.
+                        All components use the same base unit and size multipliers. This means a &quot;small&quot; knob
+                        will align perfectly with a &quot;small&quot; slider when placed side-by-side, creating
+                        harmonious layouts without manual adjustments.
                     </p>
                     <p className="text-muted-foreground mt-3">
                         Sizes are defined via CSS variables, making it easy to customize the entire system by adjusting
