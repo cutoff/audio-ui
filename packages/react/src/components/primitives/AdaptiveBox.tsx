@@ -52,7 +52,7 @@ export interface AdaptiveBoxProps extends PropsWithChildren {
     labelHeightUnits?: number; // in the same units as SVG viewBox height; default 15
     minWidth?: number;
     minHeight?: number;
-    debug?: boolean; // controls dev visuals (scaler border, svg background). Defaults to true to preserve demo behavior
+    debug?: boolean; // controls dev visuals (scaler border, svg background). Defaults to false
 }
 
 export function AdaptiveBox({

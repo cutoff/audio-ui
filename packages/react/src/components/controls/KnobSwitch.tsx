@@ -182,10 +182,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
         // adjustValue does: delta * sensitivity.
         // We want 100 * sensitivity = stepSize.
         // So sensitivity = stepSize / 100.
-        // If it's "too hard", it means we need MORE change per delta.
-        // So we need HIGHER sensitivity.
-        // Previous was stepSize / 20. Increasing to stepSize / 5.
-        // This means 5 delta (very tiny scroll) triggers step.
+        // We use stepSize / 5 to allow finer control (approx 20 delta per step).
         wheelSensitivity: stepSize > 0 ? stepSize / 4 : 0,
         editable: !!onChange, // Only editable when onChange is provided
     });
@@ -280,15 +277,12 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
     // Handle Click for rotation
     const handleClick = (e: React.MouseEvent<SVGSVGElement>) => {
         if (interactionMode === "wheel") return; // Drag disabled usually means no mouse interaction?
-        // Actually, if we allow click to rotate, it should probably work regardless of drag/wheel mode,
-        // or perhaps only if not dragging?
-        // The issue is distinguishing a click from a drag.
-        // If the user drags, we don't want to trigger a cycle on mouse up (click).
-        // Usually 'click' fires after mouseup if no move happened.
-        // Let's assume standard click behavior.
 
-        // Note: If onClick prop is provided, we should probably call it too?
-        // The props say `onClick?: React.MouseEventHandler;`
+        // Standard click behavior: cycle value if not prevented.
+        // If interactive mode prevents drag, click still works for cycling.
+        // 'click' fires after mouseup if no move happened.
+
+        // Call user's onClick handler if provided
         onClick?.(e as unknown as React.MouseEvent);
         if (!e.defaultPrevented) {
             cycleNext();
