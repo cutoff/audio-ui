@@ -57,9 +57,9 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
         onMouseEnter,
         onMouseLeave,
         parameter,
-        interactionMode, // Override prop
-        interactionDirection, // Override prop (maps to internal direction)
-        interactionSensitivity, // Override prop (maps to internal sensitivity)
+        interactionMode,
+        interactionDirection,
+        interactionSensitivity,
         unit,
         scale,
         ...viewProps // Capture all other props (color, thickness, bipolar, etc.) to pass to View
@@ -86,15 +86,16 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
 
     // 3. Determine Interaction Settings (View default vs Override)
     const effectiveInteractionMode = interactionMode ?? View.interaction.mode ?? "both";
-    const effectiveDirection = interactionDirection ?? View.interaction.direction ?? "vertical";
+    const effectiveDirection = interactionDirection ?? View.interaction.direction ?? "both";
 
     // 4. Interaction Hook
+    // Only editable when onChange is provided (onClick is not relevant for interaction controller)
     const interactiveProps = useInteractiveControl({
         adjustValue,
         interactionMode: effectiveInteractionMode,
         direction: effectiveDirection,
         sensitivity: interactionSensitivity,
-        editable: !!onChange || !!onClick,
+        editable: !!onChange,
     });
 
     const componentClassNames = useMemo(() => {
@@ -113,6 +114,9 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
         onMouseDown?.(e);
     };
 
+    // Add pointer cursor when clickable but not draggable (onClick but no onChange)
+    const clickableStyle = onClick && !onChange ? { cursor: "pointer" as const } : {};
+
     return (
         <AdaptiveBox
             displayMode={displayMode ?? "scaleToFit"}
@@ -121,7 +125,9 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
             style={{
                 // Interactive style first (provides default cursor)
                 ...(interactiveProps.style ?? {}),
-                // User style second (can override cursor and other styles)
+                // Clickable style (pointer cursor when onClick but no onChange)
+                ...clickableStyle,
+                // User style last (can override cursor and other styles)
                 ...(style ?? {}),
             }}
             labelHeightUnits={View.labelHeightUnits ?? 20}

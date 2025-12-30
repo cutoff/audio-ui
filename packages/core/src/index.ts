@@ -3,6 +3,7 @@ export * from "./constants/styles";
 export * from "./constants/theme";
 export * from "./constants/themeDefaults";
 export * from "./constants/cssVars";
+export * from "./constants/cursors";
 export * from "./controller/InteractionController";
 export * from "./model/AudioParameter";
 export * from "./utils/math";

@@ -1,4 +1,5 @@
 import { InteractionDirection, InteractionMode } from "../types";
+import { CIRCULAR_CURSOR } from "../constants/cursors";
 
 export interface InteractionConfig {
     /**
@@ -15,7 +16,7 @@ export interface InteractionConfig {
 
     /**
      * Direction of the drag interaction.
-     * @default "vertical"
+     * @default "both"
      */
     direction?: InteractionDirection;
 
@@ -59,7 +60,7 @@ export class InteractionController {
     constructor(config: InteractionConfig) {
         this.config = {
             interactionMode: "both",
-            direction: "vertical",
+            direction: "both",
             sensitivity: 0.005,
             keyboardStep: 0.05,
             disabled: false,
@@ -104,11 +105,11 @@ export class InteractionController {
 
         // Apply global cursor and user-select styles
         document.body.style.userSelect = "none";
-        document.body.style.webkitUserSelect = "none";
 
         let cursor = "ns-resize";
         if (this.config.direction === "horizontal") cursor = "ew-resize";
-        if (this.config.direction === "circular") cursor = "pointer"; // Or a specific cursor?
+        if (this.config.direction === "both") cursor = "move";
+        if (this.config.direction === "circular") cursor = CIRCULAR_CURSOR;
 
         document.body.style.cursor = cursor;
 
@@ -141,6 +142,11 @@ export class InteractionController {
         } else if (this.config.direction === "horizontal") {
             // Right is positive X
             delta = x - this.startX;
+        } else if (this.config.direction === "both") {
+            // Sum of horizontal (Right+) and vertical (Up+)
+            // Vertical: Up is negative Y, so (startY - y)
+            // Horizontal: Right is positive X, so (x - startX)
+            delta = x - this.startX + (this.startY - y);
         } else if (this.config.direction === "circular") {
             // Calculate angle relative to center
             // Y is down, so we invert Y for standard math if we wanted standard cartesian,
@@ -177,7 +183,6 @@ export class InteractionController {
 
         // Cleanup styles
         document.body.style.userSelect = "";
-        document.body.style.webkitUserSelect = "";
         document.body.style.cursor = "";
 
         // Remove global listeners

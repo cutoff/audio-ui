@@ -180,7 +180,7 @@ LabyrinthControl.labelHeightUnits = 40;
  */
 LabyrinthControl.interaction = {
     mode: "both",
-    direction: "vertical",
+    direction: "both",
 };
 
 /**

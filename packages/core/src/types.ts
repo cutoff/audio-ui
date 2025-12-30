@@ -11,4 +11,4 @@ export type InteractionMode = "drag" | "wheel" | "both";
 /**
  * Interaction directions for controls
  */
-export type InteractionDirection = "vertical" | "horizontal" | "circular";
+export type InteractionDirection = "vertical" | "horizontal" | "circular" | "both";

@@ -69,6 +69,48 @@ describe("InteractionController", () => {
 
             expect(adjustValue).not.toHaveBeenCalled();
         });
+
+        it("should adjust value on mouse move (both direction: Up+Right)", () => {
+            controller.updateConfig({ direction: "both" });
+            controller.handleMouseDown(100, 100);
+
+            // Move Up (y: 90) and Right (x: 110)
+            const moveEvent = new MouseEvent("mousemove", { clientX: 110, clientY: 90 });
+            (controller as any).handleGlobalMouseMove(moveEvent);
+
+            // Up: 100 - 90 = +10
+            // Right: 110 - 100 = +10
+            // Total: 20
+            expect(adjustValue).toHaveBeenCalledWith(20, 0.01);
+        });
+
+        it("should adjust value on mouse move (both direction: Down+Left)", () => {
+            controller.updateConfig({ direction: "both" });
+            controller.handleMouseDown(100, 100);
+
+            // Move Down (y: 110) and Left (x: 90)
+            const moveEvent = new MouseEvent("mousemove", { clientX: 90, clientY: 110 });
+            (controller as any).handleGlobalMouseMove(moveEvent);
+
+            // Up: 100 - 110 = -10
+            // Right: 90 - 100 = -10
+            // Total: -20
+            expect(adjustValue).toHaveBeenCalledWith(-20, 0.01);
+        });
+
+        it("should adjust value on mouse move (both direction: mixed cancellation)", () => {
+            controller.updateConfig({ direction: "both" });
+            controller.handleMouseDown(100, 100);
+
+            // Move Up (y: 90) and Left (x: 90)
+            const moveEvent = new MouseEvent("mousemove", { clientX: 90, clientY: 90 });
+            (controller as any).handleGlobalMouseMove(moveEvent);
+
+            // Up: 100 - 90 = +10
+            // Right: 90 - 100 = -10
+            // Total: 0. Delta is 0, so adjustValue should not be called.
+            expect(adjustValue).not.toHaveBeenCalled();
+        });
     });
 
     describe("Circular Interaction", () => {

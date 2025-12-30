@@ -18,7 +18,8 @@ describe("useInteractiveControl", () => {
         expect(result.current.role).toBe("slider");
         expect(result.current.tabIndex).toBe(0);
         expect(result.current["aria-disabled"]).toBe(false);
-        expect(result.current.style?.cursor).toBe("ns-resize");
+        // Default direction is "both", which gives "move" cursor
+        expect(result.current.style?.cursor).toBe("move");
     });
 
     it("handles disabled state correctly", () => {
@@ -50,7 +51,8 @@ describe("useInteractiveControl", () => {
     it("handles editable state correctly (with onChange)", () => {
         const { result } = renderHook(() => useInteractiveControl({ adjustValue, editable: true }));
 
-        expect(result.current.style?.cursor).toBe("ns-resize");
+        // Default direction is "both", which gives "move" cursor
+        expect(result.current.style?.cursor).toBe("move");
     });
 
     describe("Drag Interaction", () => {
@@ -65,7 +67,8 @@ describe("useInteractiveControl", () => {
 
             // Verify global state changes
             expect(document.body.style.userSelect).toBe("none");
-            expect(document.body.style.cursor).toBe("ns-resize");
+            // Default direction is "both", which gives "move" cursor
+            expect(document.body.style.cursor).toBe("move");
 
             // 2. Mouse Move (Global)
             // Move UP by 10 pixels.

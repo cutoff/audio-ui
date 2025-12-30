@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from "react";
-import { InteractionController, InteractionConfig } from "@cutoff/audio-ui-core";
+import { InteractionController, InteractionConfig, CIRCULAR_CURSOR } from "@cutoff/audio-ui-core";
 
 export type UseInteractiveControlProps = Omit<InteractionConfig, "adjustValue"> & {
     adjustValue: (delta: number, sensitivity?: number) => void;
@@ -25,7 +25,7 @@ export function useInteractiveControl({
     adjustValue,
     keyboardStep = 0.05,
     interactionMode = "both",
-    direction = "vertical",
+    direction = "both",
     sensitivity = 0.005,
     wheelSensitivity,
     disabled = false,
@@ -92,7 +92,11 @@ export function useInteractiveControl({
               ? "ew-resize"
               : direction === "vertical"
                 ? "ns-resize"
-                : "pointer"; // circular or default
+                : direction === "both"
+                  ? "move"
+                  : direction === "circular"
+                    ? CIRCULAR_CURSOR
+                    : "pointer";
 
     return {
         ...handlers,

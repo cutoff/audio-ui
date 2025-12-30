@@ -187,7 +187,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
         // Previous was stepSize / 20. Increasing to stepSize / 5.
         // This means 5 delta (very tiny scroll) triggers step.
         wheelSensitivity: stepSize > 0 ? stepSize / 4 : 0,
-        editable: !!onChange || !!onClick,
+        editable: !!onChange, // Only editable when onChange is provided
     });
 
     // Determine sizing behavior: adaptiveSize controls stretch behavior and
@@ -332,6 +332,9 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
         }
     };
 
+    // Add pointer cursor when clickable but not draggable (onClick but no onChange)
+    const clickableStyle = onClick && !onChange ? { cursor: "pointer" as const } : {};
+
     return (
         <AdaptiveBox
             displayMode={displayMode ?? "scaleToFit"}
@@ -342,6 +345,8 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
                 ...sizeStyle,
                 // Interactive style second (provides default cursor)
                 ...interactiveProps.style,
+                // Clickable style (pointer cursor when onClick but no onChange)
+                ...clickableStyle,
                 // User style last (can override cursor and other styles)
                 ...style,
             }}
