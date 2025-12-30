@@ -6,15 +6,16 @@ SVG View Primitives are low-level building blocks for composing custom radial co
 
 The library provides five SVG View Primitives:
 
-| Primitive         | Purpose            | Key Feature                                   |
-| ----------------- | ------------------ | --------------------------------------------- |
-| **ValueRing**     | Arc/ring indicator | Shows value progress as a circular arc        |
-| **RotaryImage**   | Rotating content   | Rotates children based on normalized value    |
-| **RadialImage**   | Static content     | Displays image or SVG at radial coordinates   |
-| **RadialText**    | Auto-fitting text  | Measures and scales text to fit within radius |
-| **RevealingPath** | Path animation     | Reveals an arbitrary SVG path based on value  |
-| **TickRing**      | Scale decoration   | Renders a ring of ticks/markers               |
-| **LabelRing**     | Scale labels       | Renders text or icons at radial positions     |
+| Primitive          | Purpose            | Key Feature                                   |
+| ------------------ | ------------------ | --------------------------------------------- |
+| **ValueRing**      | Arc/ring indicator | Shows value progress as a circular arc        |
+| **RotaryImage**    | Rotating content   | Rotates children based on normalized value    |
+| **RadialImage**    | Static content     | Displays image or SVG at radial coordinates   |
+| **RadialText**     | Auto-fitting text  | Measures and scales text to fit within radius |
+| **FilmstripImage** | Sprite animation   | Scrubs through a sprite sheet based on value  |
+| **RevealingPath**  | Path animation     | Reveals an arbitrary SVG path based on value  |
+| **TickRing**       | Scale decoration   | Renders a ring of ticks/markers               |
+| **LabelRing**      | Scale labels       | Renders text or icons at radial positions     |
 
 All primitives share a common coordinate system:
 
@@ -276,6 +277,69 @@ RadialText uses `dominantBaseline="central"` with a baseline correction factor (
 | 100 identical knobs | 1 measurement total        | 100 renders                |
 | Font/style change   | 1 new measurement          | 1 render                   |
 
+## FilmstripImage
+
+Renders a frame from a sprite sheet (filmstrip) based on the normalized value. This is the industry-standard method for rendering complex, photorealistic knobs in audio software (VSTs, Kontakt).
+
+### Props
+
+```typescript
+type FilmstripImageProps = {
+  cx: number; // X coordinate of center
+  cy: number; // Y coordinate of center
+  width: number; // Width of a SINGLE frame
+  height: number; // Height of a SINGLE frame
+  frameCount: number; // Total number of frames in the strip
+  normalizedValue: number; // Value between 0 and 1
+  imageHref: string; // URL to the sprite sheet/filmstrip image
+  orientation?: "vertical" | "horizontal"; // Strip direction (default: "vertical")
+  rotation?: number; // Rotation in degrees (default: 0)
+  className?: string;
+  style?: CSSProperties;
+};
+```
+
+### Usage
+
+```tsx
+// Standard vertical strip (KnobMan style)
+<FilmstripImage
+  cx={50} cy={50}
+  width={64} height={64}
+  frameCount={100}
+  normalizedValue={value}
+  imageHref="/knobs/vintage-black.png"
+/>
+
+// Horizontal strip
+<FilmstripImage
+  cx={50} cy={50}
+  width={100} height={100}
+  frameCount={50}
+  normalizedValue={value}
+  orientation="horizontal"
+  imageHref="/knobs/horizontal-strip.png"
+/>
+
+// Rotated filmstrip
+<FilmstripImage
+  cx={50} cy={50}
+  width={64} height={64}
+  frameCount={100}
+  normalizedValue={value}
+  imageHref="/knobs/vintage-black.png"
+  rotation={45} // Rotate entire strip by 45 degrees
+/>
+```
+
+### Design Notes
+
+- **Performance**: Uses a fixed `viewBox` with a CSS-transformed nested `<image>`. This uses `transform: translate()` which is hardware accelerated (compositor-only), avoiding expensive layout repaints associated with changing `viewBox` attributes.
+- **Hardware Acceleration**: Explicitly hinted with `will-change: transform` to ensure smooth scrubbing even on lower-end devices.
+- **Frame Calculation**: `frameIndex = Math.round(normalizedValue * (frameCount - 1))`
+- **Rotation**: Supported via the `rotation` prop, which rotates the entire filmstrip container using an SVG transform. This is useful for aligning filmstrips or creating rotating body effects.
+- **Data Source**: Compatible with standard filmstrips exported from WebKnobMan and other VST development tools.
+
 ## RevealingPath
 
 Reveals an arbitrary SVG path from start to end using `stroke-dashoffset`. This is useful for custom indicators, non-circular tracks, or creative visualizations like mazes.
@@ -496,6 +560,7 @@ RadialText handles the browser-only measurement gracefully:
 - **RotaryImage**: `packages/react/src/components/primitives/views/RotaryImage.tsx`
 - **RadialImage**: `packages/react/src/components/primitives/views/RadialImage.tsx`
 - **RadialText**: `packages/react/src/components/primitives/views/RadialText.tsx`
+- **FilmstripImage**: `packages/react/src/components/primitives/views/FilmstripImage.tsx`
 - **TickRing**: `packages/react/src/components/primitives/views/TickRing.tsx`
 - **Text Measurement Utilities**: `packages/core/src/utils/textMeasurement.ts`
 - **Example Components**: `apps/playground-react/components/examples/`

@@ -15,6 +15,8 @@ export { default as RadialImage } from "./components/primitives/views/RadialImag
 export type { RadialImageProps } from "./components/primitives/views/RadialImage";
 export { default as RadialText } from "./components/primitives/views/RadialText";
 export type { RadialTextProps } from "./components/primitives/views/RadialText";
+export { default as FilmstripImage } from "./components/primitives/views/FilmstripImage";
+export type { FilmstripImageProps } from "./components/primitives/views/FilmstripImage";
 export { default as RevealingPath } from "./components/primitives/views/RevealingPath";
 export type { RevealingPathProps } from "./components/primitives/views/RevealingPath";
 export { default as TickRing } from "./components/primitives/views/TickRing";

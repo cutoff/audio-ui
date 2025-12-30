@@ -73,7 +73,7 @@ function RotaryImage({
             imageHref={imageHref}
             transform={`rotate(${valueToAngle}, ${rotateX}, ${rotateY})`}
             className={className}
-            style={style}
+            style={{ ...style, willChange: "transform" }}
         >
             {children}
         </RadialImage>

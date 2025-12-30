@@ -38,6 +38,7 @@ const controls: Page[] = [
 const primitives: Page[] = [
     { name: "ValueRing", path: "/primitives/ring" },
     { name: "RotaryImage", path: "/primitives/rotary" },
+    { name: "FilmStripImage", path: "/primitives/filmstrip" },
     { name: "TickRing", path: "/primitives/tick-ring" },
     { name: "LabelRing", path: "/primitives/label-ring" },
 ];
