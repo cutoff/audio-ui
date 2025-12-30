@@ -4,8 +4,9 @@ import React, { useRef, useEffect, useState, useCallback } from "react";
 import { ControlComponent } from "@cutoff/audio-ui-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Link as LinkIcon, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 function ComponentPreview({ component: Component }: { component: ControlComponent }) {
     try {
@@ -29,6 +30,16 @@ function ComponentPreview({ component: Component }: { component: ControlComponen
     }
 }
 
+const slugify = (text: string) => {
+    return text
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w\-]+/g, "")
+        .replace(/\-\-+/g, "-");
+};
+
 interface ComponentCarouselProps {
     components: ControlComponent[];
     selectedComponent: ControlComponent | null;
@@ -37,10 +48,12 @@ interface ComponentCarouselProps {
 
 export default function ComponentCarousel({ components, selectedComponent, onSelect }: ComponentCarouselProps) {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
     const [showLeftGradient, setShowLeftGradient] = useState(false);
     const [showRightGradient, setShowRightGradient] = useState(false);
     const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(false);
+    const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
 
     const updateScrollState = useCallback(() => {
         const container = scrollContainerRef.current;
@@ -93,6 +106,20 @@ export default function ComponentCarousel({ components, selectedComponent, onSel
             behavior: "smooth",
         });
     }, [getScrollAmount]);
+
+    // Scroll selected component into view
+    useEffect(() => {
+        if (selectedComponent) {
+            const index = components.indexOf(selectedComponent);
+            if (index >= 0 && cardRefs.current[index]) {
+                cardRefs.current[index]?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                    inline: "center",
+                });
+            }
+        }
+    }, [selectedComponent, components]);
 
     useEffect(() => {
         const container = scrollContainerRef.current;
@@ -152,6 +179,18 @@ export default function ComponentCarousel({ components, selectedComponent, onSel
         };
     }, [updateScrollState]);
 
+    const handleCopyLink = useCallback((e: React.MouseEvent, title: string) => {
+        e.stopPropagation();
+        const slug = slugify(title);
+        const url = `${window.location.origin}${window.location.pathname}#${slug}`;
+
+        navigator.clipboard.writeText(url);
+        toast.success("Link copied to clipboard");
+
+        setCopiedSlug(slug);
+        setTimeout(() => setCopiedSlug(null), 2000);
+    }, []);
+
     return (
         <div className="w-full relative flex items-center gap-3 sm:gap-4" role="region" aria-label="Component carousel">
             {canScrollLeft && (
@@ -176,6 +215,8 @@ export default function ComponentCarousel({ components, selectedComponent, onSel
                     const title = Component.title || `Component ${index + 1}`;
                     const description = Component.description || "No description available";
                     const isSelected = selectedComponent === Component;
+                    const slug = slugify(title);
+                    const isCopied = copiedSlug === slug;
 
                     const handleClick = (e: React.MouseEvent) => {
                         e.preventDefault();
@@ -186,8 +227,11 @@ export default function ComponentCarousel({ components, selectedComponent, onSel
                     return (
                         <Card
                             key={`${title}-${index}`}
+                            ref={(el) => {
+                                cardRefs.current[index] = el;
+                            }}
                             className={cn(
-                                "min-w-[200px] sm:min-w-[250px] md:min-w-[300px] max-w-[200px] sm:max-w-[250px] md:max-w-[300px] shrink-0 cursor-pointer transition-all duration-200 select-none flex flex-col",
+                                "group relative min-w-[200px] sm:min-w-[250px] md:min-w-[300px] max-w-[200px] sm:max-w-[250px] md:max-w-[300px] shrink-0 cursor-pointer transition-all duration-200 select-none flex flex-col",
                                 "hover:bg-accent/50 hover:shadow-md hover:-translate-y-0.5",
                                 isSelected
                                     ? "border-primary/60 ring-2 ring-primary/40 bg-accent/10 shadow-md"
@@ -206,9 +250,25 @@ export default function ComponentCarousel({ components, selectedComponent, onSel
                                 }
                             }}
                         >
-                            <CardHeader className="p-3 sm:p-4 md:p-6 pb-2 sm:pb-3 md:pb-4">
-                                <CardTitle className="text-sm sm:text-base font-semibold mb-1">{title}</CardTitle>
-                                <CardDescription className="line-clamp-4 text-[10px] sm:text-xs leading-relaxed min-h-[3em] text-muted-foreground/90">
+                            <CardHeader className="p-3 sm:p-4 md:p-6 pb-2 sm:pb-3 md:pb-4 relative">
+                                <div className="flex justify-between items-start gap-2">
+                                    <CardTitle className="text-sm sm:text-base font-semibold mb-1">{title}</CardTitle>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className={cn(
+                                            "h-6 w-6 shrink-0 transition-opacity absolute top-3 right-3",
+                                            isCopied
+                                                ? "opacity-100 text-green-500"
+                                                : "text-muted-foreground/40 hover:text-foreground opacity-100"
+                                        )}
+                                        onClick={(e) => handleCopyLink(e, title)}
+                                        title="Copy direct link"
+                                    >
+                                        {isCopied ? <Check className="h-3 w-3" /> : <LinkIcon className="h-3 w-3" />}
+                                    </Button>
+                                </div>
+                                <CardDescription className="line-clamp-4 text-[10px] sm:text-xs leading-relaxed min-h-[3em] text-muted-foreground/90 pr-6">
                                     {description}
                                 </CardDescription>
                             </CardHeader>

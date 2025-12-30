@@ -1,14 +1,37 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { AudioControlEvent, ControlComponent } from "@cutoff/audio-ui-react";
 import ComponentCarousel from "@/components/customization/ComponentCarousel";
 import CustomContinuousControl from "@/components/customization/CustomContinuousControl";
 import { componentRegistry } from "@/components/customization/component-registry";
 
+const slugify = (text: string) => {
+    return text
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, "-") // Replace spaces with -
+        .replace(/[^\w\-]+/g, "") // Remove all non-word chars
+        .replace(/\-\-+/g, "-"); // Replace multiple - with single -
+};
+
 export default function CustomizationPage() {
     const [selectedComponentIndex, setSelectedComponentIndex] = useState<number>(0);
     const [value, setValue] = useState(0);
+
+    // Handle initial hash load
+    useEffect(() => {
+        const hash = window.location.hash.slice(1);
+        if (hash) {
+            const index = componentRegistry.findIndex(
+                (c) => slugify(c.title || "").toLowerCase() === hash.toLowerCase()
+            );
+            if (index >= 0) {
+                setSelectedComponentIndex(index);
+            }
+        }
+    }, []);
 
     const selectedComponent = useMemo(() => {
         if (componentRegistry.length === 0) return null;
@@ -17,9 +40,12 @@ export default function CustomizationPage() {
     }, [selectedComponentIndex]);
 
     const handleComponentSelect = useCallback((component: ControlComponent) => {
-        const index = componentRegistry.findIndex(c => c === component);
+        const index = componentRegistry.findIndex((c) => c === component);
         if (index >= 0) {
             setSelectedComponentIndex(index);
+            // Update URL hash without scrolling
+            const slug = slugify(component.title || "");
+            window.history.replaceState(null, "", `#${slug}`);
         }
     }, []);
 
@@ -28,13 +54,13 @@ export default function CustomizationPage() {
             <div className="flex flex-col gap-2 sm:gap-3 md:gap-4 text-center items-center px-2">
                 <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">Component Laboratory</h1>
                 <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-[600px]">
-                    Explore and experiment with custom control components. 
-                    Select a component from the carousel below to test its interaction and visualization.
+                    Explore and experiment with custom control components. Select a component from the carousel below to
+                    test its interaction and visualization.
                 </p>
             </div>
 
             <div className="w-full max-w-5xl mx-auto px-2 md:px-4">
-                <ComponentCarousel 
+                <ComponentCarousel
                     components={componentRegistry}
                     selectedComponent={selectedComponent}
                     onSelect={handleComponentSelect}
@@ -58,7 +84,7 @@ export default function CustomizationPage() {
                                 className="w-full h-full"
                             />
                         </div>
-                        
+
                         <div className="flex flex-col items-center gap-1 sm:gap-2 font-mono text-[10px] sm:text-xs md:text-sm text-muted-foreground">
                             <div className="flex flex-col sm:flex-row gap-1 sm:gap-2 md:gap-4 text-center sm:text-left">
                                 <span>Value: {value}</span>
@@ -67,10 +93,11 @@ export default function CustomizationPage() {
                         </div>
                     </div>
                 ) : (
-                    <div className="text-muted-foreground text-xs sm:text-sm md:text-base">Select a component to begin</div>
+                    <div className="text-muted-foreground text-xs sm:text-sm md:text-base">
+                        Select a component to begin
+                    </div>
                 )}
             </div>
         </div>
     );
 }
-
