@@ -3,13 +3,16 @@
  * These use currentColor to inherit text color and work in both light and dark modes.
  */
 
-export function SineWaveIcon() {
+import { SVGProps } from "react";
+
+export function SineWaveIcon(props: SVGProps<SVGSVGElement>) {
     return (
         <svg
+            {...props}
             viewBox="0 0 184 124"
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
-            style={{ fillRule: "evenodd", clipRule: "evenodd", strokeLinejoin: "round", strokeMiterlimit: 2 }}
+            style={{ fillRule: "evenodd", clipRule: "evenodd", strokeLinejoin: "round", strokeMiterlimit: 2, ...props.style }}
         >
             <g transform="matrix(1.33333,0,0,1.33333,-437.84,-2233.83)">
                 <g transform="matrix(1.3986,0,0,1.01316,-129.244,-14.5255)">
@@ -23,13 +26,14 @@ export function SineWaveIcon() {
     );
 }
 
-export function TriangleWaveIcon() {
+export function TriangleWaveIcon(props: SVGProps<SVGSVGElement>) {
     return (
         <svg
+            {...props}
             viewBox="0 0 177 126"
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
-            style={{ fillRule: "evenodd", clipRule: "evenodd", strokeLinejoin: "round", strokeMiterlimit: 2 }}
+            style={{ fillRule: "evenodd", clipRule: "evenodd", strokeLinejoin: "round", strokeMiterlimit: 2, ...props.style }}
         >
             <g transform="matrix(1.33333,0,0,1.33333,-947.906,-2233.79)">
                 <g transform="matrix(0.95815,0,0,1.99399,216.452,-1671.1)">
@@ -43,13 +47,14 @@ export function TriangleWaveIcon() {
     );
 }
 
-export function SquareWaveIcon() {
+export function SquareWaveIcon(props: SVGProps<SVGSVGElement>) {
     return (
         <svg
+            {...props}
             viewBox="0 0 171 120"
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
-            style={{ fillRule: "evenodd", clipRule: "evenodd", strokeLinejoin: "round", strokeMiterlimit: 2 }}
+            style={{ fillRule: "evenodd", clipRule: "evenodd", strokeLinejoin: "round", strokeMiterlimit: 2, ...props.style }}
         >
             <g transform="matrix(1.33333,0,0,1.33333,-163.401,-2236)">
                 <g id="wave-square" transform="matrix(0.2,0,0,0.2,122.551,1670.6)">
@@ -64,13 +69,14 @@ export function SquareWaveIcon() {
     );
 }
 
-export function SawWaveIcon() {
+export function SawWaveIcon(props: SVGProps<SVGSVGElement>) {
     return (
         <svg
+            {...props}
             viewBox="0 0 177 126"
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
-            style={{ fillRule: "evenodd", clipRule: "evenodd", strokeLinejoin: "round", strokeMiterlimit: 2 }}
+            style={{ fillRule: "evenodd", clipRule: "evenodd", strokeLinejoin: "round", strokeMiterlimit: 2, ...props.style }}
         >
             <g transform="matrix(1.33333,0,0,1.33333,-671.078,-2233.79)">
                 <g transform="matrix(0.95815,0,0,1.99399,8.83035,-1671.1)">

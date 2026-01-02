@@ -3,6 +3,7 @@
 import { LabelRing } from "@cutoff/audio-ui-react";
 import { ArrowUp, Check, ChevronUp, Minus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
+import { SineWaveIcon, TriangleWaveIcon, SquareWaveIcon, SawWaveIcon } from "../../../components/wave-icons";
 
 const ICONS = [
     <Plus key="1" size={12} strokeWidth={2.5} />,
@@ -182,6 +183,37 @@ export default function LabelRingPage() {
                             </svg>
                         </div>
                         <p className="text-sm text-muted-foreground">Concentric Rings</p>
+                    </div>
+
+                    {/* Wave Icons */}
+                    <div className="space-y-4 text-center">
+                        <div className="relative w-64 h-64 border rounded-full bg-secondary/20 flex items-center justify-center">
+                            <svg
+                                width="100%"
+                                height="100%"
+                                viewBox="0 0 100 100"
+                                className="w-full h-full text-foreground"
+                            >
+                                <LabelRing
+                                    cx={50}
+                                    cy={50}
+                                    radius={40}
+                                    openness={240}
+                                    rotation={90}
+                                    labels={[
+                                        "Oth",
+                                        <TriangleWaveIcon key="tri" width={10} height={10} />,
+                                        <SineWaveIcon key="sine" width={10} height={10} />,
+                                        <SquareWaveIcon key="sq" width={10} height={10} />,
+                                        <SawWaveIcon key="saw" width={10} height={10} />,
+                                    ]}
+                                    orientation="upright"
+                                    labelClassName="text-[8px] font-medium fill-foreground"
+                                />
+                                <circle cx={50} cy={50} r={2} className="fill-muted-foreground" />
+                            </svg>
+                        </div>
+                        <p className="text-sm text-muted-foreground">Mixed Icons + Text</p>
                     </div>
                 </div>
             </section>
