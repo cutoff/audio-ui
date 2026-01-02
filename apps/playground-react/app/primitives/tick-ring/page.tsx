@@ -14,10 +14,10 @@ export default function TickRingPage() {
 
             <section className="space-y-6">
                 <h2 className="text-2xl font-semibold">Basic Usage</h2>
-                <div className="flex flex-wrap gap-8 items-center p-8 bg-card rounded-xl border">
+                <div className="flex flex-wrap gap-12 items-center p-8 bg-card rounded-xl border">
                     {/* Basic count-based ring */}
-                    <div className="space-y-2 text-center">
-                        <div className="relative w-32 h-32 border rounded-full bg-secondary/20 flex items-center justify-center">
+                    <div className="space-y-4 text-center">
+                        <div className="relative w-48 h-48 border rounded-full bg-secondary/20 flex items-center justify-center">
                             <svg width="100%" height="100%" viewBox="0 0 100 100" className="w-full h-full">
                                 <TickRing
                                     cx={50}
@@ -33,8 +33,8 @@ export default function TickRingPage() {
                     </div>
 
                     {/* Step-based ring */}
-                    <div className="space-y-2 text-center">
-                        <div className="relative w-32 h-32 border rounded-full bg-secondary/20 flex items-center justify-center">
+                    <div className="space-y-4 text-center">
+                        <div className="relative w-48 h-48 border rounded-full bg-secondary/20 flex items-center justify-center">
                             <svg width="100%" height="100%" viewBox="0 0 100 100" className="w-full h-full">
                                 <TickRing
                                     cx={50}
@@ -50,8 +50,8 @@ export default function TickRingPage() {
                     </div>
 
                     {/* Full Circle */}
-                    <div className="space-y-2 text-center">
-                        <div className="relative w-32 h-32 border rounded-full bg-secondary/20 flex items-center justify-center">
+                    <div className="space-y-4 text-center">
+                        <div className="relative w-48 h-48 border rounded-full bg-secondary/20 flex items-center justify-center">
                             <svg width="100%" height="100%" viewBox="0 0 100 100" className="w-full h-full">
                                 <TickRing
                                     cx={50}
@@ -71,10 +71,10 @@ export default function TickRingPage() {
 
             <section className="space-y-6">
                 <h2 className="text-2xl font-semibold">Alignment</h2>
-                <div className="flex flex-wrap gap-8 items-center p-8 bg-card rounded-xl border">
+                <div className="flex flex-wrap gap-12 items-center p-8 bg-card rounded-xl border">
                     {/* Standard knob alignment */}
-                    <div className="space-y-2 text-center">
-                        <div className="relative w-32 h-32 border rounded-full bg-secondary/20 flex items-center justify-center">
+                    <div className="space-y-4 text-center">
+                        <div className="relative w-48 h-48 border rounded-full bg-secondary/20 flex items-center justify-center">
                             <svg width="100%" height="100%" viewBox="0 0 100 100" className="w-full h-full">
                                 {/* Track for reference */}
                                 <path
@@ -101,8 +101,8 @@ export default function TickRingPage() {
                     </div>
 
                     {/* Rotated */}
-                    <div className="space-y-2 text-center">
-                        <div className="relative w-32 h-32 border rounded-full bg-secondary/20 flex items-center justify-center">
+                    <div className="space-y-4 text-center">
+                        <div className="relative w-48 h-48 border rounded-full bg-secondary/20 flex items-center justify-center">
                             <svg width="100%" height="100%" viewBox="0 0 100 100" className="w-full h-full">
                                 <TickRing
                                     cx={50}
@@ -121,8 +121,8 @@ export default function TickRingPage() {
                     </div>
 
                     {/* Wide Openness */}
-                    <div className="space-y-2 text-center">
-                        <div className="relative w-32 h-32 border rounded-full bg-secondary/20 flex items-center justify-center">
+                    <div className="space-y-4 text-center">
+                        <div className="relative w-48 h-48 border rounded-full bg-secondary/20 flex items-center justify-center">
                             <svg width="100%" height="100%" viewBox="0 0 100 100" className="w-full h-full">
                                 <TickRing
                                     cx={50}
@@ -142,10 +142,10 @@ export default function TickRingPage() {
 
             <section className="space-y-6">
                 <h2 className="text-2xl font-semibold">Variants & Custom Shapes</h2>
-                <div className="flex flex-wrap gap-8 items-center p-8 bg-card rounded-xl border">
+                <div className="flex flex-wrap gap-12 items-center p-8 bg-card rounded-xl border">
                     {/* Dots Variant */}
-                    <div className="space-y-2 text-center">
-                        <div className="relative w-32 h-32 border rounded-full bg-secondary/20 flex items-center justify-center">
+                    <div className="space-y-4 text-center">
+                        <div className="relative w-48 h-48 border rounded-full bg-secondary/20 flex items-center justify-center">
                             <svg width="100%" height="100%" viewBox="0 0 100 100" className="w-full h-full">
                                 <TickRing
                                     cx={50}
@@ -162,8 +162,8 @@ export default function TickRingPage() {
                     </div>
 
                     {/* Pills Variant */}
-                    <div className="space-y-2 text-center">
-                        <div className="relative w-32 h-32 border rounded-full bg-secondary/20 flex items-center justify-center">
+                    <div className="space-y-4 text-center">
+                        <div className="relative w-48 h-48 border rounded-full bg-secondary/20 flex items-center justify-center">
                             <svg width="100%" height="100%" viewBox="0 0 100 100" className="w-full h-full">
                                 <TickRing
                                     cx={50}
@@ -181,8 +181,8 @@ export default function TickRingPage() {
                     </div>
 
                     {/* Custom Render (Text) */}
-                    <div className="space-y-2 text-center">
-                        <div className="relative w-32 h-32 border rounded-full bg-secondary/20 flex items-center justify-center">
+                    <div className="space-y-4 text-center">
+                        <div className="relative w-48 h-48 border rounded-full bg-secondary/20 flex items-center justify-center">
                             <svg width="100%" height="100%" viewBox="0 0 100 100" className="w-full h-full">
                                 <TickRing
                                     cx={50}
@@ -208,8 +208,8 @@ export default function TickRingPage() {
                     </div>
 
                     {/* Custom Render (Triangles) */}
-                    <div className="space-y-2 text-center">
-                        <div className="relative w-32 h-32 border rounded-full bg-secondary/20 flex items-center justify-center">
+                    <div className="space-y-4 text-center">
+                        <div className="relative w-48 h-48 border rounded-full bg-secondary/20 flex items-center justify-center">
                             <svg width="100%" height="100%" viewBox="0 0 100 100" className="w-full h-full">
                                 <TickRing
                                     cx={50}
@@ -234,10 +234,10 @@ export default function TickRingPage() {
 
             <section className="space-y-6">
                 <h2 className="text-2xl font-semibold">Styles & Thickness</h2>
-                <div className="flex flex-wrap gap-8 items-center p-8 bg-card rounded-xl border">
+                <div className="flex flex-wrap gap-12 items-center p-8 bg-card rounded-xl border">
                     {/* Thin & Long */}
-                    <div className="space-y-2 text-center">
-                        <div className="relative w-32 h-32 border rounded-full bg-secondary/20 flex items-center justify-center">
+                    <div className="space-y-4 text-center">
+                        <div className="relative w-48 h-48 border rounded-full bg-secondary/20 flex items-center justify-center">
                             <svg width="100%" height="100%" viewBox="0 0 100 100" className="w-full h-full">
                                 <TickRing
                                     cx={50}
@@ -254,8 +254,8 @@ export default function TickRingPage() {
                     </div>
 
                     {/* Short & Thick */}
-                    <div className="space-y-2 text-center">
-                        <div className="relative w-32 h-32 border rounded-full bg-secondary/20 flex items-center justify-center">
+                    <div className="space-y-4 text-center">
+                        <div className="relative w-48 h-48 border rounded-full bg-secondary/20 flex items-center justify-center">
                             <svg width="100%" height="100%" viewBox="0 0 100 100" className="w-full h-full">
                                 <TickRing
                                     cx={50}
@@ -272,8 +272,8 @@ export default function TickRingPage() {
                     </div>
 
                     {/* Dashed Style */}
-                    <div className="space-y-2 text-center">
-                        <div className="relative w-32 h-32 border rounded-full bg-secondary/20 flex items-center justify-center">
+                    <div className="space-y-4 text-center">
+                        <div className="relative w-48 h-48 border rounded-full bg-secondary/20 flex items-center justify-center">
                             <svg width="100%" height="100%" viewBox="0 0 100 100" className="w-full h-full">
                                 <TickRing
                                     cx={50}
