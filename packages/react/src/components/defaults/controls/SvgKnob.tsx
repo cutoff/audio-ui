@@ -19,6 +19,10 @@ export type SvgKnobProps = {
     thickness?: number;
     /** Roundness for stroke linecap (normalized 0.0-1.0, 0.0 = square, >0.0 = round) */
     roundness?: number;
+    /** Openness of the ring in degrees (value between 0-360º; 0º: closed; 90º: 3/4 open; 180º: half-circle;) */
+    openness?: number;
+    /** Optional rotation angle offset in degrees */
+    rotation?: number;
     /** Resolved color string */
     color?: string;
     /** Additional CSS class name */
@@ -37,6 +41,8 @@ export type SvgKnobProps = {
  * @param bipolar - Whether to start arc from center (default false)
  * @param thickness - Normalized thickness 0.0-1.0 (default 0.4, maps to 1-20)
  * @param roundness - Normalized roundness 0.0-1.0 (default 0.3, 0.0 = square, >0.0 = round)
+ * @param openness - Openness of the ring in degrees (default 90)
+ * @param rotation - Optional rotation angle offset in degrees (default 0)
  * @param color - Resolved color string
  * @param className - Optional CSS class
  */
@@ -45,6 +51,8 @@ function SvgKnob({
     bipolar = false,
     thickness = 0.4,
     roundness = DEFAULT_ROUNDNESS,
+    openness = 90,
+    rotation = 0,
     color,
     className,
 }: SvgKnobProps) {
@@ -74,7 +82,8 @@ function SvgKnob({
                 bipolar={bipolar}
                 thickness={pixelThickness}
                 roundness={isRound}
-                openness={80}
+                openness={openness}
+                rotation={rotation}
                 fgArcStyle={{ stroke: colorVariants.primary }}
                 bgArcStyle={{ stroke: colorVariants.primary50 }}
             />

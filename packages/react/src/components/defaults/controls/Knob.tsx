@@ -13,6 +13,16 @@ import { AudioParameterFactory, ContinuousParameter } from "@cutoff/audio-ui-cor
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 
 /**
+ * Default openness for knob ring in degrees (matches ValueRing default)
+ */
+export const DEFAULT_OPENNESS = 90;
+
+/**
+ * Default rotation angle offset in degrees (matches ValueRing default)
+ */
+export const DEFAULT_ROTATION = 0;
+
+/**
  * Props for the Knob component (built-in control with theming support)
  */
 export type KnobProps = ContinuousControlProps &
@@ -25,6 +35,14 @@ export type KnobProps = ContinuousControlProps &
          * @default 0.4
          */
         thickness?: number;
+        /** Openness of the ring in degrees (value between 0-360º; 0º: closed; 90º: 3/4 open; 180º: half-circle;)
+         * @default 90
+         */
+        openness?: number;
+        /** Optional rotation angle offset in degrees
+         * @default 0
+         */
+        rotation?: number;
     };
 
 /**
@@ -49,6 +67,8 @@ function Knob({
     color,
     roundness,
     thickness = 0.4,
+    openness = DEFAULT_OPENNESS,
+    rotation = DEFAULT_ROTATION,
     parameter,
     unit,
     scale,
@@ -197,6 +217,8 @@ function Knob({
             interactionSensitivity={interactionSensitivity ?? 0.008}
             thickness={clampedThickness}
             roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
+            openness={openness}
+            rotation={rotation}
         >
             {knobContent}
         </ContinuousControl>
