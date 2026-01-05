@@ -29,8 +29,6 @@ export type KnobProps = ContinuousControlProps &
     AdaptiveSizeProps &
     AdaptiveBoxProps &
     ThemableProps & {
-        /** Content to display inside the knob (replaces the value display) */
-        children?: React.ReactNode;
         /** Thickness of the knob's stroke (normalized 0.0-1.0, maps to 1-20)
          * @default 0.4
          */
@@ -83,7 +81,6 @@ function Knob({
     onMouseLeave,
     className,
     style,
-    children,
 }: KnobProps) {
     // Use the themable props hook to resolve color and roundness with proper fallbacks
     // Clamp values to 0.0-1.0 range
@@ -130,38 +127,6 @@ function Knob({
     // Prepare the content to display inside the knob
     // Uses container query units (cqmin) so text scales with component size
     const knobContent = useMemo(() => {
-        // Handle images first
-        if (React.isValidElement(children) && children.type === "img") {
-            return (
-                <div
-                    style={{
-                        width: "100%",
-                        height: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "inherit",
-                    }}
-                >
-                    {React.cloneElement(children, {
-                        style: {
-                            maxWidth: "100%",
-                            maxHeight: "100%",
-                            cursor: "inherit",
-                        },
-                    } as React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>)}
-                </div>
-            );
-        }
-
-        // Handle custom children or render props
-        if (children) {
-            return children;
-        }
-
-        // Determine text content: custom render prop or default display value
-        const textContent = renderValue ? renderValue(value, parameterDef.min, parameterDef.max) : displayValue;
-
         // Default text rendering using cqmin for responsive scaling
         return (
             <div
@@ -177,10 +142,10 @@ function Knob({
                     cursor: "inherit",
                 }}
             >
-                {textContent}
+                {renderValue ? renderValue(value, parameterDef.min, parameterDef.max) : displayValue}
             </div>
         );
-    }, [children, renderValue, value, parameterDef.min, parameterDef.max, displayValue]);
+    }, [renderValue, value, parameterDef.min, parameterDef.max, displayValue]);
 
     // Merge class names: size class first, then user className (user takes precedence)
     const mergedClassName = classNames(sizeClassName, className);
