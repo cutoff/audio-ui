@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { useThemableProps } from "@/defaults/AudioUiProvider";
 import SvgKnob from "./SvgKnob";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
-import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps } from "@/types";
+import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps, KnobVariant } from "@/types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import { AudioParameterFactory, ContinuousParameter } from "@cutoff/audio-ui-core";
@@ -29,6 +29,10 @@ export type KnobProps = ContinuousControlProps &
     AdaptiveSizeProps &
     AdaptiveBoxProps &
     ThemableProps & {
+        /** Visual variant of the knob
+         * @default "abstract"
+         */
+        variant?: KnobVariant;
         /** Thickness of the knob's stroke (normalized 0.0-1.0, maps to 1-20)
          * @default 0.4
          */
@@ -45,7 +49,8 @@ export type KnobProps = ContinuousControlProps &
 
 /**
  * Knob component provides a circular control for value adjustment.
- * ...
+ * Supports continuous value ranges with optional bipolar mode, custom formatting,
+ * and multiple visual variants.
  */
 function Knob({
     min,
@@ -64,6 +69,7 @@ function Knob({
     labelAlign,
     color,
     roundness,
+    variant = "abstract",
     thickness = 0.4,
     openness = DEFAULT_OPENNESS,
     rotation = DEFAULT_ROTATION,
@@ -122,9 +128,8 @@ function Knob({
 
     // Prepare the content to display inside the knob
     // Uses container query units (cqmin) so text scales with component size
-    const knobContent = useMemo(() => {
-        // Default text rendering using cqmin for responsive scaling
-        return (
+    const displayValueOverlay =
+        variant === "abstract" ? (
             <div
                 style={{
                     width: "100%",
@@ -140,8 +145,7 @@ function Knob({
             >
                 {displayValue}
             </div>
-        );
-    }, [displayValue]);
+        ) : undefined;
 
     return (
         <ContinuousControl
@@ -170,13 +174,14 @@ function Knob({
             interactionMode={interactionMode}
             interactionDirection={interactionDirection}
             interactionSensitivity={interactionSensitivity ?? 0.008}
+            variant={variant}
             thickness={clampedThickness}
             roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
             openness={openness}
             rotation={rotation}
             valueFormatter={valueFormatter}
         >
-            {knobContent}
+            {displayValueOverlay}
         </ContinuousControl>
     );
 }

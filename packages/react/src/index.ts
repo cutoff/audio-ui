@@ -68,6 +68,7 @@ export type {
     ControlComponentViewProps,
     AudioControlEvent,
     ControlComponentMetadata,
+    KnobVariant,
 } from "./components/types";
 
 // Export value formatters

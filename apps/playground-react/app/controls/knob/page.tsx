@@ -1,17 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { Knob, KnobProps, KnobSwitch, KnobSwitchProps, Option, AudioParameter } from "@cutoff/audio-ui-react";
+import {
+    Knob,
+    KnobProps,
+    KnobSwitch,
+    KnobSwitchProps,
+    Option,
+    AudioParameter,
+    KnobVariant,
+} from "@cutoff/audio-ui-react";
 
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ColorPickerField } from "@/components/ColorPickerField";
 import { SawWaveIcon, SineWaveIcon, SquareWaveIcon, TriangleWaveIcon } from "@/components/wave-icons";
 
-// Define a simple MIDI bipolar formatter function for the demo
-// This will be replaced by the library's midiBipolarFormatter when it's available
+// MIDI bipolar formatter for demo purposes
 const midiBipolarFormatter = (value: number, parameterDef: AudioParameter): string | undefined => {
     if (parameterDef.type !== "continuous") {
         return undefined; // Fall back to default formatter for non-continuous parameters
@@ -51,7 +59,8 @@ function generateCodeSnippet(
     useMidiBipolar: boolean,
     roundness: number | undefined,
     thickness: number,
-    color: string | undefined
+    color: string | undefined,
+    variant: KnobVariant
 ): string {
     if (enableOptions) {
         return `<KnobSwitch value={${value}} label='${label}'${color !== undefined ? ` color='${color}'` : ""}>
@@ -63,7 +72,15 @@ function generateCodeSnippet(
 </KnobSwitch>
 `;
     } else {
-        let props = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}} thickness={${thickness}}`;
+        // Start with variant prop if not default (first prop)
+        let props = "";
+        if (variant !== "abstract") {
+            props = `variant="${variant}"`;
+        }
+
+        // Add required props
+        const requiredProps = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}} thickness={${thickness}}`;
+        props = props ? `${props} ${requiredProps}` : requiredProps;
 
         if (step !== undefined) {
             props += ` step={${step}}`;
@@ -103,6 +120,7 @@ type KnobComponentProps = {
     className?: string;
     size?: "xsmall" | "small" | "normal" | "large" | "xlarge";
     color?: string;
+    variant?: KnobVariant;
     onChange?: KnobProps["onChange"] | KnobSwitchProps["onChange"];
     onClick?: KnobProps["onClick"] | KnobSwitchProps["onClick"];
 };
@@ -125,6 +143,7 @@ function KnobComponent({
     className,
     size,
     color,
+    variant,
 }: KnobComponentProps) {
     if (enableOptions) {
         return (
@@ -161,6 +180,7 @@ function KnobComponent({
                 onChange={onChange}
                 size={size}
                 color={color}
+                variant={variant}
                 valueFormatter={bipolar && useMidiBipolar ? midiBipolarFormatter : undefined}
             />
         );
@@ -179,6 +199,7 @@ export default function KnobDemoPage() {
     const [roundness, setRoundness] = useState<number | undefined>(undefined);
     const [thickness, setThickness] = useState(0.4);
     const [color, setColor] = useState<string | undefined>(undefined); // Allow undefined to use theme values
+    const [variant, setVariant] = useState<KnobVariant>("abstract");
 
     const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4): void => {
         switch (num) {
@@ -194,6 +215,7 @@ export default function KnobDemoPage() {
                 setThickness(0.4);
                 setRoundness(undefined); // Use theme roundness
                 setColor(undefined); // Use theme color
+                setVariant("abstract");
                 break;
             case 1:
                 setValue(64);
@@ -207,6 +229,7 @@ export default function KnobDemoPage() {
                 setThickness(0.4);
                 setRoundness(0.3);
                 setColor("#ff3366"); // Pink
+                setVariant("abstract");
                 break;
             case 2:
                 setValue(0);
@@ -220,6 +243,7 @@ export default function KnobDemoPage() {
                 setThickness(0.4);
                 setRoundness(0.3);
                 setColor("#33cc66"); // Green
+                setVariant("abstract");
                 break;
             case 3:
                 setValue(0);
@@ -233,6 +257,7 @@ export default function KnobDemoPage() {
                 setThickness(0.6);
                 setRoundness(0.3);
                 setColor("#9966ff"); // Purple
+                setVariant("abstract");
                 break;
             case 4:
                 setValue(64);
@@ -246,11 +271,26 @@ export default function KnobDemoPage() {
                 setThickness(0.4);
                 setRoundness(0.3);
                 setColor("#ff9933"); // Orange
+                setVariant("abstract");
                 break;
         }
     };
 
     const properties = [
+        <div key="variant" className="grid gap-2">
+            <Label htmlFor="variantProp">Variant</Label>
+            <Select value={variant} onValueChange={(value) => setVariant(value as KnobVariant)}>
+                <SelectTrigger id="variantProp">
+                    <SelectValue placeholder="Select variant" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="abstract">abstract</SelectItem>
+                    <SelectItem value="simplest">simplest</SelectItem>
+                    <SelectItem value="plainCap">plainCap</SelectItem>
+                    <SelectItem value="iconCap">iconCap</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>,
         <div key="label" className="grid gap-2">
             <Label htmlFor="labelProp">Label</Label>
             <Input id="labelProp" value={label} onChange={(e) => setLabel(e.target.value)} />
@@ -411,7 +451,8 @@ export default function KnobDemoPage() {
         useMidiBipolar,
         roundness,
         thickness,
-        color
+        color,
+        variant
     );
     const componentProps = {
         min,
@@ -425,6 +466,7 @@ export default function KnobDemoPage() {
         roundness,
         thickness,
         color,
+        variant,
     };
 
     return (

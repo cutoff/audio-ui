@@ -110,14 +110,9 @@ export type AdaptiveBoxProps = {
 };
 
 /**
- * Interaction modes for controls
+ * Variant options for the Knob component
  */
-// InteractionMode is imported from core now
-
-/**
- * Interaction directions for controls
- */
-// InteractionDirection is imported from core now
+export type KnobVariant = "abstract" | "simplest" | "plainCap" | "iconCap";
 
 /**
  * Standard event object emitted by all AudioUI controls.

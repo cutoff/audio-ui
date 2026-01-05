@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import { generateColorVariants, getAdaptiveDefaultColor } from "@cutoff/audio-ui-core";
-import { ControlComponent } from "@/types";
+import { ControlComponent, KnobVariant } from "@/types";
 import { translateKnobRoundness, translateKnobThickness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import ValueRing from "@/primitives/svg/ValueRing";
@@ -15,6 +15,8 @@ export type SvgKnobProps = {
     normalizedValue: number;
     /** Whether to start the arc from center (bipolar mode) */
     bipolar?: boolean;
+    /** Visual variant of the knob */
+    variant?: KnobVariant;
     /** Thickness of the knob's stroke (normalized 0.0-1.0, maps to 1-20) */
     thickness?: number;
     /** Roundness for stroke linecap (normalized 0.0-1.0, 0.0 = square, >0.0 = round) */
@@ -39,6 +41,7 @@ export type SvgKnobProps = {
  *
  * @param normalizedValue - Value between 0 and 1
  * @param bipolar - Whether to start arc from center (default false)
+ * @param variant - Visual variant of the knob (default "abstract")
  * @param thickness - Normalized thickness 0.0-1.0 (default 0.4, maps to 1-20)
  * @param roundness - Normalized roundness 0.0-1.0 (default 0.3, 0.0 = square, >0.0 = round)
  * @param openness - Openness of the ring in degrees (default 90)
@@ -49,6 +52,7 @@ export type SvgKnobProps = {
 function SvgKnob({
     normalizedValue,
     bipolar = false,
+    variant = "abstract",
     thickness = 0.4,
     roundness = DEFAULT_ROUNDNESS,
     openness = 90,
@@ -71,6 +75,9 @@ function SvgKnob({
         () => generateColorVariants(color ?? getAdaptiveDefaultColor(), "transparency"),
         [color]
     );
+
+    // Variant prop is reserved for future implementation
+    void variant;
 
     return (
         <g className={className}>
