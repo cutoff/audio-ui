@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { isNoteOn, Keybed, noteNumToNote } from "@cutoff/audio-ui-react";
+import { isNoteOn, Keys, noteNumToNote } from "@cutoff/audio-ui-react";
 import ComponentSkeletonPage from "@/components/ComponentSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,10 +10,10 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 import { ColorPickerField } from "@/components/ColorPickerField";
 
-// Define the NoteName type to match the one in the Keybed component
+// Define the NoteName type to match the one in the Keys component
 type NoteName = "C" | "D" | "E" | "F" | "G" | "A" | "B";
 
-export default function KeybedPage() {
+export default function KeysPage() {
     const [nbKeys, setNbKeys] = useState<number>(61);
     const [startKey, setStartKey] = useState<NoteName>("C");
     const [octaveShift, setOctaveShift] = useState<number>(0);
@@ -94,7 +94,7 @@ export default function KeybedPage() {
     };
 
     // Generate code snippet with dynamic notesOn array
-    const codeString = `<Keybed
+    const codeString = `<Keys
   nbKeys={${nbKeys}}
   startKey="${startKey}"
   octaveShift={${octaveShift}}
@@ -297,9 +297,9 @@ export default function KeybedPage() {
         <div className="min-h-screen flex flex-col md:flex-row">
             {/* Left Column - Using ComponentSkeletonPage */}
             <ComponentSkeletonPage
-                componentName="Keybed"
+                componentName="Keys"
                 codeSnippet={codeString}
-                PageComponent={Keybed}
+                PageComponent={Keys}
                 componentProps={componentProps}
                 properties={properties}
             />
@@ -313,7 +313,7 @@ export default function KeybedPage() {
                         <div className="flex flex-wrap gap-4 md:gap-8 justify-center md:justify-start">
                             <div className="flex flex-col items-center gap-2">
                                 <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(0)}>
-                                    <Keybed
+                                    <Keys
                                         nbKeys={61}
                                         startKey="C"
                                         keyStyle="theme"
@@ -329,7 +329,7 @@ export default function KeybedPage() {
                             </div>
                             <div className="flex flex-col items-center gap-2">
                                 <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(1)}>
-                                    <Keybed
+                                    <Keys
                                         nbKeys={25}
                                         startKey="C"
                                         keyStyle="classic"
@@ -344,7 +344,7 @@ export default function KeybedPage() {
                             </div>
                             <div className="flex flex-col items-center gap-2">
                                 <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(2)}>
-                                    <Keybed
+                                    <Keys
                                         nbKeys={25}
                                         startKey="C"
                                         keyStyle="classic-inverted"
@@ -359,7 +359,7 @@ export default function KeybedPage() {
                             </div>
                             <div className="flex flex-col items-center gap-2">
                                 <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(3)}>
-                                    <Keybed
+                                    <Keys
                                         nbKeys={25}
                                         startKey="C"
                                         keyStyle="classic"
@@ -375,7 +375,7 @@ export default function KeybedPage() {
                             </div>
                             <div className="flex flex-col items-center gap-2">
                                 <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(4)}>
-                                    <Keybed
+                                    <Keys
                                         nbKeys={37}
                                         startKey="C"
                                         keyStyle="classic"
@@ -390,7 +390,7 @@ export default function KeybedPage() {
                             </div>
                             <div className="flex flex-col items-center gap-2">
                                 <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(5)}>
-                                    <Keybed
+                                    <Keys
                                         nbKeys={13}
                                         startKey="C"
                                         keyStyle="theme"

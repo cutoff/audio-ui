@@ -59,24 +59,24 @@
     --audioui-size-vslider-height-large: calc(var(--audioui-size-vslider-width-large) * 3);
     --audioui-size-vslider-height-xlarge: calc(var(--audioui-size-vslider-width-xlarge) * 3);
 
-    /* Keybed (1x5): height = base, width = 5 * base (width > height) */
-    --audioui-size-keybed-height-xsmall: var(--audioui-unit);
-    --audioui-size-keybed-height-small: calc(var(--audioui-unit) * var(--audioui-size-mult-small));
-    --audioui-size-keybed-height-normal: calc(var(--audioui-unit) * var(--audioui-size-mult-normal));
-    --audioui-size-keybed-height-large: calc(var(--audioui-unit) * var(--audioui-size-mult-large));
-    --audioui-size-keybed-height-xlarge: calc(var(--audioui-unit) * var(--audioui-size-mult-xlarge));
+    /* Keys (1x5): height = base, width = 5 * base (width > height) */
+    --audioui-size-keys-height-xsmall: var(--audioui-unit);
+    --audioui-size-keys-height-small: calc(var(--audioui-unit) * var(--audioui-size-mult-small));
+    --audioui-size-keys-height-normal: calc(var(--audioui-unit) * var(--audioui-size-mult-normal));
+    --audioui-size-keys-height-large: calc(var(--audioui-unit) * var(--audioui-size-mult-large));
+    --audioui-size-keys-height-xlarge: calc(var(--audioui-unit) * var(--audioui-size-mult-xlarge));
 
-    --audioui-size-keybed-width-xsmall: calc(var(--audioui-size-keybed-height-xsmall) * 5);
-    --audioui-size-keybed-width-small: calc(var(--audioui-size-keybed-height-small) * 5);
-    --audioui-size-keybed-width-normal: calc(var(--audioui-size-keybed-height-normal) * 5);
-    --audioui-size-keybed-width-large: calc(var(--audioui-size-keybed-height-large) * 5);
-    --audioui-size-keybed-width-xlarge: calc(var(--audioui-size-keybed-height-xlarge) * 5);
+    --audioui-size-keys-width-xsmall: calc(var(--audioui-size-keys-height-xsmall) * 5);
+    --audioui-size-keys-width-small: calc(var(--audioui-size-keys-height-small) * 5);
+    --audioui-size-keys-width-normal: calc(var(--audioui-size-keys-height-normal) * 5);
+    --audioui-size-keys-width-large: calc(var(--audioui-size-keys-height-large) * 5);
+    --audioui-size-keys-width-xlarge: calc(var(--audioui-size-keys-height-xlarge) * 5);
 
     /* Classic Piano Key Colors */
-    --audioui-keybed-ivory: hsl(40, 20%, 95%); /* Warm off-white color for classic white keys */
-    --audioui-keybed-ivory-stroke: hsl(40, 20%, 85%); /* Slightly darker for stroke contrast */
-    --audioui-keybed-ebony: hsl(0, 0%, 15%); /* Deep black color for classic black keys */
-    --audioui-keybed-ebony-stroke: hsl(0, 0%, 25%); /* Slightly lighter for stroke contrast */
+    --audioui-keys-ivory: hsl(40, 20%, 95%); /* Warm off-white color for classic white keys */
+    --audioui-keys-ivory-stroke: hsl(40, 20%, 85%); /* Slightly darker for stroke contrast */
+    --audioui-keys-ebony: hsl(0, 0%, 15%); /* Deep black color for classic black keys */
+    --audioui-keys-ebony-stroke: hsl(0, 0%, 25%); /* Slightly lighter for stroke contrast */
 }
 
 /* Dark mode overrides */

@@ -29,15 +29,15 @@ type NoteName = (typeof WHITE_KEY_NAMES)[number];
 const notesCount = WHITE_KEY_NAMES.length;
 
 /**
- * Props for the Keybed component
+ * Props for the Keys component
  */
-export type KeybedProps = BaseProps &
+export type KeysProps = BaseProps &
     AdaptiveSizeProps &
-    // Keybed uses AdaptiveBox layout props but deliberately does not support labels.
+    // Keys uses AdaptiveBox layout props but deliberately does not support labels.
     // labelMode/labelPosition/labelAlign are omitted on purpose.
     Omit<AdaptiveBoxProps, "labelMode" | "labelPosition" | "labelAlign"> &
     ThemableProps & {
-        /** Number of keys on the keybed
+        /** Number of keys on the keyboard
          * @default 61 */
         nbKeys?: number;
         /** Starting note name (A-G)
@@ -69,7 +69,7 @@ const positiveModulo = (number: number, modulus: number): number => {
 };
 
 /**
- * Piano Keybed component that renders a piano keyboard visualization.
+ * Piano Keys component that renders a piano keyboard visualization.
  * Supports variable number of keys, different starting positions, and note highlighting.
  *
  * Features:
@@ -80,8 +80,8 @@ const positiveModulo = (number: number, modulus: number): number => {
  * - Responsive sizing through AdaptiveSvgComponent integration
  * - Multiple size variants (xsmall, small, normal, large, xlarge)
  *
- * @property {boolean} adaptiveSize - Whether the keybed fills its container (ignores size constraints when true)
- * @property {number} nbKeys - Number of keys on the keybed (default 61)
+ * @property {boolean} adaptiveSize - Whether the keys component fills its container (ignores size constraints when true)
+ * @property {number} nbKeys - Number of keys on the keyboard (default 61)
  * @property {NoteName} startKey - Starting note name (A-G) (default 'C' for 61 keys, 'A' for 88 keys)
  * @property {number} octaveShift - Octave transpose index (default 0). Positive values shift notes up by that many octaves, negative values shift down.
  * @property {(string | number)[]} notesOn - Array of notes that should be highlighted. Can contain note names (e.g., 'C4') or MIDI note numbers (e.g., 60 for C4).
@@ -93,10 +93,10 @@ const positiveModulo = (number: number, modulus: number): number => {
  * @example
  * ```tsx
  * // Basic usage
- * <Keybed />
+ * <Keys />
  *
  * // Full piano configuration with note names
- * <Keybed
+ * <Keys
  *   nbKeys={88}
  *   startKey="A"
  *   octaveShift={0}
@@ -104,30 +104,30 @@ const positiveModulo = (number: number, modulus: number): number => {
  * />
  *
  * // Using MIDI note numbers
- * <Keybed
+ * <Keys
  *   notesOn={[60, 64, 67]} // C4, E4, G4
  * />
  *
  * // Mixing note names and MIDI note numbers
- * <Keybed
+ * <Keys
  *   notesOn={['C4', 64, 'G4']} // C4, E4, G4
  * />
  *
  * // Custom styling with size
- * <Keybed
+ * <Keys
  *   className="my-keyboard"
  *   style={{ marginTop: '20px' }}
  *   size="large"
  * />
  *
  * // Classic piano style
- * <Keybed keyStyle="classic" />
+ * <Keys keyStyle="classic" />
  *
  * // Inverted classic style
- * <Keybed keyStyle="classic-inverted" />
+ * <Keys keyStyle="classic-inverted" />
  * ```
  */
-function Keybed({
+function Keys({
     nbKeys = 61,
     startKey = nbKeys === 88 ? "A" : "C",
     octaveShift = 0,
@@ -140,7 +140,7 @@ function Keybed({
     roundness,
     className = "",
     style = {},
-}: KeybedProps) {
+}: KeysProps) {
     // Ensure nbKeys is within valid range (1-128)
     const validNbKeys = Math.max(1, Math.min(128, nbKeys));
     // Memoize initial computations
@@ -233,18 +233,18 @@ function Keybed({
             return null; // Use colorVariants instead
         } else if (keyStyle === "classic") {
             return {
-                whiteFill: `var(${CSS_VARS.keybedIvory})`,
-                whiteStroke: `var(${CSS_VARS.keybedIvoryStroke})`,
-                blackFill: `var(${CSS_VARS.keybedEbony})`,
-                blackStroke: `var(${CSS_VARS.keybedEbonyStroke})`,
+                whiteFill: `var(${CSS_VARS.keysIvory})`,
+                whiteStroke: `var(${CSS_VARS.keysIvoryStroke})`,
+                blackFill: `var(${CSS_VARS.keysEbony})`,
+                blackStroke: `var(${CSS_VARS.keysEbonyStroke})`,
             };
         } else {
             // classic-inverted
             return {
-                whiteFill: `var(${CSS_VARS.keybedEbony})`,
-                whiteStroke: `var(${CSS_VARS.keybedEbonyStroke})`,
-                blackFill: `var(${CSS_VARS.keybedIvory})`,
-                blackStroke: `var(${CSS_VARS.keybedIvoryStroke})`,
+                whiteFill: `var(${CSS_VARS.keysEbony})`,
+                whiteStroke: `var(${CSS_VARS.keysEbonyStroke})`,
+                blackFill: `var(${CSS_VARS.keysIvory})`,
+                blackStroke: `var(${CSS_VARS.keysIvoryStroke})`,
             };
         }
     }, [keyStyle]);
@@ -428,7 +428,7 @@ function Keybed({
     ]);
 
     // Get adaptive sizing values
-    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "keybed");
+    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "keys");
 
     // Memoize the classNames calculation: size class first, then base classes, then user className (user takes precedence)
     const componentClassNames = useMemo(() => {
@@ -438,7 +438,7 @@ function Keybed({
     return (
         <AdaptiveBox
             displayMode={displayMode ?? "scaleToFit"}
-            // Keybed does not expose labels; hide label row explicitly.
+            // Keys does not expose labels; hide label row explicitly.
             labelMode="none"
             className={componentClassNames}
             style={{ ...sizeStyle, ...style }}
@@ -457,4 +457,4 @@ function Keybed({
 }
 
 // Wrap the component in React.memo to prevent unnecessary re-renders
-export default React.memo(Keybed);
+export default React.memo(Keys);

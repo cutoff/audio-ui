@@ -45,7 +45,7 @@ const primitives: Page[] = [
 
 // List of device pages
 const devices: Page[] = [
-    { name: "Keybed", path: "/devices/keybed" },
+    { name: "Keys", path: "/devices/keys" },
     // More device pages can be added here in the future
 ];
 

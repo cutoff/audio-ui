@@ -233,28 +233,28 @@ svg foreignObject div > * svg {
     height: var(--audioui-size-vslider-height-xlarge);
 }
 
-/* Size utility classes - Keybed (1x5) */
-.audioui-size-keybed-xsmall {
-    width: var(--audioui-size-keybed-width-xsmall);
-    height: var(--audioui-size-keybed-height-xsmall);
+/* Size utility classes - Keys (1x5) */
+.audioui-size-keys-xsmall {
+    width: var(--audioui-size-keys-width-xsmall);
+    height: var(--audioui-size-keys-height-xsmall);
 }
 
-.audioui-size-keybed-small {
-    width: var(--audioui-size-keybed-width-small);
-    height: var(--audioui-size-keybed-height-small);
+.audioui-size-keys-small {
+    width: var(--audioui-size-keys-width-small);
+    height: var(--audioui-size-keys-height-small);
 }
 
-.audioui-size-keybed-normal {
-    width: var(--audioui-size-keybed-width-normal);
-    height: var(--audioui-size-keybed-height-normal);
+.audioui-size-keys-normal {
+    width: var(--audioui-size-keys-width-normal);
+    height: var(--audioui-size-keys-height-normal);
 }
 
-.audioui-size-keybed-large {
-    width: var(--audioui-size-keybed-width-large);
-    height: var(--audioui-size-keybed-height-large);
+.audioui-size-keys-large {
+    width: var(--audioui-size-keys-width-large);
+    height: var(--audioui-size-keys-height-large);
 }
 
-.audioui-size-keybed-xlarge {
-    width: var(--audioui-size-keybed-width-xlarge);
-    height: var(--audioui-size-keybed-height-xlarge);
+.audioui-size-keys-xlarge {
+    width: var(--audioui-size-keys-width-xlarge);
+    height: var(--audioui-size-keys-height-xlarge);
 }

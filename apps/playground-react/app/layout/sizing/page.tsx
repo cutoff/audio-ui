@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Knob, KnobSwitch, Slider, Keybed, Option, SizeType } from "@cutoff/audio-ui-react";
+import { Button, Knob, KnobSwitch, Slider, Keys, Option, SizeType } from "@cutoff/audio-ui-react";
 import { SawWaveIcon, SineWaveIcon, SquareWaveIcon, TriangleWaveIcon } from "@/components/wave-icons";
 
 const sizeTypes: SizeType[] = ["xsmall", "small", "normal", "large", "xlarge"];
@@ -135,18 +135,18 @@ export default function SizingPage() {
                     </div>
                 </section>
 
-                {/* Keybed Section */}
+                {/* Keys Section */}
                 <section className="mb-12">
-                    <h2 className="text-2xl font-semibold mb-6">Keybed (1:5)</h2>
+                    <h2 className="text-2xl font-semibold mb-6">Keys (1:5)</h2>
                     <p className="text-muted-foreground mb-6">
-                        The keybed maintains a consistent aspect ratio of 1:5 (width:height), ensuring proper keyboard
-                        proportions across all sizes.
+                        The keys component maintains a consistent aspect ratio of 1:5 (width:height), ensuring proper
+                        keyboard proportions across all sizes.
                     </p>
 
                     <div className="flex flex-col gap-6">
                         {sizeTypes.map((size) => (
                             <div key={size} className="flex flex-col gap-2">
-                                <Keybed nbKeys={61} size={size} />
+                                <Keys nbKeys={61} size={size} />
                                 <span className="text-sm text-muted-foreground">{size}</span>
                             </div>
                         ))}

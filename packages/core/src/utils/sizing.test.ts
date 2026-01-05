@@ -12,8 +12,8 @@ describe("sizing", () => {
             expect(getSizeClassForComponent("button", "normal")).toBe("audioui-size-square-normal");
         });
 
-        it("returns correct class for keybed", () => {
-            expect(getSizeClassForComponent("keybed", "xlarge")).toBe("audioui-size-keybed-xlarge");
+        it("returns correct class for keys", () => {
+            expect(getSizeClassForComponent("keys", "xlarge")).toBe("audioui-size-keys-xlarge");
         });
 
         it("returns correct class for slider", () => {

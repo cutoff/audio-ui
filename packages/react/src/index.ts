@@ -29,7 +29,7 @@ export { default as SvgButton } from "./components/defaults/controls/SvgButton";
 export { default as SvgKnob } from "./components/defaults/controls/SvgKnob";
 export { default as SvgSlider, SvgVerticalSlider, SvgHorizontalSlider } from "./components/defaults/controls/SvgSlider";
 
-export { default as Keybed } from "./components/defaults/devices/Keybed";
+export { default as Keys } from "./components/defaults/devices/Keys";
 export { default as AdaptiveBox } from "./components/primitives/AdaptiveBox";
 export type {
     AdaptiveBoxSvgProps,
@@ -47,7 +47,7 @@ export type { KnobProps } from "./components/defaults/controls/Knob";
 export type { SliderProps } from "./components/defaults/controls/Slider";
 export type { ButtonProps } from "./components/defaults/controls/Button";
 export type { ContinuousControlComponentProps } from "./components/primitives/controls/ContinuousControl";
-export type { KeybedProps } from "./components/defaults/devices/Keybed";
+export type { KeysProps } from "./components/defaults/devices/Keys";
 
 // Export SVG component types
 export type { SvgButtonProps } from "./components/defaults/controls/SvgButton";

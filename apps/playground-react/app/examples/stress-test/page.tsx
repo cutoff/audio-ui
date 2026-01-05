@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { Button, Knob, Slider as AudioSlider, Keybed } from "@cutoff/audio-ui-react";
+import { Button, Knob, Slider as AudioSlider, Keys } from "@cutoff/audio-ui-react";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -31,7 +31,7 @@ function seededRandom(seed: number): number {
 
 // Pre-define control configurations for better performance
 type ControlConfig = {
-    type: "knob" | "slider-v" | "slider-h" | "button" | "keybed";
+    type: "knob" | "slider-v" | "slider-h" | "button" | "keys";
     modulator: ModulatorType;
     frequency: number;
     phase: number;
@@ -166,15 +166,15 @@ export default function StressTestPage() {
     const [controlCount, setControlCount] = useState(64);
     const [isAnimating, setIsAnimating] = useState(true);
     const [animationSpeed, setAnimationSpeed] = useState(1);
-    const [showKeybeds, setShowKeybeds] = useState(true);
-    const [keybedCount, setKeybedCount] = useState(4);
+    const [showKeys, setShowKeys] = useState(true);
+    const [keysCount, setKeysCount] = useState(4);
     const [showFps, setShowFps] = useState(true);
     const [fps, setFps] = useState(0);
 
     // Control values state - using refs for performance during animation
     const [values, setValues] = useState<number[]>(() => new Array(controlCount).fill(50));
     const [buttonValues, setButtonValues] = useState<boolean[]>(() => new Array(controlCount).fill(false));
-    const [keybedNotes, setKeybedNotes] = useState<number[][]>(() => new Array(keybedCount).fill(null).map(() => []));
+    const [keysNotes, setKeysNotes] = useState<number[][]>(() => new Array(keysCount).fill(null).map(() => []));
 
     // Pre-generated control configurations
     const controlConfigs = useMemo(() => generateControlConfigs(controlCount), [controlCount]);
@@ -187,17 +187,17 @@ export default function StressTestPage() {
     const frameCountRef = useRef(0);
     const lastFpsUpdateRef = useRef(performance.now());
 
-    // Memoized keybed configurations
-    const keybedConfigs = useMemo(
+    // Memoized keys configurations
+    const keysConfigs = useMemo(
         () =>
-            Array.from({ length: keybedCount }, (_, i) => ({
+            Array.from({ length: keysCount }, (_, i) => ({
                 nbKeys: 25 + Math.floor(seededRandom((i + 1) * 97) * 37), // 25-61 keys
                 startKey: (["C", "F", "A"] as const)[i % 3],
                 color: COLORS[(i * 3) % COLORS.length],
                 noteFrequency: 0.5 + seededRandom((i + 1) * 71) * 1.5, // How often notes change
                 notePhase: seededRandom((i + 1) * 89) * Math.PI * 2,
             })),
-        [keybedCount]
+        [keysCount]
     );
 
     // Animation loop
@@ -221,13 +221,13 @@ export default function StressTestPage() {
             return modulatorFn(scaledTime, config.frequency * 0.5, config.phase) > 0.5;
         });
 
-        // Update keybed notes - generate notes within each keybed's actual range
-        const newKeybedNotes = keybedConfigs.map((config, i) => {
+        // Update keys notes - generate notes within each keys component's actual range
+        const newKeysNotes = keysConfigs.map((config, i) => {
             // Calculate the starting MIDI note based on startKey
             // C=0, D=2, E=4, F=5, G=7, A=9, B=11 (semitones from C)
             const noteOffsets: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
             const startKeyOffset = noteOffsets[config.startKey] || 0;
-            // Use octave 3-4 range (MIDI 48-72) for all keybeds
+            // Use octave 3-4 range (MIDI 48-72) for all keys components
             const baseNote = 48 + startKeyOffset;
 
             const notes: number[] = [];
@@ -236,7 +236,7 @@ export default function StressTestPage() {
             const noteCount = 2 + Math.floor(seededRandom(i * 101 + Math.floor(scaledTime * config.noteFrequency)) * 3);
 
             for (let n = 0; n < noteCount; n++) {
-                // Generate notes within the keybed's range (0 to nbKeys-1)
+                // Generate notes within the keys component's range (0 to nbKeys-1)
                 const offset = Math.floor(
                     seededRandom(i * 103 + n * 107 + Math.floor(scaledTime * config.noteFrequency * 2)) * config.nbKeys
                 );
@@ -248,7 +248,7 @@ export default function StressTestPage() {
 
         setValues(newValues);
         setButtonValues(newButtonValues);
-        setKeybedNotes(newKeybedNotes);
+        setKeysNotes(newKeysNotes);
 
         // Calculate FPS
         frameCountRef.current++;
@@ -261,7 +261,7 @@ export default function StressTestPage() {
         }
 
         animationRef.current = requestAnimationFrame(animate);
-    }, [isAnimating, animationSpeed, controlConfigs, keybedConfigs]);
+    }, [isAnimating, animationSpeed, controlConfigs, keysConfigs]);
 
     // Start/stop animation
     useEffect(() => {
@@ -285,10 +285,10 @@ export default function StressTestPage() {
         setButtonValues(new Array(controlCount).fill(false));
     }, [controlCount]);
 
-    // Reset keybeds when count changes
+    // Reset keys when count changes
     useEffect(() => {
-        setKeybedNotes(new Array(keybedCount).fill(null).map(() => []));
-    }, [keybedCount]);
+        setKeysNotes(new Array(keysCount).fill(null).map(() => []));
+    }, [keysCount]);
 
     // Calculate grid columns based on control count - use more columns for denser display
     const gridColCount = useMemo(() => {
@@ -309,14 +309,14 @@ export default function StressTestPage() {
         );
 
         return {
-            total: controlCount + (showKeybeds ? keybedCount : 0),
+            total: controlCount + (showKeys ? keysCount : 0),
             knobs: types["knob"] || 0,
             vSliders: types["slider-v"] || 0,
             hSliders: types["slider-h"] || 0,
             buttons: types["button"] || 0,
-            keybeds: showKeybeds ? keybedCount : 0,
+            keys: showKeys ? keysCount : 0,
         };
-    }, [controlCount, keybedCount, showKeybeds, controlConfigs]);
+    }, [controlCount, keysCount, showKeys, controlConfigs]);
 
     return (
         <div className="container mx-auto px-4 py-4">
@@ -371,19 +371,19 @@ export default function StressTestPage() {
                         />
                     </div>
 
-                    {/* Keybed Controls */}
+                    {/* Keys Controls */}
                     <div className="space-y-2">
                         <div className="flex items-center justify-between gap-4">
-                            <Label htmlFor="keybed-toggle">Keybeds</Label>
-                            <Switch id="keybed-toggle" checked={showKeybeds} onCheckedChange={setShowKeybeds} />
+                            <Label htmlFor="keys-toggle">Keys</Label>
+                            <Switch id="keys-toggle" checked={showKeys} onCheckedChange={setShowKeys} />
                         </div>
-                        {showKeybeds && (
+                        {showKeys && (
                             <Slider
                                 min={1}
                                 max={8}
                                 step={1}
-                                value={[keybedCount]}
-                                onValueChange={(v) => setKeybedCount(v[0])}
+                                value={[keysCount]}
+                                onValueChange={(v) => setKeysCount(v[0])}
                             />
                         )}
                     </div>
@@ -407,11 +407,11 @@ export default function StressTestPage() {
                         <span>
                             <strong>{stats.buttons}</strong> Buttons
                         </span>
-                        {showKeybeds && (
+                        {showKeys && (
                             <>
                                 <span>•</span>
                                 <span>
-                                    <strong>{stats.keybeds}</strong> Keybeds
+                                    <strong>{stats.keys}</strong> Keys
                                 </span>
                             </>
                         )}
@@ -419,17 +419,17 @@ export default function StressTestPage() {
                 </div>
             </div>
 
-            {/* Keybeds Section */}
-            {showKeybeds && (
+            {/* Keys Section */}
+            {showKeys && (
                 <div className="mb-4">
-                    <h2 className="text-lg font-medium mb-2">Keybeds</h2>
+                    <h2 className="text-lg font-medium mb-2">Keys</h2>
                     <div className="flex flex-row flex-wrap gap-2">
-                        {keybedConfigs.map((config, i) => (
-                            <div key={`keybed-${i}`}>
-                                <Keybed
+                        {keysConfigs.map((config, i) => (
+                            <div key={`keys-${i}`}>
+                                <Keys
                                     nbKeys={config.nbKeys}
                                     startKey={config.startKey}
-                                    notesOn={keybedNotes[i] || []}
+                                    notesOn={keysNotes[i] || []}
                                     color={config.color}
                                     size="normal"
                                 />

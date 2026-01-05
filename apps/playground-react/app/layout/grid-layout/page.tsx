@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Button, Keybed, Knob, Slider } from "@cutoff/audio-ui-react";
+import { Button, Keys, Knob, Slider } from "@cutoff/audio-ui-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
@@ -337,8 +337,8 @@ export default function GridLayoutPage() {
                                 onChange={(e) => setButtonValue(Boolean(e.value))}
                             />
 
-                            {/* 61-key Keybed at the bottom spanning 7 columns x 2 rows, centered */}
-                            <Keybed
+                            {/* 61-key Keys at the bottom spanning 7 columns x 2 rows, centered */}
+                            <Keys
                                 nbKeys={61}
                                 startKey="C"
                                 octaveShift={0}

@@ -34,25 +34,25 @@ export const verticalSliderSizeClassMap: Record<SizeType, string> = {
 };
 
 /**
- * Maps size values to CSS class names for keybed
+ * Maps size values to CSS class names for keys
  */
-export const keybedSizeClassMap: Record<SizeType, string> = {
-    xsmall: "audioui-size-keybed-xsmall",
-    small: "audioui-size-keybed-small",
-    normal: "audioui-size-keybed-normal",
-    large: "audioui-size-keybed-large",
-    xlarge: "audioui-size-keybed-xlarge",
+export const keysSizeClassMap: Record<SizeType, string> = {
+    xsmall: "audioui-size-keys-xsmall",
+    small: "audioui-size-keys-small",
+    normal: "audioui-size-keys-normal",
+    large: "audioui-size-keys-large",
+    xlarge: "audioui-size-keys-xlarge",
 };
 
 /**
  * Gets the appropriate size class name for a component
- * @param componentType The type of component ('knob', 'button', 'keybed', or 'slider')
+ * @param componentType The type of component ('knob', 'button', 'keys', or 'slider')
  * @param size The size value
  * @param orientation The orientation for slider components ('vertical' or 'horizontal')
  * @returns The CSS class name for the component size
  */
 export function getSizeClassForComponent(
-    componentType: "knob" | "button" | "keybed" | "slider",
+    componentType: "knob" | "button" | "keys" | "slider",
     size: SizeType = "normal",
     orientation: "vertical" | "horizontal" = "vertical"
 ): string {
@@ -60,8 +60,8 @@ export function getSizeClassForComponent(
         case "knob":
         case "button":
             return squareSizeClassMap[size];
-        case "keybed":
-            return keybedSizeClassMap[size];
+        case "keys":
+            return keysSizeClassMap[size];
         case "slider":
             return orientation === "horizontal" ? horizontalSliderSizeClassMap[size] : verticalSliderSizeClassMap[size];
         default:
@@ -72,13 +72,13 @@ export function getSizeClassForComponent(
 /**
  * Gets the CSS variable references for a component's size dimensions.
  * Used to apply size as inline styles (which override AdaptiveBox's default 100%).
- * @param componentType The type of component ('knob', 'button', 'keybed', or 'slider')
+ * @param componentType The type of component ('knob', 'button', 'keys', or 'slider')
  * @param size The size value
  * @param orientation The orientation for slider components ('vertical' or 'horizontal')
  * @returns An object with width and height CSS variable references
  */
 export function getSizeStyleForComponent(
-    componentType: "knob" | "button" | "keybed" | "slider",
+    componentType: "knob" | "button" | "keys" | "slider",
     size: SizeType = "normal",
     orientation: "vertical" | "horizontal" = "vertical"
 ): { width: string; height: string } {
@@ -89,10 +89,10 @@ export function getSizeStyleForComponent(
                 width: `var(--audioui-size-square-${size})`,
                 height: `var(--audioui-size-square-${size})`,
             };
-        case "keybed":
+        case "keys":
             return {
-                width: `var(--audioui-size-keybed-width-${size})`,
-                height: `var(--audioui-size-keybed-height-${size})`,
+                width: `var(--audioui-size-keys-width-${size})`,
+                height: `var(--audioui-size-keys-height-${size})`,
             };
         case "slider":
             if (orientation === "horizontal") {
