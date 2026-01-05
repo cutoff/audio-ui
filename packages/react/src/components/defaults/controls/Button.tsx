@@ -6,10 +6,10 @@ import AdaptiveBox from "@/primitives/AdaptiveBox";
 import "@cutoff/audio-ui-core/styles.css";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BooleanControlProps, ThemableProps } from "@/types";
-import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "@/defaults/AudioUiProvider";
 import SvgButton from "./SvgButton";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
+import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
@@ -161,12 +161,8 @@ function Button({
         return undefined;
     }, [paramConfig.mode, onChange, handleGlobalMouseUp]);
 
-    // Determine sizing behavior: adaptiveSize controls stretch behavior and
-    // takes precedence over size when both are provided.
-    const isStretch = adaptiveSize === true;
-
-    // Get the size class name based on the size prop
-    const sizeClassName = isStretch ? undefined : getSizeClassForComponent("button", size);
+    // Get adaptive sizing values
+    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "button");
 
     // Memoize the classNames calculation: size class first, then base classes, then user className (user takes precedence)
     const componentClassNames = useMemo(() => {
@@ -181,9 +177,6 @@ function Button({
 
     // Use display value or label
     const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
-
-    // Build merged style: size style (when not stretching), then user style (user takes precedence)
-    const sizeStyle = isStretch ? undefined : getSizeStyleForComponent("button", size);
 
     // Determine if button is editable/clickable
     const isInteractive = !!(onChange || onClick);

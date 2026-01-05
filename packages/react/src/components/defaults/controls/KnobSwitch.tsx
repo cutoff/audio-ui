@@ -5,12 +5,12 @@ import classNames from "classnames";
 import AdaptiveBox from "@/primitives/AdaptiveBox";
 import SvgKnob from "./SvgKnob";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, InteractiveControlProps, ThemableProps } from "@/types";
-import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "@/defaults/AudioUiProvider";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import { EnumParameter } from "@cutoff/audio-ui-core";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useInteractiveControl } from "@/hooks/useInteractiveControl";
+import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
@@ -187,12 +187,8 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
         editable: !!onChange, // Only editable when onChange is provided
     });
 
-    // Determine sizing behavior: adaptiveSize controls stretch behavior and
-    // takes precedence over size when both are provided.
-    const isStretch = adaptiveSize === true;
-
-    // Get the size class name based on the size prop
-    const sizeClassName = isStretch ? undefined : getSizeClassForComponent("knob", size);
+    // Get adaptive sizing values
+    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
 
     // Memoize the classNames calculation: size class first, then base classes, then user className (user takes precedence)
     const componentClassNames = useMemo(() => {
@@ -204,9 +200,6 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             className
         );
     }, [sizeClassName, className, onChange, onClick]);
-
-    // Build merged style: size style (when not stretching), then interactive props style, then user style (user takes precedence)
-    const sizeStyle = isStretch ? undefined : getSizeStyleForComponent("knob", size);
 
     // Memoize content wrapper style to avoid object recreation on every render
     // Uses container query units (cqmin) so text and icons scale with component size

@@ -93,3 +93,4 @@ export { DEFAULT_ROUNDNESS, DEFAULT_THICKNESS } from "@cutoff/audio-ui-core";
 // Export Audio Parameter Model and Hook
 export * from "@cutoff/audio-ui-core";
 export * from "./hooks/useAudioParameter";
+export * from "./hooks/useAdaptiveSize";

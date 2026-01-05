@@ -4,8 +4,8 @@ import React, { useMemo, useCallback } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "@/primitives/AdaptiveBox";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, ThemableProps } from "@/types";
-import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { generateColorVariants } from "@cutoff/audio-ui-core";
+import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import {
     createNoteNumSet,
     DIATONIC_TO_CHROMATIC,
@@ -427,20 +427,13 @@ function Keybed({
         keyStyle,
     ]);
 
-    // Determine sizing behavior: adaptiveSize controls stretch behavior and
-    // takes precedence over size when both are provided.
-    const isStretch = adaptiveSize === true;
-
-    // Get the size class name based on the size prop
-    const sizeClassName = isStretch ? undefined : getSizeClassForComponent("keybed", size);
+    // Get adaptive sizing values
+    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "keybed");
 
     // Memoize the classNames calculation: size class first, then base classes, then user className (user takes precedence)
     const componentClassNames = useMemo(() => {
         return classNames(sizeClassName, CLASSNAMES.root, className);
     }, [sizeClassName, className]);
-
-    // Build merged style: size style (when not stretching), then user style (user takes precedence)
-    const sizeStyle = isStretch ? undefined : getSizeStyleForComponent("keybed", size);
 
     return (
         <AdaptiveBox

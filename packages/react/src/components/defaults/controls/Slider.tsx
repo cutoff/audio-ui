@@ -2,10 +2,10 @@
 
 import React from "react";
 import classNames from "classnames";
-import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "@/defaults/AudioUiProvider";
 import { SvgVerticalSlider, SvgHorizontalSlider } from "./SvgSlider";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
+import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps } from "@/types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
@@ -69,18 +69,11 @@ function Slider({
         { color: undefined, roundness: DEFAULT_ROUNDNESS }
     );
 
-    // Determine sizing behavior: adaptiveSize controls stretch behavior and
-    // takes precedence over size when both are provided.
-    const isStretch = adaptiveSize === true;
-
-    // Get the size class name based on the size prop and orientation
-    const sizeClassName = isStretch ? undefined : getSizeClassForComponent("slider", size, orientation);
+    // Get adaptive sizing values
+    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "slider", orientation);
 
     // Merge class names: size class first, then user className (user takes precedence)
     const mergedClassName = classNames(sizeClassName, className);
-
-    // Build merged style: size style (when not stretching), then user style (user takes precedence)
-    const sizeStyle = isStretch ? undefined : getSizeStyleForComponent("slider", size, orientation);
 
     // Select the appropriate view component based on orientation
     const ViewComponent = orientation === "vertical" ? SvgVerticalSlider : SvgHorizontalSlider;

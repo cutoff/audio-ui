@@ -2,7 +2,6 @@
 
 import React, { useMemo } from "react";
 import classNames from "classnames";
-import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "@/defaults/AudioUiProvider";
 import SvgKnob from "./SvgKnob";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
@@ -11,6 +10,7 @@ import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import { AudioParameterFactory, ContinuousParameter } from "@cutoff/audio-ui-core";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
+import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 
 /**
  * Default openness for knob ring in degrees (matches ValueRing default)
@@ -117,12 +117,8 @@ function Knob({
     // Get displayValue for default rendering
     const { displayValue } = useAudioParameter(value, onChange, parameterDef);
 
-    // Determine sizing behavior: adaptiveSize controls stretch behavior and
-    // takes precedence over size when both are provided.
-    const isStretch = adaptiveSize === true;
-
-    // Get the size class name based on the size prop
-    const sizeClassName = isStretch ? undefined : getSizeClassForComponent("knob", size);
+    // Get adaptive sizing values
+    const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
 
     // Prepare the content to display inside the knob
     // Uses container query units (cqmin) so text scales with component size
@@ -151,7 +147,7 @@ function Knob({
     const mergedClassName = classNames(sizeClassName, className);
 
     // Build merged style: size style (when not stretching), then user style (user takes precedence)
-    const sizeStyle = isStretch ? undefined : getSizeStyleForComponent("knob", size);
+    const sizeStyle = adaptiveSizeStyle;
 
     return (
         <ContinuousControl
