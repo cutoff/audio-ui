@@ -143,12 +143,6 @@ function Knob({
         );
     }, [renderValue, value, parameterDef.min, parameterDef.max, displayValue]);
 
-    // Merge class names: size class first, then user className (user takes precedence)
-    const mergedClassName = classNames(sizeClassName, className);
-
-    // Build merged style: size style (when not stretching), then user style (user takes precedence)
-    const sizeStyle = adaptiveSizeStyle;
-
     return (
         <ContinuousControl
             view={SvgKnob}
@@ -162,8 +156,8 @@ function Knob({
             labelMode={labelMode}
             labelPosition={labelPosition}
             labelAlign={labelAlign}
-            className={mergedClassName}
-            style={{ ...sizeStyle, ...style }}
+            className={classNames(sizeClassName, className)}
+            style={{ ...adaptiveSizeStyle, ...style }}
             onChange={onChange}
             paramId={paramId}
             onClick={onClick}
