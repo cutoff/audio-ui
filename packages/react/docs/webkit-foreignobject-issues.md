@@ -64,9 +64,7 @@ Instead of using `<foreignObject>` inside the SVG, the library renders HTML cont
   <AdaptiveBox.Svg viewBoxWidth={100} viewBoxHeight={100}>
     {/* SVG graphics only */}
   </AdaptiveBox.Svg>
-  <AdaptiveBox.HtmlOverlay>
-    {/* HTML content here - completely outside SVG */}
-  </AdaptiveBox.HtmlOverlay>
+  <AdaptiveBox.HtmlOverlay>{/* HTML content here - completely outside SVG */}</AdaptiveBox.HtmlOverlay>
 </AdaptiveBox>
 ```
 

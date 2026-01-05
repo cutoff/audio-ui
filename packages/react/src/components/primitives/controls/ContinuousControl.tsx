@@ -62,6 +62,7 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
         interactionSensitivity,
         unit,
         scale,
+        valueFormatter,
         ...viewProps // Capture all other props (color, thickness, bipolar, etc.) to pass to View
     } = props;
 
@@ -82,7 +83,7 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
     }, [parameter, label, min, max, step, bipolar, unit, scale, paramId]);
 
     // 2. Audio Logic Hook
-    const { normalizedValue, adjustValue } = useAudioParameter(value, onChange, paramConfig);
+    const { normalizedValue, adjustValue } = useAudioParameter(value, onChange, paramConfig, valueFormatter);
 
     // 3. Determine Interaction Settings (View default vs Override)
     const effectiveInteractionMode = interactionMode ?? View.interaction.mode ?? "both";

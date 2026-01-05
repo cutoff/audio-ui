@@ -174,7 +174,7 @@ function ControlSurfacePage() {
                                             setChannelPans((prev) => ({ ...prev, [id]: e.value as number }))
                                         }
                                         // Display as L / C / R with percentage
-                                        renderValue={(val) => {
+                                        valueFormatter={(val) => {
                                             if (val === 0) return "C";
                                             const side = (val as number) < 0 ? "L" : "R";
                                             const pct = Math.round(Math.abs(val as number) * 100);
@@ -192,8 +192,10 @@ function ControlSurfacePage() {
                                         onChange={(e) =>
                                             setChannelGains((prev) => ({ ...prev, [id]: e.value as number }))
                                         }
-                                        renderValue={(val, min, max) => {
+                                        valueFormatter={(val, parameterDef) => {
                                             const v = val as number;
+                                            if (parameterDef.type !== "continuous") return undefined;
+                                            const { min, max } = parameterDef;
                                             if (v === 0) return "0 dB";
                                             if (v === min) return `${v.toFixed(0)} dB`;
                                             if (v === max) return `${v.toFixed(0)} dB`;
@@ -263,7 +265,7 @@ function ControlSurfacePage() {
                                     step={0.02}
                                     value={masterPan}
                                     onChange={(e) => setMasterPan(e.value as number)}
-                                    renderValue={(val) => {
+                                    valueFormatter={(val) => {
                                         if (val === 0) return "C";
                                         const side = (val as number) < 0 ? "L" : "R";
                                         const pct = Math.round(Math.abs(val as number) * 100);

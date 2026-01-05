@@ -52,6 +52,22 @@ describe("useAudioParameter", () => {
                 })
             );
         });
+
+        it("uses custom valueFormatter when provided", () => {
+            const valueFormatter = vi.fn((value: number) => `Custom: ${value}`);
+            const { result } = renderHook(() => useAudioParameter(64, undefined, param, valueFormatter));
+
+            expect(valueFormatter).toHaveBeenCalledWith(64, param);
+            expect(result.current.displayValue).toBe("Custom: 64");
+        });
+
+        it("falls back to default formatter when valueFormatter returns undefined", () => {
+            const valueFormatter = vi.fn(() => undefined);
+            const { result } = renderHook(() => useAudioParameter(64, undefined, param, valueFormatter));
+
+            expect(valueFormatter).toHaveBeenCalledWith(64, param);
+            expect(result.current.displayValue).toBe("64"); // Default formatter
+        });
     });
 
     describe("Enum Parameter", () => {

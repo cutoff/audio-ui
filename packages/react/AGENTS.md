@@ -20,7 +20,7 @@
 | Exports             | All from src/index.ts: Components (Button, Knob, Slider, Keybed, AdaptiveBox, ContinuousControl, etc.), Providers (AudioUiProvider, hooks), Types (including ControlComponent, ControlComponentView), Utils (formatters, note utils), Theme colors |
 | Testing             | Vitest; .test.tsx alongside; mock deps; React 18 compat                                                                                                                                                                                            |
 | Build               | Vite; generates dist/index.js, index.d.ts, style.css; ES modules                                                                                                                                                                                   |
-| Path Aliases        | Use `@/primitives/*`, `@/hooks/*`, `@/defaults/*`, `@/utils/*`, `@/types` instead of relative paths (configured in tsconfig.json and vite.config.ts)                                                                                            |
+| Path Aliases        | Use `@/primitives/*`, `@/hooks/*`, `@/defaults/*`, `@/utils/*`, `@/types` instead of relative paths (configured in tsconfig.json and vite.config.ts)                                                                                               |
 
 ## Key File Structure
 
@@ -88,11 +88,13 @@ The library uses TypeScript path aliases to simplify imports and avoid cluttered
   - Example: `import { ControlComponent } from "@/types";`
 
 **Configuration:**
+
 - TypeScript: Configured in `tsconfig.json` with `baseUrl` and `paths`
 - Vite: Configured in `vite.config.ts` with `resolve.alias`
 - Both must be kept in sync when adding new aliases
 
 **Benefits:**
+
 - Cleaner, more readable imports
 - Easier refactoring (no need to update relative paths when moving files)
 - Consistent import style across the codebase

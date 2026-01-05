@@ -44,7 +44,7 @@ function CustomContinuousControl({
     onMouseUp,
     onMouseEnter,
     onMouseLeave,
-    renderValue,
+    valueFormatter,
     bipolar,
     unit,
     scale,
@@ -75,7 +75,7 @@ function CustomContinuousControl({
             interactionMode={interactionMode}
             interactionDirection={interactionDirection}
             interactionSensitivity={interactionSensitivity}
-            renderValue={renderValue}
+            valueFormatter={valueFormatter}
             unit={unit}
             scale={scale}
         />

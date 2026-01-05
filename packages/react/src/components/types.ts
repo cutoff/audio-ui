@@ -1,5 +1,5 @@
 import React from "react";
-import { ContinuousParameter, BooleanParameter, ScaleType } from "@cutoff/audio-ui-core";
+import { ContinuousParameter, BooleanParameter, ScaleType, AudioParameter } from "@cutoff/audio-ui-core";
 import { SizeType, InteractionMode, InteractionDirection } from "@cutoff/audio-ui-core";
 
 /**
@@ -198,13 +198,12 @@ export type ContinuousControlProps = BaseProps &
 
         /**
          * Custom renderer for the value display
-         * If provided, this function will be used to render the value instead of the default formatter
+         * If provided and returns a value, this function will be used to render the value instead of the default formatter
          * @param value The current value
-         * @param min The minimum value
-         * @param max The maximum value
-         * @returns A string representation of the value
+         * @param parameterDef The full parameter definition (includes min, max, unit, scale, etc.)
+         * @returns A string representation of the value, or undefined to fall back to default formatter
          */
-        renderValue?: (value: number, min: number, max: number) => string;
+        valueFormatter?: (value: number, parameterDef: AudioParameter) => string | undefined;
 
         /**
          * Whether the component should operate in bipolar mode

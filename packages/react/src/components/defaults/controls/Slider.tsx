@@ -37,6 +37,7 @@ function Slider({
     bipolar = false,
     value,
     onChange,
+    valueFormatter,
     label,
     adaptiveSize = false,
     size = "normal",
@@ -107,6 +108,7 @@ function Slider({
             interactionSensitivity={interactionSensitivity}
             thickness={clampedThickness}
             roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
+            valueFormatter={valueFormatter}
         />
     );
 }

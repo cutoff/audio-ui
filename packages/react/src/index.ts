@@ -31,7 +31,11 @@ export { default as SvgSlider, SvgVerticalSlider, SvgHorizontalSlider } from "./
 
 export { default as Keybed } from "./components/defaults/devices/Keybed";
 export { default as AdaptiveBox } from "./components/primitives/AdaptiveBox";
-export type { AdaptiveBoxSvgProps, AdaptiveBoxLabelProps, AdaptiveBoxHtmlOverlayProps } from "./components/primitives/AdaptiveBox";
+export type {
+    AdaptiveBoxSvgProps,
+    AdaptiveBoxLabelProps,
+    AdaptiveBoxHtmlOverlayProps,
+} from "./components/primitives/AdaptiveBox";
 
 // Export theme provider and hooks
 export { default as AudioUiProvider, useAudioUiTheme, useThemableProps } from "./components/defaults/AudioUiProvider";

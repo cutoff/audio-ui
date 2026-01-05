@@ -103,6 +103,7 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 The file `agents/coding-agent-commands-1.0.md` contains executable commands that can be invoked by the user with simple instructions like "Execute X". When a user requests "Execute [CommandName]", the agent should follow the procedure defined for that command.
 
 Available commands:
+
 - **Review**: Comprehensive code review procedure (documentation, readability, performance, unused imports, prettier, and `pnpm check`)
 - **Check**: Iterate on `pnpm check` until no errors remain
 

@@ -28,11 +28,13 @@ export interface UseAudioParameterResult {
  * @param value The current real-world value (Source of Truth)
  * @param onChange Callback when value changes
  * @param parameterDef The parameter definition
+ * @param valueFormatter Optional custom renderer for the value display. If provided and returns a value, it takes precedence over the default formatter.
  */
 export function useAudioParameter<T extends number | boolean | string>(
     value: T,
     onChange: undefined | ((event: AudioControlEvent<T>) => void),
-    parameterDef: AudioParameter
+    parameterDef: AudioParameter,
+    valueFormatter?: (value: T, parameterDef: AudioParameter) => string | undefined
 ): UseAudioParameterResult {
     // 1. Ensure we always have an instance with methods
     const converter = useMemo(() => {
@@ -101,9 +103,16 @@ export function useAudioParameter<T extends number | boolean | string>(
     );
 
     // 6. Format for display
+    // Custom valueFormatter takes precedence if provided and returns a value; otherwise fall back to default formatter
     const displayValue = useMemo(() => {
+        if (valueFormatter) {
+            const customValue = valueFormatter(value, parameterDef);
+            if (customValue !== undefined) {
+                return customValue;
+            }
+        }
         return converter.format(value);
-    }, [value, converter]);
+    }, [value, converter, valueFormatter, parameterDef]);
 
     return {
         normalizedValue,

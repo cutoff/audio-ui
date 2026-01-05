@@ -54,7 +54,7 @@ function Knob({
     bipolar = false,
     value,
     onChange,
-    renderValue,
+    valueFormatter,
     label,
     adaptiveSize = false,
     size = "normal",
@@ -91,8 +91,8 @@ function Knob({
         { color: undefined, roundness: DEFAULT_ROUNDNESS }
     );
 
-    // Construct the configuration object either from the prop or from the ad-hoc props
-    // We need this to get displayValue and min/max for renderValue
+    // Construct parameter definition from prop or ad-hoc props
+    // Required for useAudioParameter to compute displayValue
     const parameterDef = useMemo<ContinuousParameter>(() => {
         if (parameter) {
             if (parameter.type !== "continuous") {
@@ -114,8 +114,8 @@ function Knob({
         });
     }, [parameter, label, min, max, step, bipolar, unit, scale, paramId]);
 
-    // Get displayValue for default rendering
-    const { displayValue } = useAudioParameter(value, onChange, parameterDef);
+    // Get displayValue from hook (handles valueFormatter internally if provided)
+    const { displayValue } = useAudioParameter(value, onChange, parameterDef, valueFormatter);
 
     // Get adaptive sizing values
     const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
@@ -138,10 +138,10 @@ function Knob({
                     cursor: "inherit",
                 }}
             >
-                {renderValue ? renderValue(value, parameterDef.min, parameterDef.max) : displayValue}
+                {displayValue}
             </div>
         );
-    }, [renderValue, value, parameterDef.min, parameterDef.max, displayValue]);
+    }, [displayValue]);
 
     return (
         <ContinuousControl
@@ -174,6 +174,7 @@ function Knob({
             roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
             openness={openness}
             rotation={rotation}
+            valueFormatter={valueFormatter}
         >
             {knobContent}
         </ContinuousControl>

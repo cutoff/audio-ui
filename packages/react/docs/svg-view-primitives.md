@@ -202,7 +202,6 @@ type RadialHtmlOverlayProps = {
 - **Sizing**: Creates a square container with side length `radius * 2`, centered at `(cx, cy)`.
 - **Pointer Events**: Defaults to `none` so that the overlay doesn't block mouse interactions.
 
-
 ## FilmstripImage
 
 Renders a frame from a sprite sheet (filmstrip) based on the normalized value. This is the industry-standard method for rendering complex, photorealistic knobs in audio software (VSTs, Kontakt).

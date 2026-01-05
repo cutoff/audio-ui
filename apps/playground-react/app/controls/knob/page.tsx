@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Knob, KnobProps, KnobSwitch, KnobSwitchProps, Option } from "@cutoff/audio-ui-react";
+import { Knob, KnobProps, KnobSwitch, KnobSwitchProps, Option, AudioParameter } from "@cutoff/audio-ui-react";
 
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,11 @@ import { SawWaveIcon, SineWaveIcon, SquareWaveIcon, TriangleWaveIcon } from "@/c
 
 // Define a simple MIDI bipolar formatter function for the demo
 // This will be replaced by the library's midiBipolarFormatter when it's available
-const midiBipolarFormatter = (value: number, min: number, max: number): string => {
+const midiBipolarFormatter = (value: number, parameterDef: AudioParameter): string | undefined => {
+    if (parameterDef.type !== "continuous") {
+        return undefined; // Fall back to default formatter for non-continuous parameters
+    }
+    const { min, max } = parameterDef;
     const centerValue = Math.floor((max - min + 1) / 2) + min;
     const shiftedValue = value - centerValue;
     return shiftedValue > 0 ? `+${shiftedValue}` : shiftedValue.toString();
@@ -74,9 +78,9 @@ function generateCodeSnippet(
             props += ` color='${color}'`;
         }
 
-        // Add renderValue prop if using MIDI bipolar formatter
+        // Add valueFormatter prop if using MIDI bipolar formatter
         if (bipolar && useMidiBipolar) {
-            props += `\n  renderValue={midiBipolarFormatter}`;
+            props += `\n  valueFormatter={midiBipolarFormatter}`;
         }
 
         return `<Knob ${props} />`;
@@ -139,7 +143,7 @@ function KnobComponent({
             </KnobSwitch>
         );
     } else {
-        // Directly pass all props to Knob component, including conditional renderValue
+        // Directly pass all props to Knob component, including conditional valueFormatter
         return (
             <Knob
                 min={min}
@@ -157,7 +161,7 @@ function KnobComponent({
                 onChange={onChange}
                 size={size}
                 color={color}
-                renderValue={bipolar && useMidiBipolar ? midiBipolarFormatter : undefined}
+                valueFormatter={bipolar && useMidiBipolar ? midiBipolarFormatter : undefined}
             />
         );
     }
@@ -391,7 +395,7 @@ export default function KnobDemoPage() {
             bipolar={true}
             roundness={12}
             color="#ff9933" // Orange
-            renderValue={midiBipolarFormatter}
+            valueFormatter={midiBipolarFormatter}
             onClick={() => handleExampleClick(4)}
         />,
     ];
