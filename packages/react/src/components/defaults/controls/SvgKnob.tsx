@@ -2,10 +2,10 @@
 
 import React, { useMemo } from "react";
 import { generateColorVariants, getAdaptiveDefaultColor } from "@cutoff/audio-ui-core";
-import { ControlComponent } from "../types";
+import { ControlComponent } from "@/types";
 import { translateKnobRoundness, translateKnobThickness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
-import ValueRing from "../primitives/views/ValueRing";
+import ValueRing from "@/primitives/svg/ValueRing";
 
 /**
  * Props for the SvgKnob component
@@ -64,26 +64,17 @@ function SvgKnob({
         [color]
     );
 
-    // SvgKnob uses angles 220-500 (280 degree arc)
-    // ValueRing's openness = 360 - arc_angle = 360 - 280 = 80 degrees
-    const OPENNESS = 80;
-
-    // Center and radius for 100x100 viewBox
-    const cx = 50;
-    const cy = 50;
-    const radius = 50;
-
     return (
         <g className={className}>
             <ValueRing
-                cx={cx}
-                cy={cy}
-                radius={radius}
+                cx={50}
+                cy={50}
+                radius={50}
                 normalizedValue={normalizedValue}
                 bipolar={bipolar}
                 thickness={pixelThickness}
                 roundness={isRound}
-                openness={OPENNESS}
+                openness={80}
                 fgArcStyle={{ stroke: colorVariants.primary }}
                 bgArcStyle={{ stroke: colorVariants.primary50 }}
             />
@@ -91,35 +82,13 @@ function SvgKnob({
     );
 }
 
-/**
- * ViewBox dimensions for the SvgKnob component.
- * The parent component should use these values when setting up the SVG container.
- */
-const VIEW_BOX = {
-    width: 100,
-    height: 100,
-};
-
-/**
- * Label height for the SvgKnob component.
- */
-const LABEL_HEIGHT_UNITS = 20;
-
-/**
- * Interaction contract for the SvgKnob component.
- */
-const INTERACTION = {
-    mode: "both",
-    direction: "circular", // Knobs use circular/rotary drag behavior
-} as const;
-
 // Create memoized component
 const MemoSvgKnob = React.memo(SvgKnob);
 
 // Explicitly attach static properties to the memoized component
-(MemoSvgKnob as any).viewBox = VIEW_BOX;
-(MemoSvgKnob as any).labelHeightUnits = LABEL_HEIGHT_UNITS;
-(MemoSvgKnob as any).interaction = INTERACTION;
+(MemoSvgKnob as any).viewBox = { width: 100, height: 100 };
+(MemoSvgKnob as any).labelHeightUnits = 20;
+(MemoSvgKnob as any).interaction = { mode: "both", direction: "circular" } as const;
 (MemoSvgKnob as any).title = "Knob";
 (MemoSvgKnob as any).description = "A rotary knob control with circular arc indicator";
 

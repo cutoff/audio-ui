@@ -318,7 +318,7 @@ type SwitchProps = {
 The `Knob` component acts as a Facade, supporting both direct `AudioParameter` injection and ad-hoc props (`min`, `max`, `step`). It validates that the parameter is compatible (Continuous).
 
 ```tsx
-// packages/react/src/components/controls/Knob.tsx
+// packages/react/src/components/defaults/controls/Knob.tsx
 
 function Knob(props: KnobProps) {
   // Construct the configuration object either from the prop or from the ad-hoc props

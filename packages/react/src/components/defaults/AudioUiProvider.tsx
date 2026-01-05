@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState, ReactNode } fr
 import { isDarkMode, getAdaptiveDefaultColor } from "@cutoff/audio-ui-core";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
-import { ThemableProps } from "../types";
+import { ThemableProps } from "@/types";
 
 /**
  * Theme context type with setter functions

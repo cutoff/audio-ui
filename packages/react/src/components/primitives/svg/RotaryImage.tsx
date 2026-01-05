@@ -1,7 +1,7 @@
 "use client";
 
 import React, { CSSProperties } from "react";
-import { useArcAngle } from "../../../hooks/useArcAngle";
+import { useArcAngle } from "@/hooks/useArcAngle";
 import RadialImage from "./RadialImage";
 
 export type RotaryImageProps = {

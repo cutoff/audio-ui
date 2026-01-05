@@ -3,14 +3,14 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
-import { useThemableProps } from "../theme/AudioUiProvider";
-import SvgKnob from "../theme/SvgKnob";
-import ContinuousControl from "../primitives/controls/ContinuousControl";
-import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps } from "../types";
+import { useThemableProps } from "@/defaults/AudioUiProvider";
+import SvgKnob from "./SvgKnob";
+import ContinuousControl from "@/primitives/controls/ContinuousControl";
+import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps } from "@/types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import { AudioParameterFactory, ContinuousParameter } from "@cutoff/audio-ui-core";
-import { useAudioParameter } from "../../hooks/useAudioParameter";
+import { useAudioParameter } from "@/hooks/useAudioParameter";
 
 /**
  * Props for the Knob component (built-in control with theming support)

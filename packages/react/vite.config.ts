@@ -15,6 +15,15 @@ export default defineConfig({
             brotliSize: true,
         }),
     ],
+    resolve: {
+        alias: {
+            "@/primitives": resolve(__dirname, "src/components/primitives"),
+            "@/hooks": resolve(__dirname, "src/hooks"),
+            "@/defaults": resolve(__dirname, "src/components/defaults"),
+            "@/utils": resolve(__dirname, "src/utils"),
+            "@/types": resolve(__dirname, "src/components/types"),
+        },
+    },
     build: {
         lib: {
             entry: resolve(__dirname, "src/index.ts"),

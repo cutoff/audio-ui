@@ -31,12 +31,14 @@ pnpm build
 packages/react/
 ├── src/
 │   ├── components/      # React components
-│   │   ├── controls/    # Interactive controls (Button, Knob, Slider, etc.)
+│   │   ├── defaults/    # Default/built-in components and theme system
+│   │   │   ├── controls/  # Interactive controls (Button, Knob, Slider, etc.) and SVG views
+│   │   │   ├── devices/   # Device components (Keybed)
+│   │   │   └── AudioUiProvider.tsx  # Default theme system provider
 │   │   ├── primitives/  # Base components for building final components
 │   │   │   ├── controls/  # Control primitives (ContinuousControl, Option)
-│   │   │   └── views/  # SVG view primitives (ValueRing, RotaryImage, etc.)
-│   │   ├── theme/       # Default theme system (AudioUiProvider, default SVG components)
-│   │   └── Keybed.tsx   # Keyboard component composed of SVG primitives
+│   │   │   └── svg/       # SVG view primitives (ValueRing, RotaryImage, etc.)
+│   │   └── types.ts      # Shared type definitions
 │   ├── hooks/           # Hooks wrapping core logic (useInteractiveControl, useAudioParameter)
 │   └── index.ts         # Main exports
 ├── dist/                # Built output (generated)
@@ -112,7 +114,7 @@ If you encounter version conflicts:
 
 ### Adding New Components
 
-1. Create component file in `src/components/`
+1. Create component file in `src/components/defaults/controls/` (for built-in controls) or `src/components/primitives/` (for primitives)
 2. Export from `src/index.ts`
 3. Add demo page in `apps/playground-react/app/controls/[component-name]/page.tsx` (or appropriate category)
 4. Build and test: `pnpm build && pnpm typecheck`
@@ -125,6 +127,36 @@ If you encounter version conflicts:
 - Prefix unused parameters with underscore (`_param`)
 - Follow existing patterns for styling and theming
 - All components must have `"use client";` directive (Client Components)
+- **Use TypeScript path aliases** instead of relative paths:
+  - `@/primitives/*` for primitives components
+  - `@/hooks/*` for hooks
+  - `@/defaults/*` for default components
+  - `@/utils/*` for utilities
+  - `@/types` for type definitions
+
+### TypeScript Path Aliases
+
+The library uses path aliases to simplify imports. Use these instead of relative paths:
+
+```typescript
+// ✅ Good - using aliases
+import AdaptiveBox from "@/primitives/AdaptiveBox";
+import { useAudioParameter } from "@/hooks/useAudioParameter";
+import { useThemableProps } from "@/defaults/AudioUiProvider";
+import { AdaptiveBoxProps } from "@/types";
+
+// ❌ Avoid - relative paths
+import AdaptiveBox from "../../primitives/AdaptiveBox";
+import { useAudioParameter } from "../../../hooks/useAudioParameter";
+```
+
+Available aliases:
+
+- `@/primitives/*` → `src/components/primitives/*`
+- `@/hooks/*` → `src/hooks/*`
+- `@/defaults/*` → `src/components/defaults/*`
+- `@/utils/*` → `src/utils/*`
+- `@/types` → `src/components/types`
 
 ## Documentation
 

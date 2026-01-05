@@ -2,8 +2,8 @@
 
 import React, { useMemo, useCallback } from "react";
 import classNames from "classnames";
-import AdaptiveBox from "../primitives/AdaptiveBox";
-import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, ThemableProps } from "../types";
+import AdaptiveBox from "@/primitives/AdaptiveBox";
+import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, ThemableProps } from "@/types";
 import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
 import { generateColorVariants } from "@cutoff/audio-ui-core";
 import {
@@ -18,7 +18,7 @@ import {
 import "@cutoff/audio-ui-core/styles.css";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import { CSS_VARS } from "@cutoff/audio-ui-core";
-import { useThemableProps } from "../theme/AudioUiProvider";
+import { useThemableProps } from "@/defaults/AudioUiProvider";
 import { translateKeybedRoundness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 

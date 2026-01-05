@@ -5,7 +5,7 @@ import { generateColorVariants, getAdaptiveDefaultColor } from "@cutoff/audio-ui
 import { computeFilledZone, Zone } from "@cutoff/audio-ui-core";
 import { translateSliderRoundness, translateSliderThickness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
-import { ControlComponent } from "../types";
+import { ControlComponent } from "@/types";
 
 /**
  * Props for the SvgSlider component

@@ -2,15 +2,15 @@
 
 import React, { useMemo } from "react";
 import classNames from "classnames";
-import AdaptiveBox from "../primitives/AdaptiveBox";
-import SvgKnob from "../theme/SvgKnob";
-import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, InteractiveControlProps, ThemableProps } from "../types";
+import AdaptiveBox from "@/primitives/AdaptiveBox";
+import SvgKnob from "./SvgKnob";
+import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, InteractiveControlProps, ThemableProps } from "@/types";
 import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
-import { useThemableProps } from "../theme/AudioUiProvider";
+import { useThemableProps } from "@/defaults/AudioUiProvider";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import { EnumParameter } from "@cutoff/audio-ui-core";
-import { useAudioParameter } from "../../hooks/useAudioParameter";
-import { useInteractiveControl } from "../../hooks/useInteractiveControl";
+import { useAudioParameter } from "@/hooks/useAudioParameter";
+import { useInteractiveControl } from "@/hooks/useInteractiveControl";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 

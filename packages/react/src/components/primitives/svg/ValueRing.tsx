@@ -1,7 +1,7 @@
 "use client";
 
 import React, { CSSProperties, useMemo } from "react";
-import { useArcAngle } from "../../../hooks/useArcAngle";
+import { useArcAngle } from "@/hooks/useArcAngle";
 import RingArc from "./RingArc";
 
 export type ValueRingProps = {

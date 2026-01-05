@@ -2,14 +2,14 @@
 
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import classNames from "classnames";
-import AdaptiveBox from "../primitives/AdaptiveBox";
+import AdaptiveBox from "@/primitives/AdaptiveBox";
 import "@cutoff/audio-ui-core/styles.css";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
-import { AdaptiveBoxProps, AdaptiveSizeProps, BooleanControlProps, ThemableProps } from "../types";
+import { AdaptiveBoxProps, AdaptiveSizeProps, BooleanControlProps, ThemableProps } from "@/types";
 import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audio-ui-core";
-import { useThemableProps } from "../theme/AudioUiProvider";
-import SvgButton from "../theme/SvgButton";
-import { useAudioParameter } from "../../hooks/useAudioParameter";
+import { useThemableProps } from "@/defaults/AudioUiProvider";
+import SvgButton from "./SvgButton";
+import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 

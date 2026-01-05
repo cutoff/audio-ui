@@ -20,30 +20,34 @@
 | Exports             | All from src/index.ts: Components (Button, Knob, Slider, Keybed, AdaptiveBox, ContinuousControl, etc.), Providers (AudioUiProvider, hooks), Types (including ControlComponent, ControlComponentView), Utils (formatters, note utils), Theme colors |
 | Testing             | Vitest; .test.tsx alongside; mock deps; React 18 compat                                                                                                                                                                                            |
 | Build               | Vite; generates dist/index.js, index.d.ts, style.css; ES modules                                                                                                                                                                                   |
+| Path Aliases        | Use `@/primitives/*`, `@/hooks/*`, `@/defaults/*`, `@/utils/*`, `@/types` instead of relative paths (configured in tsconfig.json and vite.config.ts)                                                                                            |
 
 ## Key File Structure
 
 - `src/components/`: Component .tsx with .test.tsx
-  - `controls/`: Interactive controls (Button, Knob, Slider, KnobSwitch). Knob and Slider use ContinuousControl internally.
+  - `defaults/`: Default/built-in components and theme system
+    - `controls/`: Interactive controls (Button, Knob, Slider, KnobSwitch) and their SVG views (SvgButton, SvgKnob, SvgSlider). Knob and Slider use ContinuousControl internally.
+    - `devices/`: Device components (Keybed)
+    - `AudioUiProvider.tsx`: Default theme system provider
   - `primitives/`: Base components for building final components, excluding theme-specific
     - `controls/`: Control primitives (ContinuousControl, Option)
-    - `views/`: SVG view primitives (ValueRing, RotaryImage, RadialImage, RadialText, etc.)
-  - `theme/`: Default theme system (AudioUiProvider, default SVG components: SvgButton, SvgKnob, SvgSlider with SvgVerticalSlider/SvgHorizontalSlider variants)
+    - `svg/`: SVG view primitives (ValueRing, RotaryImage, RadialImage, RadialText, etc.)
 
 ## Component Architecture: Built-in vs Customizable
 
-**Built-in Controls** (`src/components/controls/`):
+**Built-in Controls** (`src/components/defaults/controls/`):
 
 - Ready-to-use components (Button, Knob, Slider, KnobSwitch)
 - Include `ThemableProps` (`color`, `roundness`) via type extensions
 - Opinionated, production-ready with full theming integration
 - Props: `KnobProps`, `SliderProps`, `ButtonProps` extend primitives with `ThemableProps`
+- SVG view components (SvgButton, SvgKnob, SvgSlider) are co-located with the controls that use them
 
 **Customizable Primitives** (`src/components/primitives/`):
 
 - Lower-level components organized by purpose:
   - `controls/`: Control primitives (ContinuousControl, Option)
-  - `views/`: SVG view primitives (ValueRing, RotaryImage, RadialImage, RadialText, etc.)
+  - `svg/`: SVG view primitives (ValueRing, RotaryImage, RadialImage, RadialText, etc.)
 - No built-in theming - users add their own theming props as needed
 - For building custom controls without theming constraints
 - Props: `ContinuousControlProps`, `BooleanControlProps` (no `ThemableProps` included)
@@ -53,15 +57,50 @@
 - Primitive types (`ContinuousControlProps`, `BooleanControlProps`) do NOT include `ThemableProps`
 - Built-in control types (`KnobProps`, `SliderProps`, `ButtonProps`) extend primitives with `ThemableProps`
 - This separation allows custom controls to opt into theming only if needed
-  - `Keybed.tsx`: Keyboard component
 - `src/index.ts`: Export all components, types, utilities, and theme colors
 - `src/hooks/`: React adapters for Core logic (`useAudioParameter`, `useInteractiveControl`)
 - `dist/`: Built output (index.js, index.d.ts, style.css)
 - `docs/`: Technical documentation (see Documentation section below)
 
+## TypeScript Path Aliases
+
+The library uses TypeScript path aliases to simplify imports and avoid cluttered relative paths. **Always use these aliases instead of relative paths** when importing from these locations:
+
+- `@/primitives/*` → `src/components/primitives/*`
+  - Example: `import AdaptiveBox from "@/primitives/AdaptiveBox";`
+  - Example: `import ContinuousControl from "@/primitives/controls/ContinuousControl";`
+  - Example: `import ValueRing from "@/primitives/svg/ValueRing";`
+
+- `@/hooks/*` → `src/hooks/*`
+  - Example: `import { useAudioParameter } from "@/hooks/useAudioParameter";`
+  - Example: `import { useInteractiveControl } from "@/hooks/useInteractiveControl";`
+  - Example: `import { useArcAngle } from "@/hooks/useArcAngle";`
+
+- `@/defaults/*` → `src/components/defaults/*`
+  - Example: `import { useThemableProps } from "@/defaults/AudioUiProvider";`
+  - Example: `import SvgKnob from "@/defaults/controls/SvgKnob";`
+
+- `@/utils/*` → `src/utils/*`
+  - Example: `import { propCompare } from "@/utils/propCompare";`
+
+- `@/types` → `src/components/types`
+  - Example: `import { AdaptiveBoxProps, ThemableProps } from "@/types";`
+  - Example: `import { ControlComponent } from "@/types";`
+
+**Configuration:**
+- TypeScript: Configured in `tsconfig.json` with `baseUrl` and `paths`
+- Vite: Configured in `vite.config.ts` with `resolve.alias`
+- Both must be kept in sync when adding new aliases
+
+**Benefits:**
+- Cleaner, more readable imports
+- Easier refactoring (no need to update relative paths when moving files)
+- Consistent import style across the codebase
+- Better IDE autocomplete and navigation
+
 ## Workflow Patterns
 
-- Component dev: Function declarations; hooks; CSS classes/inline; theming utility classes; size system via CSS variables
+- Component dev: Function declarations; hooks; CSS classes/inline; theming utility classes; size system via CSS variables; **use TypeScript path aliases for imports**
 - Build: `pnpm build`; Vite with declarations
 - Test: Alongside; e.g., render Button, expect class
 - Local dev: `pnpm link`; demo imports
@@ -109,8 +148,8 @@ The library provides a generic `ContinuousControl` component that decouples beha
   - `interaction`: Preferred mode ("drag" | "wheel" | "both") and direction ("vertical" | "horizontal" | "circular")
 - **Props**: The view receives `ControlComponentViewProps` (normalizedValue, children, className, style) plus any custom props (passed through generic type parameter `P`).
 - **Reference Implementations**:
-  - `SvgKnob` - implements contract with `viewBox: {width: 100, height: 100}`, `labelHeightUnits: 20`, `interaction: {mode: "both", direction: "vertical"}`
-  - `SvgVerticalSlider` / `SvgHorizontalSlider` - specialized slider views with orientation-specific viewBox and interaction direction
+  - `SvgKnob` (located in `defaults/controls/`) - implements contract with `viewBox: {width: 100, height: 100}`, `labelHeightUnits: 20`, `interaction: {mode: "both", direction: "vertical"}`
+  - `SvgVerticalSlider` / `SvgHorizontalSlider` (located in `defaults/controls/`) - specialized slider views with orientation-specific viewBox and interaction direction
 - **Internal Usage**: `Knob` wraps `ContinuousControl` with `view={SvgKnob}`, `Slider` wraps with `view={SvgVerticalSlider}` or `view={SvgHorizontalSlider}` based on orientation
 - **Performance**: Double memoization (both wrapper and ContinuousControl are memoized) provides optimal re-render protection
 - **Type Exports**: `ControlComponent`, `ControlComponentView`, and `ControlComponentViewProps` are exported from `src/index.ts` for users creating custom view components

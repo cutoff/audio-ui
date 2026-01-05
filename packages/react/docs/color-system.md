@@ -286,7 +286,7 @@ Components resolve colors using the following priority (highest to lowest):
 
 ### `useThemableProps` Hook
 
-**Location**: `packages/react/src/components/theme/AudioUiProvider.tsx`
+**Location**: `packages/react/src/components/defaults/AudioUiProvider.tsx`
 
 **Usage**:
 
@@ -357,7 +357,7 @@ function MyComponent({ color, roundness, ...otherProps }: MyComponentProps) {
 
 ### `AudioUiProvider`
 
-**Location**: `packages/react/src/components/theme/AudioUiProvider.tsx`
+**Location**: `packages/react/src/components/defaults/AudioUiProvider.tsx`
 
 Provides React context for global theme management with **shared color mode tracking** (performance optimization).
 

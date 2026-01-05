@@ -10,7 +10,15 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noImplicitReturns": true,
-        "noEmit": true
+        "noEmit": true,
+        "baseUrl": "./src",
+        "paths": {
+            "@/primitives/*": ["components/primitives/*"],
+            "@/hooks/*": ["hooks/*"],
+            "@/defaults/*": ["components/defaults/*"],
+            "@/utils/*": ["utils/*"],
+            "@/types": ["components/types"]
+        }
     },
     "include": ["src"],
     "exclude": ["node_modules", "dist", "**/*.test.*"],

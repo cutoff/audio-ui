@@ -489,12 +489,12 @@ CustomKnob.interaction = { mode: "both", direction: "circular" };
 
 ## File Locations
 
-- **ValueRing**: `packages/react/src/components/primitives/views/ValueRing.tsx`
-- **RotaryImage**: `packages/react/src/components/primitives/views/RotaryImage.tsx`
-- **RadialImage**: `packages/react/src/components/primitives/views/RadialImage.tsx`
-- **RadialHtmlOverlay**: `packages/react/src/components/primitives/views/RadialHtmlOverlay.tsx`
-- **FilmstripImage**: `packages/react/src/components/primitives/views/FilmstripImage.tsx`
-- **TickRing**: `packages/react/src/components/primitives/views/TickRing.tsx`
+- **ValueRing**: `packages/react/src/components/primitives/svg/ValueRing.tsx`
+- **RotaryImage**: `packages/react/src/components/primitives/svg/RotaryImage.tsx`
+- **RadialImage**: `packages/react/src/components/primitives/svg/RadialImage.tsx`
+- **RadialHtmlOverlay**: `packages/react/src/components/primitives/svg/RadialHtmlOverlay.tsx`
+- **FilmstripImage**: `packages/react/src/components/primitives/svg/FilmstripImage.tsx`
+- **TickRing**: `packages/react/src/components/primitives/svg/TickRing.tsx`
 - **Example Components**: `apps/playground-react/components/examples/`
 
 ## Related Documentation

@@ -3,11 +3,11 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
-import { AdaptiveBoxProps, ContinuousControlProps, ControlComponent } from "../../types";
+import { AdaptiveBoxProps, ContinuousControlProps, ControlComponent } from "@/types";
 import AdaptiveBox from "../AdaptiveBox";
 import { AudioParameterFactory } from "@cutoff/audio-ui-core";
-import { useAudioParameter } from "../../../hooks/useAudioParameter";
-import { useInteractiveControl } from "../../../hooks/useInteractiveControl";
+import { useAudioParameter } from "@/hooks/useAudioParameter";
+import { useInteractiveControl } from "@/hooks/useInteractiveControl";
 
 // 1. Define Props with Generics
 // P represents the "Extra Props" required by the specific View component
