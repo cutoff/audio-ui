@@ -1,0 +1,1 @@
+../../../agents/docs/web/coding-agent-commands-1.0.md

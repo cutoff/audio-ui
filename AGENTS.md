@@ -93,10 +93,20 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
   - Follow the same architectural pattern as `packages/react/`
 
 - `apps/playground-react/`: Next.js playground; showcases components; app/components for pages (inferred)
-- `agents/`: Shared conventions (coding-conventions-2.0.md, typescript-guidelines-2.0.md, react-conventions-2.0.md, documentation-standards-2.0.md)
+- `agents/`: Shared conventions (coding-conventions-2.0.md, typescript-guidelines-2.0.md, react-conventions-2.0.md, documentation-standards-2.0.md, coding-agent-commands-1.0.md)
 - `packages/react/docs/`: Specialized tech docs (e.g., adaptive-box-layout.md)
 - `links/`: Symbolic links to external repositories (Read-Only, Ignored by Git). Use for reference only.
 - Sub-AGENTS.md: Optional extensions for details
+
+## Agent Commands
+
+The file `agents/coding-agent-commands-1.0.md` contains executable commands that can be invoked by the user with simple instructions like "Execute X". When a user requests "Execute [CommandName]", the agent should follow the procedure defined for that command.
+
+Available commands:
+- **Review**: Comprehensive code review procedure (documentation, readability, performance, unused imports, prettier, and `pnpm check`)
+- **Check**: Iterate on `pnpm check` until no errors remain
+
+See `agents/coding-agent-commands-1.0.md` for complete command definitions and procedures.
 
 ## Agent Workflow Template
 
