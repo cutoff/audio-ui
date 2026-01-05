@@ -21,22 +21,23 @@ export type SvgKnobProps = {
     roundness?: number;
     /** Resolved color string */
     color?: string;
-    /** Content to display inside the knob */
-    children?: React.ReactNode;
     /** Additional CSS class name */
     className?: string;
 };
 
 /**
  * Pure SVG presentation component for a knob.
- * Renders background and foreground arcs plus optional content in the center.
+ * Renders background and foreground arcs as the visual indicator.
+ *
+ * Center content (text, icons, images) is rendered via the `overlay` prop
+ * on AdaptiveBox.Svg, which places HTML content OUTSIDE the SVG to avoid
+ * Safari's foreignObject rendering bugs with container queries.
  *
  * @param normalizedValue - Value between 0 and 1
  * @param bipolar - Whether to start arc from center (default false)
  * @param thickness - Normalized thickness 0.0-1.0 (default 0.4, maps to 1-20)
  * @param roundness - Normalized roundness 0.0-1.0 (default 0.3, 0.0 = square, >0.0 = round)
  * @param color - Resolved color string
- * @param children - Content to display in the center
  * @param className - Optional CSS class
  */
 function SvgKnob({
@@ -45,7 +46,6 @@ function SvgKnob({
     thickness = 0.4,
     roundness = DEFAULT_ROUNDNESS,
     color,
-    children,
     className,
 }: SvgKnobProps) {
     // Translate normalized thickness to pixel range (1-20)
@@ -87,13 +87,6 @@ function SvgKnob({
                 fgArcStyle={{ stroke: colorVariants.primary }}
                 bgArcStyle={{ stroke: colorVariants.primary50 }}
             />
-
-            {/* Value Display */}
-            {children && (
-                <foreignObject style={{ cursor: "inherit" }} x="20" y="20" width="60" height="60">
-                    {children}
-                </foreignObject>
-            )}
         </g>
     );
 }
@@ -131,5 +124,5 @@ const MemoSvgKnob = React.memo(SvgKnob);
 (MemoSvgKnob as any).description = "A rotary knob control with circular arc indicator";
 
 export default MemoSvgKnob as unknown as ControlComponent<
-    Omit<SvgKnobProps, "normalizedValue" | "children" | "className" | "style">
+    Omit<SvgKnobProps, "normalizedValue" | "className" | "style">
 >;

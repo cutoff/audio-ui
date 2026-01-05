@@ -31,6 +31,9 @@ interface BoxContextValue {
     labelHeightUnits: number;
     debug: boolean;
 
+    // Computed grid row for main content (Svg, HtmlOverlay, Canvas, GL all use this)
+    mainContentGridRow: string;
+
     // Registration APIs
     registerSvg: (info: { width: number; height: number; hAlign?: FlexAlign; vAlign?: FlexAlign }) => void;
     registerLabel: (info: { position?: LabelPosition; align?: FlexAlign }) => void;
@@ -115,20 +118,6 @@ export function AdaptiveBox({
 
     const labelHeightUnitsEffective = labelHeightUnits ?? 15;
 
-    const ctxValue = useMemo<BoxContextValue>(
-        () => ({
-            hasLabel: !!labelInfo,
-            labelPosition: labelInfo?.position ?? "below",
-            displayMode,
-            labelMode,
-            labelHeightUnits: labelHeightUnitsEffective,
-            debug,
-            registerSvg,
-            registerLabel,
-        }),
-        [labelInfo, displayMode, labelMode, labelHeightUnitsEffective, debug, registerSvg, registerLabel]
-    );
-
     // Derived layout numbers (kept local for readability and to avoid context churn)
     const svgViewBoxWidth = svgInfo?.width ?? 100;
     const svgViewBoxHeight = svgInfo?.height ?? 100;
@@ -138,7 +127,34 @@ export function AdaptiveBox({
     const vAlign = svgInfo?.vAlign ?? styleV;
     const effectiveLabelPosition: LabelPosition = labelInfo?.position ?? "below";
     const isFill = displayMode === "fill";
-    const showLabelSpace = labelMode !== "none" && !!labelInfo; // reserve space only if a label is provided and mode != none
+
+    // Compute grid row for main content (used by Svg, HtmlOverlay, Canvas, GL)
+    const showLabelSpace = labelMode !== "none" && !!labelInfo;
+    const mainContentGridRow = showLabelSpace && effectiveLabelPosition === "above" ? "2 / 3" : "1 / 2";
+
+    const ctxValue = useMemo<BoxContextValue>(
+        () => ({
+            hasLabel: !!labelInfo,
+            labelPosition: labelInfo?.position ?? "below",
+            displayMode,
+            labelMode,
+            labelHeightUnits: labelHeightUnitsEffective,
+            debug,
+            mainContentGridRow,
+            registerSvg,
+            registerLabel,
+        }),
+        [
+            labelInfo,
+            displayMode,
+            labelMode,
+            labelHeightUnitsEffective,
+            debug,
+            mainContentGridRow,
+            registerSvg,
+            registerLabel,
+        ]
+    );
     const L = labelHeightUnitsEffective;
     const combinedHeightUnits = showLabelSpace ? svgViewBoxHeight + L : svgViewBoxHeight;
 
@@ -271,10 +287,6 @@ function Svg({
 
     const preserveAspect = ctx.displayMode === "fill" ? "none" : "xMidYMid meet";
 
-    // Access grid placement computed by root (via derived values)
-    const showLabelSpace = ctx.labelMode !== "none" && ctx.hasLabel;
-    const svgGridRow = showLabelSpace && ctx.labelPosition === "above" ? "2 / 3" : "1 / 2";
-
     return (
         <svg
             ref={svgRef}
@@ -286,8 +298,10 @@ function Svg({
                 display: "block",
                 width: "100%",
                 height: "100%",
+                // Position in main content grid row
+                gridRow: ctx.mainContentGridRow,
+                gridColumn: 1,
                 backgroundColor: ctx.debug ? "hsl(0, 100%, 50% / 0.06)" : undefined,
-                gridRow: svgGridRow,
                 ...(style ?? {}),
             }}
             // Remove onWheel prop here to avoid double firing/conflict with native listener
@@ -351,13 +365,68 @@ function Label({ className, style, position = "below", align = "center", childre
     );
 }
 
+export interface AdaptiveBoxHtmlOverlayProps extends PropsWithChildren {
+    className?: string;
+    style?: CSSProperties;
+    /**
+     * Pointer events behavior.
+     * - "none" (default): Clicks pass through to elements below (e.g., SVG)
+     * - "auto": Overlay is interactive
+     */
+    pointerEvents?: "none" | "auto";
+}
+
+/**
+ * HTML overlay positioned over the main content area (same grid cell as Svg/Canvas/GL).
+ * Used for rendering text, icons, or other HTML content on top of SVG graphics.
+ *
+ * This approach avoids Safari's foreignObject rendering bugs with container queries
+ * by rendering HTML content outside the SVG as a sibling element.
+ *
+ * The overlay provides a container query context (`containerType: "size"`) enabling
+ * responsive sizing with `cqmin`, `cqmax`, `cqw`, `cqh` units.
+ *
+ * Uses CSS Grid stacking: multiple elements in the same grid cell overlap
+ * in DOM order (later elements appear on top).
+ */
+function HtmlOverlay({ className, style, pointerEvents = "none", children }: AdaptiveBoxHtmlOverlayProps) {
+    const ctx = useBoxContext();
+
+    return (
+        <div
+            data-name="HTML Overlay"
+            className={className}
+            style={{
+                // Same grid cell as Svg - CSS Grid stacks elements in DOM order
+                gridRow: ctx.mainContentGridRow,
+                gridColumn: 1,
+                // Override parent's centering to fill the entire grid cell
+                placeSelf: "stretch",
+                // Container query context for cqmin/cqmax units
+                containerType: "size",
+                // Center content within the overlay
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                // Pointer events (default: pass through to SVG below)
+                pointerEvents,
+                ...(style ?? {}),
+            }}
+        >
+            {children}
+        </div>
+    );
+}
+
 // Compose compound component
 AdaptiveBox.Svg = Svg;
 AdaptiveBox.Label = Label;
+AdaptiveBox.HtmlOverlay = HtmlOverlay;
 
 export namespace AdaptiveBox {
     export type Svg = typeof Svg;
     export type Label = typeof Label;
+    export type HtmlOverlay = typeof HtmlOverlay;
 }
 
 export default AdaptiveBox;

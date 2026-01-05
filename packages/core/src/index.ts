@@ -13,4 +13,3 @@ export * from "./utils/colorUtils";
 export * from "./utils/normalizedProps";
 export * from "./utils/noteUtils";
 export * from "./utils/valueFormatters";
-export * from "./utils/textMeasurement";

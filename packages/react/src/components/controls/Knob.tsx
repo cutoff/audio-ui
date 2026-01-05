@@ -108,6 +108,7 @@ function Knob({
     const sizeClassName = isStretch ? undefined : getSizeClassForComponent("knob", size);
 
     // Prepare the content to display inside the knob
+    // Uses container query units (cqmin) so text scales with component size
     const knobContent = useMemo(() => {
         // Handle images first
         if (React.isValidElement(children) && children.type === "img") {
@@ -141,7 +142,7 @@ function Knob({
         // Determine text content: custom render prop or default display value
         const textContent = renderValue ? renderValue(value, parameterDef.min, parameterDef.max) : displayValue;
 
-        // Default text rendering, now consistently applied
+        // Default text rendering using cqmin for responsive scaling
         return (
             <div
                 style={{
@@ -150,7 +151,7 @@ function Knob({
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "22px",
+                    fontSize: "22cqmin",
                     fontWeight: "500",
                     color: "var(--audioui-text-color)",
                     cursor: "inherit",

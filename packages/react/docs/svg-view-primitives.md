@@ -4,18 +4,18 @@ SVG View Primitives are low-level building blocks for composing custom radial co
 
 ## Overview
 
-The library provides five SVG View Primitives:
+The library provides SVG View Primitives:
 
-| Primitive          | Purpose            | Key Feature                                   |
-| ------------------ | ------------------ | --------------------------------------------- |
-| **ValueRing**      | Arc/ring indicator | Shows value progress as a circular arc        |
-| **RotaryImage**    | Rotating content   | Rotates children based on normalized value    |
-| **RadialImage**    | Static content     | Displays image or SVG at radial coordinates   |
-| **RadialText**     | Auto-fitting text  | Measures and scales text to fit within radius |
-| **FilmstripImage** | Sprite animation   | Scrubs through a sprite sheet based on value  |
-| **RevealingPath**  | Path animation     | Reveals an arbitrary SVG path based on value  |
-| **TickRing**       | Scale decoration   | Renders a ring of ticks/markers               |
-| **LabelRing**      | Scale labels       | Renders text or icons at radial positions     |
+| Primitive             | Purpose            | Key Feature                                           |
+| --------------------- | ------------------ | ----------------------------------------------------- |
+| **ValueRing**         | Arc/ring indicator | Shows value progress as a circular arc                |
+| **RotaryImage**       | Rotating content   | Rotates children based on normalized value            |
+| **RadialImage**       | Static content     | Displays image or SVG at radial coordinates           |
+| **RadialHtmlOverlay** | HTML content       | Renders HTML content (text/icons) using foreignObject |
+| **FilmstripImage**    | Sprite animation   | Scrubs through a sprite sheet based on value          |
+| **RevealingPath**     | Path animation     | Reveals an arbitrary SVG path based on value          |
+| **TickRing**          | Scale decoration   | Renders a ring of ticks/markers                       |
+| **LabelRing**         | Scale labels       | Renders text or icons at radial positions             |
 
 All primitives share a common coordinate system:
 
@@ -155,127 +155,53 @@ type RadialImageProps = {
 - Children are wrapped in a nested `<svg>` with `overflow: visible`
 - Commonly used as a base layer for RotaryImage
 
-## RadialText
+## RadialHtmlOverlay
 
-Displays text at radial coordinates with automatic sizing based on reference text measurement.
+⚠️ **Safari Limitation**: This primitive uses `<foreignObject>` which has rendering bugs in Safari/WebKit when the SVG is inside complex CSS layouts (container queries, aspect-ratio boxes). For Safari-safe rendering, use the `children` prop on `Knob`/`ContinuousControl` instead, which renders HTML **outside** the SVG.
+
+Renders arbitrary HTML content inside the SVG at a radial position using `foreignObject`. This provides superior text rendering quality and layout capabilities (Flexbox) compared to pure SVG text.
 
 ### Props
 
 ```typescript
-type RadialTextProps = {
+type RadialHtmlOverlayProps = {
   cx: number; // X coordinate of center
   cy: number; // Y coordinate of center
-  radius: number; // Text fits within this radius
-  text: string | string[]; // Display text (array for multiline)
-  referenceText?: string | string[]; // Sizing reference (default: "-127")
-  padding?: number; // Fit within radius * padding (default: 0.85)
-  textAnchor?: "start" | "middle" | "end"; // Horizontal alignment (default: "middle")
-  lineSpacing?: number; // Line height multiplier (default: 1.2)
+  radius: number; // Content fits within a square of size (radius * 2)
+  children?: React.ReactNode; // HTML content
   className?: string;
-  style?: CSSProperties; // Font styles are respected for measurement
+  style?: CSSProperties;
+  pointerEvents?: "none" | "auto"; // Default: "none"
 };
 ```
 
 ### Usage
 
 ```tsx
-// Single line value
-<RadialText
-  cx={50} cy={50} radius={30}
-  text={currentValue}
-  referenceText="100"
-/>
+// Basic centered value
+<RadialHtmlOverlay cx={50} cy={50} radius={30}>
+  <div className="text-xl font-bold">
+    {formattedValue}
+  </div>
+</RadialHtmlOverlay>
 
-// Multiline with value and unit
-<RadialText
-  cx={50} cy={50} radius={30}
-  text={[formattedValue, "dB"]}
-  referenceText={["-60.0", "dB"]}
-/>
-
-// With custom font styling
-<RadialText
-  cx={50} cy={50} radius={25}
-  text={["∞"]}
-  style={{
-    fontFamily: "monospace",
-    fontWeight: "bold",
-    fill: "var(--audioui-primary-color)"
-  }}
-/>
+// Complex layout
+<RadialHtmlOverlay cx={50} cy={50} radius={30}>
+  <div className="flex flex-col items-center">
+    <span className="text-lg">{value}</span>
+    <span className="text-xs text-muted-foreground">dB</span>
+  </div>
+</RadialHtmlOverlay>
 ```
 
-### Integration with AudioParameterConverter
+### Design Notes
 
-The `AudioParameterConverter` class provides a `getMaxDisplayText()` method specifically designed for RadialText sizing:
+- **ForeignObject**: Uses SVG `<foreignObject>` to embed HTML.
+- **Safari Warning**: May render incorrectly in Safari/WebKit when SVG is in complex CSS layouts.
+- **Centering**: Automatically applies Flexbox centering to the container.
+- **Sizing**: Creates a square container with side length `radius * 2`, centered at `(cx, cy)`.
+- **Pointer Events**: Defaults to `none` so that the overlay doesn't block mouse interactions.
 
-```tsx
-const converter = new AudioParameterConverter(volumeParam);
-
-// Single line with unit
-<RadialText
-  text={converter.format(currentValue)}
-  referenceText={converter.getMaxDisplayText()}
-/>
-
-// Multiline: value on first line, unit on second
-<RadialText
-  text={[formattedValue, unit]}
-  referenceText={[converter.getMaxDisplayText({ includeUnit: false }), unit]}
-/>
-```
-
-### Design Decisions
-
-#### Measure-Once Pattern
-
-RadialText uses a "measure-once" approach for performance:
-
-1. **Reference text is required** (defaults to "-127" if not provided)
-2. Text is measured **once** when the component mounts or reference changes
-3. A CSS `transform: scale()` is applied for fitting (GPU-accelerated)
-4. Actual display text can change without re-measurement
-
-This design ensures consistent sizing even as values change dynamically.
-
-#### Global Font Metrics Cache
-
-Text measurements are cached globally in a `Map`:
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Font Metrics Cache                        │
-├─────────────────────────────────────────────────────────────┤
-│  Key: "text|fontFamily|fontSize|fontWeight|lineSpacing"     │
-│  Value: { width: number, height: number }                   │
-├─────────────────────────────────────────────────────────────┤
-│  Benefits:                                                   │
-│  - Survives component unmounts                              │
-│  - 100 knobs showing "dB" = 1 measurement                   │
-│  - O(1) lookup for cached entries                           │
-└─────────────────────────────────────────────────────────────┘
-```
-
-#### GPU-Accelerated Scaling
-
-Instead of calculating font size, RadialText renders at a base size and applies `transform: scale()`:
-
-- `transform: scale()` is GPU-accelerated
-- No layout recalculation when scale changes
-- Works with any font styling the user provides
-
-#### Vertical Centering
-
-RadialText uses `dominantBaseline="central"` with a baseline correction factor (0.1em) to achieve true visual centering. This compensates for the fact that most fonts have more ascender height than descender height, especially for numeric text (0-9) which has no descenders.
-
-#### Performance Characteristics
-
-| Scenario            | Measurement Cost           | Render Cost                |
-| ------------------- | -------------------------- | -------------------------- |
-| Initial mount       | 1 DOM measurement (cached) | 1 render                   |
-| Value change        | 0 (cached)                 | 1 render (scale unchanged) |
-| 100 identical knobs | 1 measurement total        | 100 renders                |
-| Font/style change   | 1 new measurement          | 1 render                   |
 
 ## FilmstripImage
 
@@ -507,7 +433,11 @@ type LabelRingProps = Omit<TickRingProps, "renderTick" | "variant" | "thickness"
 
 ## Composing Custom Knobs
 
-These primitives are designed to be composed together to create custom knob designs:
+These primitives are designed to be composed together to create custom knob designs.
+
+**Important**: Center content (text, icons) should NOT be rendered inside the SVG view component. Instead, pass it as `children` to `ContinuousControl`, which renders it via HTML overlay for Safari compatibility.
+
+### View Component (SVG only)
 
 ```tsx
 function CustomKnob({ normalizedValue, className, style }: ControlComponentViewProps) {
@@ -532,8 +462,7 @@ function CustomKnob({ normalizedValue, className, style }: ControlComponentViewP
         <line x1="50%" y1="15%" x2="50%" y2="5%" stroke="white" strokeWidth={2} />
       </RotaryImage>
 
-      {/* Value display */}
-      <RadialText cx={50} cy={50} radius={20} text={[formattedValue, "dB"]} referenceText={["-60.0", "dB"]} />
+      {/* Center content is rendered via overlay, not here */}
     </g>
   );
 }
@@ -541,28 +470,31 @@ function CustomKnob({ normalizedValue, className, style }: ControlComponentViewP
 // Required static properties for ContinuousControl
 CustomKnob.viewBox = { width: 100, height: 100 };
 CustomKnob.labelHeightUnits = 15;
-CustomKnob.interaction = { mode: "both", direction: "vertical" };
+CustomKnob.interaction = { mode: "both", direction: "circular" };
+```
+
+### Usage with Center Content
+
+```tsx
+<ContinuousControl view={CustomKnob} value={value} onChange={setValue}>
+  {/* Center content rendered as HTML overlay */}
+  <div style={{ fontSize: "20px", fontWeight: 700 }}>{formattedValue}</div>
+  <div style={{ fontSize: "10px", opacity: 0.6 }}>dB</div>
+</ContinuousControl>
 ```
 
 ## SSR Considerations
 
 **Server-Side Rendering is not a priority for this library.** Audio/MIDI applications require real-time client-side processing, making SSR impractical for the primary use cases (VST plugin UIs, DAWs, web-based audio tools).
 
-RadialText handles the browser-only measurement gracefully:
-
-- Falls back to `scale=1` during SSR
-- Measures and updates on client hydration
-- No hydration mismatch errors
-
 ## File Locations
 
 - **ValueRing**: `packages/react/src/components/primitives/views/ValueRing.tsx`
 - **RotaryImage**: `packages/react/src/components/primitives/views/RotaryImage.tsx`
 - **RadialImage**: `packages/react/src/components/primitives/views/RadialImage.tsx`
-- **RadialText**: `packages/react/src/components/primitives/views/RadialText.tsx`
+- **RadialHtmlOverlay**: `packages/react/src/components/primitives/views/RadialHtmlOverlay.tsx`
 - **FilmstripImage**: `packages/react/src/components/primitives/views/FilmstripImage.tsx`
 - **TickRing**: `packages/react/src/components/primitives/views/TickRing.tsx`
-- **Text Measurement Utilities**: `packages/core/src/utils/textMeasurement.ts`
 - **Example Components**: `apps/playground-react/components/examples/`
 
 ## Related Documentation

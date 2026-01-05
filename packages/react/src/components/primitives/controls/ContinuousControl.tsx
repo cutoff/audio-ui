@@ -149,13 +149,13 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
                 aria-label={effectiveLabel}
             >
                 {/*
-                    Render the View with normalized value + children + specific props (P)
+                    Render the View with normalized value + specific props (P)
                     Cast viewProps to P because TypeScript generic spread is tricky
                 */}
-                <View normalizedValue={normalizedValue} {...(viewProps as P)}>
-                    {children}
-                </View>
+                <View normalizedValue={normalizedValue} {...(viewProps as P)} />
             </AdaptiveBox.Svg>
+            {/* HTML overlay for children (text, icons) - rendered outside SVG to avoid Safari foreignObject bugs */}
+            {children && <AdaptiveBox.HtmlOverlay>{children}</AdaptiveBox.HtmlOverlay>}
             {effectiveLabel && (
                 <AdaptiveBox.Label position={labelPosition} align={labelAlign}>
                     {effectiveLabel}

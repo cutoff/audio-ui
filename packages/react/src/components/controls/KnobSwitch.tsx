@@ -209,6 +209,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
     const sizeStyle = isStretch ? undefined : getSizeStyleForComponent("knob", size);
 
     // Memoize content wrapper style to avoid object recreation on every render
+    // Uses container query units (cqmin) so text and icons scale with component size
     const contentWrapperStyle = useMemo(
         () => ({
             width: "100%",
@@ -216,10 +217,20 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: "22px",
+            fontSize: "22cqmin",
             fontWeight: "500",
             color: "var(--audioui-text-color)",
             cursor: "inherit",
+        }),
+        []
+    );
+
+    // Style for SVG icon wrapper - constrains icon size using cqmin directly
+    // Uses CSS class .audioui-icon-wrapper to ensure SVG icons fill the container
+    const iconWrapperStyle = useMemo(
+        () => ({
+            width: "50cqmin",
+            height: "50cqmin",
         }),
         []
     );
@@ -234,22 +245,39 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
         return map;
     }, [renderOption, derivedParameter.options]);
 
+    // Helper to wrap SVG/React elements in a sized container
+    // Uses .audioui-icon-wrapper CSS class to ensure SVGs fill the container
+    const wrapContent = (node: React.ReactNode): React.ReactNode => {
+        // If it's a string or number, return as-is (text content)
+        if (typeof node === "string" || typeof node === "number") {
+            return node;
+        }
+
+        // Wrap React elements (SVG icons, etc.) in a sized container with CSS class
+        return (
+            <div className="audioui-icon-wrapper" style={iconWrapperStyle}>
+                {node}
+            </div>
+        );
+    };
+
     // Render Content
     const content = useMemo(() => {
         // 1. Visual Map (Children Mode)
         if (visualMap && visualMap.has(effectiveValue)) {
-            return visualMap.get(effectiveValue);
+            return wrapContent(visualMap.get(effectiveValue));
         }
 
         // 2. Render Prop (Mode A) - use O(1) lookup
         if (renderOption && optionByValueMap) {
             const opt = optionByValueMap.get(effectiveValue);
-            if (opt) return renderOption(opt);
+            if (opt) return wrapContent(renderOption(opt));
         }
 
         // 3. Default Text (from Hook)
         return displayValue;
-    }, [visualMap, effectiveValue, renderOption, optionByValueMap, displayValue]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [visualMap, effectiveValue, renderOption, optionByValueMap, displayValue, iconWrapperStyle]);
 
     const effectiveLabel = label ?? derivedParameter.name;
 
@@ -348,41 +376,40 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             minWidth={40}
             minHeight={40}
         >
-            <>
-                <AdaptiveBox.Svg
-                    viewBoxWidth={SvgKnob.viewBox.width}
-                    viewBoxHeight={SvgKnob.viewBox.height}
-                    onWheel={interactiveProps.onWheel}
-                    onClick={handleClick}
-                    onMouseDown={handleMouseDown}
-                    onTouchStart={interactiveProps.onTouchStart}
-                    onKeyDown={handleKeyDown}
-                    onMouseUp={onMouseUp}
-                    onMouseEnter={onMouseEnter}
-                    onMouseLeave={onMouseLeave}
-                    tabIndex={interactiveProps.tabIndex}
-                    role={interactiveProps.role}
-                    aria-valuenow={typeof effectiveValue === "number" ? effectiveValue : undefined}
-                    aria-valuetext={displayValue}
-                    aria-label={effectiveLabel}
-                >
-                    <SvgKnob
-                        normalizedValue={normalizedValue}
-                        bipolar={false} // Switches usually 0..1
-                        thickness={clampedThickness}
-                        roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
-                        color={resolvedColor}
-                    >
-                        <div style={contentWrapperStyle}>{content}</div>
-                    </SvgKnob>
-                </AdaptiveBox.Svg>
-
-                {effectiveLabel && (
-                    <AdaptiveBox.Label position={labelPosition} align={labelAlign ?? "center"}>
-                        {effectiveLabel}
-                    </AdaptiveBox.Label>
-                )}
-            </>
+            <AdaptiveBox.Svg
+                viewBoxWidth={SvgKnob.viewBox.width}
+                viewBoxHeight={SvgKnob.viewBox.height}
+                onWheel={interactiveProps.onWheel}
+                onClick={handleClick}
+                onMouseDown={handleMouseDown}
+                onTouchStart={interactiveProps.onTouchStart}
+                onKeyDown={handleKeyDown}
+                onMouseUp={onMouseUp}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                tabIndex={interactiveProps.tabIndex}
+                role={interactiveProps.role}
+                aria-valuenow={typeof effectiveValue === "number" ? effectiveValue : undefined}
+                aria-valuetext={displayValue}
+                aria-label={effectiveLabel}
+            >
+                <SvgKnob
+                    normalizedValue={normalizedValue}
+                    bipolar={false} // Switches usually 0..1
+                    thickness={clampedThickness}
+                    roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
+                    color={resolvedColor}
+                />
+            </AdaptiveBox.Svg>
+            {/* HTML overlay for content (text, icons) - rendered outside SVG to avoid Safari foreignObject bugs */}
+            <AdaptiveBox.HtmlOverlay>
+                <div style={contentWrapperStyle}>{content}</div>
+            </AdaptiveBox.HtmlOverlay>
+            {effectiveLabel && (
+                <AdaptiveBox.Label position={labelPosition} align={labelAlign ?? "center"}>
+                    {effectiveLabel}
+                </AdaptiveBox.Label>
+            )}
         </AdaptiveBox>
     );
 };

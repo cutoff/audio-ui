@@ -13,8 +13,8 @@ export { default as RotaryImage } from "./components/primitives/views/RotaryImag
 export type { RotaryImageProps } from "./components/primitives/views/RotaryImage";
 export { default as RadialImage } from "./components/primitives/views/RadialImage";
 export type { RadialImageProps } from "./components/primitives/views/RadialImage";
-export { default as RadialText } from "./components/primitives/views/RadialText";
-export type { RadialTextProps } from "./components/primitives/views/RadialText";
+export { default as RadialHtmlOverlay } from "./components/primitives/views/RadialHtmlOverlay";
+export type { RadialHtmlOverlayProps } from "./components/primitives/views/RadialHtmlOverlay";
 export { default as FilmstripImage } from "./components/primitives/views/FilmstripImage";
 export type { FilmstripImageProps } from "./components/primitives/views/FilmstripImage";
 export { default as RevealingPath } from "./components/primitives/views/RevealingPath";
@@ -31,6 +31,7 @@ export { default as SvgSlider, SvgVerticalSlider, SvgHorizontalSlider } from "./
 
 export { default as Keybed } from "./components/devices/Keybed";
 export { default as AdaptiveBox } from "./components/primitives/AdaptiveBox";
+export type { AdaptiveBoxSvgProps, AdaptiveBoxLabelProps, AdaptiveBoxHtmlOverlayProps } from "./components/primitives/AdaptiveBox";
 
 // Export theme provider and hooks
 export { default as AudioUiProvider, useAudioUiTheme, useThemableProps } from "./components/theme/AudioUiProvider";
