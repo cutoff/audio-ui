@@ -34,7 +34,7 @@ export type KnobProps = ContinuousControlProps &
          */
         variant?: KnobVariant;
         /** Thickness of the knob's stroke (normalized 0.0-1.0, maps to 1-20)
-         * @default Variant-dependent: 0.4 for abstract/simplest, 0.15 for others
+         * @default Variant-dependent: 0.4 for abstract/simplest, 0.2 for others
          */
         thickness?: number;
         /** Openness of the ring in degrees (value between 0-360º; 0º: closed; 90º: 3/4 open; 180º: half-circle;)
@@ -45,11 +45,26 @@ export type KnobProps = ContinuousControlProps &
          * @default 0
          */
         rotation?: number;
-        /** Whether to use RotaryImage (true) or RadialImage (false) for iconCap overlay
+        /**
+         * Whether to use RotaryImage (true) or RadialImage (false) for iconCap overlay.
+         * When true, the icon rotates with the knob value; when false, the icon remains static.
+         * Only applies when variant is "iconCap" and children is provided.
          * @default false
          */
         rotaryOverlay?: boolean;
-        /** SVG content to display as overlay in iconCap variant */
+        /**
+         * SVG content to display as overlay in iconCap variant.
+         * Typically an icon component (e.g., wave icons) that will be rendered at the center of the knob.
+         * The icon inherits color via currentColor, so it will adapt to light/dark mode automatically.
+         * Only used when variant is "iconCap".
+         *
+         * @example
+         * ```tsx
+         * <Knob variant="iconCap" value={50} min={0} max={100}>
+         *   <SineWaveIcon />
+         * </Knob>
+         * ```
+         */
         children?: React.ReactNode;
     };
 
@@ -57,6 +72,18 @@ export type KnobProps = ContinuousControlProps &
  * Knob component provides a circular control for value adjustment.
  * Supports continuous value ranges with optional bipolar mode, custom formatting,
  * and multiple visual variants.
+ *
+ * @example Basic usage
+ * ```tsx
+ * <Knob value={50} min={0} max={100} label="Volume" />
+ * ```
+ *
+ * @example With iconCap variant and icon
+ * ```tsx
+ * <Knob variant="iconCap" value={64} min={0} max={127} rotaryOverlay={true}>
+ *   <SineWaveIcon />
+ * </Knob>
+ * ```
  */
 function Knob({
     min,
@@ -86,8 +113,8 @@ function Knob({
     interactionMode,
     interactionDirection,
     interactionSensitivity,
-    rotaryOverlay = false,
-    children: svgChildren,
+    rotaryOverlay: svgOverlayRotary = false,
+    children: svgOverlay,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -157,7 +184,6 @@ function Knob({
 
     return (
         <ContinuousControl
-            view={SvgKnob}
             min={min}
             max={max}
             step={step}
@@ -177,22 +203,24 @@ function Knob({
             onMouseUp={onMouseUp}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            color={resolvedColor}
             parameter={parameter}
             interactionMode={interactionMode}
             interactionDirection={interactionDirection}
             interactionSensitivity={interactionSensitivity ?? 0.008}
-            variant={variant}
-            thickness={clampedThickness}
-            roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
-            openness={openness}
-            rotation={rotation}
-            rotaryOverlay={rotaryOverlay}
-            svgChildren={svgChildren}
             valueFormatter={valueFormatter}
-        >
-            {displayValueOverlay}
-        </ContinuousControl>
+            view={SvgKnob}
+            viewProps={{
+                color: resolvedColor,
+                variant: variant,
+                thickness: clampedThickness,
+                roundness: resolvedRoundness ?? DEFAULT_ROUNDNESS,
+                openness: openness,
+                rotation: rotation,
+                svgOverlayRotary: svgOverlayRotary,
+                svgOverlay: svgOverlay,
+            }}
+            htmlOverlay={displayValueOverlay}
+        />
     );
 }
 

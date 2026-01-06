@@ -31,12 +31,20 @@ export type SvgKnobProps = {
     color?: string;
     /** Additional CSS class name */
     className?: string;
-    /** Whether to use RotaryImage (true) or RadialImage (false) for iconCap overlay
+    /**
+     * Whether to use RotaryImage (true) or RadialImage (false) for iconCap overlay.
+     * When true, the icon rotates with the knob value; when false, the icon remains static.
+     * Only applies when variant is "iconCap" and svgOverlay is provided.
      * @default false
      */
-    rotaryOverlay?: boolean;
-    /** SVG content to display as overlay in iconCap variant */
-    svgChildren?: React.ReactNode;
+    svgOverlayRotary?: boolean;
+    /**
+     * SVG content to display as overlay in iconCap variant.
+     * Typically an icon component (e.g., wave icons) that will be rendered at the center of the knob.
+     * The icon inherits color via currentColor, so it will adapt to light/dark mode automatically.
+     * Only used when variant is "iconCap".
+     */
+    svgOverlay?: React.ReactNode;
 };
 
 /**
@@ -50,12 +58,14 @@ export type SvgKnobProps = {
  * @param normalizedValue - Value between 0 and 1
  * @param bipolar - Whether to start arc from center (default false)
  * @param variant - Visual variant of the knob (default "abstract")
- * @param thickness - Normalized thickness 0.0-1.0 (default: 0.4 for abstract/simplest, 0.15 for others; maps to 1-20)
+ * @param thickness - Normalized thickness 0.0-1.0 (default: 0.4 for abstract/simplest, 0.2 for others; maps to 1-20)
  * @param roundness - Normalized roundness 0.0-1.0 (default 0.3, 0.0 = square, >0.0 = round)
  * @param openness - Openness of the ring in degrees (default 90)
  * @param rotation - Optional rotation angle offset in degrees (default 0)
  * @param color - Resolved color string
  * @param className - Optional CSS class
+ * @param svgOverlayRotary - Whether to use RotaryImage (true) or RadialImage (false) for iconCap overlay (default false)
+ * @param svgOverlay - SVG content to display as overlay in iconCap variant (typically an icon component)
  */
 function SvgKnob({
     normalizedValue,
@@ -67,11 +77,11 @@ function SvgKnob({
     rotation = 0,
     color,
     className,
-    rotaryOverlay = false,
-    svgChildren,
+    svgOverlayRotary = false,
+    svgOverlay,
 }: SvgKnobProps) {
     // Determine default thickness based on variant
-    // abstract and simplest: 0.4 (8 units), others: 0.15 (2 units)
+    // abstract and simplest: 0.4 (8 units), others: 0.2 (4 units)
     const defaultThickness = variant === "abstract" || variant === "simplest" ? 0.4 : 0.2;
     const effectiveThickness = thickness ?? defaultThickness;
 
@@ -142,8 +152,8 @@ function SvgKnob({
             // iconCap inherits from plainCap and adds an overlay
             const iconRadius = (50 - pixelThickness - 6) * 0.35;
             // Get the adaptive color for the icon (icons use currentColor)
-            const overlayContent = svgChildren ? (
-                rotaryOverlay ? (
+            const overlayContent = svgOverlay ? (
+                svgOverlayRotary ? (
                     <RotaryImage
                         cx={50}
                         cy={50}
@@ -153,11 +163,11 @@ function SvgKnob({
                         rotation={rotation}
                         style={{ color: "var(--audioui-nearwhite)" }}
                     >
-                        {svgChildren}
+                        {svgOverlay}
                     </RotaryImage>
                 ) : (
                     <RadialImage cx={50} cy={50} radius={iconRadius} style={{ color: "var(--audioui-nearwhite)" }}>
-                        {svgChildren}
+                        {svgOverlay}
                     </RadialImage>
                 )
             ) : null;
@@ -180,7 +190,7 @@ function SvgKnob({
                             y1="15%"
                             x2="50%"
                             y2="5%"
-                            stroke="white"
+                            stroke="var(--audioui-nearwhite)"
                             strokeWidth={(50 - pixelThickness - 6) * 0.1}
                             strokeLinecap={isRound ? "round" : "square"}
                         />

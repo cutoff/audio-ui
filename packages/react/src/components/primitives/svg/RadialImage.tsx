@@ -17,7 +17,10 @@ export type RadialImageProps = {
     transform?: string;
     /** Additional CSS class name */
     className?: string;
-    /** Inline styles */
+    /**
+     * Inline styles.
+     * Supports `color` property for icon theming - icons using currentColor will inherit this value.
+     */
     style?: CSSProperties;
 };
 

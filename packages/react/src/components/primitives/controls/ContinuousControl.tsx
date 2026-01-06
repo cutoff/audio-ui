@@ -15,9 +15,7 @@ export type ContinuousControlComponentProps<P extends object = {}> =
     // Base Control Props (includes all ContinuousControlProps)
     ContinuousControlProps &
         // Layout props that configure AdaptiveBox behavior
-        AdaptiveBoxProps &
-        // The "Extra Props" P are intersected here so they appear on the root component
-        P & {
+        AdaptiveBoxProps & {
             /**
              * The Visualization Component.
              * Must adhere to ControlComponent contract.
@@ -25,9 +23,15 @@ export type ContinuousControlComponentProps<P extends object = {}> =
             view: ControlComponent<P>;
 
             /**
-             * Content passed to the View (e.g. center label for knobs)
+             * Props specific to the Visualization Component.
              */
-            children?: React.ReactNode;
+            viewProps: P;
+
+            /**
+             * Content overlay (HTML) rendered over the SVG (e.g. text value).
+             * Rendered via AdaptiveBox.HtmlOverlay to avoid foreignObject issues.
+             */
+            htmlOverlay?: React.ReactNode;
         };
 
 /**
@@ -37,12 +41,13 @@ export type ContinuousControlComponentProps<P extends object = {}> =
 export function ContinuousControl<P extends object = {}>(props: ContinuousControlComponentProps<P>) {
     const {
         view: View,
+        viewProps,
+        htmlOverlay,
         min,
         max,
         step,
         value,
         label,
-        children,
         displayMode,
         labelMode,
         labelPosition,
@@ -63,7 +68,6 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
         unit,
         scale,
         valueFormatter,
-        ...viewProps // Capture all other props (color, thickness, bipolar, etc.) to pass to View
     } = props;
 
     const bipolar = props.bipolar ?? false;
@@ -151,12 +155,12 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
             >
                 {/*
                     Render the View with normalized value + specific props (P)
-                    Cast viewProps to P because TypeScript generic spread is tricky
+                    Pass viewProps explicitly
                 */}
-                <View normalizedValue={normalizedValue} {...(viewProps as P)} />
+                <View normalizedValue={normalizedValue} {...viewProps} />
             </AdaptiveBox.Svg>
-            {/* HTML overlay for children (text, icons) - rendered outside SVG to avoid Safari foreignObject bugs */}
-            {children && <AdaptiveBox.HtmlOverlay>{children}</AdaptiveBox.HtmlOverlay>}
+            {/* HTML overlay for content (text) - rendered outside SVG to avoid Safari foreignObject bugs */}
+            {htmlOverlay && <AdaptiveBox.HtmlOverlay>{htmlOverlay}</AdaptiveBox.HtmlOverlay>}
             {effectiveLabel && (
                 <AdaptiveBox.Label position={labelPosition} align={labelAlign}>
                     {effectiveLabel}

@@ -81,7 +81,6 @@ function Slider({
 
     return (
         <ContinuousControl
-            view={ViewComponent}
             min={min}
             max={max}
             step={step}
@@ -101,14 +100,17 @@ function Slider({
             onMouseUp={onMouseUp}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            color={resolvedColor}
             parameter={parameter}
             interactionMode={interactionMode}
             interactionDirection={interactionDirection}
             interactionSensitivity={interactionSensitivity}
-            thickness={clampedThickness}
-            roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
             valueFormatter={valueFormatter}
+            view={ViewComponent}
+            viewProps={{
+                color: resolvedColor,
+                thickness: clampedThickness,
+                roundness: resolvedRoundness ?? DEFAULT_ROUNDNESS,
+            }}
         />
     );
 }

@@ -78,6 +78,7 @@ function CustomContinuousControl({
             valueFormatter={valueFormatter}
             unit={unit}
             scale={scale}
+            viewProps={{}}
         />
     );
 }

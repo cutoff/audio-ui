@@ -120,8 +120,8 @@ function generateCodeSnippet(
             props += `\n  rotaryOverlay={${rotaryOverlay}}`;
         }
 
-        // Add children prop if icon is selected
-        if (selectedIcon !== undefined) {
+        // Add children if icon is selected and variant is iconCap
+        if (variant === "iconCap" && selectedIcon !== undefined) {
             const iconComponent = iconOptions.find((opt) => opt.value === selectedIcon);
             if (iconComponent) {
                 const iconNameMap: Record<IconOptionValue, string> = {
@@ -131,7 +131,9 @@ function generateCodeSnippet(
                     saw: "SawWaveIcon",
                 };
                 const iconName = iconNameMap[selectedIcon];
-                props += `\n  children={<${iconName} />}`;
+                return `<Knob ${props}>
+  <${iconName} />
+</Knob>`;
             }
         }
 
@@ -202,9 +204,7 @@ function KnobComponent({
         );
     } else {
         // Get the selected icon component
-        const iconComponent = selectedIcon
-            ? iconOptions.find((opt) => opt.value === selectedIcon)?.icon
-            : undefined;
+        const iconComponent = selectedIcon ? iconOptions.find((opt) => opt.value === selectedIcon)?.icon : undefined;
 
         // Directly pass all props to Knob component, including conditional valueFormatter
         return (
