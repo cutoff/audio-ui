@@ -113,15 +113,17 @@ The `color` property can be combined with other properties to create more comple
     bipolar={true}  // Bipolar mode
 />
 
+import { KnobSwitch, Option } from "@cutoff/audio-ui-react";
+
 <KnobSwitch
     label="Filter Type"
     value="lowpass"
     color="orange"
     onChange={value => handleChange(value)}
 >
-    <KnobSwitch.Option value="lowpass">LP</KnobSwitch.Option>
-    <KnobSwitch.Option value="highpass">HP</KnobSwitch.Option>
-    <KnobSwitch.Option value="bandpass">BP</KnobSwitch.Option>
+    <Option value="lowpass">LP</Option>
+    <Option value="highpass">HP</Option>
+    <Option value="bandpass">BP</Option>
 </KnobSwitch>
 ```
 
@@ -154,8 +156,8 @@ function ThemedControls() {
       <Knob value={75} label="Volume" color={themeColor} />
       <Button value={100} label="Power" color={themeColor} />
       <KnobSwitch value="sine" label="Wave" color={themeColor}>
-        <KnobSwitch.Option value="sine">Sine</KnobSwitch.Option>
-        <KnobSwitch.Option value="square">Square</KnobSwitch.Option>
+        <Option value="sine">Sine</Option>
+        <Option value="square">Square</Option>
       </KnobSwitch>
     </div>
   );

@@ -11,20 +11,9 @@ import { EnumParameter } from "@cutoff/audio-ui-core";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useInteractiveControl } from "@/hooks/useInteractiveControl";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
+import { useEnumParameterResolution } from "@/hooks/useEnumParameterResolution";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
-
-/**
- * Props for the option elements within KnobSwitch
- */
-export type KnobSwitchOptionProps = {
-    /** Value associated with this option */
-    value?: any;
-    /** Whether this option is selected by default when no value prop is provided */
-    selected?: boolean;
-    /** Content to display when this option is selected */
-    children?: React.ReactNode;
-};
 
 /**
  * Props for the KnobSwitch component
@@ -36,15 +25,17 @@ export type KnobSwitchProps = AdaptiveSizeProps &
     ThemableProps & {
         /** Label displayed below the component */
         label?: string;
-        /** Current value of the component */
+        /** Current value of the component (Controlled mode) */
         value?: any;
-        /** Child elements (KnobSwitch.Option components) - Optional if parameter provided */
+        /** Default value of the component (Uncontrolled mode) */
+        defaultValue?: any;
+        /** Child elements (Option components) */
         children?: React.ReactNode;
         /** Identifier for the parameter this control represents */
         paramId?: string;
-        /** Audio Parameter definition (Model) */
+        /** Audio Parameter definition (Strict Model Mode) */
         parameter?: EnumParameter;
-        /** Custom renderer for options (Mode A) */
+        /** Custom renderer for options (used when parameter is provided but no children map exists) */
         renderOption?: (option: { value: any; label: string }) => React.ReactNode;
         /** Thickness of the knob's stroke (normalized 0.0-1.0, maps to 1-20) */
         thickness?: number;
@@ -52,12 +43,15 @@ export type KnobSwitchProps = AdaptiveSizeProps &
 
 /**
  * A switch component that uses a knob interface to cycle through options.
- * ...
+ *
+ * Supports three modes of operation:
+ * 1. Ad-Hoc Mode (Children only): Model inferred from Option children.
+ * 2. Strict Mode (Parameter only): Model provided via parameter prop. View via renderOption.
+ * 3. Hybrid Mode (Parameter + Children): Model from parameter, View from children (matched by value).
  */
-const KnobSwitch: React.FC<KnobSwitchProps> & {
-    Option: React.FC<KnobSwitchOptionProps>;
-} = ({
+function KnobSwitch({
     value,
+    defaultValue,
     onChange,
     renderOption,
     label,
@@ -83,9 +77,8 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
     className,
     style,
     children,
-}) => {
-    // Use the themable props hook to resolve color and roundness with proper fallbacks
-    // Clamp values to 0.0-1.0 range
+}: KnobSwitchProps) {
+    // Resolve color and roundness with proper fallbacks
     const clampedRoundness = roundness !== undefined ? clampNormalized(roundness) : undefined;
     const clampedThickness = clampNormalized(thickness);
     const { resolvedColor, resolvedRoundness } = useThemableProps(
@@ -93,104 +86,39 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
         { color: undefined, roundness: DEFAULT_ROUNDNESS }
     );
 
-    // Mode B: Parse children to build parameter and visual map
-    const { derivedParameter, visualMap, defaultVal } = useMemo(() => {
-        if (parameter) return { derivedParameter: parameter, visualMap: null, defaultVal: parameter.defaultValue };
+    const { derivedParameter, visualContentMap, defaultVal } = useEnumParameterResolution({
+        children,
+        paramId,
+        parameter,
+        defaultValue,
+        label,
+    });
 
-        const optionEls = React.Children.toArray(children).filter(
-            React.isValidElement
-        ) as React.ReactElement<KnobSwitchOptionProps>[];
-
-        if (optionEls.length === 0) {
-            // Fallback empty parameter
-            return {
-                derivedParameter: {
-                    id: "empty-enum",
-                    type: "enum",
-                    name: label || "",
-                    options: [],
-                    midiResolution: 7,
-                } as EnumParameter,
-                visualMap: null,
-                defaultVal: undefined,
-            };
-        }
-
-        const options = optionEls.map((child, index) => {
-            const val = child.props.value !== undefined ? child.props.value : index;
-            // Try to extract text label from children if possible, else stringify value
-            let txtLabel = String(val);
-            if (typeof child.props.children === "string") {
-                txtLabel = child.props.children;
-            }
-            return { value: val, label: txtLabel };
-        });
-
-        const map = new Map<any, React.ReactNode>();
-        optionEls.forEach((child, index) => {
-            const val = child.props.value !== undefined ? child.props.value : index;
-            map.set(val, child.props.children);
-        });
-
-        const selectedChild = optionEls.find((c) => c.props.selected);
-        const defVal = selectedChild
-            ? (selectedChild.props.value ?? optionEls.indexOf(selectedChild))
-            : options[0].value;
-
-        return {
-            derivedParameter: {
-                id: paramId ?? "adhoc-enum",
-                type: "enum",
-                name: label || "",
-                options,
-                defaultValue: defVal,
-                midiResolution: 7,
-                midiMapping: "spread",
-            } as EnumParameter,
-            visualMap: map,
-            defaultVal: defVal,
-        };
-    }, [parameter, children, label]);
-
-    // Determine effective value (controlled or default)
     const effectiveValue = value !== undefined ? value : defaultVal;
 
-    // Use Audio Param Hook
     const { normalizedValue, setNormalizedValue, displayValue, adjustValue, converter } = useAudioParameter(
         effectiveValue,
         onChange,
         derivedParameter
     );
 
-    // Calculate step size for normalized range (0..1)
     const stepSize = useMemo(() => {
         const count = derivedParameter.options.length;
         return count > 1 ? 1 / (count - 1) : 0;
     }, [derivedParameter.options.length]);
 
-    // Use interactive control hook
     const interactiveProps = useInteractiveControl({
         adjustValue,
         interactionMode: interactionMode ?? "both",
         direction: interactionDirection ?? "vertical",
-        // For enumerations, drag sensitivity needs to be higher to feel responsive,
-        // otherwise you have to drag extremely far to change one step.
-        // 0.05 was still too low. Increasing to 0.1 (approx 10px per step if step is 1/N).
         sensitivity: interactionSensitivity ?? 0.1,
-        // Wheel sensitivity: 1 notch (100 delta) = 1 step
-        // We want 1 notch (delta ~100) to equal exactly one step (stepSize).
-        // adjustValue does: delta * sensitivity.
-        // We want 100 * sensitivity = stepSize.
-        // So sensitivity = stepSize / 100.
-        // We use stepSize / 5 to allow finer control (approx 20 delta per step).
         wheelSensitivity: stepSize > 0 ? stepSize / 4 : 0,
-        editable: !!onChange, // Only editable when onChange is provided
+        editable: !!onChange,
     });
 
-    // Get adaptive sizing values
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
 
-    // Memoize the classNames calculation: size class first, then base classes, then user className (user takes precedence)
+    // Memoize classNames
     const componentClassNames = useMemo(() => {
         return classNames(
             sizeClassName,
@@ -201,8 +129,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
         );
     }, [sizeClassName, className, onChange, onClick]);
 
-    // Memoize content wrapper style to avoid object recreation on every render
-    // Uses container query units (cqmin) so text and icons scale with component size
+    // Content wrapper style with container query units for scalable text/icons
     const contentWrapperStyle = useMemo(
         () => ({
             width: "100%",
@@ -218,8 +145,7 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
         []
     );
 
-    // Style for SVG icon wrapper - constrains icon size using cqmin directly
-    // Uses CSS class .audioui-icon-wrapper to ensure SVG icons fill the container
+    // Icon wrapper style with container query units
     const iconWrapperStyle = useMemo(
         () => ({
             width: "50cqmin",
@@ -228,25 +154,24 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
         []
     );
 
-    // Create option lookup map for O(1) performance (avoids O(n) find on every render)
+    // Option lookup map for O(1) performance
     const optionByValueMap = useMemo(() => {
         if (!renderOption) return null;
-        const map = new Map<any, { value: any; label: string }>();
+        const lookupMap = new Map<any, { value: any; label: string }>();
         derivedParameter.options.forEach((opt) => {
-            map.set(opt.value, opt);
+            lookupMap.set(opt.value, opt);
         });
-        return map;
+        return lookupMap;
     }, [renderOption, derivedParameter.options]);
 
-    // Helper to wrap SVG/React elements in a sized container
-    // Uses .audioui-icon-wrapper CSS class to ensure SVGs fill the container
+    // Wrap SVG/React elements in sized container
     const wrapContent = (node: React.ReactNode): React.ReactNode => {
-        // If it's a string or number, return as-is (text content)
+        // Return text content as-is
         if (typeof node === "string" || typeof node === "number") {
             return node;
         }
 
-        // Wrap React elements (SVG icons, etc.) in a sized container with CSS class
+        // Wrap React elements in sized container
         return (
             <div className="audioui-icon-wrapper" style={iconWrapperStyle}>
                 {node}
@@ -254,32 +179,26 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
         );
     };
 
-    // Render Content
     const content = useMemo(() => {
-        // 1. Visual Map (Children Mode)
-        if (visualMap && visualMap.has(effectiveValue)) {
-            return wrapContent(visualMap.get(effectiveValue));
+        if (visualContentMap && visualContentMap.has(effectiveValue)) {
+            return wrapContent(visualContentMap.get(effectiveValue));
         }
 
-        // 2. Render Prop (Mode A) - use O(1) lookup
         if (renderOption && optionByValueMap) {
             const opt = optionByValueMap.get(effectiveValue);
             if (opt) return wrapContent(renderOption(opt));
         }
 
-        // 3. Default Text (from Hook)
         return displayValue;
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [visualMap, effectiveValue, renderOption, optionByValueMap, displayValue, iconWrapperStyle]);
+    }, [visualContentMap, effectiveValue, renderOption, optionByValueMap, displayValue, iconWrapperStyle]);
 
     const effectiveLabel = label ?? derivedParameter.name;
 
-    // Common cycle logic for Space key and Click
     const cycleNext = () => {
         const count = derivedParameter.options.length;
         if (count <= 1) return;
 
-        // Find current index
         const currentIdx = derivedParameter.options.findIndex((opt) => opt.value === effectiveValue);
         if (currentIdx === -1) return;
 
@@ -289,35 +208,26 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
         setNormalizedValue(nextNorm);
     };
 
-    // Merge event handlers
     const handleMouseDown = (e: React.MouseEvent) => {
         interactiveProps.onMouseDown(e);
         onMouseDown?.(e);
     };
 
-    // Handle Click for rotation
     const handleClick = (e: React.MouseEvent<SVGSVGElement>) => {
-        if (interactionMode === "wheel") return; // Drag disabled usually means no mouse interaction?
+        if (interactionMode === "wheel") return;
 
-        // Standard click behavior: cycle value if not prevented.
-        // If interactive mode prevents drag, click still works for cycling.
-        // 'click' fires after mouseup if no move happened.
-
-        // Call user's onClick handler if provided
         onClick?.(e as unknown as React.MouseEvent);
         if (!e.defaultPrevented) {
             cycleNext();
         }
     };
 
-    // Custom keyboard handler for Space cycling and Arrow keys stepping
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === " ") {
             e.preventDefault();
             cycleNext();
         } else if (e.key === "ArrowUp" || e.key === "ArrowRight") {
             e.preventDefault();
-            // Explicitly handle increment to ensure step change
             const count = derivedParameter.options.length;
             if (count <= 1) return;
 
@@ -330,7 +240,6 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             }
         } else if (e.key === "ArrowDown" || e.key === "ArrowLeft") {
             e.preventDefault();
-            // Explicitly handle decrement
             const count = derivedParameter.options.length;
             if (count <= 1) return;
 
@@ -342,12 +251,10 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
                 setNormalizedValue(converter.normalize(nextVal));
             }
         } else {
-            // Delegate other keys (Home/End) to the standard handler
             interactiveProps.onKeyDown(e);
         }
     };
 
-    // Add pointer cursor when clickable but not draggable (onClick but no onChange)
     const clickableStyle = onClick && !onChange ? { cursor: "pointer" as const } : {};
 
     return (
@@ -356,13 +263,9 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             labelMode={labelMode}
             className={componentClassNames}
             style={{
-                // Size style first
                 ...sizeStyle,
-                // Interactive style second (provides default cursor)
                 ...interactiveProps.style,
-                // Clickable style (pointer cursor when onClick but no onChange)
                 ...clickableStyle,
-                // User style last (can override cursor and other styles)
                 ...style,
             }}
             labelHeightUnits={20}
@@ -388,13 +291,13 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             >
                 <SvgKnob
                     normalizedValue={normalizedValue}
-                    bipolar={false} // Switches usually 0..1
+                    bipolar={false}
                     thickness={clampedThickness}
                     roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
                     color={resolvedColor}
                 />
             </AdaptiveBox.Svg>
-            {/* HTML overlay for content (text, icons) - rendered outside SVG to avoid Safari foreignObject bugs */}
+            {/* HTML overlay for content - rendered outside SVG to avoid Safari foreignObject bugs */}
             <AdaptiveBox.HtmlOverlay>
                 <div style={contentWrapperStyle}>{content}</div>
             </AdaptiveBox.HtmlOverlay>
@@ -405,17 +308,6 @@ const KnobSwitch: React.FC<KnobSwitchProps> & {
             )}
         </AdaptiveBox>
     );
-};
+}
 
-/**
- * Option component for KnobSwitch
- * @private
- */
-const Option: React.FC<KnobSwitchOptionProps> = () => {
-    return null; // This component is never rendered directly
-};
-
-KnobSwitch.Option = Option;
-
-// Wrap the component in React.memo to prevent unnecessary re-renders
 export default React.memo(KnobSwitch);

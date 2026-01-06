@@ -42,7 +42,8 @@ export { default as AudioUiProvider, useAudioUiTheme, useThemableProps } from ".
 export type { AudioUiProviderProps } from "./components/defaults/AudioUiProvider";
 
 // Also export types for consuming applications
-export type { KnobSwitchProps, KnobSwitchOptionProps } from "./components/defaults/controls/KnobSwitch";
+export type { KnobSwitchProps } from "./components/defaults/controls/KnobSwitch";
+export type { OptionProps } from "./components/primitives/controls/Option";
 export type { KnobProps } from "./components/defaults/controls/Knob";
 export type { SliderProps } from "./components/defaults/controls/Slider";
 export type { ButtonProps } from "./components/defaults/controls/Button";
@@ -99,3 +100,4 @@ export { DEFAULT_ROUNDNESS, DEFAULT_THICKNESS } from "@cutoff/audio-ui-core";
 export * from "@cutoff/audio-ui-core";
 export * from "./hooks/useAudioParameter";
 export * from "./hooks/useAdaptiveSize";
+export * from "./hooks/useEnumParameterResolution";

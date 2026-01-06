@@ -31,19 +31,19 @@ const midiBipolarFormatter = (value: number, parameterDef: AudioParameter): stri
 };
 
 const sampleOptions = [
-    <Option key={0} value={0}>
+    <Option key={0} value={0} label="Sine">
         <SineWaveIcon />
     </Option>,
-    <Option key={1} value={1}>
+    <Option key={1} value={1} label="Triangle">
         <TriangleWaveIcon />
     </Option>,
-    <Option key={2} value={2}>
+    <Option key={2} value={2} label="Square">
         <SquareWaveIcon />
     </Option>,
-    <Option key={3} value={3}>
+    <Option key={3} value={3} label="Saw">
         <SawWaveIcon />
     </Option>,
-    <Option key={4} value={4}>
+    <Option key={4} value={4} label="Other">
         Oth
     </Option>,
 ];
@@ -76,11 +76,11 @@ function generateCodeSnippet(
 ): string {
     if (enableOptions) {
         return `<KnobSwitch value={${value}} label='${label}'${color !== undefined ? ` color='${color}'` : ""}>
-    <Option value={0}><SineWaveIcon /></Option>
-    <Option value={1}><TriangleWaveIcon /></Option>
-    <Option value={2}><SquareWaveIcon /></Option>
-    <Option value={3}><SawWaveIcon /></Option>
-    <Option value={4}>Oth</Option>
+    <Option value={0} label="Sine"><SineWaveIcon /></Option>
+    <Option value={1} label="Triangle"><TriangleWaveIcon /></Option>
+    <Option value={2} label="Square"><SquareWaveIcon /></Option>
+    <Option value={3} label="Saw"><SawWaveIcon /></Option>
+    <Option value={4} label="Other">Oth</Option>
 </KnobSwitch>
 `;
     } else {
