@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { Button, Knob, Slider as AudioSlider, Keys } from "@cutoff/audio-ui-react";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { Button, Knob, Slider as AudioSlider, Keys, KnobVariant } from "@cutoff/audio-ui-react";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { SawWaveIcon, SineWaveIcon, SquareWaveIcon, TriangleWaveIcon } from "@/components/wave-icons";
 
 // Modulation functions - these simulate different LFO waveforms
 const modulators = {
@@ -38,6 +39,9 @@ type ControlConfig = {
     color: string;
     label: string;
     thickness: number;
+    variant?: KnobVariant; // Only for knobs
+    rotaryOverlay?: boolean; // Only for iconCap variant
+    icon?: React.ReactNode; // Only for iconCap variant
 };
 
 // Color palette for vibrant visuals
@@ -59,6 +63,17 @@ const COLORS = [
 const KNOB_THICKNESSES = [0.26, 0.37, 0.47, 0.58, 0.68]; // ~6, 8, 10, 12, 14 in legacy
 const SLIDER_THICKNESSES = [0.18, 0.27, 0.35, 0.43, 0.51]; // ~10, 14, 18, 22, 26 in legacy (adjusted for 1-50 range)
 
+// Knob variant options
+const KNOB_VARIANTS: KnobVariant[] = ["abstract", "simplest", "plainCap", "iconCap"];
+
+// Icon options for iconCap variant
+const ICON_OPTIONS = [
+    <SineWaveIcon key="sine" />,
+    <TriangleWaveIcon key="triangle" />,
+    <SquareWaveIcon key="square" />,
+    <SawWaveIcon key="saw" />,
+];
+
 function generateControlConfigs(count: number): ControlConfig[] {
     const configs: ControlConfig[] = [];
     const types: ControlConfig["type"][] = ["knob", "slider-v", "slider-h", "button"];
@@ -73,9 +88,21 @@ function generateControlConfigs(count: number): ControlConfig[] {
 
         // Determine thickness based on control type
         let thickness: number;
+        let variant: KnobVariant | undefined;
+        let rotaryOverlay: boolean | undefined;
+        let icon: React.ReactNode | undefined;
         if (type === "knob") {
             const thicknessIndex = Math.floor(seededRandom(seed * 53) * KNOB_THICKNESSES.length);
             thickness = KNOB_THICKNESSES[thicknessIndex];
+            const variantIndex = Math.floor(seededRandom(seed * 61) * KNOB_VARIANTS.length);
+            variant = KNOB_VARIANTS[variantIndex];
+
+            // For iconCap variant, assign random icon and rotaryOverlay
+            if (variant === "iconCap") {
+                const iconIndex = Math.floor(seededRandom(seed * 67) * ICON_OPTIONS.length);
+                icon = ICON_OPTIONS[iconIndex];
+                rotaryOverlay = seededRandom(seed * 71) > 0.5; // Random true/false
+            }
         } else if (type === "slider-v" || type === "slider-h") {
             const thicknessIndex = Math.floor(seededRandom(seed * 59) * SLIDER_THICKNESSES.length);
             thickness = SLIDER_THICKNESSES[thicknessIndex];
@@ -91,6 +118,9 @@ function generateControlConfigs(count: number): ControlConfig[] {
             color: COLORS[colorIndex],
             label: `${type[0].toUpperCase()}${i + 1}`,
             thickness,
+            variant,
+            rotaryOverlay,
+            icon,
         });
     }
 
@@ -123,8 +153,12 @@ const AnimatedControl = ({
                     step={1}
                     label={config.label}
                     thickness={config.thickness}
+                    variant={config.variant}
+                    rotaryOverlay={config.rotaryOverlay}
                     size="small"
-                />
+                >
+                    {config.icon}
+                </Knob>
             );
         case "slider-v":
             return (
