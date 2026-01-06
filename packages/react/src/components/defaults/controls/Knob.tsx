@@ -34,7 +34,7 @@ export type KnobProps = ContinuousControlProps &
          */
         variant?: KnobVariant;
         /** Thickness of the knob's stroke (normalized 0.0-1.0, maps to 1-20)
-         * @default 0.4
+         * @default Variant-dependent: 0.4 for abstract/simplest, 0.15 for others
          */
         thickness?: number;
         /** Openness of the ring in degrees (value between 0-360º; 0º: closed; 90º: 3/4 open; 180º: half-circle;)
@@ -70,7 +70,7 @@ function Knob({
     color,
     roundness,
     variant = "abstract",
-    thickness = 0.4,
+    thickness,
     openness = DEFAULT_OPENNESS,
     rotation = DEFAULT_ROTATION,
     parameter,
@@ -89,9 +89,9 @@ function Knob({
     style,
 }: KnobProps) {
     // Use the themable props hook to resolve color and roundness with proper fallbacks
-    // Clamp values to 0.0-1.0 range
+    // Clamp values to 0.0-1.0 range (only if provided, otherwise let SvgKnob use variant-specific default)
     const clampedRoundness = roundness !== undefined ? clampNormalized(roundness) : undefined;
-    const clampedThickness = clampNormalized(thickness);
+    const clampedThickness = thickness !== undefined ? clampNormalized(thickness) : undefined;
     const { resolvedColor, resolvedRoundness } = useThemableProps(
         { color, roundness: clampedRoundness },
         { color: undefined, roundness: DEFAULT_ROUNDNESS }

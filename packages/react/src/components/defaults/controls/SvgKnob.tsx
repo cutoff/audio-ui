@@ -6,6 +6,7 @@ import { ControlComponent, KnobVariant } from "@/types";
 import { translateKnobRoundness, translateKnobThickness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import ValueRing from "@/primitives/svg/ValueRing";
+import RotaryImage from "@/primitives/svg/RotaryImage";
 
 /**
  * Props for the SvgKnob component
@@ -42,7 +43,7 @@ export type SvgKnobProps = {
  * @param normalizedValue - Value between 0 and 1
  * @param bipolar - Whether to start arc from center (default false)
  * @param variant - Visual variant of the knob (default "abstract")
- * @param thickness - Normalized thickness 0.0-1.0 (default 0.4, maps to 1-20)
+ * @param thickness - Normalized thickness 0.0-1.0 (default: 0.4 for abstract/simplest, 0.15 for others; maps to 1-20)
  * @param roundness - Normalized roundness 0.0-1.0 (default 0.3, 0.0 = square, >0.0 = round)
  * @param openness - Openness of the ring in degrees (default 90)
  * @param rotation - Optional rotation angle offset in degrees (default 0)
@@ -53,17 +54,22 @@ function SvgKnob({
     normalizedValue,
     bipolar = false,
     variant = "abstract",
-    thickness = 0.4,
+    thickness,
     roundness = DEFAULT_ROUNDNESS,
     openness = 90,
     rotation = 0,
     color,
     className,
 }: SvgKnobProps) {
+    // Determine default thickness based on variant
+    // abstract and simplest: 0.4 (8 units), others: 0.15 (2 units)
+    const defaultThickness = variant === "abstract" || variant === "simplest" ? 0.4 : 0.2;
+    const effectiveThickness = thickness ?? defaultThickness;
+
     // Translate normalized thickness to pixel range (1-20)
     const pixelThickness = useMemo(() => {
-        return translateKnobThickness(thickness);
-    }, [thickness]);
+        return translateKnobThickness(effectiveThickness);
+    }, [effectiveThickness]);
 
     // Translate normalized roundness to boolean (0 = square, >0 = round)
     const isRound = useMemo(() => {
@@ -76,26 +82,60 @@ function SvgKnob({
         [color]
     );
 
-    // Variant prop is reserved for future implementation
-    void variant;
-
-    return (
-        <g className={className}>
-            <ValueRing
-                cx={50}
-                cy={50}
-                radius={50}
-                normalizedValue={normalizedValue}
-                bipolar={bipolar}
-                thickness={pixelThickness}
-                roundness={isRound}
-                openness={openness}
-                rotation={rotation}
-                fgArcStyle={{ stroke: colorVariants.primary }}
-                bgArcStyle={{ stroke: colorVariants.primary50 }}
-            />
-        </g>
+    // Reusable ValueRing element for value indication
+    // Note: Not memoized since normalizedValue changes frequently during interactions
+    const valueRing = (
+        <ValueRing
+            cx={50}
+            cy={50}
+            radius={50}
+            normalizedValue={normalizedValue}
+            bipolar={bipolar}
+            thickness={pixelThickness}
+            roundness={isRound}
+            openness={openness}
+            rotation={rotation}
+            fgArcStyle={{ stroke: colorVariants.primary }}
+            bgArcStyle={{ stroke: colorVariants.primary50 }}
+        />
     );
+
+    // Render variant-specific content
+    switch (variant) {
+        case "plainCap":
+            return (
+                <g className={className}>
+                    {valueRing}
+
+                    <RotaryImage
+                        cx={50}
+                        cy={50}
+                        radius={50 - pixelThickness - 6}
+                        normalizedValue={normalizedValue}
+                        openness={openness}
+                        rotation={rotation}
+                    >
+                        <circle cx="50%" cy="50%" r="50%" fill="#4A4D50" />
+                        <line
+                            x1="50%"
+                            y1="15%"
+                            x2="50%"
+                            y2="5%"
+                            stroke="white"
+                            strokeWidth={4}
+                            strokeLinecap={isRound ? "round" : "square"}
+                        />
+                    </RotaryImage>
+                </g>
+            );
+
+        case "abstract":
+        case "simplest":
+        case "iconCap":
+        default:
+            // Default variant and other variants use ValueRing only
+            return <g className={className}>{valueRing}</g>;
+    }
 }
 
 // Create memoized component

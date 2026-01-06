@@ -49,6 +49,7 @@ function RadialImage({ cx, cy, radius, imageHref, children, transform, className
                     y={cy - radius}
                     width={radius * 2}
                     height={radius * 2}
+                    viewBox={`0 0 ${radius * 2} ${radius * 2}`}
                     style={{ overflow: "visible" }}
                 >
                     {children}

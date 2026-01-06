@@ -58,7 +58,7 @@ function generateCodeSnippet(
     bipolar: boolean,
     useMidiBipolar: boolean,
     roundness: number | undefined,
-    thickness: number,
+    thickness: number | undefined,
     color: string | undefined,
     variant: KnobVariant
 ): string {
@@ -79,7 +79,10 @@ function generateCodeSnippet(
         }
 
         // Add required props
-        const requiredProps = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}} thickness={${thickness}}`;
+        let requiredProps = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}}`;
+        if (thickness !== undefined) {
+            requiredProps += ` thickness={${thickness}}`;
+        }
         props = props ? `${props} ${requiredProps}` : requiredProps;
 
         if (step !== undefined) {
@@ -197,7 +200,7 @@ export default function KnobDemoPage() {
     const [useMidiBipolar, setUseMidiBipolar] = useState(false);
     const [enableOptions, setEnableOptions] = useState(false);
     const [roundness, setRoundness] = useState<number | undefined>(undefined);
-    const [thickness, setThickness] = useState(0.4);
+    const [thickness, setThickness] = useState<number | undefined>(undefined);
     const [color, setColor] = useState<string | undefined>(undefined); // Allow undefined to use theme values
     const [variant, setVariant] = useState<KnobVariant>("abstract");
 
@@ -212,7 +215,7 @@ export default function KnobDemoPage() {
                 setBipolar(false);
                 setUseMidiBipolar(false);
                 setEnableOptions(false);
-                setThickness(0.4);
+                setThickness(undefined);
                 setRoundness(undefined); // Use theme roundness
                 setColor(undefined); // Use theme color
                 setVariant("abstract");
@@ -226,7 +229,7 @@ export default function KnobDemoPage() {
                 setBipolar(true);
                 setUseMidiBipolar(false);
                 setEnableOptions(false);
-                setThickness(0.4);
+                setThickness(undefined);
                 setRoundness(0.3);
                 setColor("#ff3366"); // Pink
                 setVariant("abstract");
@@ -240,7 +243,7 @@ export default function KnobDemoPage() {
                 setBipolar(true);
                 setUseMidiBipolar(false);
                 setEnableOptions(false);
-                setThickness(0.4);
+                setThickness(undefined);
                 setRoundness(0.3);
                 setColor("#33cc66"); // Green
                 setVariant("abstract");
@@ -254,7 +257,7 @@ export default function KnobDemoPage() {
                 setBipolar(false);
                 setUseMidiBipolar(false);
                 setEnableOptions(true);
-                setThickness(0.6);
+                setThickness(undefined);
                 setRoundness(0.3);
                 setColor("#9966ff"); // Purple
                 setVariant("abstract");
@@ -268,7 +271,7 @@ export default function KnobDemoPage() {
                 setBipolar(true);
                 setUseMidiBipolar(true);
                 setEnableOptions(false);
-                setThickness(0.4);
+                setThickness(undefined);
                 setRoundness(0.3);
                 setColor("#ff9933"); // Orange
                 setVariant("abstract");
@@ -324,8 +327,12 @@ export default function KnobDemoPage() {
                 min="0"
                 max="1"
                 step="0.01"
-                value={thickness}
-                onChange={(e) => setThickness(Math.max(0, Math.min(1, Number(e.target.value))))}
+                value={thickness !== undefined ? thickness : ""}
+                onChange={(e) => {
+                    const value = e.target.value === "" ? undefined : Math.max(0, Math.min(1, Number(e.target.value)));
+                    setThickness(value);
+                }}
+                placeholder="Default"
             />
         </div>,
         <div key="roundness" className="grid gap-2">

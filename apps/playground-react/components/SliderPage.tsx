@@ -19,7 +19,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
     const [step, setStep] = useState<number | undefined>(1);
     const [label, setLabel] = useState("Default");
     const [bipolar, setBipolar] = useState(false);
-    const [thickness, setThickness] = useState(0.4);
+    const [thickness, setThickness] = useState<number | undefined>(undefined);
     const [roundness, setRoundness] = useState<number | undefined>(undefined);
     const [color, setColor] = useState<string | undefined>(undefined); // Allow undefined to use theme values
 
@@ -28,8 +28,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
   min={${min}}
   max={${max}}${step !== undefined ? `\n  step={${step}}` : ""}
   value={${value}}
-  label='${label}'
-  thickness={${thickness}}
+  label='${label}'${thickness !== undefined ? `\n  thickness={${thickness}}` : ""}
   bipolar={${bipolar}}${roundness !== undefined ? `\n  roundness={${roundness}}` : ""}
   orientation='${orientation}'${color !== undefined ? `\n  color='${color}'` : ""}
 />`;
@@ -43,7 +42,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setStep(1);
                 setLabel("Default");
                 setBipolar(false);
-                setThickness(0.4);
+                setThickness(undefined);
                 setRoundness(undefined); // Use theme roundness
                 setColor(undefined); // Use theme color
                 break;
@@ -54,7 +53,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setStep(1);
                 setLabel("Bipolar");
                 setBipolar(true);
-                setThickness(0.4);
+                setThickness(undefined);
                 setRoundness(0.3);
                 setColor("#ff3366"); // Pink
                 break;
@@ -65,7 +64,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setStep(1);
                 setLabel("Thick");
                 setBipolar(false);
-                setThickness(0.6);
+                setThickness(undefined);
                 setRoundness(0.3);
                 setColor("#33cc66"); // Green
                 break;
@@ -108,8 +107,12 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 min="0"
                 max="1"
                 step="0.01"
-                value={thickness}
-                onChange={(e) => setThickness(Math.max(0, Math.min(1, Number(e.target.value))))}
+                value={thickness !== undefined ? thickness : ""}
+                onChange={(e) => {
+                    const value = e.target.value === "" ? undefined : Math.max(0, Math.min(1, Number(e.target.value)));
+                    setThickness(value);
+                }}
+                placeholder="Default"
             />
         </div>,
         <div key="roundness" className="grid gap-2">
@@ -146,7 +149,6 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 max={100}
                 step={1}
                 value={42}
-                thickness={0.4}
                 label="Default"
                 size="large"
                 orientation={orientation}
@@ -162,7 +164,6 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 max={127}
                 step={1}
                 value={64}
-                thickness={0.4}
                 label="Bipolar"
                 size="large"
                 orientation={orientation}
@@ -179,7 +180,6 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 max={127}
                 step={1}
                 value={22}
-                thickness={0.6}
                 label="Thick"
                 size="large"
                 orientation={orientation}
