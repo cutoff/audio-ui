@@ -66,6 +66,12 @@ export type KnobProps = ContinuousControlProps &
          * ```
          */
         children?: React.ReactNode;
+        /**
+         * When true, displays the formatted value as the label instead of the provided label.
+         * When false (default), uses the provided label or falls back to the parameter definition's label.
+         * @default false
+         */
+        valueAsLabel?: boolean;
     };
 
 /**
@@ -115,6 +121,7 @@ function Knob({
     interactionSensitivity,
     rotaryOverlay: svgOverlayRotary = false,
     children: svgOverlay,
+    valueAsLabel = false,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -158,6 +165,14 @@ function Knob({
     // Get displayValue from hook (handles valueFormatter internally if provided)
     const { displayValue } = useAudioParameter(value, onChange, parameterDef, valueFormatter);
 
+    // Compute effective label: valueAsLabel uses displayValue, otherwise use label or fallback to parameterDef.name
+    const effectiveLabel = useMemo(() => {
+        if (valueAsLabel) {
+            return displayValue;
+        }
+        return label ?? parameterDef.name;
+    }, [valueAsLabel, displayValue, label, parameterDef.name]);
+
     // Get adaptive sizing values
     const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
 
@@ -189,7 +204,7 @@ function Knob({
             step={step}
             bipolar={bipolar}
             value={value}
-            label={label}
+            label={effectiveLabel}
             displayMode={displayMode}
             labelMode={labelMode}
             labelPosition={labelPosition}

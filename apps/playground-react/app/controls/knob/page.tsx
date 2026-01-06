@@ -72,7 +72,9 @@ function generateCodeSnippet(
     color: string | undefined,
     variant: KnobVariant,
     rotaryOverlay: boolean | undefined,
-    selectedIcon: IconOptionValue | undefined
+    selectedIcon: IconOptionValue | undefined,
+    valueAsLabel: boolean | undefined,
+    unit: string | undefined
 ): string {
     if (enableOptions) {
         return `<KnobSwitch value={${value}} label='${label}'${color !== undefined ? ` color='${color}'` : ""}>
@@ -101,6 +103,10 @@ function generateCodeSnippet(
             props += ` step={${step}}`;
         }
 
+        if (unit !== undefined) {
+            props += ` unit='${unit}'`;
+        }
+
         // Add optional props only if they're defined
         if (roundness !== undefined) {
             props += ` roundness={${roundness}}`;
@@ -118,6 +124,11 @@ function generateCodeSnippet(
         // Add rotaryOverlay prop if defined
         if (rotaryOverlay !== undefined) {
             props += `\n  rotaryOverlay={${rotaryOverlay}}`;
+        }
+
+        // Add valueAsLabel prop only if explicitly true
+        if (valueAsLabel === true) {
+            props += `\n  valueAsLabel={true}`;
         }
 
         // Add children if icon is selected and variant is iconCap
@@ -160,6 +171,8 @@ type KnobComponentProps = {
     variant?: KnobVariant;
     rotaryOverlay?: boolean;
     selectedIcon?: IconOptionValue;
+    valueAsLabel?: boolean | undefined;
+    unit?: string;
     onChange?: KnobProps["onChange"] | KnobSwitchProps["onChange"];
     onClick?: KnobProps["onClick"] | KnobSwitchProps["onClick"];
 };
@@ -185,6 +198,8 @@ function KnobComponent({
     variant,
     rotaryOverlay,
     selectedIcon,
+    valueAsLabel,
+    unit,
 }: KnobComponentProps) {
     if (enableOptions) {
         return (
@@ -226,6 +241,8 @@ function KnobComponent({
                 color={color}
                 variant={variant}
                 rotaryOverlay={rotaryOverlay}
+                valueAsLabel={valueAsLabel}
+                unit={unit}
                 valueFormatter={bipolar && useMidiBipolar ? midiBipolarFormatter : undefined}
             >
                 {iconComponent}
@@ -249,8 +266,10 @@ export default function KnobDemoPage() {
     const [variant, setVariant] = useState<KnobVariant>("abstract");
     const [rotaryOverlay, setRotaryOverlay] = useState<boolean | undefined>(undefined);
     const [selectedIcon, setSelectedIcon] = useState<IconOptionValue | undefined>("sine");
+    const [valueAsLabel, setValueAsLabel] = useState<boolean | undefined>(undefined);
+    const [unit, setUnit] = useState<string | undefined>(undefined);
 
-    const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4): void => {
+    const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4 | 5): void => {
         switch (num) {
             case 0:
                 setValue(42);
@@ -267,6 +286,8 @@ export default function KnobDemoPage() {
                 setVariant("abstract");
                 setRotaryOverlay(undefined);
                 setSelectedIcon("sine");
+                setValueAsLabel(undefined);
+                setUnit(undefined);
                 break;
             case 1:
                 setValue(64);
@@ -283,6 +304,8 @@ export default function KnobDemoPage() {
                 setVariant("abstract");
                 setRotaryOverlay(undefined);
                 setSelectedIcon("sine");
+                setValueAsLabel(undefined);
+                setUnit(undefined);
                 break;
             case 2:
                 setValue(0);
@@ -299,6 +322,8 @@ export default function KnobDemoPage() {
                 setVariant("abstract");
                 setRotaryOverlay(undefined);
                 setSelectedIcon("sine");
+                setValueAsLabel(undefined);
+                setUnit(undefined);
                 break;
             case 3:
                 setValue(0);
@@ -315,6 +340,8 @@ export default function KnobDemoPage() {
                 setVariant("abstract");
                 setRotaryOverlay(undefined);
                 setSelectedIcon("sine");
+                setValueAsLabel(undefined);
+                setUnit(undefined);
                 break;
             case 4:
                 setValue(64);
@@ -331,6 +358,26 @@ export default function KnobDemoPage() {
                 setVariant("abstract");
                 setRotaryOverlay(undefined);
                 setSelectedIcon("sine");
+                setValueAsLabel(undefined);
+                setUnit(undefined);
+                break;
+            case 5:
+                setValue(0);
+                setMin(-100);
+                setMax(100);
+                setStep(1);
+                setLabel("");
+                setBipolar(true);
+                setUseMidiBipolar(false);
+                setEnableOptions(false);
+                setThickness(undefined);
+                setRoundness(undefined); // Use theme roundness
+                setColor(undefined); // Use theme color
+                setVariant("plainCap");
+                setRotaryOverlay(undefined);
+                setSelectedIcon("sine");
+                setValueAsLabel(true);
+                setUnit("cents");
                 break;
         }
     };
@@ -373,6 +420,18 @@ export default function KnobDemoPage() {
                     setStep(val);
                 }}
                 placeholder="Continuous"
+            />
+        </div>,
+        <div key="unit" className="grid gap-2">
+            <Label htmlFor="unitProp">Unit</Label>
+            <Input
+                id="unitProp"
+                value={unit !== undefined ? unit : ""}
+                onChange={(e) => {
+                    const val = e.target.value === "" ? undefined : e.target.value;
+                    setUnit(val);
+                }}
+                placeholder="None"
             />
         </div>,
         <div key="thickness" className="grid gap-2">
@@ -465,6 +524,28 @@ export default function KnobDemoPage() {
                 </SelectContent>
             </Select>
         </div>,
+        <div key="valueAsLabel" className="grid gap-2">
+            <Label htmlFor="valueAsLabelProp">Value as Label</Label>
+            <Select
+                value={valueAsLabel === undefined ? "default" : valueAsLabel ? "true" : "false"}
+                onValueChange={(value) => {
+                    if (value === "default") {
+                        setValueAsLabel(undefined);
+                    } else {
+                        setValueAsLabel(value === "true");
+                    }
+                }}
+            >
+                <SelectTrigger id="valueAsLabelProp">
+                    <SelectValue placeholder="Select value" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="default">Default</SelectItem>
+                    <SelectItem value="false">False</SelectItem>
+                    <SelectItem value="true">True</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>,
     ];
 
     const examples = [
@@ -530,6 +611,19 @@ export default function KnobDemoPage() {
             valueFormatter={midiBipolarFormatter}
             onClick={() => handleExampleClick(4)}
         />,
+        <Knob
+            key="5"
+            min={-100}
+            max={100}
+            step={1}
+            value={0}
+            size="large"
+            variant="plainCap"
+            bipolar={true}
+            valueAsLabel={true}
+            unit="cents"
+            onClick={() => handleExampleClick(5)}
+        />,
     ];
 
     const codeString = generateCodeSnippet(
@@ -546,7 +640,9 @@ export default function KnobDemoPage() {
         color,
         variant,
         rotaryOverlay,
-        selectedIcon
+        selectedIcon,
+        valueAsLabel,
+        unit
     );
     const componentProps = {
         min,
@@ -563,6 +659,8 @@ export default function KnobDemoPage() {
         variant,
         rotaryOverlay,
         selectedIcon,
+        valueAsLabel,
+        unit,
     };
 
     return (
