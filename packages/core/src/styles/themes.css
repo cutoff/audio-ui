@@ -1,9 +1,12 @@
 :root {
+    --audioui-nearwhite: hsl(0, 0%, 96%);
+    --audioui-nearblack: hsl(0, 0%, 10%);
+
     /* Predefined theme colors - just the primary color */
     /* Variants (primary50, primary20) are computed automatically by components */
 
     /* Default theme — adaptive like shadcn: dark ink on light, light ink on dark */
-    --audioui-theme-default: hsl(0, 0%, 10%); /* Light mode: near-black */
+    --audioui-theme-default: var(--audioui-nearblack); /* Light mode: near-black */
     /* CSS variable for adaptive default - resolves correctly on both server and client */
     --audioui-adaptive-default-color: var(--audioui-theme-default);
 
@@ -82,7 +85,7 @@
 /* Dark mode overrides */
 .dark {
     /* Default theme — near-white ink in dark mode */
-    --audioui-theme-default: hsl(0, 0%, 96%);
+    --audioui-theme-default: var(--audioui-nearwhite);
     /* Adaptive default updates automatically via CSS variable */
     --audioui-adaptive-default-color: var(--audioui-theme-default);
 

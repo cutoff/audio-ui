@@ -45,6 +45,12 @@ export type KnobProps = ContinuousControlProps &
          * @default 0
          */
         rotation?: number;
+        /** Whether to use RotaryImage (true) or RadialImage (false) for iconCap overlay
+         * @default false
+         */
+        rotaryOverlay?: boolean;
+        /** SVG content to display as overlay in iconCap variant */
+        children?: React.ReactNode;
     };
 
 /**
@@ -80,6 +86,8 @@ function Knob({
     interactionMode,
     interactionDirection,
     interactionSensitivity,
+    rotaryOverlay = false,
+    children: svgChildren,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -179,6 +187,8 @@ function Knob({
             roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
             openness={openness}
             rotation={rotation}
+            rotaryOverlay={rotaryOverlay}
+            svgChildren={svgChildren}
             valueFormatter={valueFormatter}
         >
             {displayValueOverlay}

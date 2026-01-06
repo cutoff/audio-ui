@@ -7,6 +7,7 @@ import { translateKnobRoundness, translateKnobThickness } from "@cutoff/audio-ui
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import ValueRing from "@/primitives/svg/ValueRing";
 import RotaryImage from "@/primitives/svg/RotaryImage";
+import RadialImage from "@/primitives/svg/RadialImage";
 
 /**
  * Props for the SvgKnob component
@@ -30,6 +31,12 @@ export type SvgKnobProps = {
     color?: string;
     /** Additional CSS class name */
     className?: string;
+    /** Whether to use RotaryImage (true) or RadialImage (false) for iconCap overlay
+     * @default false
+     */
+    rotaryOverlay?: boolean;
+    /** SVG content to display as overlay in iconCap variant */
+    svgChildren?: React.ReactNode;
 };
 
 /**
@@ -60,6 +67,8 @@ function SvgKnob({
     rotation = 0,
     color,
     className,
+    rotaryOverlay = false,
+    svgChildren,
 }: SvgKnobProps) {
     // Determine default thickness based on variant
     // abstract and simplest: 0.4 (8 units), others: 0.15 (2 units)
@@ -121,17 +130,68 @@ function SvgKnob({
                             y1="15%"
                             x2="50%"
                             y2="5%"
-                            stroke="white"
-                            strokeWidth={4}
+                            stroke="var(--audioui-nearwhite)"
+                            strokeWidth={(50 - pixelThickness - 6) * 0.1}
                             strokeLinecap={isRound ? "round" : "square"}
                         />
                     </RotaryImage>
                 </g>
             );
 
+        case "iconCap":
+            // iconCap inherits from plainCap and adds an overlay
+            const iconRadius = (50 - pixelThickness - 6) * 0.35;
+            // Get the adaptive color for the icon (icons use currentColor)
+            const overlayContent = svgChildren ? (
+                rotaryOverlay ? (
+                    <RotaryImage
+                        cx={50}
+                        cy={50}
+                        radius={iconRadius}
+                        normalizedValue={normalizedValue}
+                        openness={openness}
+                        rotation={rotation}
+                        style={{ color: "var(--audioui-nearwhite)" }}
+                    >
+                        {svgChildren}
+                    </RotaryImage>
+                ) : (
+                    <RadialImage cx={50} cy={50} radius={iconRadius} style={{ color: "var(--audioui-nearwhite)" }}>
+                        {svgChildren}
+                    </RadialImage>
+                )
+            ) : null;
+
+            return (
+                <g className={className}>
+                    {valueRing}
+                    {/* PlainCap content */}
+                    <RotaryImage
+                        cx={50}
+                        cy={50}
+                        radius={50 - pixelThickness - 6}
+                        normalizedValue={normalizedValue}
+                        openness={openness}
+                        rotation={rotation}
+                    >
+                        <circle cx="50%" cy="50%" r="50%" fill="#4A4D50" />
+                        <line
+                            x1="50%"
+                            y1="15%"
+                            x2="50%"
+                            y2="5%"
+                            stroke="white"
+                            strokeWidth={(50 - pixelThickness - 6) * 0.1}
+                            strokeLinecap={isRound ? "round" : "square"}
+                        />
+                    </RotaryImage>
+                    {/* Icon overlay */}
+                    {overlayContent}
+                </g>
+            );
+
         case "abstract":
         case "simplest":
-        case "iconCap":
         default:
             // Default variant and other variants use ValueRing only
             return <g className={className}>{valueRing}</g>;

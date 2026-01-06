@@ -48,6 +48,16 @@ const sampleOptions = [
     </Option>,
 ];
 
+// Icon options for iconCap variant
+const iconOptions = [
+    { value: "sine", label: "Sine", icon: <SineWaveIcon /> },
+    { value: "triangle", label: "Triangle", icon: <TriangleWaveIcon /> },
+    { value: "square", label: "Square", icon: <SquareWaveIcon /> },
+    { value: "saw", label: "Saw", icon: <SawWaveIcon /> },
+] as const;
+
+type IconOptionValue = (typeof iconOptions)[number]["value"];
+
 function generateCodeSnippet(
     enableOptions: boolean,
     value: number,
@@ -60,7 +70,9 @@ function generateCodeSnippet(
     roundness: number | undefined,
     thickness: number | undefined,
     color: string | undefined,
-    variant: KnobVariant
+    variant: KnobVariant,
+    rotaryOverlay: boolean | undefined,
+    selectedIcon: IconOptionValue | undefined
 ): string {
     if (enableOptions) {
         return `<KnobSwitch value={${value}} label='${label}'${color !== undefined ? ` color='${color}'` : ""}>
@@ -103,6 +115,26 @@ function generateCodeSnippet(
             props += `\n  valueFormatter={midiBipolarFormatter}`;
         }
 
+        // Add rotaryOverlay prop if defined
+        if (rotaryOverlay !== undefined) {
+            props += `\n  rotaryOverlay={${rotaryOverlay}}`;
+        }
+
+        // Add children prop if icon is selected
+        if (selectedIcon !== undefined) {
+            const iconComponent = iconOptions.find((opt) => opt.value === selectedIcon);
+            if (iconComponent) {
+                const iconNameMap: Record<IconOptionValue, string> = {
+                    sine: "SineWaveIcon",
+                    triangle: "TriangleWaveIcon",
+                    square: "SquareWaveIcon",
+                    saw: "SawWaveIcon",
+                };
+                const iconName = iconNameMap[selectedIcon];
+                props += `\n  children={<${iconName} />}`;
+            }
+        }
+
         return `<Knob ${props} />`;
     }
 }
@@ -124,6 +156,8 @@ type KnobComponentProps = {
     size?: "xsmall" | "small" | "normal" | "large" | "xlarge";
     color?: string;
     variant?: KnobVariant;
+    rotaryOverlay?: boolean;
+    selectedIcon?: IconOptionValue;
     onChange?: KnobProps["onChange"] | KnobSwitchProps["onChange"];
     onClick?: KnobProps["onClick"] | KnobSwitchProps["onClick"];
 };
@@ -147,6 +181,8 @@ function KnobComponent({
     size,
     color,
     variant,
+    rotaryOverlay,
+    selectedIcon,
 }: KnobComponentProps) {
     if (enableOptions) {
         return (
@@ -165,6 +201,11 @@ function KnobComponent({
             </KnobSwitch>
         );
     } else {
+        // Get the selected icon component
+        const iconComponent = selectedIcon
+            ? iconOptions.find((opt) => opt.value === selectedIcon)?.icon
+            : undefined;
+
         // Directly pass all props to Knob component, including conditional valueFormatter
         return (
             <Knob
@@ -184,8 +225,11 @@ function KnobComponent({
                 size={size}
                 color={color}
                 variant={variant}
+                rotaryOverlay={rotaryOverlay}
                 valueFormatter={bipolar && useMidiBipolar ? midiBipolarFormatter : undefined}
-            />
+            >
+                {iconComponent}
+            </Knob>
         );
     }
 }
@@ -203,6 +247,8 @@ export default function KnobDemoPage() {
     const [thickness, setThickness] = useState<number | undefined>(undefined);
     const [color, setColor] = useState<string | undefined>(undefined); // Allow undefined to use theme values
     const [variant, setVariant] = useState<KnobVariant>("abstract");
+    const [rotaryOverlay, setRotaryOverlay] = useState<boolean | undefined>(undefined);
+    const [selectedIcon, setSelectedIcon] = useState<IconOptionValue | undefined>("sine");
 
     const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4): void => {
         switch (num) {
@@ -219,6 +265,8 @@ export default function KnobDemoPage() {
                 setRoundness(undefined); // Use theme roundness
                 setColor(undefined); // Use theme color
                 setVariant("abstract");
+                setRotaryOverlay(undefined);
+                setSelectedIcon("sine");
                 break;
             case 1:
                 setValue(64);
@@ -233,6 +281,8 @@ export default function KnobDemoPage() {
                 setRoundness(0.3);
                 setColor("#ff3366"); // Pink
                 setVariant("abstract");
+                setRotaryOverlay(undefined);
+                setSelectedIcon("sine");
                 break;
             case 2:
                 setValue(0);
@@ -247,6 +297,8 @@ export default function KnobDemoPage() {
                 setRoundness(0.3);
                 setColor("#33cc66"); // Green
                 setVariant("abstract");
+                setRotaryOverlay(undefined);
+                setSelectedIcon("sine");
                 break;
             case 3:
                 setValue(0);
@@ -261,6 +313,8 @@ export default function KnobDemoPage() {
                 setRoundness(0.3);
                 setColor("#9966ff"); // Purple
                 setVariant("abstract");
+                setRotaryOverlay(undefined);
+                setSelectedIcon("sine");
                 break;
             case 4:
                 setValue(64);
@@ -275,6 +329,8 @@ export default function KnobDemoPage() {
                 setRoundness(0.3);
                 setColor("#ff9933"); // Orange
                 setVariant("abstract");
+                setRotaryOverlay(undefined);
+                setSelectedIcon("sine");
                 break;
         }
     };
@@ -380,6 +436,35 @@ export default function KnobDemoPage() {
                 Options
             </Label>
         </div>,
+        <div key="rotaryOverlay" className="flex items-center gap-2 pt-2">
+            <Checkbox
+                id="rotaryOverlayProp"
+                checked={rotaryOverlay === true}
+                onCheckedChange={(checked) => setRotaryOverlay(checked === true ? true : undefined)}
+            />
+            <Label htmlFor="rotaryOverlayProp" className="cursor-pointer">
+                Rotary Overlay (iconCap only)
+            </Label>
+        </div>,
+        <div key="icon" className="grid gap-2">
+            <Label htmlFor="iconProp">Icon (iconCap only)</Label>
+            <Select
+                value={selectedIcon ?? "none"}
+                onValueChange={(value) => setSelectedIcon(value === "none" ? undefined : (value as IconOptionValue))}
+            >
+                <SelectTrigger id="iconProp">
+                    <SelectValue placeholder="Select icon" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="none">None</SelectItem>
+                    {iconOptions.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+        </div>,
     ];
 
     const examples = [
@@ -459,7 +544,9 @@ export default function KnobDemoPage() {
         roundness,
         thickness,
         color,
-        variant
+        variant,
+        rotaryOverlay,
+        selectedIcon
     );
     const componentProps = {
         min,
@@ -474,6 +561,8 @@ export default function KnobDemoPage() {
         thickness,
         color,
         variant,
+        rotaryOverlay,
+        selectedIcon,
     };
 
     return (
