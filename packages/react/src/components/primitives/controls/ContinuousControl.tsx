@@ -36,6 +36,13 @@ export type ContinuousControlComponentProps<P extends object = Record<string, un
              * Rendered via AdaptiveBox.HtmlOverlay to avoid foreignObject issues.
              */
             htmlOverlay?: React.ReactNode;
+
+            /**
+             * When true, displays the formatted value as the label instead of the provided label.
+             * When false (default), uses the provided label or falls back to the parameter definition's label.
+             * @default false
+             */
+            valueAsLabel?: boolean;
         };
 
 /**
@@ -74,6 +81,7 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         unit,
         scale,
         valueFormatter,
+        valueAsLabel = false,
     } = props;
 
     const bipolar = props.bipolar ?? false;
@@ -89,7 +97,12 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         scale,
     });
 
-    const { normalizedValue, adjustValue } = useAudioParameter(value, onChange, paramConfig, valueFormatter);
+    const { normalizedValue, adjustValue, displayValue } = useAudioParameter(
+        value,
+        onChange,
+        paramConfig,
+        valueFormatter
+    );
 
     const effectiveInteractionMode = interactionMode ?? View.interaction.mode ?? "both";
     const effectiveDirection = interactionDirection ?? View.interaction.direction ?? "both";
@@ -111,7 +124,12 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         return onChange || onClick ? CLASSNAMES.highlight : "";
     }, [onChange, onClick]);
 
-    const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
+    const effectiveLabel = useMemo(() => {
+        if (valueAsLabel) {
+            return displayValue;
+        }
+        return label ?? (parameter ? paramConfig.name : undefined);
+    }, [valueAsLabel, displayValue, label, parameter, paramConfig.name]);
 
     const handleMouseDown = (e: React.MouseEvent) => {
         interactiveProps.onMouseDown(e);

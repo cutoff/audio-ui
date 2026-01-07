@@ -29,6 +29,12 @@ export type SliderProps = ContinuousControlProps &
         /** Thickness of the slider (normalized 0.0-1.0, maps to 1-50)
          * @default 0.4 */
         thickness?: number;
+        /**
+         * When true, displays the formatted value as the label instead of the provided label.
+         * When false (default), uses the provided label or falls back to the parameter definition's label.
+         * @default false
+         */
+        valueAsLabel?: boolean;
     };
 
 /**
@@ -91,6 +97,7 @@ function Slider({
     interactionMode,
     interactionDirection,
     interactionSensitivity,
+    valueAsLabel = false,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -139,6 +146,7 @@ function Slider({
             interactionDirection={interactionDirection}
             interactionSensitivity={interactionSensitivity}
             valueFormatter={valueFormatter}
+            valueAsLabel={valueAsLabel}
             view={ViewComponent}
             viewProps={{
                 color: resolvedColor,

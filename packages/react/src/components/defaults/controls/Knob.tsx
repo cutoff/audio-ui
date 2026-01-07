@@ -6,7 +6,7 @@
 
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import classNames from "classnames";
 import { useThemableProps } from "@/defaults/AudioUiProvider";
 import SvgKnob from "./SvgKnob";
@@ -157,13 +157,6 @@ function Knob({
 
     const { displayValue } = useAudioParameter(value, onChange, parameterDef, valueFormatter);
 
-    const effectiveLabel = useMemo(() => {
-        if (valueAsLabel) {
-            return displayValue;
-        }
-        return label ?? parameterDef.name;
-    }, [valueAsLabel, displayValue, label, parameterDef.name]);
-
     const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
 
     // Uses container query units (cqmin) so text scales with component size
@@ -193,7 +186,7 @@ function Knob({
             step={step}
             bipolar={bipolar}
             value={value}
-            label={effectiveLabel}
+            label={label}
             displayMode={displayMode}
             labelMode={labelMode}
             labelPosition={labelPosition}
@@ -212,6 +205,7 @@ function Knob({
             interactionDirection={interactionDirection}
             interactionSensitivity={interactionSensitivity ?? 0.008}
             valueFormatter={valueFormatter}
+            valueAsLabel={valueAsLabel}
             view={SvgKnob}
             viewProps={{
                 color: resolvedColor,
