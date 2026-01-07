@@ -12,7 +12,7 @@ import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import { AdaptiveBoxProps, ContinuousControlProps, ControlComponent } from "@/types";
 import AdaptiveBox from "../AdaptiveBox";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
-import { useInteractiveControl } from "@/hooks/useInteractiveControl";
+import { useContinuousInteraction } from "@/hooks/useContinuousInteraction";
 import { useContinuousParameterResolution } from "@/hooks/useContinuousParameterResolution";
 
 export type ContinuousControlComponentProps<P extends object = Record<string, unknown>> =
@@ -110,7 +110,7 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
     const effectiveDirection = interactionDirection ?? View.interaction.direction ?? "both";
 
     // Only editable when onChange is provided (onClick is not relevant for interaction controller)
-    const interactiveProps = useInteractiveControl({
+    const interactiveProps = useContinuousInteraction({
         adjustValue,
         interactionMode: effectiveInteractionMode,
         direction: effectiveDirection,
@@ -127,8 +127,10 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
     }, [onChange, onClick]);
 
     const handleMouseDown = (e: React.MouseEvent) => {
-        interactiveProps.onMouseDown(e);
         onMouseDown?.(e);
+        if (!e.defaultPrevented) {
+            interactiveProps.onMouseDown(e);
+        }
     };
 
     // Add pointer cursor when clickable but not draggable (onClick but no onChange)

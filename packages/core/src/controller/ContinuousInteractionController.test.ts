@@ -5,22 +5,22 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { InteractionController } from "./InteractionController";
+import { ContinuousInteractionController } from "./ContinuousInteractionController";
 
 // @vitest-environment jsdom
 
-type TestController = InteractionController & {
+type TestController = ContinuousInteractionController & {
     handleGlobalMouseMove: (e: MouseEvent) => void;
     handleGlobalMouseUp: () => void;
 };
 
-describe("InteractionController", () => {
-    let controller: InteractionController;
+describe("ContinuousInteractionController", () => {
+    let controller: ContinuousInteractionController;
     let adjustValue: ReturnType<typeof vi.fn>;
 
     beforeEach(() => {
         adjustValue = vi.fn();
-        controller = new InteractionController({
+        controller = new ContinuousInteractionController({
             adjustValue,
             sensitivity: 0.01,
             interactionMode: "both",
@@ -56,7 +56,7 @@ describe("InteractionController", () => {
         });
 
         it("should adjust value on mouse move after mouse down (horizontal)", () => {
-            controller = new InteractionController({
+            controller = new ContinuousInteractionController({
                 adjustValue,
                 sensitivity: 0.01,
                 direction: "horizontal",

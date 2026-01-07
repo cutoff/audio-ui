@@ -90,7 +90,7 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
   - **Purpose**: Provides React components, hooks, and React-specific adapters that wrap the framework-agnostic core logic.
   - **Architecture**: React components use core's `InteractionController`, models, and utilities, but add React-specific rendering and hooks.
   - `src/components/`: React View Components (Button, Knob, Slider, Keybed, etc.).
-  - `src/hooks/`: React adapters for Core logic (`useAudioParameter`, `useInteractiveControl`).
+  - `src/hooks/`: React adapters for Core logic (`useAudioParameter`, `useContinuousInteraction`).
   - `src/index.ts`: Re-exports core primitives alongside React components.
 
 - **Future Framework Implementations**: The architecture supports additional framework-specific packages (e.g., `packages/solid/` for SolidJS, `packages/vue/` for Vue, etc.). Each would:
@@ -161,10 +161,10 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 
 ## Interactive Controls System
 
-- **Core Architecture**: Interaction logic is centralized in `packages/core/src/controller/InteractionController.ts` (pure TS class).
-- **React Adapter**: `useInteractiveControl` hook in `packages/react` wraps `InteractionController` to bind it to React events.
+- **Core Architecture**: Interaction logic is centralized in `packages/core/src/controller/ContinuousInteractionController.ts` (pure TS class).
+- **React Adapter**: `useContinuousInteraction` hook in `packages/react` wraps `ContinuousInteractionController` to bind it to React events.
 - **Generic Control Architecture**: `Knob` and `Slider` are implemented using `ContinuousControl`, a generic component that decouples behavior (AudioParameter, interaction logic) from visualization (SVG rendering). This architecture allows easy customization by providing custom view components that implement the `ControlComponentView` contract.
-- **Unified Interaction Hook**: All interactive controls (Knob, Slider, KnobSwitch, Button) use `useInteractiveControl` hook for consistent behavior
+- **Unified Interaction Hook**: All interactive controls (Knob, Slider, KnobSwitch, Button) use `useContinuousInteraction` hook for consistent behavior
 - **Input Methods**: Supports drag (mouse/touch), wheel, and keyboard interactions
 - **Interaction Modes**: Configurable via `interactionMode` prop ("drag" | "wheel" | "both")
 - **Sensitivity Tuning**: Component-specific defaults tuned for optimal feel (Knob: 0.008, Slider: 0.005, KnobSwitch: 0.1 drag, stepSize/5 wheel)

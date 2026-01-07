@@ -4,11 +4,13 @@
  * See LICENSE.md for details.
  */
 
+// @vitest-environment jsdom
+
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act, fireEvent } from "@testing-library/react";
-import { useInteractiveControl } from "./useInteractiveControl";
+import { useContinuousInteraction } from "./useContinuousInteraction";
 
-describe("useInteractiveControl", () => {
+describe("useContinuousInteraction", () => {
     const adjustValue = vi.fn();
 
     beforeEach(() => {
@@ -19,7 +21,7 @@ describe("useInteractiveControl", () => {
     });
 
     it("initializes with correct accessibility attributes", () => {
-        const { result } = renderHook(() => useInteractiveControl({ adjustValue }));
+        const { result } = renderHook(() => useContinuousInteraction({ adjustValue }));
 
         expect(result.current.role).toBe("slider");
         expect(result.current.tabIndex).toBe(0);
@@ -29,7 +31,7 @@ describe("useInteractiveControl", () => {
     });
 
     it("handles disabled state correctly", () => {
-        const { result } = renderHook(() => useInteractiveControl({ adjustValue, disabled: true }));
+        const { result } = renderHook(() => useContinuousInteraction({ adjustValue, disabled: true }));
 
         expect(result.current.tabIndex).toBe(-1);
         expect(result.current["aria-disabled"]).toBe(true);
@@ -49,13 +51,13 @@ describe("useInteractiveControl", () => {
     });
 
     it("handles non-editable state correctly (no onChange)", () => {
-        const { result } = renderHook(() => useInteractiveControl({ adjustValue, editable: false }));
+        const { result } = renderHook(() => useContinuousInteraction({ adjustValue, editable: false }));
 
         expect(result.current.style?.cursor).toBe("default");
     });
 
     it("handles editable state correctly (with onChange)", () => {
-        const { result } = renderHook(() => useInteractiveControl({ adjustValue, editable: true }));
+        const { result } = renderHook(() => useContinuousInteraction({ adjustValue, editable: true }));
 
         // Default direction is "both", which gives "move" cursor
         expect(result.current.style?.cursor).toBe("move");
@@ -63,7 +65,7 @@ describe("useInteractiveControl", () => {
 
     describe("Drag Interaction", () => {
         it("handles vertical drag (default)", () => {
-            const { result } = renderHook(() => useInteractiveControl({ adjustValue, sensitivity: 0.1 }));
+            const { result } = renderHook(() => useContinuousInteraction({ adjustValue, sensitivity: 0.1 }));
 
             // 1. Mouse Down
             act(() => {
@@ -98,7 +100,7 @@ describe("useInteractiveControl", () => {
 
         it("handles horizontal drag", () => {
             const { result } = renderHook(() =>
-                useInteractiveControl({
+                useContinuousInteraction({
                     adjustValue,
                     direction: "horizontal",
                     sensitivity: 0.1,
@@ -120,7 +122,9 @@ describe("useInteractiveControl", () => {
         });
 
         it("respects interactionMode='wheel' (disabling drag)", () => {
-            const { result } = renderHook(() => useInteractiveControl({ adjustValue, interactionMode: "wheel" }));
+            const { result } = renderHook(() =>
+                useContinuousInteraction({ adjustValue, interactionMode: "wheel" })
+            );
 
             act(() => {
                 // @ts-expect-error - simulating event
@@ -136,7 +140,7 @@ describe("useInteractiveControl", () => {
 
     describe("Wheel Interaction", () => {
         it("handles wheel events", () => {
-            const { result } = renderHook(() => useInteractiveControl({ adjustValue, sensitivity: 0.01 }));
+            const { result } = renderHook(() => useContinuousInteraction({ adjustValue, sensitivity: 0.01 }));
 
             const preventDefault = vi.fn();
             const stopPropagation = vi.fn();
@@ -159,7 +163,7 @@ describe("useInteractiveControl", () => {
 
         it("uses provided wheelSensitivity", () => {
             const { result } = renderHook(() =>
-                useInteractiveControl({
+                useContinuousInteraction({
                     adjustValue,
                     sensitivity: 0.01,
                     wheelSensitivity: 0.05,
@@ -182,7 +186,7 @@ describe("useInteractiveControl", () => {
     describe("Keyboard Interaction", () => {
         it("handles Arrow keys", () => {
             const { result } = renderHook(() =>
-                useInteractiveControl({ adjustValue, sensitivity: 0.01, keyboardStep: 0.1 })
+                useContinuousInteraction({ adjustValue, sensitivity: 0.01, keyboardStep: 0.1 })
             );
 
             const preventDefault = vi.fn();
@@ -206,7 +210,7 @@ describe("useInteractiveControl", () => {
         });
 
         it("handles Home/End keys", () => {
-            const { result } = renderHook(() => useInteractiveControl({ adjustValue, sensitivity: 0.01 }));
+            const { result } = renderHook(() => useContinuousInteraction({ adjustValue, sensitivity: 0.01 }));
 
             act(() => {
                 // @ts-expect-error - simulating event

@@ -10,19 +10,19 @@ The interaction system in AudioUI provides a unified way to handle user input ac
 
 ## Architecture
 
-The core of the system is the `useInteractiveControl` hook, which centralizes the logic for:
+The core of the system is the `useContinuousInteraction` hook, which centralizes the logic for:
 
 - **Pointer Dragging**: Mouse and Touch support with velocity-sensitive value adjustment.
 - **Mouse Wheel**: High-precision scrolling with configurable sensitivity.
 - **Keyboard Navigation**: Accessible control via Arrow keys, Home/End, and specialized handlers (Space/Enter).
 - **Focus Management**: Consistent focus behavior and styling.
 
-### `useInteractiveControl` Hook
+### `useContinuousInteraction` Hook
 
 This hook abstracts the complexity of event handling and state management.
 
 ```typescript
-const handlers = useInteractiveControl({
+const handlers = useContinuousInteraction({
   adjustValue, // Function to update the normalized value
   value, // Current normalized value (optional)
   interactionMode, // "drag" | "wheel" | "both"

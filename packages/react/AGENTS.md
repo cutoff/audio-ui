@@ -64,7 +64,7 @@
 - Built-in control types (`KnobProps`, `SliderProps`, `ButtonProps`) extend primitives with `ThemableProps`
 - This separation allows custom controls to opt into theming only if needed
 - `src/index.ts`: Export all components, types, utilities, and theme colors
-- `src/hooks/`: React adapters for Core logic (`useAudioParameter`, `useInteractiveControl`)
+- `src/hooks/`: React adapters for Core logic (`useAudioParameter`, `useContinuousInteraction`)
 - `dist/`: Built output (index.js, index.d.ts, style.css)
 - `docs/`: Technical documentation (see Documentation section below)
 
@@ -79,7 +79,7 @@ The library uses TypeScript path aliases to simplify imports and avoid cluttered
 
 - `@/hooks/*` → `src/hooks/*`
   - Example: `import { useAudioParameter } from "@/hooks/useAudioParameter";`
-  - Example: `import { useInteractiveControl } from "@/hooks/useInteractiveControl";`
+  - Example: `import { useContinuousInteraction } from "@/hooks/useContinuousInteraction";`
   - Example: `import { useArcAngle } from "@/hooks/useArcAngle";`
 
 - `@/defaults/*` → `src/components/defaults/*`

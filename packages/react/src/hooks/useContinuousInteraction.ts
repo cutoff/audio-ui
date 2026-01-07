@@ -5,14 +5,14 @@
  */
 
 import React, { useEffect, useMemo, useRef } from "react";
-import { InteractionController, InteractionConfig, CIRCULAR_CURSOR } from "@cutoff/audio-ui-core";
+import { ContinuousInteractionController, ContinuousInteractionConfig, CIRCULAR_CURSOR } from "@cutoff/audio-ui-core";
 
-export type UseInteractiveControlProps = Omit<InteractionConfig, "adjustValue"> & {
+export type UseContinuousInteractionProps = Omit<ContinuousInteractionConfig, "adjustValue"> & {
     adjustValue: (delta: number, sensitivity?: number) => void;
     editable?: boolean;
 };
 
-export interface InteractiveControlHandlers {
+export interface ContinuousInteractionHandlers {
     onMouseDown: React.MouseEventHandler;
     onTouchStart: React.TouchEventHandler;
     onWheel: React.WheelEventHandler;
@@ -31,7 +31,7 @@ export interface InteractiveControlHandlers {
  * - Wheel scrolling
  * - Keyboard navigation (arrow keys, Home/End)
  *
- * The hook wraps the framework-agnostic `InteractionController` and provides React
+ * The hook wraps the framework-agnostic `ContinuousInteractionController` and provides React
  * event handlers that can be attached directly to SVG elements. It handles focus
  * management, accessibility attributes, and cursor styling automatically.
  *
@@ -47,7 +47,7 @@ export interface InteractiveControlHandlers {
  *
  * @example
  * ```tsx
- * const interactiveProps = useInteractiveControl({
+ * const interactiveProps = useContinuousInteraction({
  *   adjustValue: (delta, sensitivity) => {
  *     setValue(v => clamp(v + delta * sensitivity, 0, 100));
  *   },
@@ -61,7 +61,7 @@ export interface InteractiveControlHandlers {
  * </svg>
  * ```
  */
-export function useInteractiveControl({
+export function useContinuousInteraction({
     adjustValue,
     keyboardStep = 0.05,
     interactionMode = "both",
@@ -70,11 +70,11 @@ export function useInteractiveControl({
     wheelSensitivity,
     disabled = false,
     editable = true,
-}: UseInteractiveControlProps): InteractiveControlHandlers {
-    const controllerRef = useRef<InteractionController | null>(null);
+}: UseContinuousInteractionProps): ContinuousInteractionHandlers {
+    const controllerRef = useRef<ContinuousInteractionController | null>(null);
 
     if (!controllerRef.current) {
-        controllerRef.current = new InteractionController({
+        controllerRef.current = new ContinuousInteractionController({
             adjustValue,
             keyboardStep,
             interactionMode,

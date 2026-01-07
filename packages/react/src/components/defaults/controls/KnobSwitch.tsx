@@ -15,7 +15,8 @@ import { useThemableProps } from "@/defaults/AudioUiProvider";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import { EnumParameter } from "@cutoff/audio-ui-core";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
-import { useInteractiveControl } from "@/hooks/useInteractiveControl";
+import { useContinuousInteraction } from "@/hooks/useContinuousInteraction";
+import { useDiscreteInteraction } from "@/hooks/useDiscreteInteraction";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { useEnumParameterResolution } from "@/hooks/useEnumParameterResolution";
 import { clampNormalized } from "@cutoff/audio-ui-core";
@@ -115,24 +116,47 @@ function KnobSwitch({
         return count > 1 ? 1 / (count - 1) : 0;
     }, [derivedParameter.options.length]);
 
-    const interactiveProps = useInteractiveControl({
+    const interactiveProps = useContinuousInteraction({
         adjustValue,
         interactionMode: interactionMode ?? "both",
         direction: interactionDirection ?? "vertical",
         sensitivity: interactionSensitivity ?? 0.1,
-        wheelSensitivity: stepSize > 0 ? stepSize / 4 : 0,
+        // Standard mouse wheel delta is ~100 per notch.
+        // We want 1 notch = 1 discrete step (stepSize).
+        // delta * sensitivity = change => 100 * sensitivity = stepSize
+        // sensitivity = stepSize / 100
+        wheelSensitivity: stepSize > 0 ? stepSize / 100 : 0,
         editable: !!onChange,
     });
 
-    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
+    const { handleClick: handleDiscreteClick, handleKeyDown: handleDiscreteKeyDown } = useDiscreteInteraction({
+        value: effectiveValue,
+        options: derivedParameter.options,
+        onValueChange: (val) => setNormalizedValue(converter.normalize(val)),
+        disabled: !onChange,
+    });
 
-    const componentClassNames = useMemo(() => {
-        return classNames(sizeClassName, CLASSNAMES.root, CLASSNAMES.container, className);
-    }, [sizeClassName, className]);
+    const handleMouseDown = (e: React.MouseEvent) => {
+        onMouseDown?.(e);
+        if (!e.defaultPrevented) {
+            interactiveProps.onMouseDown(e);
+        }
+    };
 
-    const svgClassNames = useMemo(() => {
-        return onChange || onClick ? CLASSNAMES.highlight : "";
-    }, [onChange, onClick]);
+    const handleClick = (e: React.MouseEvent<SVGSVGElement>) => {
+        if (interactionMode === "wheel") return;
+
+        onClick?.(e as unknown as React.MouseEvent);
+        // The hook handles the cycle logic if defaultPrevented is false
+        handleDiscreteClick(e);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        handleDiscreteKeyDown(e);
+        if (!e.defaultPrevented) {
+            interactiveProps.onKeyDown(e);
+        }
+    };
 
     // Container query units for scalable text/icons
     const contentWrapperStyle = useMemo(
@@ -195,68 +219,15 @@ function KnobSwitch({
 
     const effectiveLabel = label ?? derivedParameter.name;
 
-    // Cycle to the next option (wraps around to first option after last)
-    // This is used for click-to-cycle and Space key interactions
-    const cycleNext = () => {
-        const count = derivedParameter.options.length;
-        if (count <= 1) return;
+    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
 
-        const currentIdx = derivedParameter.options.findIndex((opt) => opt.value === effectiveValue);
-        if (currentIdx === -1) return;
+    const componentClassNames = useMemo(() => {
+        return classNames(sizeClassName, CLASSNAMES.root, CLASSNAMES.container, className);
+    }, [sizeClassName, className]);
 
-        // Use modulo to wrap around: (lastIndex + 1) % count = 0 (first option)
-        const nextIdx = (currentIdx + 1) % count;
-        const nextVal = derivedParameter.options[nextIdx].value;
-        const nextNorm = converter.normalize(nextVal);
-        setNormalizedValue(nextNorm);
-    };
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-        interactiveProps.onMouseDown(e);
-        onMouseDown?.(e);
-    };
-
-    const handleClick = (e: React.MouseEvent<SVGSVGElement>) => {
-        if (interactionMode === "wheel") return;
-
-        onClick?.(e as unknown as React.MouseEvent);
-        if (!e.defaultPrevented) {
-            cycleNext();
-        }
-    };
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === " ") {
-            e.preventDefault();
-            cycleNext();
-        } else if (e.key === "ArrowUp" || e.key === "ArrowRight") {
-            e.preventDefault();
-            const count = derivedParameter.options.length;
-            if (count <= 1) return;
-
-            const currentIdx = derivedParameter.options.findIndex((opt) => opt.value === effectiveValue);
-            if (currentIdx === -1) return;
-
-            if (currentIdx < count - 1) {
-                const nextVal = derivedParameter.options[currentIdx + 1].value;
-                setNormalizedValue(converter.normalize(nextVal));
-            }
-        } else if (e.key === "ArrowDown" || e.key === "ArrowLeft") {
-            e.preventDefault();
-            const count = derivedParameter.options.length;
-            if (count <= 1) return;
-
-            const currentIdx = derivedParameter.options.findIndex((opt) => opt.value === effectiveValue);
-            if (currentIdx === -1) return;
-
-            if (currentIdx > 0) {
-                const nextVal = derivedParameter.options[currentIdx - 1].value;
-                setNormalizedValue(converter.normalize(nextVal));
-            }
-        } else {
-            interactiveProps.onKeyDown(e);
-        }
-    };
+    const svgClassNames = useMemo(() => {
+        return onChange || onClick ? CLASSNAMES.highlight : "";
+    }, [onChange, onClick]);
 
     // Add pointer cursor when clickable but not draggable (onClick but no onChange)
     const svgStyle = {

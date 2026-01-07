@@ -7,7 +7,7 @@
 import { InteractionDirection, InteractionMode } from "../types";
 import { CIRCULAR_CURSOR } from "../constants/cursors";
 
-export interface InteractionConfig {
+export interface ContinuousInteractionConfig {
     /**
      * Function to adjust the value based on a delta.
      * ...
@@ -55,15 +55,15 @@ export interface InteractionConfig {
  * Framework-agnostic controller for handling user interactions (Drag, Wheel, Keyboard)
  * for continuous controls.
  */
-export class InteractionController {
-    private config: Required<Omit<InteractionConfig, "wheelSensitivity">> & { wheelSensitivity?: number };
+export class ContinuousInteractionController {
+    private config: Required<Omit<ContinuousInteractionConfig, "wheelSensitivity">> & { wheelSensitivity?: number };
     private startX = 0;
     private startY = 0;
     private centerX = 0;
     private centerY = 0;
     private isDragging = false;
 
-    constructor(config: InteractionConfig) {
+    constructor(config: ContinuousInteractionConfig) {
         this.config = {
             interactionMode: "both",
             direction: "both",
@@ -79,15 +79,33 @@ export class InteractionController {
         this.handleGlobalTouchMove = this.handleGlobalTouchMove.bind(this);
     }
 
-    public updateConfig(config: Partial<InteractionConfig>) {
+    /**
+     * Updates the configuration of the controller.
+     * @param config Partial configuration to update.
+     */
+    public updateConfig(config: Partial<ContinuousInteractionConfig>) {
         Object.assign(this.config, config);
     }
 
+    /**
+     * Handles the start of a mouse drag interaction.
+     * Should be called from the component's onMouseDown handler.
+     * @param clientX The X coordinate of the mouse event.
+     * @param clientY The Y coordinate of the mouse event.
+     * @param target The event target (used for circular center calculation).
+     */
     public handleMouseDown = (clientX: number, clientY: number, target?: EventTarget) => {
         if (this.config.interactionMode === "wheel") return;
         this.startDrag(clientX, clientY, target);
     };
 
+    /**
+     * Handles the start of a touch interaction.
+     * Should be called from the component's onTouchStart handler.
+     * @param clientX The X coordinate of the touch event.
+     * @param clientY The Y coordinate of the touch event.
+     * @param target The event target.
+     */
     public handleTouchStart = (clientX: number, clientY: number, target?: EventTarget) => {
         if (this.config.interactionMode === "wheel") return;
         this.startDrag(clientX, clientY, target);
@@ -171,6 +189,9 @@ export class InteractionController {
         }
     }
 
+    /**
+     * Handles global mouse up event to end drag.
+     */
     private handleGlobalMouseUp() {
         if (!this.isDragging) return;
 
@@ -185,6 +206,11 @@ export class InteractionController {
         window.removeEventListener("touchend", this.handleGlobalMouseUp);
     }
 
+    /**
+     * Handles wheel events.
+     * Should be called from the component's onWheel handler.
+     * @param e The wheel event.
+     */
     public handleWheel = (e: WheelEvent) => {
         if (this.config.disabled) return;
         if (this.config.interactionMode !== "wheel" && this.config.interactionMode !== "both") return;
@@ -198,6 +224,11 @@ export class InteractionController {
         this.config.adjustValue(delta, effectiveSensitivity);
     };
 
+    /**
+     * Handles keyboard events (Arrow keys, Home, End).
+     * Should be called from the component's onKeyDown handler.
+     * @param e The keyboard event.
+     */
     public handleKeyDown = (e: KeyboardEvent) => {
         if (this.config.disabled) return;
 
@@ -231,6 +262,9 @@ export class InteractionController {
         this.config.adjustValue(effectiveDelta, this.config.sensitivity);
     };
 
+    /**
+     * Cleans up event listeners.
+     */
     public dispose() {
         this.handleGlobalMouseUp();
     }

@@ -39,7 +39,7 @@ packages/react/
 │   │   │   ├── controls/  # Control primitives (ContinuousControl, Option)
 │   │   │   └── svg/       # SVG view primitives (ValueRing, RotaryImage, etc.)
 │   │   └── types.ts      # Shared type definitions
-│   ├── hooks/           # Hooks wrapping core logic (useInteractiveControl, useAudioParameter)
+│   ├── hooks/           # Hooks wrapping core logic (useContinuousInteraction, useAudioParameter)
 │   └── index.ts         # Main exports
 ├── dist/                # Built output (generated)
 ├── docs/                # Technical documentation
