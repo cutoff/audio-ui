@@ -118,16 +118,13 @@ function KnobSwitch({
 
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
 
-    // Memoize classNames
     const componentClassNames = useMemo(() => {
-        return classNames(
-            sizeClassName,
-            CLASSNAMES.root,
-            CLASSNAMES.container,
-            onChange || onClick ? CLASSNAMES.highlight : "",
-            className
-        );
-    }, [sizeClassName, className, onChange, onClick]);
+        return classNames(sizeClassName, CLASSNAMES.root, CLASSNAMES.container, className);
+    }, [sizeClassName, className]);
+
+    const svgClassNames = useMemo(() => {
+        return onChange || onClick ? CLASSNAMES.highlight : "";
+    }, [onChange, onClick]);
 
     // Content wrapper style with container query units for scalable text/icons
     const contentWrapperStyle = useMemo(
@@ -255,7 +252,12 @@ function KnobSwitch({
         }
     };
 
-    const clickableStyle = onClick && !onChange ? { cursor: "pointer" as const } : {};
+    // Add pointer cursor when clickable but not draggable (onClick but no onChange)
+    const svgStyle = {
+        ...(interactiveProps.style ?? {}),
+        // Override cursor for click-only controls
+        ...(onClick && !onChange ? { cursor: "pointer" as const } : {}),
+    };
 
     return (
         <AdaptiveBox
@@ -264,8 +266,6 @@ function KnobSwitch({
             className={componentClassNames}
             style={{
                 ...sizeStyle,
-                ...interactiveProps.style,
-                ...clickableStyle,
                 ...style,
             }}
             labelHeightUnits={20}
@@ -275,6 +275,8 @@ function KnobSwitch({
             <AdaptiveBox.Svg
                 viewBoxWidth={SvgKnob.viewBox.width}
                 viewBoxHeight={SvgKnob.viewBox.height}
+                className={svgClassNames}
+                style={svgStyle}
                 onWheel={interactiveProps.onWheel}
                 onClick={handleClick}
                 onMouseDown={handleMouseDown}

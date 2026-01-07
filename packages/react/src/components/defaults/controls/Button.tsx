@@ -166,14 +166,12 @@ function Button({
 
     // Memoize the classNames calculation: size class first, then base classes, then user className (user takes precedence)
     const componentClassNames = useMemo(() => {
-        return classNames(
-            sizeClassName,
-            CLASSNAMES.root,
-            CLASSNAMES.container,
-            onChange || onClick ? CLASSNAMES.highlight : "",
-            className
-        );
-    }, [sizeClassName, className, onChange, onClick]);
+        return classNames(sizeClassName, CLASSNAMES.root, CLASSNAMES.container, className);
+    }, [sizeClassName, className]);
+
+    const svgClassNames = useMemo(() => {
+        return onChange || onClick ? CLASSNAMES.highlight : "";
+    }, [onChange, onClick]);
 
     // Use display value or label
     const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
@@ -194,6 +192,7 @@ function Button({
             <AdaptiveBox.Svg
                 viewBoxWidth={SvgButton.viewBox.width}
                 viewBoxHeight={SvgButton.viewBox.height}
+                className={svgClassNames}
                 onClick={onClick}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}

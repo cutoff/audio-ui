@@ -104,13 +104,12 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
     });
 
     const componentClassNames = useMemo(() => {
-        return classNames(
-            className,
-            CLASSNAMES.root,
-            CLASSNAMES.container,
-            onChange || onClick ? CLASSNAMES.highlight : ""
-        );
-    }, [className, onChange, onClick]);
+        return classNames(className, CLASSNAMES.root, CLASSNAMES.container);
+    }, [className]);
+
+    const svgClassNames = useMemo(() => {
+        return onChange || onClick ? CLASSNAMES.highlight : "";
+    }, [onChange, onClick]);
 
     const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
 
@@ -120,26 +119,25 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
     };
 
     // Add pointer cursor when clickable but not draggable (onClick but no onChange)
-    const clickableStyle = onClick && !onChange ? { cursor: "pointer" as const } : {};
+    const svgStyle = {
+        ...(interactiveProps.style ?? {}),
+        // Override cursor for click-only controls
+        ...(onClick && !onChange ? { cursor: "pointer" as const } : {}),
+    };
 
     return (
         <AdaptiveBox
             displayMode={displayMode ?? "scaleToFit"}
             labelMode={labelMode}
             className={componentClassNames}
-            style={{
-                // Interactive style first (provides default cursor)
-                ...(interactiveProps.style ?? {}),
-                // Clickable style (pointer cursor when onClick but no onChange)
-                ...clickableStyle,
-                // User style last (can override cursor and other styles)
-                ...(style ?? {}),
-            }}
+            style={style}
             labelHeightUnits={View.labelHeightUnits ?? 20}
         >
             <AdaptiveBox.Svg
                 viewBoxWidth={View.viewBox.width}
                 viewBoxHeight={View.viewBox.height}
+                className={svgClassNames}
+                style={svgStyle}
                 onWheel={interactiveProps.onWheel}
                 onClick={onClick}
                 onMouseDown={handleMouseDown}
