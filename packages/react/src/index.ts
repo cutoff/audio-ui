@@ -107,3 +107,4 @@ export * from "@cutoff/audio-ui-core";
 export * from "./hooks/useAudioParameter";
 export * from "./hooks/useAdaptiveSize";
 export * from "./hooks/useEnumParameterResolution";
+export * from "./hooks/useContinuousParameterResolution";

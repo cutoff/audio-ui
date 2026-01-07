@@ -26,7 +26,7 @@
         "typecheck": "tsc --noEmit",
         "test": "vitest run",
         "lint": "eslint \"src/**/*.ts\"",
-    "lint:fix": "eslint \"src/**/*.ts\" --fix || true",
+        "lint:fix": "eslint \"src/**/*.ts\" --fix || true",
         "clean": "rm -rf node_modules dist"
     },
     "dependencies": {

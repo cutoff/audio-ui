@@ -14,9 +14,9 @@ import ContinuousControl from "@/primitives/controls/ContinuousControl";
 import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps, KnobVariant } from "@/types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
-import { AudioParameterFactory, ContinuousParameter } from "@cutoff/audio-ui-core";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
+import { useContinuousParameterResolution } from "@/hooks/useContinuousParameterResolution";
 
 /**
  * Default openness for knob ring in degrees (matches ValueRing default)
@@ -143,25 +143,17 @@ function Knob({
         { color: undefined, roundness: DEFAULT_ROUNDNESS }
     );
 
-    const parameterDef = useMemo<ContinuousParameter>(() => {
-        if (parameter) {
-            if (parameter.type !== "continuous") {
-                console.error("Knob component only supports continuous parameters.");
-            }
-            return parameter;
-        }
-
-        return AudioParameterFactory.createControl({
-            id: paramId ?? "adhoc-knob",
-            label,
-            min,
-            max,
-            step,
-            bipolar,
-            unit,
-            scale,
-        });
-    }, [parameter, label, min, max, step, bipolar, unit, scale, paramId]);
+    const { derivedParameter: parameterDef } = useContinuousParameterResolution({
+        parameter,
+        paramId: paramId ?? "adhoc-knob",
+        label,
+        min,
+        max,
+        step,
+        bipolar,
+        unit,
+        scale,
+    });
 
     const { displayValue } = useAudioParameter(value, onChange, parameterDef, valueFormatter);
 

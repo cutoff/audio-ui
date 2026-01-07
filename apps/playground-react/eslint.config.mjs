@@ -22,11 +22,7 @@ const eslintConfig = [
     ...rootConfig,
     ...compat.extends("next/core-web-vitals", "next/typescript"),
     {
-        ignores: [
-            "components/ui/**/*",
-            "next-env.d.ts",
-            ".next/**/*",
-        ],
+        ignores: ["components/ui/**/*", "next-env.d.ts", ".next/**/*"],
     },
     // Ensure license-header plugin is available for all files
     {

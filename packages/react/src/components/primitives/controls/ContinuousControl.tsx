@@ -11,9 +11,9 @@ import classNames from "classnames";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import { AdaptiveBoxProps, ContinuousControlProps, ControlComponent } from "@/types";
 import AdaptiveBox from "../AdaptiveBox";
-import { AudioParameterFactory } from "@cutoff/audio-ui-core";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useInteractiveControl } from "@/hooks/useInteractiveControl";
+import { useContinuousParameterResolution } from "@/hooks/useContinuousParameterResolution";
 
 export type ContinuousControlComponentProps<P extends object = Record<string, unknown>> =
     // Base Control Props (includes all ContinuousControlProps)
@@ -42,7 +42,9 @@ export type ContinuousControlComponentProps<P extends object = Record<string, un
  * A Generic Continuous Control that connects a Data Model (AudioParameter)
  * to a Visualization View (ControlComponent).
  */
-export function ContinuousControl<P extends object = Record<string, unknown>>(props: ContinuousControlComponentProps<P>) {
+export function ContinuousControl<P extends object = Record<string, unknown>>(
+    props: ContinuousControlComponentProps<P>
+) {
     const {
         view: View,
         viewProps,
@@ -75,19 +77,17 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(pr
     } = props;
 
     const bipolar = props.bipolar ?? false;
-    const paramConfig = useMemo(() => {
-        if (parameter) return parameter;
-        return AudioParameterFactory.createControl({
-            id: paramId,
-            label,
-            min,
-            max,
-            step,
-            bipolar,
-            unit,
-            scale,
-        });
-    }, [parameter, label, min, max, step, bipolar, unit, scale, paramId]);
+    const { derivedParameter: paramConfig } = useContinuousParameterResolution({
+        parameter,
+        paramId,
+        label,
+        min,
+        max,
+        step,
+        bipolar,
+        unit,
+        scale,
+    });
 
     const { normalizedValue, adjustValue } = useAudioParameter(value, onChange, paramConfig, valueFormatter);
 
