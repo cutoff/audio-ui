@@ -122,9 +122,7 @@ describe("useContinuousInteraction", () => {
         });
 
         it("respects interactionMode='wheel' (disabling drag)", () => {
-            const { result } = renderHook(() =>
-                useContinuousInteraction({ adjustValue, interactionMode: "wheel" })
-            );
+            const { result } = renderHook(() => useContinuousInteraction({ adjustValue, interactionMode: "wheel" }));
 
             act(() => {
                 // @ts-expect-error - simulating event

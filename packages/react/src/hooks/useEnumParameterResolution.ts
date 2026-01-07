@@ -26,16 +26,43 @@ export interface UseEnumParameterResolutionResult {
     derivedParameter: EnumParameter;
     /** Map of values to visual content (ReactNodes) from children */
     visualContentMap: Map<string | number, React.ReactNode>;
-    /** The resolved default value */
-    defaultVal: string | number;
+    /** The effective default value (resolved from parameter, prop, or first option) */
+    effectiveDefaultValue: string | number;
 }
 
 /**
  * Hook to resolve an EnumParameter and visual content from props and/or children.
- * Supports three modes:
+ *
+ * Supports three modes of operation:
  * 1. Ad-Hoc Mode (Children only): Model inferred from Option children.
- * 2. Strict Mode (Parameter only): Model provided via parameter prop.
- * 3. Hybrid Mode (Parameter + Children): Model from parameter, View from children.
+ * 2. Strict Mode (Parameter only): Model provided via parameter prop. View via renderOption.
+ * 3. Hybrid Mode (Parameter + Children): Model from parameter, View from children (matched by value).
+ *
+ * @param props - Configuration object for enum parameter resolution
+ * @param props.children - Child elements (Option components) to parse in Ad-Hoc or Hybrid mode
+ * @param props.paramId - Identifier for the parameter (used in Ad-Hoc mode)
+ * @param props.parameter - The parameter definition (Strict or Hybrid mode)
+ * @param props.defaultValue - Default value (Ad-Hoc mode) or override for parameter default
+ * @param props.label - Label for the parameter (Ad-Hoc mode)
+ * @returns Object containing the resolved EnumParameter, visual content map, and effective default value
+ *
+ * @example
+ * ```tsx
+ * // Ad-Hoc Mode
+ * const { derivedParameter, visualContentMap, effectiveDefaultValue } = useEnumParameterResolution({
+ *   children: [
+ *     <Option value="sine">Sine</Option>,
+ *     <Option value="square">Square</Option>
+ *   ],
+ *   paramId: "waveform"
+ * });
+ *
+ * // Strict Mode
+ * const result = useEnumParameterResolution({
+ *   parameter: myEnumParameter,
+ *   defaultValue: "custom"
+ * });
+ * ```
  */
 export function useEnumParameterResolution({
     children,
@@ -70,12 +97,12 @@ export function useEnumParameterResolution({
 
         // Determine parameter model
         let param: EnumParameter;
-        let defVal: string | number;
+        let effectiveDefaultValue: string | number;
 
         if (parameter) {
             // Strict mode: use provided parameter
             param = parameter;
-            defVal =
+            effectiveDefaultValue =
                 defaultValue !== undefined
                     ? defaultValue
                     : (parameter.defaultValue ?? parameter.options[0]?.value ?? "");
@@ -93,14 +120,14 @@ export function useEnumParameterResolution({
                 options.push({ value: 0, label: "None" });
             }
 
-            defVal = defaultValue !== undefined ? defaultValue : options[0].value;
+            effectiveDefaultValue = defaultValue !== undefined ? defaultValue : options[0].value;
 
             param = {
                 id: paramId ?? "adhoc-enum",
                 type: "enum",
                 name: label || "",
                 options,
-                defaultValue: defVal,
+                defaultValue: effectiveDefaultValue,
                 midiResolution: 7,
                 midiMapping: "spread",
             };
@@ -109,7 +136,7 @@ export function useEnumParameterResolution({
         return {
             derivedParameter: param,
             visualContentMap: visualContentMap,
-            defaultVal: defVal,
+            effectiveDefaultValue,
         };
     }, [parameter, children, label, paramId, defaultValue]);
 }

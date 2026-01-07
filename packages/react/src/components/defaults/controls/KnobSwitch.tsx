@@ -55,6 +55,24 @@ export type KnobSwitchProps = AdaptiveSizeProps &
  * 1. Ad-Hoc Mode (Children only): Model inferred from Option children.
  * 2. Strict Mode (Parameter only): Model provided via parameter prop. View via renderOption.
  * 3. Hybrid Mode (Parameter + Children): Model from parameter, View from children (matched by value).
+ *
+ * @param props - Component props
+ * @returns Rendered KnobSwitch component
+ *
+ * @example
+ * ```tsx
+ * // Ad-Hoc Mode
+ * <KnobSwitch defaultValue="sine" label="Waveform">
+ *   <Option value="sine">Sine</Option>
+ *   <Option value="square">Square</Option>
+ * </KnobSwitch>
+ *
+ * // Strict Mode with custom renderer
+ * <KnobSwitch
+ *   parameter={waveformParam}
+ *   renderOption={(opt) => <Icon name={opt.value} />}
+ * />
+ * ```
  */
 function KnobSwitch({
     value,
@@ -92,7 +110,7 @@ function KnobSwitch({
         { color: undefined, roundness: DEFAULT_ROUNDNESS }
     );
 
-    const { derivedParameter, visualContentMap, defaultVal } = useEnumParameterResolution({
+    const { derivedParameter, visualContentMap, effectiveDefaultValue } = useEnumParameterResolution({
         children,
         paramId,
         parameter,
@@ -100,7 +118,7 @@ function KnobSwitch({
         label,
     });
 
-    const effectiveValue = value !== undefined ? value : defaultVal;
+    const effectiveValue = value !== undefined ? value : effectiveDefaultValue;
 
     const { normalizedValue, setNormalizedValue, formattedValue, adjustValue, converter } = useAudioParameter(
         effectiveValue,
@@ -182,15 +200,6 @@ function KnobSwitch({
         []
     );
 
-    const optionByValueMap = useMemo(() => {
-        if (!renderOption) return null;
-        const lookupMap = new Map<string | number, { value: string | number; label: string }>();
-        derivedParameter.options.forEach((opt) => {
-            lookupMap.set(opt.value, opt);
-        });
-        return lookupMap;
-    }, [renderOption, derivedParameter.options]);
-
     const wrapContent = (node: React.ReactNode): React.ReactNode => {
         if (typeof node === "string" || typeof node === "number") {
             return node;
@@ -208,14 +217,14 @@ function KnobSwitch({
             return wrapContent(visualContentMap.get(effectiveValue));
         }
 
-        if (renderOption && optionByValueMap) {
-            const opt = optionByValueMap.get(effectiveValue);
+        if (renderOption) {
+            const opt = derivedParameter.options.find((opt) => opt.value === effectiveValue);
             if (opt) return wrapContent(renderOption(opt));
         }
 
         return formattedValue;
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [visualContentMap, effectiveValue, renderOption, optionByValueMap, formattedValue, iconWrapperStyle]);
+    }, [visualContentMap, effectiveValue, renderOption, derivedParameter.options, formattedValue, iconWrapperStyle]);
 
     const effectiveLabel = label ?? derivedParameter.name;
 

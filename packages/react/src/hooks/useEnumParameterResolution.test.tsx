@@ -25,7 +25,7 @@ describe("useEnumParameterResolution", () => {
 
             const { result } = renderHook(() => useEnumParameterResolution({ children, paramId: "test-param" }));
 
-            const { derivedParameter, visualContentMap, defaultVal } = result.current;
+            const { derivedParameter, visualContentMap, effectiveDefaultValue } = result.current;
 
             expect(derivedParameter.id).toBe("test-param");
             expect(derivedParameter.type).toBe("enum");
@@ -34,7 +34,7 @@ describe("useEnumParameterResolution", () => {
             expect(derivedParameter.options[1]).toEqual({ value: "b", label: "Option B" });
 
             // Check inferred default value (first option)
-            expect(defaultVal).toBe("a");
+            expect(effectiveDefaultValue).toBe("a");
 
             // Check visual content map
             expect(visualContentMap.get("a")).toBe("A");
@@ -76,7 +76,7 @@ describe("useEnumParameterResolution", () => {
             ];
 
             const { result } = renderHook(() => useEnumParameterResolution({ children, defaultValue: "b" }));
-            expect(result.current.defaultVal).toBe("b");
+            expect(result.current.effectiveDefaultValue).toBe("b");
             expect(result.current.derivedParameter.defaultValue).toBe("b");
         });
 
@@ -85,7 +85,7 @@ describe("useEnumParameterResolution", () => {
 
             expect(result.current.derivedParameter.options).toHaveLength(1);
             expect(result.current.derivedParameter.options[0]).toEqual({ value: 0, label: "None" });
-            expect(result.current.defaultVal).toBe(0);
+            expect(result.current.effectiveDefaultValue).toBe(0);
         });
 
         it("filters out invalid children", () => {
@@ -148,13 +148,13 @@ describe("useEnumParameterResolution", () => {
             const { result } = renderHook(() => useEnumParameterResolution({ parameter: param }));
 
             expect(result.current.derivedParameter).toBe(param);
-            expect(result.current.defaultVal).toBe("x");
+            expect(result.current.effectiveDefaultValue).toBe("x");
             expect(result.current.visualContentMap.size).toBe(0);
         });
 
         it("overrides defaultValue if provided", () => {
             const { result } = renderHook(() => useEnumParameterResolution({ parameter: param, defaultValue: "y" }));
-            expect(result.current.defaultVal).toBe("y");
+            expect(result.current.effectiveDefaultValue).toBe("y");
         });
     });
 
