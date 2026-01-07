@@ -1,3 +1,9 @@
+<!--
+ Copyright (c) 2026 Tylium.
+ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ See LICENSE.md for details.
+-->
+
 **Version**: 1.0 | **Meta**: Outlines the dual-licensing model, legal document structure, repository implementation, and developer preview versioning scheme for the project.
 
 ## 1. Dual-Licensing Model

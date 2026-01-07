@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 Tylium.
+ * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ * See LICENSE.md for details.
+ */
+
 // Type definitions for Web MIDI API
 // Based on the W3C specification: https://webaudio.github.io/web-midi-api/
 

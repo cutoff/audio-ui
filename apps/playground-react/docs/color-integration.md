@@ -1,3 +1,9 @@
+<!--
+ Copyright (c) 2026 Tylium.
+ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ See LICENSE.md for details.
+-->
+
 # Playground App Color Integration
 
 This document explains how the playground application integrates with the Audio UI library's color system.

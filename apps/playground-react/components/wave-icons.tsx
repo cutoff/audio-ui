@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 Tylium.
+ * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ * See LICENSE.md for details.
+ */
+
 /**
  * Waveform icon components for the playground app.
  * These use currentColor to inherit text color and work in both light and dark modes.

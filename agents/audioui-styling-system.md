@@ -1,3 +1,9 @@
+<!--
+ Copyright (c) 2026 Tylium.
+ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ See LICENSE.md for details.
+-->
+
 # AudioUI Styling System Agent Guidelines
 
 **Version**: 1.0 | **Purpose**: Maintain consistent, namespaced styling across the AudioUI library

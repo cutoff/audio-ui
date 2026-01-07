@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 Tylium.
+ * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ * See LICENSE.md for details.
+ */
+
 "use client";
 import { Slider } from "@/components/ui/slider";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";

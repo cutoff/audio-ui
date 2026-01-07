@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 Tylium.
+ * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ * See LICENSE.md for details.
+ */
+
 import React, { useMemo } from "react";
 import { EnumParameter } from "@cutoff/audio-ui-core";
 import { OptionProps } from "@/primitives/controls/Option";

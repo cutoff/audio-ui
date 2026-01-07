@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 Tylium.
+ * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ * See LICENSE.md for details.
+ */
+
 import { useMemo, useCallback, useRef } from "react";
 import { AudioParameter, AudioParameterConverter } from "@cutoff/audio-ui-core";
 import { AudioControlEvent } from "../components/types";

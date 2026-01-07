@@ -1,3 +1,9 @@
+<!--
+ Copyright (c) 2026 Tylium.
+ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ See LICENSE.md for details.
+-->
+
 # Middle C Positions on Physical MIDI Keyboards
 
 This document outlines the conventional positions of the middle C key (MIDI note 60, C4) on various physical MIDI keyboard sizes. This information will be used as part of the specifications for the Keybed component.

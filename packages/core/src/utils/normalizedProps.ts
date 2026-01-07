@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 Tylium.
+ * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ * See LICENSE.md for details.
+ */
+
 /**
  * Utility functions for translating normalized (0.0-1.0) roundness and thickness values
  * to component-specific legacy ranges.

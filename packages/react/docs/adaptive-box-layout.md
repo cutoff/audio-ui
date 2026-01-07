@@ -1,3 +1,9 @@
+<!--
+ Copyright (c) 2026 Tylium.
+ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ See LICENSE.md for details.
+-->
+
 # AdaptiveBox Layout Specification
 
 This document specifies the pure layout model used by AdaptiveBox. It focuses on the atomic unit composed of an SVG drawing area plus an optional label, and the CSS technique that achieves contain-style scaling with optional alignment controls.

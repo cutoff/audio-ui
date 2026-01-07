@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 Tylium.
+ * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ * See LICENSE.md for details.
+ */
+
 /**
  * Shared constants for CSS custom property names used throughout the library.
  * Using string constants makes it easier to update prefixes in the future and

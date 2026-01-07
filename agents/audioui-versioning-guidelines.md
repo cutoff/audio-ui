@@ -1,3 +1,9 @@
+<!--
+ Copyright (c) 2026 Tylium.
+ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ See LICENSE.md for details.
+-->
+
 **Version**: 1.0 | **Meta**: Outlines the project's versioning strategy, based on Semantic Versioning (SemVer) 2.0.0, with specific conventions for the developer preview phase.
 
 ## 1. Core Principles: Semantic Versioning

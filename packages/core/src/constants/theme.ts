@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 Tylium.
+ * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ * See LICENSE.md for details.
+ */
+
 /**
  * Predefined theme colors as CSS color values
  * These are just the primary color - variants (primary50, primary20) are computed automatically by components

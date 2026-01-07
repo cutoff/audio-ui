@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 Tylium.
+ * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ * See LICENSE.md for details.
+ */
+
 export default function Home() {
     return (
         <div className="min-h-[calc(100vh-4rem)] md:min-h-screen flex items-center justify-center bg-zinc-900/30 p-4">

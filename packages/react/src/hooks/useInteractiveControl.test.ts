@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 Tylium.
+ * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ * See LICENSE.md for details.
+ */
+
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act, fireEvent } from "@testing-library/react";
 import { useInteractiveControl } from "./useInteractiveControl";

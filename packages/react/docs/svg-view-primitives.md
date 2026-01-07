@@ -1,3 +1,9 @@
+<!--
+ Copyright (c) 2026 Tylium.
+ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ See LICENSE.md for details.
+-->
+
 # SVG View Primitives
 
 SVG View Primitives are low-level building blocks for composing custom radial controls like knobs, dials, and rotary encoders. They provide a consistent API for positioning content at radial coordinates within an SVG viewBox.

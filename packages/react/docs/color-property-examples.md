@@ -1,3 +1,9 @@
+<!--
+ Copyright (c) 2026 Tylium.
+ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ See LICENSE.md for details.
+-->
+
 # Color Property Usage Examples
 
 > **Note**: For comprehensive documentation on the color system architecture, theme variables, color utilities, and playground integration, see [Color System Documentation](./color-system.md).

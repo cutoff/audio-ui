@@ -1,3 +1,9 @@
+<!--
+ Copyright (c) 2026 Tylium.
+ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ See LICENSE.md for details.
+-->
+
 # Size System Architecture
 
 This document specifies the size system used by AudioUI components. The system provides consistent, themeable sizing across all components using a base unit and multiplier approach.

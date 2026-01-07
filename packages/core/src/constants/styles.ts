@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 Tylium.
+ * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ * See LICENSE.md for details.
+ */
+
 /**
  * Centralized collection of CSS class names used across AudioUI components.
  * Keeping them in one place makes it easier to enforce prefixing conventions

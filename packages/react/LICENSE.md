@@ -1,4 +1,4 @@
-Copyright (C) 2025 Tylium SRL
+Copyright (c) 2026 Tylium SRL
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -688,4 +688,3 @@ library, you may consider it more useful to permit linking proprietary
 applications with the library. If this is what you want to do, use the
 GNU Lesser General Public License instead of this License. But first,
 please read <https://www.gnu.org/licenses/why-not-lgpl.html>.
-
