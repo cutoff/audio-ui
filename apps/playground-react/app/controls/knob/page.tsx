@@ -9,6 +9,7 @@ import {
     Option,
     AudioParameter,
     KnobVariant,
+    AudioControlEvent,
 } from "@cutoff/audio-ui-react";
 
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
@@ -173,7 +174,7 @@ type KnobComponentProps = {
     selectedIcon?: IconOptionValue;
     valueAsLabel?: boolean | undefined;
     unit?: string;
-    onChange?: KnobProps["onChange"] | KnobSwitchProps["onChange"];
+    onChange?: (event: AudioControlEvent<number | string>) => void;
     onClick?: KnobProps["onClick"] | KnobSwitchProps["onClick"];
 };
 

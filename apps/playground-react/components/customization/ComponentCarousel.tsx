@@ -8,7 +8,7 @@ import { ArrowLeft, ArrowRight, Link as LinkIcon, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-function ComponentPreview({ component: Component }: { component: ControlComponent }) {
+function ComponentPreview({ component: Component }: { component: ControlComponent<Record<string, unknown>> }) {
     try {
         return (
             <svg
@@ -36,14 +36,14 @@ const slugify = (text: string) => {
         .toLowerCase()
         .trim()
         .replace(/\s+/g, "-")
-        .replace(/[^\w\-]+/g, "")
-        .replace(/\-\-+/g, "-");
+        .replace(/[^\w-]+/g, "")
+        .replace(/-+/g, "-");
 };
 
 interface ComponentCarouselProps {
-    components: ControlComponent[];
-    selectedComponent: ControlComponent | null;
-    onSelect: (component: ControlComponent) => void;
+    components: ControlComponent<Record<string, unknown>>[];
+    selectedComponent: ControlComponent<Record<string, unknown>> | null;
+    onSelect: (component: ControlComponent<Record<string, unknown>>) => void;
 }
 
 export default function ComponentCarousel({ components, selectedComponent, onSelect }: ComponentCarouselProps) {

@@ -225,7 +225,7 @@ describe("useAdaptiveSize", () => {
 
     describe("Default Parameters", () => {
         it("uses default adaptiveSize=false when not provided", () => {
-            const { result } = renderHook(() => useAdaptiveSize(undefined as any, "normal", "knob"));
+            const { result } = renderHook(() => useAdaptiveSize(undefined, "normal", "knob"));
 
             // Should behave as if adaptiveSize=false
             expect(result.current.sizeClassName).toBeDefined();
@@ -233,7 +233,7 @@ describe("useAdaptiveSize", () => {
         });
 
         it("uses default size=normal when not provided", () => {
-            const { result } = renderHook(() => useAdaptiveSize(false, undefined as any, "knob"));
+            const { result } = renderHook(() => useAdaptiveSize(false, undefined, "knob"));
 
             expect(result.current.sizeClassName).toBe(getSizeClassForComponent("knob", "normal"));
             expect(result.current.sizeStyle).toEqual(getSizeStyleForComponent("knob", "normal"));

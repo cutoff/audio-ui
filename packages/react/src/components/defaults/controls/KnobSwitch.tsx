@@ -20,15 +20,15 @@ import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
  */
 export type KnobSwitchProps = AdaptiveSizeProps &
     AdaptiveBoxProps &
-    InteractiveControlProps<any> &
+    InteractiveControlProps<string | number> &
     BaseProps &
     ThemableProps & {
         /** Label displayed below the component */
         label?: string;
         /** Current value of the component (Controlled mode) */
-        value?: any;
+        value?: string | number;
         /** Default value of the component (Uncontrolled mode) */
-        defaultValue?: any;
+        defaultValue?: string | number;
         /** Child elements (Option components) */
         children?: React.ReactNode;
         /** Identifier for the parameter this control represents */
@@ -36,7 +36,7 @@ export type KnobSwitchProps = AdaptiveSizeProps &
         /** Audio Parameter definition (Strict Model Mode) */
         parameter?: EnumParameter;
         /** Custom renderer for options (used when parameter is provided but no children map exists) */
-        renderOption?: (option: { value: any; label: string }) => React.ReactNode;
+        renderOption?: (option: { value: string | number; label: string }) => React.ReactNode;
         /** Thickness of the knob's stroke (normalized 0.0-1.0, maps to 1-20) */
         thickness?: number;
     };
@@ -154,7 +154,7 @@ function KnobSwitch({
 
     const optionByValueMap = useMemo(() => {
         if (!renderOption) return null;
-        const lookupMap = new Map<any, { value: any; label: string }>();
+        const lookupMap = new Map<string | number, { value: string | number; label: string }>();
         derivedParameter.options.forEach((opt) => {
             lookupMap.set(opt.value, opt);
         });

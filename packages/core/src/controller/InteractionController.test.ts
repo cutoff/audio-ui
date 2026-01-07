@@ -3,9 +3,14 @@ import { InteractionController } from "./InteractionController";
 
 // @vitest-environment jsdom
 
+type TestController = InteractionController & {
+    handleGlobalMouseMove: (e: MouseEvent) => void;
+    handleGlobalMouseUp: () => void;
+};
+
 describe("InteractionController", () => {
     let controller: InteractionController;
-    let adjustValue: any;
+    let adjustValue: ReturnType<typeof vi.fn>;
 
     beforeEach(() => {
         adjustValue = vi.fn();
@@ -37,7 +42,7 @@ describe("InteractionController", () => {
             // Simulate global mouse move
             const moveEvent = new MouseEvent("mousemove", { clientX: 100, clientY: 90 });
             // Accessing private method for testing purpose
-            (controller as any).handleGlobalMouseMove(moveEvent);
+            (controller as unknown as TestController).handleGlobalMouseMove(moveEvent);
 
             // Vertical: Delta = StartY (100) - CurrentY (90) = 10
             // Adjustment = 10 * sensitivity (0.01) = 0.1
@@ -54,7 +59,7 @@ describe("InteractionController", () => {
             controller.handleMouseDown(100, 100);
 
             const moveEvent = new MouseEvent("mousemove", { clientX: 110, clientY: 100 });
-            (controller as any).handleGlobalMouseMove(moveEvent);
+            (controller as unknown as TestController).handleGlobalMouseMove(moveEvent);
 
             // Horizontal: Delta = CurrentX (110) - StartX (100) = 10
             expect(adjustValue).toHaveBeenCalledWith(10, 0.01);
@@ -62,10 +67,10 @@ describe("InteractionController", () => {
 
         it("should stop adjusting after mouse up", () => {
             controller.handleMouseDown(100, 100);
-            (controller as any).handleGlobalMouseUp();
+            (controller as unknown as TestController).handleGlobalMouseUp();
 
             const moveEvent = new MouseEvent("mousemove", { clientX: 100, clientY: 90 });
-            (controller as any).handleGlobalMouseMove(moveEvent);
+            (controller as unknown as TestController).handleGlobalMouseMove(moveEvent);
 
             expect(adjustValue).not.toHaveBeenCalled();
         });
@@ -76,7 +81,7 @@ describe("InteractionController", () => {
 
             // Move Up (y: 90) and Right (x: 110)
             const moveEvent = new MouseEvent("mousemove", { clientX: 110, clientY: 90 });
-            (controller as any).handleGlobalMouseMove(moveEvent);
+            (controller as unknown as TestController).handleGlobalMouseMove(moveEvent);
 
             // Up: 100 - 90 = +10
             // Right: 110 - 100 = +10
@@ -90,7 +95,7 @@ describe("InteractionController", () => {
 
             // Move Down (y: 110) and Left (x: 90)
             const moveEvent = new MouseEvent("mousemove", { clientX: 90, clientY: 110 });
-            (controller as any).handleGlobalMouseMove(moveEvent);
+            (controller as unknown as TestController).handleGlobalMouseMove(moveEvent);
 
             // Up: 100 - 110 = -10
             // Right: 90 - 100 = -10
@@ -104,7 +109,7 @@ describe("InteractionController", () => {
 
             // Move Up (y: 90) and Left (x: 90)
             const moveEvent = new MouseEvent("mousemove", { clientX: 90, clientY: 90 });
-            (controller as any).handleGlobalMouseMove(moveEvent);
+            (controller as unknown as TestController).handleGlobalMouseMove(moveEvent);
 
             // Up: 100 - 90 = +10
             // Right: 90 - 100 = -10
@@ -129,7 +134,7 @@ describe("InteractionController", () => {
                 x: 100,
                 y: 100,
                 toJSON: () => {},
-            })) as any;
+            })) as unknown as () => DOMRect;
 
             // Start at 3 o'clock relative to center (150, 150) -> Position (200, 150)
             controller.handleMouseDown(200, 150, target);
@@ -140,7 +145,7 @@ describe("InteractionController", () => {
             // Value change = 90 * sensitivity (0.01) = 0.9
 
             const moveEvent = new MouseEvent("mousemove", { clientX: 150, clientY: 200 });
-            (controller as any).handleGlobalMouseMove(moveEvent);
+            (controller as unknown as TestController).handleGlobalMouseMove(moveEvent);
 
             // Allow for small floating point differences
             expect(adjustValue).toHaveBeenCalled();
@@ -162,7 +167,7 @@ describe("InteractionController", () => {
                 x: 100,
                 y: 100,
                 toJSON: () => {},
-            })) as any;
+            })) as unknown as () => DOMRect;
             // Center 150, 150
 
             // Start at slightly Up-Left (Angle approx -3.12 rads / -179 deg)
@@ -172,7 +177,7 @@ describe("InteractionController", () => {
             // Move to slightly Down-Left (Angle approx +3.12 rads / +179 deg)
             // dx = -50, dy = 1.
             const moveEvent = new MouseEvent("mousemove", { clientX: 100, clientY: 151 });
-            (controller as any).handleGlobalMouseMove(moveEvent);
+            (controller as unknown as TestController).handleGlobalMouseMove(moveEvent);
 
             // Movement is CCW (Up-Left to Down-Left on the left edge).
             // Expect negative delta.

@@ -9,7 +9,7 @@ import { AudioParameterFactory } from "@cutoff/audio-ui-core";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useInteractiveControl } from "@/hooks/useInteractiveControl";
 
-export type ContinuousControlComponentProps<P extends object = {}> =
+export type ContinuousControlComponentProps<P extends object = Record<string, unknown>> =
     // Base Control Props (includes all ContinuousControlProps)
     ContinuousControlProps &
         // Layout props that configure AdaptiveBox behavior
@@ -36,7 +36,7 @@ export type ContinuousControlComponentProps<P extends object = {}> =
  * A Generic Continuous Control that connects a Data Model (AudioParameter)
  * to a Visualization View (ControlComponent).
  */
-export function ContinuousControl<P extends object = {}>(props: ContinuousControlComponentProps<P>) {
+export function ContinuousControl<P extends object = Record<string, unknown>>(props: ContinuousControlComponentProps<P>) {
     const {
         view: View,
         viewProps,

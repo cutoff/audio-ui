@@ -167,7 +167,7 @@ export function useThemableProps(
     // Only recompute when inputs actually change
     const resolvedColor = useMemo(() => {
         return props.color ?? themeContext.color ?? defaultValues.color ?? getAdaptiveDefaultColor();
-    }, [props.color, themeContext.color, defaultValues.color, themeContext.isDarkMode]);
+    }, [props.color, themeContext.color, defaultValues.color]);
 
     // Memoize resolved roundness and clamp to 0.0-1.0
     const resolvedRoundness = useMemo(() => {

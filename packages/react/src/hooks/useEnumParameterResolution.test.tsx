@@ -180,7 +180,7 @@ describe("useEnumParameterResolution", () => {
 
             // Visual map should be populated
             const content1 = result.current.visualContentMap.get(1) as React.ReactElement;
-            const content2 = result.current.visualContentMap.get(2) as React.ReactElement;
+            const _content2 = result.current.visualContentMap.get(2) as React.ReactElement;
 
             expect(content1.type).toBe("span");
             expect(content1.props.children).toBe("Visual One");

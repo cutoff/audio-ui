@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, render, act } from "@testing-library/react";
+import { renderHook, act } from "@testing-library/react";
 import React from "react";
 import { AudioUiProvider, useAudioUiTheme, useThemableProps } from "./AudioUiProvider";
 import { getAdaptiveDefaultColor } from "@cutoff/audio-ui-core";
@@ -402,8 +402,6 @@ describe("useThemableProps", () => {
                 { wrapper }
             );
 
-            const firstColor = result.current.resolvedColor;
-
             // Simulate dark mode change by updating provider
             // Note: In real usage, this would be triggered by MutationObserver or MediaQueryList
             // For testing, we need to manually trigger the context update
@@ -464,11 +462,10 @@ describe("useThemableProps", () => {
                 <AudioUiProvider initialColor={color}>{children}</AudioUiProvider>
             );
 
-            const { result, rerender } = renderHook(() => useThemableProps({ color: undefined }, { color: "green" }), {
+            const { rerender } = renderHook(() => useThemableProps({ color: undefined }, { color: "green" }), {
                 wrapper: ({ children }) => <Wrapper color="red">{children}</Wrapper>,
             });
 
-            const firstResult = result.current;
             rerender({ children: undefined });
             // Update wrapper with new color
             const { result: newResult } = renderHook(() => useThemableProps({ color: undefined }, { color: "green" }), {
@@ -541,7 +538,6 @@ describe("useThemableProps", () => {
             // So we need to ensure the context roundness is different or undefined
             // Actually, the test should verify that when defaultRoundness changes,
             // but context has DEFAULT_ROUNDNESS, it still uses context
-            const firstResult = result.current;
             rerender({ defaultRoundness: 0.8 });
             const secondResult = result.current;
 

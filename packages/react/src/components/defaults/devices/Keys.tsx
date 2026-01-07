@@ -344,7 +344,7 @@ function Keys({
                 />
             );
         });
-    }, [keybedDimensions, octaveShift, isNoteActive, legacyRoundness, colorVariants, keyColors, keyStyle]);
+    }, [keybedDimensions, octaveShift, isNoteActive, legacyRoundness, colorVariants, keyColors, keyStyle, startKey]);
 
     // Memoize black keys rendering
     const renderBlackKeys = useMemo(() => {
@@ -439,6 +439,7 @@ function Keys({
         colorVariants,
         keyColors,
         keyStyle,
+        startKey,
     ]);
 
     // Get adaptive sizing values

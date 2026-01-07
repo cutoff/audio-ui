@@ -10,7 +10,7 @@ export interface UseEnumParameterResolutionProps {
     /** The parameter definition (Strict or Hybrid mode) */
     parameter?: EnumParameter;
     /** Default value (Ad-Hoc mode) or override for parameter default */
-    defaultValue?: any;
+    defaultValue?: string | number;
     /** Label for the parameter (Ad-Hoc mode) */
     label?: string;
 }
@@ -19,9 +19,9 @@ export interface UseEnumParameterResolutionResult {
     /** The resolved EnumParameter (derived from props or children) */
     derivedParameter: EnumParameter;
     /** Map of values to visual content (ReactNodes) from children */
-    visualContentMap: Map<any, React.ReactNode>;
+    visualContentMap: Map<string | number, React.ReactNode>;
     /** The resolved default value */
-    defaultVal: any;
+    defaultVal: string | number;
 }
 
 /**
@@ -44,10 +44,10 @@ export function useEnumParameterResolution({
             React.isValidElement
         ) as React.ReactElement<OptionProps>[];
 
-        const visualContentMap = new Map<any, React.ReactNode>();
+        const visualContentMap = new Map<string | number, React.ReactNode>();
 
         // Extract label for parameter model
-        const getLabel = (child: React.ReactElement<OptionProps>, val: any): string => {
+        const getLabel = (child: React.ReactElement<OptionProps>, val: string | number): string => {
             if (child.props.label) return child.props.label;
             if (typeof child.props.children === "string") return child.props.children;
             if (typeof child.props.children === "number") return String(child.props.children);
@@ -64,12 +64,15 @@ export function useEnumParameterResolution({
 
         // Determine parameter model
         let param: EnumParameter;
-        let defVal: any;
+        let defVal: string | number;
 
         if (parameter) {
             // Strict mode: use provided parameter
             param = parameter;
-            defVal = defaultValue !== undefined ? defaultValue : parameter.defaultValue;
+            defVal =
+                defaultValue !== undefined
+                    ? defaultValue
+                    : (parameter.defaultValue ?? parameter.options[0]?.value ?? "");
         } else {
             // Ad-hoc mode: infer parameter from children
             const options = optionEls.map((child, index) => {

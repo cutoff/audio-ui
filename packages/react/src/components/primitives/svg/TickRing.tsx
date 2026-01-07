@@ -121,20 +121,9 @@ function TickRing({
         return results;
     }, [cx, cy, radius, openness, rotation, count, step]);
 
-    // 2. Custom Render Mode (Bail out of optimization)
-    if (renderTick) {
-        return (
-            <g className={className} style={style}>
-                {positions.map((pos) => (
-                    <React.Fragment key={pos.index}>{renderTick(pos)}</React.Fragment>
-                ))}
-            </g>
-        );
-    }
-
-    // 3. Optimized Path Mode
+    // 2. Optimized Path Mode (calculate before early return to satisfy hooks rules)
     const pathData = useMemo(() => {
-        if (positions.length === 0) return "";
+        if (renderTick || positions.length === 0) return "";
 
         const commands: string[] = [];
         const r = (n: number) => Math.round(n * 10000) / 10000;
@@ -163,7 +152,18 @@ function TickRing({
             }
         }
         return commands.join(" ");
-    }, [positions, cx, cy, radius, thickness, variant]);
+    }, [positions, cx, cy, radius, thickness, variant, renderTick]);
+
+    // 3. Custom Render Mode (Bail out of optimization)
+    if (renderTick) {
+        return (
+            <g className={className} style={style}>
+                {positions.map((pos) => (
+                    <React.Fragment key={pos.index}>{renderTick(pos)}</React.Fragment>
+                ))}
+            </g>
+        );
+    }
 
     if (!pathData) return null;
 

@@ -1,5 +1,7 @@
 "use client";
 
+import React from "react";
+
 export type OptionProps = {
     /** Value associated with this option */
     value?: string | number;

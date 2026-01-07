@@ -148,7 +148,7 @@ function SvgKnob({
                 </g>
             );
 
-        case "iconCap":
+        case "iconCap": {
             // iconCap inherits from plainCap and adds an overlay
             const iconRadius = (50 - pixelThickness - 6) * 0.35;
             // Get the adaptive color for the icon (icons use currentColor)
@@ -199,6 +199,7 @@ function SvgKnob({
                     {overlayContent}
                 </g>
             );
+        }
 
         case "abstract":
         case "simplest":
@@ -212,10 +213,15 @@ function SvgKnob({
 const MemoSvgKnob = React.memo(SvgKnob);
 
 // Explicitly attach static properties to the memoized component
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (MemoSvgKnob as any).viewBox = { width: 100, height: 100 };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (MemoSvgKnob as any).labelHeightUnits = 20;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (MemoSvgKnob as any).interaction = { mode: "both", direction: "circular" } as const;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (MemoSvgKnob as any).title = "Knob";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (MemoSvgKnob as any).description = "A rotary knob control with circular arc indicator";
 
 export default MemoSvgKnob as unknown as ControlComponent<

@@ -174,13 +174,18 @@ function SvgVerticalSliderComponent(
 
 const SvgVerticalSliderMemo = React.memo(SvgVerticalSliderComponent);
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (SvgVerticalSliderMemo as any).viewBox = SLIDER_VIEWBOX.vertical;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (SvgVerticalSliderMemo as any).labelHeightUnits = 40;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (SvgVerticalSliderMemo as any).interaction = {
     mode: "both" as const,
     direction: "vertical" as const,
 };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (SvgVerticalSliderMemo as any).title = "Vertical Slider";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (SvgVerticalSliderMemo as any).description = "A vertical fader control with linear fill indicator";
 
 // Cast the memoized components to the ControlComponent type which includes the static properties
@@ -202,13 +207,18 @@ function SvgHorizontalSliderComponent(
 
 const SvgHorizontalSliderMemo = React.memo(SvgHorizontalSliderComponent);
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (SvgHorizontalSliderMemo as any).viewBox = SLIDER_VIEWBOX.horizontal;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (SvgHorizontalSliderMemo as any).labelHeightUnits = 40;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (SvgHorizontalSliderMemo as any).interaction = {
     mode: "both" as const,
     direction: "horizontal" as const,
 };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (SvgHorizontalSliderMemo as any).title = "Horizontal Slider";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (SvgHorizontalSliderMemo as any).description = "A horizontal fader control with linear fill indicator";
 
 const SvgHorizontalSlider = SvgHorizontalSliderMemo as unknown as ControlComponent<SpecializedSliderProps>;

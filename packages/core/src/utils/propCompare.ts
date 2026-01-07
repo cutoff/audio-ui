@@ -17,7 +17,7 @@ import isEqual from "fast-deep-equal";
  *   deepCompareProps: ['style']
  * });
  */
-export function createPropComparator<T extends Record<string, any>>({
+export function createPropComparator<T extends Record<string, unknown>>({
     deepCompareProps = ["style"],
     alwaysCompareProps = ["children"],
 }: {

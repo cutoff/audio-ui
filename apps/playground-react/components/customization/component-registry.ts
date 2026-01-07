@@ -12,7 +12,7 @@ import HtmlContentKnob from "../examples/HtmlContentKnob";
  * Registry of available custom control components for the customization laboratory.
  * Components should implement ControlComponentMetadata (title, description) for display.
  */
-export const componentRegistry: ControlComponent[] = [
+export const componentRegistry: ControlComponent<Record<string, unknown>>[] = [
     IconKnob,
     HifiKnob,
     SelectorKnob,

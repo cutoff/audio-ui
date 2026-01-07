@@ -39,6 +39,7 @@
         "test": "vitest run",
         "test:watch": "vitest",
         "test:coverage": "vitest run --coverage",
+        "lint": "eslint \"src/**/*.{ts,tsx}\"",
         "lint:css": "stylelint \"src/**/*.css\"",
         "analyze": "pnpm build"
     },

@@ -271,7 +271,7 @@ function Svg({
         if (!svgRef.current || !onWheel) return;
 
         const element = svgRef.current;
-        const wheelHandler = (e: WheelEvent) => {
+        const wheelHandler = (e: globalThis.WheelEvent) => {
             onWheel(e as unknown as React.WheelEvent<SVGSVGElement>);
         };
 
@@ -286,7 +286,7 @@ function Svg({
             ref={svgRef}
             data-name="Main Component"
             viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
-            preserveAspectRatio={preserveAspect as any}
+            preserveAspectRatio={preserveAspect as React.SVGProps<SVGSVGElement>["preserveAspectRatio"]}
             className={className}
             style={{
                 display: "block",
@@ -414,10 +414,9 @@ AdaptiveBox.Svg = Svg;
 AdaptiveBox.Label = Label;
 AdaptiveBox.HtmlOverlay = HtmlOverlay;
 
-export namespace AdaptiveBox {
-    export type Svg = typeof Svg;
-    export type Label = typeof Label;
-    export type HtmlOverlay = typeof HtmlOverlay;
-}
+// Type exports (using type aliases instead of namespace)
+export type AdaptiveBoxSvg = typeof Svg;
+export type AdaptiveBoxLabel = typeof Label;
+export type AdaptiveBoxHtmlOverlay = typeof HtmlOverlay;
 
 export default AdaptiveBox;

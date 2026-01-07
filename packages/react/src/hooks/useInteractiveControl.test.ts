@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act, fireEvent } from "@testing-library/react";
 import { useInteractiveControl } from "./useInteractiveControl";
 
@@ -31,12 +31,12 @@ describe("useInteractiveControl", () => {
 
         // Attempt interactions
         act(() => {
-            // @ts-ignore - simulating event
-            result.current.onMouseDown({ clientX: 0, clientY: 0 } as any);
-            // @ts-ignore
-            result.current.onKeyDown({ key: "ArrowUp", preventDefault: vi.fn() } as any);
-            // @ts-ignore
-            result.current.onWheel({ deltaY: 100, preventDefault: vi.fn(), stopPropagation: vi.fn() } as any);
+            // @ts-expect-error - simulating event
+            result.current.onMouseDown({ clientX: 0, clientY: 0 });
+            // @ts-expect-error - simulating event
+            result.current.onKeyDown({ key: "ArrowUp", preventDefault: vi.fn() });
+            // @ts-expect-error - simulating event
+            result.current.onWheel({ deltaY: 100, preventDefault: vi.fn(), stopPropagation: vi.fn() });
         });
 
         expect(adjustValue).not.toHaveBeenCalled();
@@ -61,8 +61,8 @@ describe("useInteractiveControl", () => {
 
             // 1. Mouse Down
             act(() => {
-                // @ts-ignore
-                result.current.onMouseDown({ clientX: 100, clientY: 100 } as any);
+                // @ts-expect-error - simulating event
+                result.current.onMouseDown({ clientX: 100, clientY: 100 });
             });
 
             // Verify global state changes
@@ -100,8 +100,8 @@ describe("useInteractiveControl", () => {
             );
 
             act(() => {
-                // @ts-ignore
-                result.current.onMouseDown({ clientX: 100, clientY: 100 } as any);
+                // @ts-expect-error - simulating event
+                result.current.onMouseDown({ clientX: 100, clientY: 100 });
             });
 
             expect(document.body.style.cursor).toBe("ew-resize");
@@ -117,8 +117,8 @@ describe("useInteractiveControl", () => {
             const { result } = renderHook(() => useInteractiveControl({ adjustValue, interactionMode: "wheel" }));
 
             act(() => {
-                // @ts-ignore
-                result.current.onMouseDown({ clientX: 0, clientY: 0 } as any);
+                // @ts-expect-error - simulating event
+                result.current.onMouseDown({ clientX: 0, clientY: 0 });
             });
 
             // Should not attach listeners or change cursor
@@ -136,12 +136,12 @@ describe("useInteractiveControl", () => {
             const stopPropagation = vi.fn();
 
             act(() => {
-                // @ts-ignore
+                // @ts-expect-error - simulating event
                 result.current.onWheel({
                     deltaY: 100, // Down scroll
                     preventDefault,
                     stopPropagation,
-                } as any);
+                });
             });
 
             expect(preventDefault).toHaveBeenCalled();
@@ -161,12 +161,12 @@ describe("useInteractiveControl", () => {
             );
 
             act(() => {
-                // @ts-ignore
+                // @ts-expect-error - simulating event
                 result.current.onWheel({
                     deltaY: 100,
                     preventDefault: vi.fn(),
                     stopPropagation: vi.fn(),
-                } as any);
+                });
             });
 
             expect(adjustValue).toHaveBeenCalledWith(100, 0.05);
@@ -183,8 +183,8 @@ describe("useInteractiveControl", () => {
 
             // Arrow Up
             act(() => {
-                // @ts-ignore
-                result.current.onKeyDown({ key: "ArrowUp", preventDefault } as any);
+                // @ts-expect-error - simulating event
+                result.current.onKeyDown({ key: "ArrowUp", preventDefault });
             });
             expect(preventDefault).toHaveBeenCalled();
             // effectiveDelta = delta (1) * (keyboardStep (0.1) / sensitivity (0.01)) = 10
@@ -193,8 +193,8 @@ describe("useInteractiveControl", () => {
 
             // Arrow Down
             act(() => {
-                // @ts-ignore
-                result.current.onKeyDown({ key: "ArrowDown", preventDefault } as any);
+                // @ts-expect-error - simulating event
+                result.current.onKeyDown({ key: "ArrowDown", preventDefault });
             });
             expect(adjustValue).toHaveBeenLastCalledWith(-10, 0.01);
         });
@@ -203,8 +203,8 @@ describe("useInteractiveControl", () => {
             const { result } = renderHook(() => useInteractiveControl({ adjustValue, sensitivity: 0.01 }));
 
             act(() => {
-                // @ts-ignore
-                result.current.onKeyDown({ key: "Home", preventDefault: vi.fn() } as any);
+                // @ts-expect-error - simulating event
+                result.current.onKeyDown({ key: "Home", preventDefault: vi.fn() });
             });
             // Home logic: delta = -1/sensitivity => -100
             // But passed through effectiveDelta = delta * (keyboardStep / sensitivity)
@@ -212,8 +212,8 @@ describe("useInteractiveControl", () => {
             expect(adjustValue).toHaveBeenLastCalledWith(-500, 0.01);
 
             act(() => {
-                // @ts-ignore
-                result.current.onKeyDown({ key: "End", preventDefault: vi.fn() } as any);
+                // @ts-expect-error - simulating event
+                result.current.onKeyDown({ key: "End", preventDefault: vi.fn() });
             });
             // End logic: delta = 1/sensitivity => 100
             // effectiveDelta = 100 * 5 = 500

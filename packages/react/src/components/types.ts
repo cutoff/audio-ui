@@ -24,6 +24,7 @@ export type AudioControlEvent<T = number> = {
     /** The MIDI value (integer, e.g. 0-127 or 0-16383) used for hardware/protocol communication */
     midiValue: number;
     /** The parameter definition driving this value */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     parameter?: any; // To avoid circular deps
 };
 
@@ -347,6 +348,6 @@ export interface ControlComponentViewProps {
  * A Generic Component Type that enforces the contract + props.
  * P = Additional custom props specific to the visualization (e.g. color, thickness).
  */
-export type ControlComponent<P = {}> = React.ComponentType<ControlComponentViewProps & P> &
+export type ControlComponent<P = Record<string, unknown>> = React.ComponentType<ControlComponentViewProps & P> &
     ControlComponentView &
     Partial<ControlComponentMetadata>;

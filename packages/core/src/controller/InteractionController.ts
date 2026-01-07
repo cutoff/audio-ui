@@ -179,7 +179,7 @@ export class InteractionController {
         window.removeEventListener("touchend", this.handleGlobalMouseUp);
     }
 
-    public handleWheel = (e: WheelEvent | any) => {
+    public handleWheel = (e: WheelEvent) => {
         if (this.config.disabled) return;
         if (this.config.interactionMode !== "wheel" && this.config.interactionMode !== "both") return;
 
@@ -192,7 +192,7 @@ export class InteractionController {
         this.config.adjustValue(delta, effectiveSensitivity);
     };
 
-    public handleKeyDown = (e: KeyboardEvent | any) => {
+    public handleKeyDown = (e: KeyboardEvent) => {
         if (this.config.disabled) return;
 
         let delta = 0;

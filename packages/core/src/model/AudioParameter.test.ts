@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { AudioParameterConverter, AudioParameterFactory, LinearScale, LogScale } from "./AudioParameter";
+import { AudioParameterConverter, AudioParameterFactory } from "./AudioParameter";
 
 describe("AudioParameterConverter", () => {
     describe("Linear Parameter", () => {

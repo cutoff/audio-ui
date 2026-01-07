@@ -86,6 +86,7 @@ const VIEW_BOX = {
 } as const;
 
 const SvgButtonMemo = React.memo(SvgButton);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (SvgButtonMemo as any).viewBox = VIEW_BOX;
 
 export default SvgButtonMemo as unknown as React.MemoExoticComponent<typeof SvgButton> & {
