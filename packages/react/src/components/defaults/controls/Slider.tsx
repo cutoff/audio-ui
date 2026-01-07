@@ -156,6 +156,7 @@ function Slider({
                 color: resolvedColor,
                 thickness: clampedThickness,
                 roundness: resolvedRoundness ?? DEFAULT_ROUNDNESS,
+                bipolar: bipolar,
             }}
         />
     );

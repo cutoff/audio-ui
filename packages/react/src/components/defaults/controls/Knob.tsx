@@ -218,6 +218,7 @@ function Knob({
                 rotation: rotation,
                 svgOverlayRotary: svgOverlayRotary,
                 svgOverlay: svgOverlay,
+                bipolar: bipolar,
             }}
             htmlOverlay={displayValueOverlay}
         />
