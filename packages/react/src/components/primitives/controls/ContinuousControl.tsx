@@ -9,8 +9,6 @@ import { AudioParameterFactory } from "@cutoff/audio-ui-core";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useInteractiveControl } from "@/hooks/useInteractiveControl";
 
-// 1. Define Props with Generics
-// P represents the "Extra Props" required by the specific View component
 export type ContinuousControlComponentProps<P extends object = {}> =
     // Base Control Props (includes all ContinuousControlProps)
     ContinuousControlProps &
@@ -71,7 +69,6 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
     } = props;
 
     const bipolar = props.bipolar ?? false;
-    // 1. Parameter Model
     const paramConfig = useMemo(() => {
         if (parameter) return parameter;
         return AudioParameterFactory.createControl({
@@ -86,14 +83,11 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
         });
     }, [parameter, label, min, max, step, bipolar, unit, scale, paramId]);
 
-    // 2. Audio Logic Hook
     const { normalizedValue, adjustValue } = useAudioParameter(value, onChange, paramConfig, valueFormatter);
 
-    // 3. Determine Interaction Settings (View default vs Override)
     const effectiveInteractionMode = interactionMode ?? View.interaction.mode ?? "both";
     const effectiveDirection = interactionDirection ?? View.interaction.direction ?? "both";
 
-    // 4. Interaction Hook
     // Only editable when onChange is provided (onClick is not relevant for interaction controller)
     const interactiveProps = useInteractiveControl({
         adjustValue,
@@ -151,13 +145,8 @@ export function ContinuousControl<P extends object = {}>(props: ContinuousContro
                 aria-valuenow={value}
                 aria-label={effectiveLabel}
             >
-                {/*
-                    Render the View with normalized value + specific props (P)
-                    Pass viewProps explicitly
-                */}
                 <View normalizedValue={normalizedValue} {...viewProps} />
             </AdaptiveBox.Svg>
-            {/* HTML overlay for content (text) - rendered outside SVG to avoid Safari foreignObject bugs */}
             {htmlOverlay && <AdaptiveBox.HtmlOverlay>{htmlOverlay}</AdaptiveBox.HtmlOverlay>}
             {effectiveLabel && (
                 <AdaptiveBox.Label position={labelPosition} align={labelAlign}>

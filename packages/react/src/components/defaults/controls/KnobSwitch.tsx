@@ -78,7 +78,6 @@ function KnobSwitch({
     style,
     children,
 }: KnobSwitchProps) {
-    // Resolve color and roundness with proper fallbacks
     const clampedRoundness = roundness !== undefined ? clampNormalized(roundness) : undefined;
     const clampedThickness = clampNormalized(thickness);
     const { resolvedColor, resolvedRoundness } = useThemableProps(
@@ -102,6 +101,9 @@ function KnobSwitch({
         derivedParameter
     );
 
+    // Calculate step size for wheel interactions
+    // For N options, we have N-1 steps between them, so each step is 1/(N-1) of the normalized range
+    // This ensures smooth cycling through all options with wheel scrolling
     const stepSize = useMemo(() => {
         const count = derivedParameter.options.length;
         return count > 1 ? 1 / (count - 1) : 0;
@@ -126,7 +128,7 @@ function KnobSwitch({
         return onChange || onClick ? CLASSNAMES.highlight : "";
     }, [onChange, onClick]);
 
-    // Content wrapper style with container query units for scalable text/icons
+    // Container query units for scalable text/icons
     const contentWrapperStyle = useMemo(
         () => ({
             width: "100%",
@@ -142,7 +144,6 @@ function KnobSwitch({
         []
     );
 
-    // Icon wrapper style with container query units
     const iconWrapperStyle = useMemo(
         () => ({
             width: "50cqmin",
@@ -151,7 +152,6 @@ function KnobSwitch({
         []
     );
 
-    // Option lookup map for O(1) performance
     const optionByValueMap = useMemo(() => {
         if (!renderOption) return null;
         const lookupMap = new Map<any, { value: any; label: string }>();
@@ -161,14 +161,11 @@ function KnobSwitch({
         return lookupMap;
     }, [renderOption, derivedParameter.options]);
 
-    // Wrap SVG/React elements in sized container
     const wrapContent = (node: React.ReactNode): React.ReactNode => {
-        // Return text content as-is
         if (typeof node === "string" || typeof node === "number") {
             return node;
         }
 
-        // Wrap React elements in sized container
         return (
             <div className="audioui-icon-wrapper" style={iconWrapperStyle}>
                 {node}
@@ -192,6 +189,8 @@ function KnobSwitch({
 
     const effectiveLabel = label ?? derivedParameter.name;
 
+    // Cycle to the next option (wraps around to first option after last)
+    // This is used for click-to-cycle and Space key interactions
     const cycleNext = () => {
         const count = derivedParameter.options.length;
         if (count <= 1) return;
@@ -199,6 +198,7 @@ function KnobSwitch({
         const currentIdx = derivedParameter.options.findIndex((opt) => opt.value === effectiveValue);
         if (currentIdx === -1) return;
 
+        // Use modulo to wrap around: (lastIndex + 1) % count = 0 (first option)
         const nextIdx = (currentIdx + 1) % count;
         const nextVal = derivedParameter.options[nextIdx].value;
         const nextNorm = converter.normalize(nextVal);
@@ -299,7 +299,6 @@ function KnobSwitch({
                     color={resolvedColor}
                 />
             </AdaptiveBox.Svg>
-            {/* HTML overlay for content - rendered outside SVG to avoid Safari foreignObject bugs */}
             <AdaptiveBox.HtmlOverlay>
                 <div style={contentWrapperStyle}>{content}</div>
             </AdaptiveBox.HtmlOverlay>

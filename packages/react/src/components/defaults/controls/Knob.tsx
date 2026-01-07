@@ -130,8 +130,6 @@ function Knob({
     className,
     style,
 }: KnobProps) {
-    // Use the themable props hook to resolve color and roundness with proper fallbacks
-    // Clamp values to 0.0-1.0 range (only if provided, otherwise let SvgKnob use variant-specific default)
     const clampedRoundness = roundness !== undefined ? clampNormalized(roundness) : undefined;
     const clampedThickness = thickness !== undefined ? clampNormalized(thickness) : undefined;
     const { resolvedColor, resolvedRoundness } = useThemableProps(
@@ -139,8 +137,6 @@ function Knob({
         { color: undefined, roundness: DEFAULT_ROUNDNESS }
     );
 
-    // Construct parameter definition from prop or ad-hoc props
-    // Required for useAudioParameter to compute displayValue
     const parameterDef = useMemo<ContinuousParameter>(() => {
         if (parameter) {
             if (parameter.type !== "continuous") {
@@ -149,7 +145,6 @@ function Knob({
             return parameter;
         }
 
-        // Ad-hoc / Unmapped Mode (Implies Continuous)
         return AudioParameterFactory.createControl({
             id: paramId ?? "adhoc-knob",
             label,
@@ -162,10 +157,8 @@ function Knob({
         });
     }, [parameter, label, min, max, step, bipolar, unit, scale, paramId]);
 
-    // Get displayValue from hook (handles valueFormatter internally if provided)
     const { displayValue } = useAudioParameter(value, onChange, parameterDef, valueFormatter);
 
-    // Compute effective label: valueAsLabel uses displayValue, otherwise use label or fallback to parameterDef.name
     const effectiveLabel = useMemo(() => {
         if (valueAsLabel) {
             return displayValue;
@@ -173,10 +166,8 @@ function Knob({
         return label ?? parameterDef.name;
     }, [valueAsLabel, displayValue, label, parameterDef.name]);
 
-    // Get adaptive sizing values
     const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
 
-    // Prepare the content to display inside the knob
     // Uses container query units (cqmin) so text scales with component size
     const displayValueOverlay =
         variant === "abstract" ? (

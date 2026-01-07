@@ -15,7 +15,7 @@
         {
             "files": ["*.tsx", "*.ts", "*.jsx", "*.js"],
             "options": {
-                "jsxBracketSameLine": false,
+                "bracketSameLine": false,
                 "jsxSingleQuote": false,
                 "bracketSpacing": true
             }

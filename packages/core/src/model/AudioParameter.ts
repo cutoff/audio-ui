@@ -43,16 +43,13 @@ export const LinearScale: ScaleFunction = {
 
 export const LogScale: ScaleFunction = {
     forward: (n) => {
-        // Logarithmic scale: maps 0..1 to 0..1 logarithmically
         // Formula: log(n * (e - 1) + 1) / log(e)
-        // This maps: 0 -> 0, 1 -> 1, with logarithmic distribution
+        // Maps 0 -> 0, 1 -> 1 with logarithmic distribution
         if (n <= 0) return 0;
         if (n >= 1) return 1;
-        // Using base e for natural logarithm
         return Math.log(n * (Math.E - 1) + 1) / Math.log(Math.E);
     },
     inverse: (s) => {
-        // Inverse logarithmic: maps 0..1 back to 0..1
         if (s <= 0) return 0;
         if (s >= 1) return 1;
         return (Math.pow(Math.E, s) - 1) / (Math.E - 1);
@@ -62,15 +59,13 @@ export const LogScale: ScaleFunction = {
 
 export const ExpScale: ScaleFunction = {
     forward: (n) => {
-        // Exponential scale: maps 0..1 to 0..1 exponentially
         // Formula: (e^n - 1) / (e - 1)
-        // This maps: 0 -> 0, 1 -> 1, with exponential distribution
+        // Maps 0 -> 0, 1 -> 1 with exponential distribution
         if (n <= 0) return 0;
         if (n >= 1) return 1;
         return (Math.pow(Math.E, n) - 1) / (Math.E - 1);
     },
     inverse: (s) => {
-        // Inverse exponential: maps 0..1 back to 0..1
         if (s <= 0) return 0;
         if (s >= 1) return 1;
         return Math.log(s * (Math.E - 1) + 1) / Math.log(Math.E);
@@ -78,10 +73,8 @@ export const ExpScale: ScaleFunction = {
     name: "exp",
 };
 
-// Type for scale property: can be a ScaleFunction object or a string shortcut
 export type ScaleType = ScaleFunction | "linear" | "log" | "exp";
 
-// Base properties common to all parameters
 interface BaseAudioParameter {
     id: string;
     name: string; // 'title' in MIDI 2.0 PE
@@ -92,7 +85,6 @@ interface BaseAudioParameter {
     midiResolution?: 7 | 8 | 14 | 16 | 32 | 64;
 }
 
-// 1. Continuous (Float/Int)
 export interface ContinuousParameter extends BaseAudioParameter {
     type: "continuous";
     min: number;
@@ -100,33 +92,29 @@ export interface ContinuousParameter extends BaseAudioParameter {
     step?: number; // Granularity of the REAL value (e.g. 0.1, or 1 for Integers)
     defaultValue?: number;
     unit?: string; // "dB", "Hz"
-    scale?: ScaleType; // Default: "linear" (can be ScaleFunction object or string shortcut)
+    scale?: ScaleType;
 }
 
-// 2. Boolean (Switch/Button)
 export interface BooleanParameter extends BaseAudioParameter {
     type: "boolean";
     defaultValue?: boolean;
     mode?: "toggle" | "momentary";
     trueLabel?: string; // e.g. "On"
-    falseLabel?: string; // e.g. "Off"
+    falseLabel?: string;
 }
 
-// 3. Enumeration (Dropdown/Selector)
 export interface EnumParameter extends BaseAudioParameter {
     type: "enum";
     defaultValue?: number | string;
     options: Array<{
         value: number | string;
         label: string;
-        midiValue?: number; // Explicit MIDI value for custom mapping
+        midiValue?: number;
     }>;
 
-    // How 0..127 maps to the options
     midiMapping?: "spread" | "sequential" | "custom";
 }
 
-// The Union Type
 export type AudioParameter = ContinuousParameter | BooleanParameter | EnumParameter;
 
 /**
@@ -146,21 +134,17 @@ export class AudioParameterConverter {
     private scaleFunction: ScaleFunction | null = null;
 
     constructor(public config: AudioParameter) {
-        // Default to 32-bit resolution if not specified for high precision internal math
-        // 32-bit = 4,294,967,296 steps (Safe in JS Number 53-bit)
+        // Default to 32-bit resolution for high precision internal math
+        // 32-bit = 4,294,967,296 steps (safe in JS Number 53-bit)
         const resolution = config.midiResolution ?? 32;
         this.maxMidi = Math.pow(2, resolution) - 1;
 
-        // Resolve scale function for continuous parameters
         if (config.type === "continuous") {
             const scale = (config as ContinuousParameter).scale;
             this.scaleFunction = this.resolveScale(scale);
         }
     }
 
-    /**
-     * Resolve scale from string shortcut or ScaleFunction object
-     */
     private resolveScale(scale?: ScaleType): ScaleFunction {
         if (!scale) return LinearScale;
         if (typeof scale === "string") {
@@ -179,8 +163,12 @@ export class AudioParameterConverter {
     }
 
     /**
-     * [Internal] Pure math normalization from Real to 0..1
-     * Applies scale transformation after normalizing to 0..1 in real domain
+     * [Internal] Pure math normalization from Real to 0..1.
+     *
+     * This is the first step in the conversion pipeline. It normalizes the real value
+     * to 0..1 in the real domain, then applies scale transformation (if not linear).
+     * The scale transformation happens in the normalized domain to create non-linear
+     * mappings (e.g., logarithmic for volume, exponential for envelope curves).
      */
     private _normalizeReal(realValue: number | boolean | string): number {
         switch (this.config.type) {
@@ -188,10 +176,8 @@ export class AudioParameterConverter {
                 const conf = this.config as ContinuousParameter;
                 const val = realValue as number;
 
-                // First, normalize to 0..1 in the real domain
                 const normalized = Math.max(0, Math.min(1, (val - conf.min) / (conf.max - conf.min)));
 
-                // Then apply scale transformation (if not linear)
                 if (this.scaleFunction && this.scaleFunction !== LinearScale) {
                     return this.scaleFunction.forward(normalized);
                 }
@@ -212,8 +198,12 @@ export class AudioParameterConverter {
     }
 
     /**
-     * [Internal] Pure math denormalization from 0..1 to Real
-     * Applies inverse scale transformation before denormalizing to real domain
+     * [Internal] Pure math denormalization from 0..1 to Real.
+     *
+     * This is the inverse of `_normalizeReal()`. It first applies the inverse scale
+     * transformation (if not linear), then denormalizes to the real value domain.
+     * Finally, it applies step quantization in the real domain (step is always linear,
+     * regardless of scale type).
      */
     private _denormalizeReal(normalized: number): number | boolean | string {
         const clamped = Math.max(0, Math.min(1, normalized));
@@ -222,24 +212,28 @@ export class AudioParameterConverter {
             case "continuous": {
                 const conf = this.config as ContinuousParameter;
 
-                // First, apply inverse scale transformation (if not linear)
                 let scaled = clamped;
                 if (this.scaleFunction && this.scaleFunction !== LinearScale) {
                     scaled = this.scaleFunction.inverse(clamped);
                 }
 
-                // Then denormalize to real domain
                 let val = conf.min + scaled * (conf.max - conf.min);
 
-                // Apply Step Grid
-                // NOTE: step is always a linear grid in the real value domain, regardless of scale type.
-                // This works well for linear scales and log/exp scales with linear units (e.g., dB, ms).
-                // For log scales with non-linear units (e.g., frequency in Hz), consider omitting step
-                // or using a very small step to allow smooth control while providing some quantization.
+                // Step quantization is always applied in the real value domain (after scale transformation).
+                // This means step creates a linear grid in real units (e.g., 0.1 dB increments),
+                // regardless of whether the scale is linear, logarithmic, or exponential.
+                //
+                // This design works well for:
+                // - Linear scales: Natural 1:1 mapping
+                // - Log/exp scales with linear units (dB, ms): Step still makes sense in real units
+                //
+                // For log scales with non-linear units (e.g., frequency in Hz), consider:
+                // - Omitting step entirely for smooth control
+                // - Using a very small step to allow fine control while providing some quantization
                 if (conf.step) {
                     const steps = Math.round((val - conf.min) / conf.step);
                     val = conf.min + steps * conf.step;
-                    // Fix floating point precision artifacts (e.g. 42.0000004 -> 42)
+                    // Fix floating point precision artifacts (e.g., 42.0000004 -> 42)
                     val = Math.round(val * 1e10) / 1e10;
                 }
 
@@ -259,8 +253,29 @@ export class AudioParameterConverter {
     }
 
     /**
-     * Convert Real Value to MIDI Integer (The Pivot)
-     * Quantizes the value to the configured resolution.
+     * Convert Real Value to MIDI Integer (The Pivot).
+     *
+     * This is the central conversion method that quantizes real-world values to MIDI integers.
+     * The MIDI integer serves as the source of truth, ensuring deterministic behavior and
+     * alignment with hardware standards.
+     *
+     * The conversion flow:
+     * 1. Normalize the real value to 0..1 (applying scale transformation if needed)
+     * 2. Quantize to the configured MIDI resolution (7-bit = 0-127, 14-bit = 0-16383, etc.)
+     *
+     * @param realValue The real-world value (number, boolean, or string depending on parameter type)
+     * @returns The quantized MIDI integer value
+     *
+     * @example
+     * ```ts
+     * const converter = new AudioParameterConverter({
+     *   type: "continuous",
+     *   min: 0,
+     *   max: 100,
+     *   midiResolution: 7
+     * });
+     * converter.toMidi(50); // 64 (50% of 0-100 maps to 64 in 0-127 range)
+     * ```
      */
     toMidi(realValue: number | boolean | string): number {
         switch (this.config.type) {
@@ -276,16 +291,19 @@ export class AudioParameterConverter {
                 const mapping = conf.midiMapping ?? "spread";
 
                 if (mapping === "custom") {
+                    // Custom mapping: use explicit midiValue from option definition
                     const opt = conf.options.find((o) => o.value === realValue);
                     if (opt?.midiValue !== undefined) return opt.midiValue;
                 }
 
                 if (mapping === "sequential") {
+                    // Sequential mapping: option index directly maps to MIDI value (0, 1, 2, ...)
                     const index = conf.options.findIndex((o) => o.value === realValue);
                     return index === -1 ? 0 : index;
                 }
 
-                // Spread
+                // Spread mapping: distribute options evenly across MIDI range (default)
+                // This provides maximum resolution for hardware controllers
                 const norm = this._normalizeReal(realValue);
                 return Math.round(norm * this.maxMidi);
             }
@@ -293,10 +311,31 @@ export class AudioParameterConverter {
     }
 
     /**
-     * Convert MIDI Integer to Real Value
+     * Convert MIDI Integer to Real Value.
+     *
+     * This method performs the inverse of `toMidi()`, converting a quantized MIDI integer
+     * back to a real-world value. The conversion flow:
+     * 1. Normalize the MIDI integer to 0..1
+     * 2. Apply inverse scale transformation (if not linear)
+     * 3. Denormalize to the real value domain
+     * 4. Apply step quantization (if configured)
+     *
+     * @param midiValue The MIDI integer value (will be clamped to valid range)
+     * @returns The real-world value (number, boolean, or string depending on parameter type)
+     *
+     * @example
+     * ```ts
+     * const converter = new AudioParameterConverter({
+     *   type: "continuous",
+     *   min: 0,
+     *   max: 100,
+     *   step: 1,
+     *   midiResolution: 7
+     * });
+     * converter.fromMidi(64); // 50 (64/127 ≈ 0.5, maps to 50 in 0-100 range)
+     * ```
      */
     fromMidi(midiValue: number): number | boolean | string {
-        // Clamp input
         const clampedMidi = Math.max(0, Math.min(this.maxMidi, midiValue));
 
         switch (this.config.type) {
@@ -305,7 +344,7 @@ export class AudioParameterConverter {
                 return this._denormalizeReal(norm);
             }
             case "boolean": {
-                // Lenient: < 50% is false, >= 50% is true
+                // Threshold at 50%: < 50% is false, >= 50% is true
                 const threshold = this.maxMidi / 2;
                 return clampedMidi >= threshold;
             }
@@ -314,6 +353,8 @@ export class AudioParameterConverter {
                 const mapping = conf.midiMapping ?? "spread";
 
                 if (mapping === "custom") {
+                    // Custom mapping: find the option with the closest midiValue to the input
+                    // This allows non-uniform spacing (e.g., some options closer together)
                     let bestOpt = conf.options[0];
                     let minDiff = Infinity;
                     for (const opt of conf.options) {
@@ -329,38 +370,64 @@ export class AudioParameterConverter {
                 }
 
                 if (mapping === "sequential") {
+                    // Sequential mapping: MIDI value directly maps to option index
                     const index = clampedMidi;
                     if (index >= 0 && index < conf.options.length) {
                         return conf.options[index].value;
                     }
+                    // Clamp to last option if out of range
                     return conf.options[conf.options.length - 1]?.value ?? 0;
                 }
 
-                // Spread
+                // Spread mapping: distribute MIDI range evenly across options (default)
+                // This provides maximum resolution and smooth transitions
                 const norm = clampedMidi / this.maxMidi;
                 return this._denormalizeReal(norm);
             }
         }
     }
 
-    /**
-     * Normalize a real-world value to 0..1 range via MIDI pivot
-     */
     normalize(realValue: number | boolean | string): number {
         const midi = this.toMidi(realValue);
         return midi / this.maxMidi;
     }
 
-    /**
-     * Denormalize a 0..1 value to real-world value via MIDI pivot
-     */
     denormalize(normalized: number): number | boolean | string {
         const midi = Math.round(normalized * this.maxMidi);
         return this.fromMidi(midi);
     }
 
     /**
-     * Format the value for display
+     * Format a value for display as a string.
+     *
+     * This method generates a human-readable string representation of the value,
+     * including appropriate units and precision based on the parameter configuration.
+     *
+     * - Continuous parameters: Includes unit suffix and precision based on step size
+     * - Boolean parameters: Uses trueLabel/falseLabel or defaults to "On"/"Off"
+     * - Enum parameters: Returns the label of the matching option
+     *
+     * @param value The value to format (number, boolean, or string)
+     * @returns Formatted string representation
+     *
+     * @example
+     * ```ts
+     * const converter = new AudioParameterConverter({
+     *   type: "continuous",
+     *   min: 0,
+     *   max: 100,
+     *   step: 0.1,
+     *   unit: "dB"
+     * });
+     * converter.format(50.5); // "50.5 dB"
+     *
+     * const boolConverter = new AudioParameterConverter({
+     *   type: "boolean",
+     *   trueLabel: "Enabled",
+     *   falseLabel: "Disabled"
+     * });
+     * boolConverter.format(true); // "Enabled"
+     * ```
      */
     format(value: number | boolean | string): string {
         switch (this.config.type) {
@@ -467,10 +534,26 @@ export interface ContinuousControlConfig {
 
 /**
  * Factory for common AudioParameter configurations (including MIDI-flavoured presets).
+ *
+ * This factory provides convenient methods for creating standard parameter configurations
+ * that match common MIDI and audio industry conventions. All factory methods generate
+ * parameter IDs automatically from the name.
  */
 export const AudioParameterFactory = {
     /**
-     * Standard 7-bit CC (0-127)
+     * Creates a standard 7-bit MIDI CC parameter (0-127).
+     *
+     * This is the most common MIDI control change format, used for most hardware controllers
+     * and software synthesizers. The parameter uses 7-bit resolution (128 steps).
+     *
+     * @param name The parameter name (used to generate ID and name fields)
+     * @returns A ContinuousParameter configured for 7-bit MIDI CC
+     *
+     * @example
+     * ```ts
+     * const volumeParam = AudioParameterFactory.createMidiStandard7Bit("Volume");
+     * // { type: "continuous", min: 0, max: 127, step: 1, midiResolution: 7, ... }
+     * ```
      */
     createMidiStandard7Bit: (name: string): ContinuousParameter => ({
         id: `cc-${name.toLowerCase().replace(/\s+/g, "-")}`,
@@ -484,7 +567,19 @@ export const AudioParameterFactory = {
     }),
 
     /**
-     * Standard 14-bit CC (0-16383)
+     * Creates a standard 14-bit MIDI CC parameter (0-16383).
+     *
+     * This provides higher resolution than 7-bit CC, useful for parameters that require
+     * fine-grained control. The parameter uses 14-bit resolution (16,384 steps).
+     *
+     * @param name The parameter name (used to generate ID and name fields)
+     * @returns A ContinuousParameter configured for 14-bit MIDI CC
+     *
+     * @example
+     * ```ts
+     * const fineTuneParam = AudioParameterFactory.createMidiStandard14Bit("Fine Tune");
+     * // { type: "continuous", min: 0, max: 16383, step: 1, midiResolution: 14, ... }
+     * ```
      */
     createMidiStandard14Bit: (name: string): ContinuousParameter => ({
         id: `cc14-${name.toLowerCase().replace(/\s+/g, "-")}`,
@@ -498,8 +593,19 @@ export const AudioParameterFactory = {
     }),
 
     /**
-     * Bipolar 7-bit CC (-64 to 63, centered at 0)
-     * Useful for pan, modulation depth, etc.
+     * Creates a bipolar 7-bit MIDI CC parameter (-64 to 63, centered at 0).
+     *
+     * This is useful for parameters that have a center point, such as pan controls or
+     * modulation depth. The range is symmetric around zero, with 64 steps in each direction.
+     *
+     * @param name The parameter name (used to generate ID and name fields)
+     * @returns A ContinuousParameter configured for bipolar 7-bit MIDI CC
+     *
+     * @example
+     * ```ts
+     * const panParam = AudioParameterFactory.createMidiBipolar7Bit("Pan");
+     * // { type: "continuous", min: -64, max: 63, step: 1, defaultValue: 0, ... }
+     * ```
      */
     createMidiBipolar7Bit: (name: string): ContinuousParameter => ({
         id: `cc-bipolar-${name.toLowerCase().replace(/\s+/g, "-")}`,
@@ -514,8 +620,20 @@ export const AudioParameterFactory = {
     }),
 
     /**
-     * Bipolar 14-bit CC (-8192 to 8191, centered at 0)
-     * Useful for high-resolution pan, modulation depth, etc.
+     * Creates a bipolar 14-bit MIDI CC parameter (-8192 to 8191, centered at 0).
+     *
+     * This provides high-resolution bipolar control, useful for parameters that require
+     * fine-grained adjustment around a center point. The range is symmetric around zero,
+     * with 8,192 steps in each direction.
+     *
+     * @param name The parameter name (used to generate ID and name fields)
+     * @returns A ContinuousParameter configured for bipolar 14-bit MIDI CC
+     *
+     * @example
+     * ```ts
+     * const finePanParam = AudioParameterFactory.createMidiBipolar14Bit("Fine Pan");
+     * // { type: "continuous", min: -8192, max: 8191, step: 1, defaultValue: 0, ... }
+     * ```
      */
     createMidiBipolar14Bit: (name: string): ContinuousParameter => ({
         id: `cc14-bipolar-${name.toLowerCase().replace(/\s+/g, "-")}`,
@@ -530,8 +648,25 @@ export const AudioParameterFactory = {
     }),
 
     /**
-     * Bipolar parameter with custom range (centered at 0)
-     * Useful for pan (-100 to 100), modulation depth, etc.
+     * Creates a bipolar parameter with custom range (centered at 0).
+     *
+     * This is a flexible factory method for creating bipolar parameters with any range.
+     * The parameter is symmetric around zero, useful for pan controls, modulation depth,
+     * or any parameter that has a neutral center point.
+     *
+     * @param name The parameter name (used to generate ID and name fields)
+     * @param range The range value (default: 100). The parameter will span from -range to +range
+     * @param unit Optional unit suffix (e.g., "dB", "%")
+     * @returns A ContinuousParameter configured for bipolar control
+     *
+     * @example
+     * ```ts
+     * const panParam = AudioParameterFactory.createBipolar("Pan", 100, "%");
+     * // { type: "continuous", min: -100, max: 100, step: 1, defaultValue: 0, unit: "%", ... }
+     *
+     * const modDepthParam = AudioParameterFactory.createBipolar("Mod Depth", 50);
+     * // { type: "continuous", min: -50, max: 50, step: 1, defaultValue: 0, ... }
+     * ```
      */
     createBipolar: (name: string, range: number = 100, unit: string = ""): ContinuousParameter => ({
         id: `bipolar-${name.toLowerCase().replace(/\s+/g, "-")}`,
@@ -545,7 +680,23 @@ export const AudioParameterFactory = {
     }),
 
     /**
-     * Boolean Switch (Off/On)
+     * Creates a boolean switch parameter (Off/On).
+     *
+     * This factory method creates a boolean parameter suitable for on/off controls,
+     * with support for both toggle (latch) and momentary modes.
+     *
+     * @param name The parameter name (used to generate ID and name fields)
+     * @param mode The switch mode: "toggle" (latch) or "momentary" (only active while pressed)
+     * @returns A BooleanParameter configured as a switch
+     *
+     * @example
+     * ```ts
+     * const powerParam = AudioParameterFactory.createSwitch("Power", "toggle");
+     * // { type: "boolean", mode: "toggle", trueLabel: "On", falseLabel: "Off", ... }
+     *
+     * const recordParam = AudioParameterFactory.createSwitch("Record", "momentary");
+     * // { type: "boolean", mode: "momentary", ... }
+     * ```
      */
     createSwitch: (name: string, mode: "toggle" | "momentary" = "toggle"): BooleanParameter => ({
         id: `sw-${name.toLowerCase().replace(/\s+/g, "-")}`,
@@ -559,7 +710,23 @@ export const AudioParameterFactory = {
     }),
 
     /**
-     * Selector (Enumeration)
+     * Creates an enumeration (selector) parameter.
+     *
+     * This factory method creates an enum parameter suitable for mode selectors,
+     * preset switches, or any control that cycles through discrete options.
+     *
+     * @param name The parameter name (used to generate ID and name fields)
+     * @param options Array of option objects, each with a value and label
+     * @returns An EnumParameter configured as a selector
+     *
+     * @example
+     * ```ts
+     * const waveParam = AudioParameterFactory.createSelector("Waveform", [
+     *   { value: "sine", label: "Sine" },
+     *   { value: "square", label: "Square" },
+     *   { value: "sawtooth", label: "Sawtooth" }
+     * ]);
+     * ```
      */
     createSelector: (name: string, options: Array<{ value: string | number; label: string }>): EnumParameter => ({
         id: `sel-${name.toLowerCase().replace(/\s+/g, "-")}`,
@@ -572,7 +739,36 @@ export const AudioParameterFactory = {
     }),
 
     /**
-     * Generic continuous control parameter (for ad-hoc UI controls like Knob/Slider).
+     * Creates a generic continuous control parameter (for ad-hoc UI controls like Knob/Slider).
+     *
+     * This is the most flexible factory method, allowing you to specify all aspects of a
+     * continuous parameter. It's useful when you need a parameter that doesn't fit the
+     * standard MIDI presets.
+     *
+     * The method handles bipolar mode automatically: if `bipolar` is true, it adjusts
+     * min/max to be symmetric around zero and sets the default value to 0.
+     *
+     * @param config Configuration object with optional fields for all parameter properties
+     * @returns A ContinuousParameter configured according to the provided config
+     *
+     * @example
+     * ```ts
+     * const volumeParam = AudioParameterFactory.createControl({
+     *   name: "Volume",
+     *   min: 0,
+     *   max: 100,
+     *   step: 0.1,
+     *   unit: "dB",
+     *   scale: "log"
+     * });
+     *
+     * const panParam = AudioParameterFactory.createControl({
+     *   name: "Pan",
+     *   bipolar: true,
+     *   unit: "%"
+     * });
+     * // Automatically sets min: -100, max: 100, defaultValue: 0
+     * ```
      */
     createControl: (config: ContinuousControlConfig): ContinuousParameter => {
         const { id, name, label, min, max, step, bipolar, unit = "", defaultValue, scale, midiResolution } = config;
@@ -581,15 +777,20 @@ export const AudioParameterFactory = {
         let effectiveMax = max;
         let effectiveDefault = defaultValue ?? min ?? 0;
 
+        // Handle bipolar mode: ensure symmetric range around zero
         if (bipolar) {
             if (min === undefined && max === undefined) {
+                // No range specified: default to -100 to 100
                 effectiveMin = -100;
                 effectiveMax = 100;
             } else if (min === undefined && max !== undefined) {
+                // Only max specified: make symmetric (e.g., max=100 -> min=-100)
                 effectiveMin = -max!;
             } else if (min !== undefined && max === undefined) {
+                // Only min specified: make symmetric (e.g., min=-100 -> max=100)
                 effectiveMax = -min!;
             }
+            // Bipolar parameters always default to center (zero)
             effectiveDefault = 0;
         }
 

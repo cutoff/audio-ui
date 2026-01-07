@@ -19,7 +19,41 @@ export interface InteractiveControlHandlers {
 
 /**
  * Hook to standardize user interaction for continuous controls (Knob, Slider).
- * Handles Drag (Mouse/Touch), Wheel, and Keyboard interactions.
+ *
+ * This hook provides a unified interface for handling all user input methods:
+ * - Drag interactions (mouse and touch)
+ * - Wheel scrolling
+ * - Keyboard navigation (arrow keys, Home/End)
+ *
+ * The hook wraps the framework-agnostic `InteractionController` and provides React
+ * event handlers that can be attached directly to SVG elements. It handles focus
+ * management, accessibility attributes, and cursor styling automatically.
+ *
+ * @param adjustValue Function to adjust the value based on a delta. Receives (delta, sensitivity).
+ * @param keyboardStep Step size for keyboard interaction (normalized 0..1, default: 0.05)
+ * @param interactionMode Interaction mode: "drag", "wheel", or "both" (default: "both")
+ * @param direction Direction of drag interaction: "vertical", "horizontal", "circular", or "both" (default: "both")
+ * @param sensitivity Sensitivity of the control (default: 0.005). Higher = more sensitive.
+ * @param wheelSensitivity Optional separate sensitivity for wheel events. Defaults to sensitivity / 4.
+ * @param disabled Whether the control is disabled (default: false)
+ * @param editable Whether the control is editable (default: true). When false, cursor changes to "default".
+ * @returns Object containing React event handlers (onMouseDown, onTouchStart, onWheel, onKeyDown) and accessibility props
+ *
+ * @example
+ * ```tsx
+ * const interactiveProps = useInteractiveControl({
+ *   adjustValue: (delta, sensitivity) => {
+ *     setValue(v => clamp(v + delta * sensitivity, 0, 100));
+ *   },
+ *   interactionMode: "both",
+ *   direction: "vertical",
+ *   sensitivity: 0.01
+ * });
+ *
+ * <svg {...interactiveProps}>
+ *   <circle cx={50} cy={50} r={30} />
+ * </svg>
+ * ```
  */
 export function useInteractiveControl({
     adjustValue,
@@ -31,10 +65,8 @@ export function useInteractiveControl({
     disabled = false,
     editable = true,
 }: UseInteractiveControlProps): InteractiveControlHandlers {
-    // Store controller in ref to persist across renders
     const controllerRef = useRef<InteractionController | null>(null);
 
-    // Initialize controller lazily
     if (!controllerRef.current) {
         controllerRef.current = new InteractionController({
             adjustValue,
@@ -47,7 +79,6 @@ export function useInteractiveControl({
         });
     }
 
-    // Sync config on every render
     useEffect(() => {
         controllerRef.current?.updateConfig({
             adjustValue,
@@ -60,7 +91,6 @@ export function useInteractiveControl({
         });
     }, [adjustValue, keyboardStep, interactionMode, direction, sensitivity, wheelSensitivity, disabled]);
 
-    // Cleanup on unmount
     useEffect(() => {
         return () => {
             controllerRef.current?.dispose();

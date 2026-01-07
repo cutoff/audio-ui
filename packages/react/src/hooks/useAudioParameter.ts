@@ -25,10 +25,38 @@ export interface UseAudioParameterResult {
 /**
  * Hook to manage audio parameter logic, normalization, and formatting.
  *
+ * This is the primary hook for connecting audio parameter models to React components.
+ * It handles all value conversions (real ↔ normalized ↔ MIDI) and provides formatted
+ * display values. The hook ensures that all conversions go through the MIDI pivot,
+ * maintaining consistency with hardware standards.
+ *
+ * The hook provides:
+ * - `normalizedValue`: 0..1 value for UI rendering
+ * - `displayValue`: Formatted string for display
+ * - `converter`: The AudioParameterConverter instance for advanced operations
+ * - `setNormalizedValue`: Set value from normalized input (e.g., from UI slider)
+ * - `adjustValue`: Adjust value relatively (e.g., from mouse wheel or drag)
+ *
  * @param value The current real-world value (Source of Truth)
- * @param onChange Callback when value changes
- * @param parameterDef The parameter definition
+ * @param onChange Callback when value changes. Receives an AudioControlEvent with all value representations.
+ * @param parameterDef The parameter definition (AudioParameter)
  * @param valueFormatter Optional custom renderer for the value display. If provided and returns a value, it takes precedence over the default formatter.
+ * @returns Object containing normalizedValue, displayValue, converter, setNormalizedValue, and adjustValue
+ *
+ * @example
+ * ```tsx
+ * const { normalizedValue, displayValue, adjustValue } = useAudioParameter(
+ *   volume,
+ *   (e) => setVolume(e.value),
+ *   volumeParam
+ * );
+ *
+ * // Use normalizedValue for rendering
+ * <SvgKnob normalizedValue={normalizedValue} />
+ *
+ * // Use adjustValue for relative changes
+ * <div onWheel={(e) => adjustValue(e.deltaY, 0.001)} />
+ * ```
  */
 export function useAudioParameter<T extends number | boolean | string>(
     value: T,
@@ -36,27 +64,22 @@ export function useAudioParameter<T extends number | boolean | string>(
     parameterDef: AudioParameter,
     valueFormatter?: (value: T, parameterDef: AudioParameter) => string | undefined
 ): UseAudioParameterResult {
-    // 1. Ensure we always have an instance with methods
     const converter = useMemo(() => {
         return new AudioParameterConverter(parameterDef);
     }, [parameterDef]);
 
-    // 2. Calculate normalized value for the View (0..1)
     const normalizedValue = useMemo(() => {
         return converter.normalize(value);
     }, [value, converter]);
 
-    // 3. Track the latest value in a ref to avoid stale closures during rapid events (e.g. wheel)
+    // Track latest value in ref to avoid stale closures during rapid events (e.g., wheel)
     const valueRef = useRef(value);
-    valueRef.current = value; // Sync with prop on every render
+    valueRef.current = value;
 
-    // Helper to commit value changes
     const commitValue = useCallback(
         (newValue: T) => {
             if (!onChange) return;
 
-            // Compute all representations at the source of truth
-            // normalize() accepts T (number | boolean | string)
             const normalized = converter.normalize(newValue);
             const midi = converter.toMidi(newValue);
 
@@ -70,29 +93,25 @@ export function useAudioParameter<T extends number | boolean | string>(
         [converter, onChange, parameterDef]
     );
 
-    // 4. Provide a setter that takes the normalized value (from UI) and updates the real value
     const setNormalizedValue = useCallback(
         (newNormal: number) => {
             if (!onChange) return;
-            // Clamp to 0..1 before denormalizing
             const clamped = Math.max(0, Math.min(1, newNormal));
             const realValue = converter.denormalize(clamped) as T;
 
-            // Only fire if value actually changed
             if (realValue !== valueRef.current) {
-                valueRef.current = realValue; // Optimistic update
+                valueRef.current = realValue;
                 commitValue(realValue);
             }
         },
         [converter, onChange, commitValue]
     );
 
-    // 5. Helper for incremental updates (wheel, keys)
     const adjustValue = useCallback(
         (delta: number, sensitivity = 0.001) => {
             if (!onChange) return;
 
-            // Use Ref for calculation base to prevent stale closure jitter during rapid events
+            // Use ref for calculation base to prevent stale closure jitter during rapid events
             const currentReal = valueRef.current as number;
             const currentNormal = converter.normalize(currentReal);
 
@@ -102,7 +121,6 @@ export function useAudioParameter<T extends number | boolean | string>(
         [converter, onChange, setNormalizedValue]
     );
 
-    // 6. Format for display
     // Custom valueFormatter takes precedence if provided and returns a value; otherwise fall back to default formatter
     const displayValue = useMemo(() => {
         if (valueFormatter) {

@@ -148,7 +148,9 @@ function Keys({
         const nbOctaves = Math.floor(validNbKeys / 12);
         const keyRemainder = validNbKeys % 12;
 
-        // Calculate white keys mathematically
+        // Calculate white keys: Each octave has 7 white keys (C, D, E, F, G, A, B)
+        // For partial octaves, use the ratio 7/12 (white keys per semitone) to estimate
+        // This ensures accurate white key count for any number of keys
         const whiteKeysInRemainder = Math.ceil((keyRemainder * 7) / 12);
         const nbWhite = nbOctaves * 7 + whiteKeysInRemainder;
 
@@ -157,20 +159,24 @@ function Keys({
         const middleKeyIndex = Math.floor((nbWhite - 1) / 2);
         const octavesFromMiddle = Math.floor(middleKeyIndex / 7);
 
-        // If we start with A or B, we need to subtract one more octave
-        // because these notes belong to the octave of the next C
+        // Octave adjustment for keys starting with A or B:
+        // In MIDI convention, A and B belong to the octave of the next C.
+        // For example, A4 and B4 are in the same octave as C5, not C4.
+        // This adjustment ensures correct octave calculation when starting with A or B.
         const octaveAdjustment = startKeyIndex >= 5 ? 1 : 0;
 
-        // Adjust startOctave calculation for extreme keyboard sizes
+        // Calculate starting octave with special handling for extreme keyboard sizes
         let startOctave;
         if (validNbKeys <= 12) {
-            // For very small keyboards (1-12 keys), center around C4
+            // Very small keyboards (1-12 keys): Center around C4 (middle C) for usability
             startOctave = 4 - octaveAdjustment;
         } else if (validNbKeys >= 120) {
-            // For very large keyboards (120-128 keys), ensure we don't go below C0
+            // Very large keyboards (120-128 keys): Prevent going below C0 (MIDI note 0)
+            // This ensures we don't generate invalid MIDI note numbers
             startOctave = Math.max(0, 4 - octavesFromMiddle - octaveAdjustment);
         } else {
-            // Standard calculation for normal keyboard sizes
+            // Standard keyboards: Calculate octave based on middle key position
+            // This centers the keyboard around middle C (C4) for typical sizes
             startOctave = 4 - octavesFromMiddle - octaveAdjustment;
         }
 
@@ -254,9 +260,12 @@ function Keys({
         return createNoteNumSet(notesOn || []);
     }, [notesOn]);
 
-    // Memoize the calculation of positions without black keys
-    // In a standard piano layout, there are no black keys between E-F and B-C
-    // These correspond to indices 2 and 6 when startKey is "C"
+    // Calculate which white key positions should NOT have black keys above them
+    // In a standard piano layout, there are no black keys between:
+    // - E and F (semitone gap, no black key)
+    // - B and C (semitone gap, no black key)
+    // These correspond to white key indices 2 and 6 when starting with C
+    // The modulo calculation adjusts for different starting keys
     const correctBlackPass = useMemo(() => {
         const startKeyIndex = WHITE_KEY_NAMES.indexOf(startKey);
         return [
@@ -302,8 +311,8 @@ function Keys({
             // Convert the MIDI note number to a note name and octave
             const currentWhiteNote = noteNumToNote(noteNum);
 
-            // Determine colors based on keyStyle
-            // Active keys always use theme color (colorVariants.primary)
+            // Color resolution: Active keys always use theme color for visual feedback
+            // Inactive keys use theme colors (theme mode) or classic colors (classic modes)
             let strokeColor: string;
             let fillColor: string;
 
@@ -357,8 +366,11 @@ function Keys({
         // Calculate the base MIDI note number for the starting key
         const baseNoteNum = (startOctave + 1) * 12 + startKeyChromatic;
 
+        // Render black keys: There are nbWhite - 1 potential black key positions
+        // (one less than white keys because black keys sit between white keys)
         return Array.from({ length: nbWhite - 1 }, (_, index) => {
             const octaveIndex = index % 7;
+            // Skip positions that shouldn't have black keys (E-F and B-C gaps)
             if (correctBlackPass.includes(octaveIndex)) return null;
 
             // Calculate the diatonic index (white keys only)
@@ -372,11 +384,13 @@ function Keys({
             const chromaticOffset = WHITE_KEY_TO_CHROMATIC[currentNoteIndex] - WHITE_KEY_TO_CHROMATIC[startKeyIndex];
             const adjustedOffset = chromaticOffset + octaveOffset * 12;
 
-            // Black keys are one semitone higher than the white key to their left
+            // Black keys are positioned one semitone higher than the white key to their left
+            // Add 1 to the chromatic offset to get the black key's MIDI note number
             const noteNum = baseNoteNum + adjustedOffset + 1 - octaveShift * 12;
 
-            // Skip this black key if its note number corresponds to a white key position
-            // This prevents duplicate note assignments between white and black keys
+            // Skip black keys that would map to white key positions (E-F and B-C gaps)
+            // This prevents duplicate note assignments and ensures correct piano layout
+            // The modulo 12 gives us the chromatic position within the octave
             if (WHITE_KEY_POSITIONS.has(noteNum % 12)) return null;
 
             // Convert the MIDI note number to a note name and octave

@@ -258,7 +258,6 @@ function Svg({
 }: AdaptiveBoxSvgProps) {
     const ctx = useBoxContext();
 
-    // Register with context so the root can compute its layout
     useLayoutEffect(() => {
         ctx.registerSvg({ width: viewBoxWidth, height: viewBoxHeight, hAlign, vAlign });
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -266,18 +265,13 @@ function Svg({
 
     const svgRef = useRef<SVGSVGElement>(null);
 
-    // Wheel handler per requirements: use native event listener with passive: false
-    // React's onWheel prop is passive by default in some contexts or doesn't guarantee non-passive.
-    // To ensure we can prevent scrolling (especially in Safari/Mobile), we must use a native non-passive listener.
+    // Use native non-passive listener to reliably prevent scrolling (especially Safari/Mobile)
+    // React's onWheel prop is passive by default in some contexts
     useEffect(() => {
         if (!svgRef.current || !onWheel) return;
 
         const element = svgRef.current;
-        // Need to cast or wrap because the prop expects React event but addEventListener provides Native event
         const wheelHandler = (e: WheelEvent) => {
-            // We need to pass a React-like event to the handler because our hook expects it.
-            // Fortunately, React.WheelEvent is structurally compatible enough for our simple usage (deltaY, preventDefault)
-            // or we can cast it.
             onWheel(e as unknown as React.WheelEvent<SVGSVGElement>);
         };
 
@@ -304,7 +298,6 @@ function Svg({
                 backgroundColor: ctx.debug ? "hsl(0, 100%, 50% / 0.06)" : undefined,
                 ...(style ?? {}),
             }}
-            // Remove onWheel prop here to avoid double firing/conflict with native listener
             {...rest}
         >
             {children}
@@ -322,13 +315,11 @@ export interface AdaptiveBoxLabelProps extends PropsWithChildren {
 function Label({ className, style, position = "below", align = "center", children }: AdaptiveBoxLabelProps) {
     const ctx = useBoxContext();
 
-    // Register presence and settings with the root
     useLayoutEffect(() => {
         ctx.registerLabel({ position, align });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [position, align]);
 
-    // Respect label modes
     if (ctx.labelMode === "none") return null;
 
     const visibility = ctx.labelMode === "hidden" ? "hidden" : "visible";

@@ -26,8 +26,40 @@ export type SliderProps = ContinuousControlProps &
     };
 
 /**
- * A vertical slider component for audio applications.
- * ...
+ * A slider component for audio applications.
+ * Supports both horizontal and vertical orientations with continuous value adjustment.
+ *
+ * Features:
+ * - Configurable orientation (horizontal or vertical)
+ * - Bipolar mode support (centered at zero, grows in both directions)
+ * - Customizable thickness and roundness
+ * - Full theming support via AudioUiProvider
+ * - Adaptive sizing or fixed size variants
+ * - Supports drag, wheel, and keyboard interactions
+ * - Custom value formatting
+ *
+ * @example
+ * ```tsx
+ * // Basic vertical slider
+ * <Slider value={50} min={0} max={100} onChange={(e) => setValue(e.value)} />
+ *
+ * // Horizontal bipolar slider (pan control)
+ * <Slider
+ *   orientation="horizontal"
+ *   bipolar
+ *   value={0}
+ *   min={-100}
+ *   max={100}
+ *   label="Pan"
+ * />
+ *
+ * // With parameter model
+ * <Slider
+ *   parameter={volumeParam}
+ *   value={volume}
+ *   onChange={handleVolumeChange}
+ * />
+ * ```
  */
 function Slider({
     orientation = "vertical",
@@ -61,8 +93,6 @@ function Slider({
     className,
     style,
 }: SliderProps) {
-    // Use the themable props hook to resolve color and roundness with proper fallbacks
-    // Clamp values to 0.0-1.0 range
     const clampedRoundness = roundness !== undefined ? clampNormalized(roundness) : undefined;
     const clampedThickness = clampNormalized(thickness);
     const { resolvedColor, resolvedRoundness } = useThemableProps(
@@ -70,13 +100,11 @@ function Slider({
         { color: undefined, roundness: DEFAULT_ROUNDNESS }
     );
 
-    // Get adaptive sizing values
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "slider", orientation);
 
-    // Merge class names: size class first, then user className (user takes precedence)
     const mergedClassName = classNames(sizeClassName, className);
 
-    // Select the appropriate view component based on orientation
+    // Select view component based on orientation (different SVG implementations for optimal rendering)
     const ViewComponent = orientation === "vertical" ? SvgVerticalSlider : SvgHorizontalSlider;
 
     return (

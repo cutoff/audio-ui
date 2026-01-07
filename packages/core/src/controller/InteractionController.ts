@@ -68,7 +68,6 @@ export class InteractionController {
             ...config,
         };
 
-        // Bind methods for event listeners
         this.handleGlobalMouseMove = this.handleGlobalMouseMove.bind(this);
         this.handleGlobalMouseUp = this.handleGlobalMouseUp.bind(this);
         this.handleGlobalTouchMove = this.handleGlobalTouchMove.bind(this);
@@ -77,8 +76,6 @@ export class InteractionController {
     public updateConfig(config: Partial<InteractionConfig>) {
         Object.assign(this.config, config);
     }
-
-    // --- Drag Handling ---
 
     public handleMouseDown = (clientX: number, clientY: number, target?: EventTarget) => {
         if (this.config.interactionMode === "wheel") return;
@@ -103,7 +100,6 @@ export class InteractionController {
             this.centerY = rect.top + rect.height / 2;
         }
 
-        // Apply global cursor and user-select styles
         document.body.style.userSelect = "none";
 
         let cursor = "ns-resize";
@@ -113,7 +109,6 @@ export class InteractionController {
 
         document.body.style.cursor = cursor;
 
-        // Attach global listeners
         window.addEventListener("mousemove", this.handleGlobalMouseMove);
         window.addEventListener("mouseup", this.handleGlobalMouseUp);
         window.addEventListener("touchmove", this.handleGlobalTouchMove, { passive: false });
@@ -128,7 +123,7 @@ export class InteractionController {
 
     private handleGlobalTouchMove(e: TouchEvent) {
         if (!this.isDragging) return;
-        e.preventDefault(); // Prevent scrolling
+        e.preventDefault();
         const touch = e.touches[0];
         this.processDrag(touch.clientX, touch.clientY);
     }
@@ -136,36 +131,30 @@ export class InteractionController {
     private processDrag(x: number, y: number) {
         let delta = 0;
         if (this.config.direction === "vertical") {
-            // Up is negative Y, but usually means positive value
-            // So we invert Y delta: (StartY - CurrentY)
+            // Vertical drag: Up (negative Y) typically means increase value
+            // Invert Y delta so dragging up increases value: (startY - y)
             delta = this.startY - y;
         } else if (this.config.direction === "horizontal") {
-            // Right is positive X
+            // Horizontal drag: Right (positive X) means increase value
             delta = x - this.startX;
         } else if (this.config.direction === "both") {
-            // Sum of horizontal (Right+) and vertical (Up+)
-            // Vertical: Up is negative Y, so (startY - y)
-            // Horizontal: Right is positive X, so (x - startX)
+            // Both directions: Sum horizontal (right+) and vertical (up+) movements
+            // This allows diagonal drags to combine both axes for faster adjustment
             delta = x - this.startX + (this.startY - y);
         } else if (this.config.direction === "circular") {
-            // Calculate angle relative to center
-            // Y is down, so we invert Y for standard math if we wanted standard cartesian,
-            // but atan2(y, x) works with screen coords.
-            // 0 is Right (x+, y0). PI/2 is Down (x0, y+).
-            // Rotation is Clockwise.
-            // We want Clockwise to increase value.
-
+            // Circular drag: Calculate angular change around the center point
+            // atan2(y, x): 0° is right (x+, y0), 90° is down (x0, y+), clockwise rotation
             const currentAngle = Math.atan2(y - this.centerY, x - this.centerX);
             const startAngle = Math.atan2(this.startY - this.centerY, this.startX - this.centerX);
 
             let angleDelta = currentAngle - startAngle;
 
-            // Handle wrapping
+            // Handle wrapping across ±180° boundary (shortest path)
+            // Without this, dragging across the 180° line would cause a large jump
             if (angleDelta > Math.PI) angleDelta -= 2 * Math.PI;
             else if (angleDelta < -Math.PI) angleDelta += 2 * Math.PI;
 
-            // Convert to "pixels equivalent" (degrees)
-            // 1 degree ~ 1 pixel
+            // Convert radians to degrees (1 degree ≈ 1 pixel for sensitivity matching)
             delta = angleDelta * (180 / Math.PI);
         }
 
@@ -181,18 +170,14 @@ export class InteractionController {
 
         this.isDragging = false;
 
-        // Cleanup styles
         document.body.style.userSelect = "";
         document.body.style.cursor = "";
 
-        // Remove global listeners
         window.removeEventListener("mousemove", this.handleGlobalMouseMove);
         window.removeEventListener("mouseup", this.handleGlobalMouseUp);
         window.removeEventListener("touchmove", this.handleGlobalTouchMove);
         window.removeEventListener("touchend", this.handleGlobalMouseUp);
     }
-
-    // --- Wheel Handling ---
 
     public handleWheel = (e: WheelEvent | any) => {
         if (this.config.disabled) return;
@@ -206,8 +191,6 @@ export class InteractionController {
 
         this.config.adjustValue(delta, effectiveSensitivity);
     };
-
-    // --- Keyboard Handling ---
 
     public handleKeyDown = (e: KeyboardEvent | any) => {
         if (this.config.disabled) return;
@@ -223,10 +206,12 @@ export class InteractionController {
                 delta = -1;
                 break;
             case "Home":
-                delta = -1 / this.config.sensitivity; // Large negative to reach min
+                // Large negative delta to reach minimum
+                delta = -1 / this.config.sensitivity;
                 break;
             case "End":
-                delta = 1 / this.config.sensitivity; // Large positive to reach max
+                // Large positive delta to reach maximum
+                delta = 1 / this.config.sensitivity;
                 break;
             default:
                 return;
@@ -234,9 +219,8 @@ export class InteractionController {
 
         e.preventDefault();
 
-        // Passed delta logic:
-        // adjustValue(d, s) -> d * s. We want `keyboardStep`.
-        // So passed_delta = keyboardStep / sensitivity * direction
+        // adjustValue(d, s) -> d * s. We want `keyboardStep`, so:
+        // passed_delta = keyboardStep / sensitivity * direction
         const effectiveDelta = delta * (this.config.keyboardStep / this.config.sensitivity);
         this.config.adjustValue(effectiveDelta, this.config.sensitivity);
     };

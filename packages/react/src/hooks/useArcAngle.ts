@@ -40,21 +40,16 @@ export function useArcAngle(
     bipolar: boolean = false,
     positions?: number
 ): UseArcAngleResult {
-    // Clamp inputs - NO MEMO needed for value as it changes frequently (e.g. during animation)
     const clampedValue = Math.max(0, Math.min(1, normalizedValue));
 
-    // Snap to discrete positions if specified
     const snappedValue = useMemo(() => {
         if (positions === undefined || positions < 1) {
             return clampedValue;
         }
         if (positions === 1) {
-            // Single position: always center (0.5)
             return 0.5;
         }
-        // For N positions, we have positions 0 to N-1
-        // Position i maps to normalizedValue = i / (N - 1)
-        // Snap to nearest position
+        // For N positions: positions 0 to N-1, position i maps to normalizedValue = i / (N - 1)
         const position = Math.round(clampedValue * (positions - 1));
         return position / (positions - 1);
     }, [clampedValue, positions]);
@@ -63,9 +58,8 @@ export function useArcAngle(
         return Math.max(0, Math.min(360, openness));
     }, [openness]);
 
-    // Calculate angular range based on openness
-    // 0 degrees is at 3 o'clock, increasing clockwise.
-    // Standard knob (90 openness) goes from approx 225 deg (7:30) to 495 deg (4:30).
+    // Calculate angular range: 0° is at 3 o'clock, increasing clockwise
+    // Standard knob (90° openness) goes from ~225° (7:30) to ~495° (4:30)
     const { maxStartAngle, maxEndAngle, maxArcAngle } = useMemo(() => {
         const start = 180 + clampedOpenness / 2;
         const end = 540 - clampedOpenness / 2;
@@ -76,13 +70,8 @@ export function useArcAngle(
         };
     }, [clampedOpenness]);
 
-    // Convert normalized value (0-1) to an angle in degrees
-    // Use snappedValue for angle calculation when positions are defined
-    // NO MEMO needed as snappedValue changes often
     const baseValueToAngle = snappedValue * maxArcAngle + maxStartAngle;
 
-    // Calculate rotated angles (offset by rotation)
-    // These are the angles that should be used by components
     const startAngle = useMemo(() => {
         return maxStartAngle - rotation;
     }, [maxStartAngle, rotation]);
@@ -91,17 +80,14 @@ export function useArcAngle(
         return maxEndAngle - rotation;
     }, [maxEndAngle, rotation]);
 
-    // Calculate start angle for the value arc
-    // For bipolar: start at top (360) minus rotation. For unipolar: start at min angle.
+    // For bipolar: start at top (360°) minus rotation. For unipolar: start at min angle
     const valueStartAngle = useMemo(() => {
         if (bipolar) {
-            // 360 is top/center
             return 360 - rotation;
         }
         return startAngle;
     }, [bipolar, rotation, startAngle]);
 
-    // NO MEMO needed as baseValueToAngle changes often
     const valueToAngle = baseValueToAngle - rotation;
 
     return {

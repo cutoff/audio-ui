@@ -45,15 +45,12 @@ function Button({
     className,
     style,
 }: ButtonProps) {
-    // Use the themable props hook to resolve color and roundness with proper fallbacks
-    // Clamp roundness to 0.0-1.0 range
     const clampedRoundness = roundness !== undefined ? clampNormalized(roundness) : undefined;
     const { resolvedColor, resolvedRoundness } = useThemableProps(
         { color, roundness: clampedRoundness },
         { color: undefined, roundness: DEFAULT_ROUNDNESS }
     );
 
-    // Construct the configuration object
     const paramConfig = useMemo(() => {
         if (parameter) {
             if (parameter.type !== "boolean") {
@@ -62,7 +59,6 @@ function Button({
             return parameter;
         }
 
-        // Ad-hoc Boolean Parameter
         return {
             id: paramId ?? "adhoc-button",
             type: "boolean" as const,
@@ -73,10 +69,8 @@ function Button({
         };
     }, [parameter, label, latch, paramId]);
 
-    // Use the hook to handle normalization
     const { normalizedValue, converter } = useAudioParameter(value, onChange, paramConfig);
 
-    // Helper to fire change events
     const fireChange = useCallback(
         (newValue: boolean) => {
             if (!onChange) return;
@@ -92,18 +86,19 @@ function Button({
         [onChange, converter, paramConfig]
     );
 
-    // Ref to track if the button is currently pressed (for momentary mode)
+    // Track press state for momentary buttons (needed for global mouseup handling)
+    // When a momentary button is pressed, we need to detect mouseup events even if
+    // they occur outside the button (e.g., user drags mouse away before releasing)
     const isPressedRef = useRef(false);
 
-    // Internal handler for mouse down
     const handleInternalMouseDown = useCallback(
         (_e: React.MouseEvent) => {
             if (onChange) {
                 if (paramConfig.mode === "toggle") {
-                    // Toggle
+                    // Toggle mode: flip the value on each press
                     fireChange(!value);
                 } else {
-                    // Momentary Press -> True
+                    // Momentary mode: set to true on press, will be set to false on release
                     isPressedRef.current = true;
                     fireChange(true);
                 }
@@ -112,10 +107,10 @@ function Button({
         [onChange, paramConfig.mode, value, fireChange]
     );
 
-    // Internal handler for mouse up
     const handleInternalMouseUp = useCallback(
         (_e: React.MouseEvent) => {
-            // Momentary Release -> False
+            // Only handle release for momentary buttons that are currently pressed
+            // This prevents false releases if the button wasn't actually pressed
             if (onChange && paramConfig.mode === "momentary" && isPressedRef.current) {
                 isPressedRef.current = false;
                 fireChange(false);
@@ -124,7 +119,6 @@ function Button({
         [onChange, paramConfig.mode, fireChange]
     );
 
-    // Combined handlers
     const handleMouseDown = useCallback(
         (e: React.MouseEvent) => {
             onMouseDown?.(e);
@@ -145,7 +139,9 @@ function Button({
         [onMouseUp, handleInternalMouseUp]
     );
 
-    // Global mouseup for momentary buttons
+    // Global mouseup handler for momentary buttons
+    // This ensures the button releases even if the mouse is moved outside the button
+    // before the mouse button is released (common in audio applications)
     const handleGlobalMouseUp = useCallback(() => {
         if (isPressedRef.current) {
             isPressedRef.current = false;
@@ -153,6 +149,8 @@ function Button({
         }
     }, [fireChange]);
 
+    // Attach global mouseup listener for momentary buttons
+    // This is necessary because users may drag the mouse outside the button before releasing
     useEffect(() => {
         if (paramConfig.mode === "momentary" && onChange) {
             window.addEventListener("mouseup", handleGlobalMouseUp);
@@ -161,10 +159,8 @@ function Button({
         return undefined;
     }, [paramConfig.mode, onChange, handleGlobalMouseUp]);
 
-    // Get adaptive sizing values
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "button");
 
-    // Memoize the classNames calculation: size class first, then base classes, then user className (user takes precedence)
     const componentClassNames = useMemo(() => {
         return classNames(sizeClassName, CLASSNAMES.root, CLASSNAMES.container, className);
     }, [sizeClassName, className]);
@@ -173,10 +169,8 @@ function Button({
         return onChange || onClick ? CLASSNAMES.highlight : "";
     }, [onChange, onClick]);
 
-    // Use display value or label
     const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
 
-    // Determine if button is editable/clickable
     const isInteractive = !!(onChange || onClick);
 
     return (
@@ -198,14 +192,11 @@ function Button({
                 onMouseUp={handleMouseUp}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
-                // Add keyboard accessibility
                 tabIndex={0}
                 role="button"
                 aria-pressed={value}
                 aria-label={effectiveLabel}
                 style={{
-                    // Explicitly set cursor based on interactivity
-                    // User can override via className or parent style
                     cursor: isInteractive ? "pointer" : "default",
                 }}
                 onKeyDown={(e) => {
@@ -213,11 +204,6 @@ function Button({
                         e.preventDefault();
                         if (onChange) {
                             fireChange(latch ? !value : true);
-                            if (!latch) {
-                                // Simulate release after delay or keyup?
-                                // Standard button triggers on click (down+up).
-                                // For momentary, usually keydown=active, keyup=inactive
-                            }
                         }
                     }
                 }}
@@ -230,7 +216,6 @@ function Button({
             >
                 <SvgButton
                     normalizedValue={normalizedValue}
-                    // Threshold is 0.5 for boolean
                     threshold={0.5}
                     roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
                     color={resolvedColor}

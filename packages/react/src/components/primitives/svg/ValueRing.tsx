@@ -62,10 +62,12 @@ function ValueRing({
 
     const strokeLinecap = roundness ? "round" : "square";
 
-    // Calculate actual radius to make stroke expand inward
-    // The outer edge stays at the provided radius, and the stroke grows inward as thickness increases.
-    // SVG strokes are centered on the path, so we subtract half the thickness from the radius.
-    // Ensure radius is non-negative.
+    // Calculate actual radius to make stroke expand inward from the outer edge
+    // SVG strokes are centered on the path by default, so a stroke of thickness N
+    // extends N/2 pixels on each side of the path. To make the stroke grow inward
+    // (keeping the outer edge at the specified radius), we subtract half the thickness.
+    // This ensures the visual appearance matches the design intent: outer edge stays fixed,
+    // inner edge moves inward as thickness increases.
     const actualRadius = useMemo(() => {
         return Math.max(0, radius - thickness / 2);
     }, [radius, thickness]);

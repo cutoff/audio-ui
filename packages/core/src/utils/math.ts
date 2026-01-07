@@ -31,13 +31,24 @@ export type FilledZone = {
 };
 
 /**
- * Convert polar coordinates to Cartesian coordinates
+ * Convert polar coordinates to Cartesian coordinates.
+ *
+ * This function is used extensively in circular controls (knobs, rotary switches) to position
+ * elements around a circle. The angle system follows SVG conventions where 0° is at 3 o'clock
+ * and angles increase clockwise.
  *
  * @param centerX - X coordinate of the center point
  * @param centerY - Y coordinate of the center point
  * @param radius - Radius from center
- * @param angleInDegrees - Angle in degrees
+ * @param angleInDegrees - Angle in degrees (0° = 3 o'clock, increasing clockwise)
  * @returns Object with x and y Cartesian coordinates
+ *
+ * @example
+ * ```ts
+ * // Position at 12 o'clock (top center)
+ * const { x, y } = polarToCartesian(50, 50, 30, 360);
+ * // x ≈ 50, y ≈ 20
+ * ```
  */
 export const polarToCartesian = (
     centerX: number,
@@ -53,17 +64,25 @@ export const polarToCartesian = (
 };
 
 /**
- * Helper function to calculate a bounded ratio between 0 and 1
+ * Calculate a bounded ratio between 0 and 1 for a value within a min-max range.
+ *
+ * This utility ensures the value is clamped to the range before calculating the ratio,
+ * preventing division by zero and handling edge cases gracefully.
  *
  * @param value - The value to convert to a ratio
  * @param min - The minimum value (corresponds to ratio = 0)
  * @param max - The maximum value (corresponds to ratio = 1)
  * @returns A ratio between 0 and 1 representing where value falls in the min-max range
+ *
+ * @example
+ * ```ts
+ * calculateBoundedRatio(50, 0, 100); // 0.5
+ * calculateBoundedRatio(150, 0, 100); // 1.0 (clamped)
+ * calculateBoundedRatio(-10, 0, 100); // 0.0 (clamped)
+ * ```
  */
 export const calculateBoundedRatio = (value: number, min: number, max: number): number => {
-    // Ensure value is within bounds
     const boundedValue = Math.max(min, Math.min(value, max));
-    // Calculate ratio and ensure it's between 0 and 1
     const ratio = (boundedValue - min) / (max - min);
     return Math.max(0, Math.min(ratio, 1));
 };
@@ -104,27 +123,22 @@ export const computeFilledZone = (
     center?: number,
     isHorizontal: boolean = false
 ): FilledZone => {
-    // Ensure value is within bounds (min-max range)
     const boundedValue = Math.max(min, Math.min(value, max));
 
-    // Select the dimension and position properties based on orientation
     const dimension = isHorizontal ? mainZone.w : mainZone.h;
     const position = isHorizontal ? mainZone.x : mainZone.y;
 
-    // Normal mode (no center point)
     if (center === undefined) {
-        // Calculate the ratio and size
         const ratio = calculateBoundedRatio(boundedValue, min, max);
         const size = dimension * ratio;
 
         if (isHorizontal) {
-            // Horizontal: Fill from left to right
             return {
                 x: position,
                 w: size,
             };
         } else {
-            // Vertical: Fill from bottom to top (inverted position)
+            // Vertical: fill from bottom to top (inverted position)
             return {
                 y: position + (dimension - size),
                 h: size,
@@ -132,45 +146,37 @@ export const computeFilledZone = (
         }
     }
 
-    // Bipolar mode calculations
     const halfSize = dimension / 2;
     const centerPoint = position + halfSize;
 
     if (boundedValue >= center) {
-        // Value >= center (right/upper half)
         const bipolarRatio = calculateBoundedRatio(boundedValue, center, max);
         const bipolarSize = halfSize * bipolarRatio;
 
         if (isHorizontal) {
-            // Horizontal: Fill from center to right
             return {
                 x: centerPoint,
                 w: bipolarSize,
             };
         } else {
-            // Vertical: Fill from center to top (inverted position)
+            // Vertical: fill from center to top (inverted position)
             return {
                 y: position + (halfSize - bipolarSize),
                 h: bipolarSize,
             };
         }
     } else {
-        // Value < center (left/lower half)
-        // For this case, we need to invert the ratio because:
-        // - When value = min: We want bipolarRatio = 1 (maximum fill)
-        // - When value = center: We want bipolarRatio = 0 (minimum fill)
-        // The inversion (1 - ratio) achieves this transformation efficiently
+        // Value < center: invert ratio so min -> max fill, center -> min fill
         const bipolarRatio = 1 - calculateBoundedRatio(boundedValue, min, center);
         const bipolarSize = halfSize * bipolarRatio;
 
         if (isHorizontal) {
-            // Horizontal: Fill from center to left (DJ crossfader style)
+            // Horizontal: fill from center to left (DJ crossfader style)
             return {
                 x: centerPoint - bipolarSize,
                 w: bipolarSize,
             };
         } else {
-            // Vertical: Fill from center to bottom
             return {
                 y: centerPoint,
                 h: bipolarSize,
