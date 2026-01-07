@@ -1,5 +1,4 @@
 import { describe, it, expect } from "vitest";
-import React from "react";
 import { createPropComparator } from "./propCompare";
 
 describe("createPropComparator", () => {
@@ -57,15 +56,15 @@ describe("createPropComparator", () => {
     describe("Always-Compare Props", () => {
         it("returns false when always-compared props differ by reference", () => {
             const compare = createPropComparator({ alwaysCompareProps: ["children"] });
-            const prevProps = { children: React.createElement("div", null, "Old"), id: "test" };
-            const nextProps = { children: React.createElement("div", null, "New"), id: "test" };
+            const prevProps = { children: { type: "div", children: "Old" }, id: "test" };
+            const nextProps = { children: { type: "div", children: "New" }, id: "test" };
 
             expect(compare(prevProps, nextProps)).toBe(false);
         });
 
         it("returns true when always-compared props have same reference", () => {
             const compare = createPropComparator({ alwaysCompareProps: ["children"] });
-            const children = React.createElement("div", null, "Same");
+            const children = { type: "div", children: "Same" };
             const prevProps = { children, id: "test" };
             const nextProps = { children, id: "test" };
 
@@ -85,8 +84,8 @@ describe("createPropComparator", () => {
         it("handles multiple always-compared props", () => {
             const compare = createPropComparator({ alwaysCompareProps: ["children", "onClick"] });
             const onClick = () => {};
-            const prevProps = { children: React.createElement("div", null, "A"), onClick };
-            const nextProps = { children: React.createElement("div", null, "B"), onClick };
+            const prevProps = { children: { type: "div", children: "A" }, onClick };
+            const nextProps = { children: { type: "div", children: "B" }, onClick };
 
             expect(compare(prevProps, nextProps)).toBe(false);
         });
@@ -245,8 +244,8 @@ describe("createPropComparator", () => {
 
         it("allows empty alwaysCompareProps array", () => {
             const compare = createPropComparator({ alwaysCompareProps: [] });
-            const children1 = React.createElement("div", null, "A");
-            const children2 = React.createElement("div", null, "B");
+            const children1 = { type: "div", children: "A" };
+            const children2 = { type: "div", children: "B" };
             const prevProps = { children: children1 };
             const nextProps = { children: children2 };
 
@@ -257,8 +256,8 @@ describe("createPropComparator", () => {
         it("allows no options (uses defaults)", () => {
             const compare = createPropComparator();
             const style = { color: "red" };
-            const prevProps = { style, children: React.createElement("div", null, "A") };
-            const nextProps = { style, children: React.createElement("div", null, "A") };
+            const prevProps = { style, children: { type: "div", children: "A" } };
+            const nextProps = { style, children: { type: "div", children: "A" } };
 
             // style is deep-compared (same), children is always-compared (different refs)
             expect(compare(prevProps, nextProps)).toBe(false);
@@ -272,7 +271,7 @@ describe("createPropComparator", () => {
                 alwaysCompareProps: ["children"],
             });
             const style = { color: "red" };
-            const children = React.createElement("div", null, "Same");
+            const children = { type: "div", children: "Same" };
             const prevProps = { style, children, id: "test", count: 5 };
             const nextProps = { style, children, id: "test", count: 5 };
 
@@ -285,8 +284,8 @@ describe("createPropComparator", () => {
                 alwaysCompareProps: ["children"],
             });
             const style = { color: "red" };
-            const prevProps = { style, children: React.createElement("div", null, "A"), id: "test", count: 5 };
-            const nextProps = { style, children: React.createElement("div", null, "B"), id: "test", count: 5 };
+            const prevProps = { style, children: { type: "div", children: "A" }, id: "test", count: 5 };
+            const nextProps = { style, children: { type: "div", children: "B" }, id: "test", count: 5 };
 
             // children differ (always-compare)
             expect(compare(prevProps, nextProps)).toBe(false);
@@ -317,7 +316,7 @@ describe("createPropComparator", () => {
                 style: { color: "red" },
                 config: { setting: "a" },
                 theme: { mode: "dark" },
-                children: React.createElement("div", null, "A"),
+                children: { type: "div", children: "A" },
                 onClick: () => {},
                 id: "test",
             };
@@ -325,7 +324,7 @@ describe("createPropComparator", () => {
                 style: { color: "red" },
                 config: { setting: "a" },
                 theme: { mode: "dark" },
-                children: React.createElement("div", null, "A"),
+                children: { type: "div", children: "A" },
                 onClick: () => {},
                 id: "test",
             };

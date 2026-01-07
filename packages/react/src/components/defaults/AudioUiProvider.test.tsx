@@ -1,11 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, render, act } from "@testing-library/react";
 import React from "react";
-import {
-    AudioUiProvider,
-    useAudioUiTheme,
-    useThemableProps,
-} from "./AudioUiProvider";
+import { AudioUiProvider, useAudioUiTheme, useThemableProps } from "./AudioUiProvider";
 import { getAdaptiveDefaultColor } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
@@ -249,10 +245,7 @@ describe("useThemableProps", () => {
                 <AudioUiProvider initialColor="blue">{children}</AudioUiProvider>
             );
 
-            const { result } = renderHook(
-                () => useThemableProps({ color: "red" }, { color: "green" }),
-                { wrapper }
-            );
+            const { result } = renderHook(() => useThemableProps({ color: "red" }, { color: "green" }), { wrapper });
 
             expect(result.current.resolvedColor).toBe("red");
         });
@@ -262,10 +255,9 @@ describe("useThemableProps", () => {
                 <AudioUiProvider initialColor="blue">{children}</AudioUiProvider>
             );
 
-            const { result } = renderHook(
-                () => useThemableProps({ color: undefined }, { color: "green" }),
-                { wrapper }
-            );
+            const { result } = renderHook(() => useThemableProps({ color: undefined }, { color: "green" }), {
+                wrapper,
+            });
 
             expect(result.current.resolvedColor).toBe("blue");
         });
@@ -275,10 +267,9 @@ describe("useThemableProps", () => {
                 <AudioUiProvider>{children}</AudioUiProvider>
             );
 
-            const { result } = renderHook(
-                () => useThemableProps({ color: undefined }, { color: "green" }),
-                { wrapper }
-            );
+            const { result } = renderHook(() => useThemableProps({ color: undefined }, { color: "green" }), {
+                wrapper,
+            });
 
             expect(result.current.resolvedColor).toBe("green");
         });
@@ -288,10 +279,9 @@ describe("useThemableProps", () => {
                 <AudioUiProvider>{children}</AudioUiProvider>
             );
 
-            const { result } = renderHook(
-                () => useThemableProps({ color: undefined }, { color: undefined }),
-                { wrapper }
-            );
+            const { result } = renderHook(() => useThemableProps({ color: undefined }, { color: undefined }), {
+                wrapper,
+            });
 
             expect(result.current.resolvedColor).toBe(getAdaptiveDefaultColor());
         });
@@ -303,10 +293,7 @@ describe("useThemableProps", () => {
                 <AudioUiProvider initialRoundness={0.5}>{children}</AudioUiProvider>
             );
 
-            const { result } = renderHook(
-                () => useThemableProps({ roundness: 0.8 }, { roundness: 0.3 }),
-                { wrapper }
-            );
+            const { result } = renderHook(() => useThemableProps({ roundness: 0.8 }, { roundness: 0.3 }), { wrapper });
 
             expect(result.current.resolvedRoundness).toBe(0.8);
         });
@@ -316,10 +303,9 @@ describe("useThemableProps", () => {
                 <AudioUiProvider initialRoundness={0.5}>{children}</AudioUiProvider>
             );
 
-            const { result } = renderHook(
-                () => useThemableProps({ roundness: undefined }, { roundness: 0.3 }),
-                { wrapper }
-            );
+            const { result } = renderHook(() => useThemableProps({ roundness: undefined }, { roundness: 0.3 }), {
+                wrapper,
+            });
 
             expect(result.current.resolvedRoundness).toBe(0.5);
         });
@@ -329,10 +315,9 @@ describe("useThemableProps", () => {
                 <AudioUiProvider>{children}</AudioUiProvider>
             );
 
-            const { result } = renderHook(
-                () => useThemableProps({ roundness: undefined }, { roundness: 0.3 }),
-                { wrapper }
-            );
+            const { result } = renderHook(() => useThemableProps({ roundness: undefined }, { roundness: 0.3 }), {
+                wrapper,
+            });
 
             expect(result.current.resolvedRoundness).toBe(0.3);
         });
@@ -342,10 +327,9 @@ describe("useThemableProps", () => {
                 <AudioUiProvider>{children}</AudioUiProvider>
             );
 
-            const { result } = renderHook(
-                () => useThemableProps({ roundness: undefined }, { roundness: undefined }),
-                { wrapper }
-            );
+            const { result } = renderHook(() => useThemableProps({ roundness: undefined }, { roundness: undefined }), {
+                wrapper,
+            });
 
             // When all are undefined, it falls back to context which has DEFAULT_ROUNDNESS
             expect(result.current.resolvedRoundness).toBe(DEFAULT_ROUNDNESS);
@@ -358,10 +342,9 @@ describe("useThemableProps", () => {
                 <AudioUiProvider>{children}</AudioUiProvider>
             );
 
-            const { result } = renderHook(
-                () => useThemableProps({ roundness: 1.5 }, { roundness: undefined }),
-                { wrapper }
-            );
+            const { result } = renderHook(() => useThemableProps({ roundness: 1.5 }, { roundness: undefined }), {
+                wrapper,
+            });
 
             expect(result.current.resolvedRoundness).toBe(1.0);
         });
@@ -371,10 +354,9 @@ describe("useThemableProps", () => {
                 <AudioUiProvider>{children}</AudioUiProvider>
             );
 
-            const { result } = renderHook(
-                () => useThemableProps({ roundness: -0.5 }, { roundness: undefined }),
-                { wrapper }
-            );
+            const { result } = renderHook(() => useThemableProps({ roundness: -0.5 }, { roundness: undefined }), {
+                wrapper,
+            });
 
             expect(result.current.resolvedRoundness).toBe(0.0);
         });
@@ -384,10 +366,9 @@ describe("useThemableProps", () => {
                 <AudioUiProvider initialRoundness={1.5}>{children}</AudioUiProvider>
             );
 
-            const { result } = renderHook(
-                () => useThemableProps({ roundness: undefined }, { roundness: undefined }),
-                { wrapper }
-            );
+            const { result } = renderHook(() => useThemableProps({ roundness: undefined }, { roundness: undefined }), {
+                wrapper,
+            });
 
             expect(result.current.resolvedRoundness).toBe(1.0);
         });
@@ -397,10 +378,9 @@ describe("useThemableProps", () => {
                 <AudioUiProvider>{children}</AudioUiProvider>
             );
 
-            const { result } = renderHook(
-                () => useThemableProps({ roundness: undefined }, { roundness: 2.0 }),
-                { wrapper }
-            );
+            const { result } = renderHook(() => useThemableProps({ roundness: undefined }, { roundness: 2.0 }), {
+                wrapper,
+            });
 
             // When context has DEFAULT_ROUNDNESS, it takes precedence over defaultValues
             // So we need to ensure context doesn't have roundness
@@ -466,10 +446,10 @@ describe("useThemableProps", () => {
                 <AudioUiProvider>{children}</AudioUiProvider>
             );
 
-            const { result, rerender } = renderHook(
-                ({ color }) => useThemableProps({ color }, { color: "green" }),
-                { initialProps: { color: "red" }, wrapper }
-            );
+            const { result, rerender } = renderHook(({ color }) => useThemableProps({ color }, { color: "green" }), {
+                initialProps: { color: "red" },
+                wrapper,
+            });
 
             const firstResult = result.current;
             rerender({ color: "blue" });
@@ -484,18 +464,16 @@ describe("useThemableProps", () => {
                 <AudioUiProvider initialColor={color}>{children}</AudioUiProvider>
             );
 
-            const { result, rerender } = renderHook(
-                () => useThemableProps({ color: undefined }, { color: "green" }),
-                { wrapper: ({ children }) => <Wrapper color="red">{children}</Wrapper> }
-            );
+            const { result, rerender } = renderHook(() => useThemableProps({ color: undefined }, { color: "green" }), {
+                wrapper: ({ children }) => <Wrapper color="red">{children}</Wrapper>,
+            });
 
             const firstResult = result.current;
             rerender({ children: undefined });
             // Update wrapper with new color
-            const { result: newResult } = renderHook(
-                () => useThemableProps({ color: undefined }, { color: "green" }),
-                { wrapper: ({ children }) => <Wrapper color="blue">{children}</Wrapper> }
-            );
+            const { result: newResult } = renderHook(() => useThemableProps({ color: undefined }, { color: "green" }), {
+                wrapper: ({ children }) => <Wrapper color="blue">{children}</Wrapper>,
+            });
 
             // Should have different resolved color
             expect(newResult.current.resolvedColor).toBe("blue");
@@ -542,10 +520,9 @@ describe("useThemableProps", () => {
                 <AudioUiProvider initialRoundness={roundness}>{children}</AudioUiProvider>
             );
 
-            const { result } = renderHook(
-                () => useThemableProps({ roundness: undefined }, { roundness: 0.3 }),
-                { wrapper: ({ children }) => <Wrapper roundness={0.5}>{children}</Wrapper> }
-            );
+            const { result } = renderHook(() => useThemableProps({ roundness: undefined }, { roundness: 0.3 }), {
+                wrapper: ({ children }) => <Wrapper roundness={0.5}>{children}</Wrapper>,
+            });
 
             expect(result.current.resolvedRoundness).toBe(0.5);
         });
@@ -629,10 +606,7 @@ describe("useThemableProps", () => {
                 </AudioUiProvider>
             );
 
-            const { result } = renderHook(
-                () => useThemableProps({}, { color: "green", roundness: 0.3 }),
-                { wrapper }
-            );
+            const { result } = renderHook(() => useThemableProps({}, { color: "green", roundness: 0.3 }), { wrapper });
 
             expect(result.current.resolvedColor).toBe("blue"); // From context
             expect(result.current.resolvedRoundness).toBe(0.5); // From context

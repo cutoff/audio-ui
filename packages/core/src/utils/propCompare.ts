@@ -1,7 +1,7 @@
 import isEqual from "fast-deep-equal";
 
 /**
- * Creates a comparison function for React.memo to prevent unnecessary re-renders.
+ * Creates a comparison function for memoization to prevent unnecessary re-renders.
  *
  * This utility creates a function that performs shallow comparison of primitive props
  * and uses fast-deep-equal for deep comparison of objects like style.
@@ -9,20 +9,13 @@ import isEqual from "fast-deep-equal";
  * @param options - Configuration options for the comparison
  * @param options.deepCompareProps - Array of prop names that should be deeply compared
  * @param options.alwaysCompareProps - Array of prop names that should always be directly compared (===)
- * @returns A comparison function suitable for use with React.memo
+ * @returns A comparison function
  *
  * @example
  * // Basic usage with style deep comparison
- * export default React.memo(MyComponent, createPropComparator({
+ * const comparator = createPropComparator({
  *   deepCompareProps: ['style']
- * }));
- *
- * @example
- * // Ensuring children always trigger re-render when they change
- * export default React.memo(MyComponent, createPropComparator({
- *   deepCompareProps: ['style'],
- *   alwaysCompareProps: ['children']
- * }));
+ * });
  */
 export function createPropComparator<T extends Record<string, any>>({
     deepCompareProps = ["style"],

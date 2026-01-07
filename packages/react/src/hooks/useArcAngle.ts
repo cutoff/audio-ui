@@ -1,19 +1,7 @@
 import { useMemo } from "react";
+import { calculateArcAngles, ArcAngleResult } from "@cutoff/audio-ui-core";
 
-export interface UseArcAngleResult {
-    /** Normalized value (0-1, clamped) */
-    normalizedValue: number;
-    /** Openness in degrees (0-360, clamped) */
-    openness: number;
-    /** Start angle of the arc range in degrees (offset by rotation) */
-    startAngle: number;
-    /** End angle of the arc range in degrees (offset by rotation) */
-    endAngle: number;
-    /** Current angle in degrees based on normalized value (offset by rotation) */
-    valueToAngle: number;
-    /** Start angle for the value arc (foreground). Handles bipolar logic (starts at center) vs unipolar (starts at range start). */
-    valueStartAngle: number;
-}
+export type UseArcAngleResult = ArcAngleResult;
 
 /**
  * Hook to calculate arc angles for rotary controls (ValueRing, RotaryImage components, or any other circular control).
@@ -40,62 +28,7 @@ export function useArcAngle(
     bipolar: boolean = false,
     positions?: number
 ): UseArcAngleResult {
-    const clampedValue = Math.max(0, Math.min(1, normalizedValue));
-
-    const snappedValue = useMemo(() => {
-        if (positions === undefined || positions < 1) {
-            return clampedValue;
-        }
-        if (positions === 1) {
-            return 0.5;
-        }
-        // For N positions: positions 0 to N-1, position i maps to normalizedValue = i / (N - 1)
-        const position = Math.round(clampedValue * (positions - 1));
-        return position / (positions - 1);
-    }, [clampedValue, positions]);
-
-    const clampedOpenness = useMemo(() => {
-        return Math.max(0, Math.min(360, openness));
-    }, [openness]);
-
-    // Calculate angular range: 0° is at 3 o'clock, increasing clockwise
-    // Standard knob (90° openness) goes from ~225° (7:30) to ~495° (4:30)
-    const { maxStartAngle, maxEndAngle, maxArcAngle } = useMemo(() => {
-        const start = 180 + clampedOpenness / 2;
-        const end = 540 - clampedOpenness / 2;
-        return {
-            maxStartAngle: start,
-            maxEndAngle: end,
-            maxArcAngle: end - start,
-        };
-    }, [clampedOpenness]);
-
-    const baseValueToAngle = snappedValue * maxArcAngle + maxStartAngle;
-
-    const startAngle = useMemo(() => {
-        return maxStartAngle - rotation;
-    }, [maxStartAngle, rotation]);
-
-    const endAngle = useMemo(() => {
-        return maxEndAngle - rotation;
-    }, [maxEndAngle, rotation]);
-
-    // For bipolar: start at top (360°) minus rotation. For unipolar: start at min angle
-    const valueStartAngle = useMemo(() => {
-        if (bipolar) {
-            return 360 - rotation;
-        }
-        return startAngle;
-    }, [bipolar, rotation, startAngle]);
-
-    const valueToAngle = baseValueToAngle - rotation;
-
-    return {
-        normalizedValue: snappedValue,
-        openness: clampedOpenness,
-        startAngle,
-        endAngle,
-        valueToAngle,
-        valueStartAngle,
-    };
+    return useMemo(() => {
+        return calculateArcAngles(normalizedValue, openness, rotation, bipolar, positions);
+    }, [normalizedValue, openness, rotation, bipolar, positions]);
 }

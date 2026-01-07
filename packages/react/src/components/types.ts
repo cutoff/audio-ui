@@ -1,52 +1,66 @@
 import React from "react";
 import { ContinuousParameter, BooleanParameter, ScaleType, AudioParameter } from "@cutoff/audio-ui-core";
+
+// Re-export types from core
+export type { SizeType, InteractionMode, InteractionDirection } from "@cutoff/audio-ui-core";
+
+// Import types for use in this file
 import { SizeType, InteractionMode, InteractionDirection } from "@cutoff/audio-ui-core";
 
 /**
- * Size options for control components
+ * Variant options for the Knob component
  */
-// SizeType is imported from core now
+export type KnobVariant = "abstract" | "simplest" | "plainCap" | "iconCap";
 
 /**
- * Props for themable components
+ * Standard event object emitted by all AudioUI controls.
+ * Provides the value in all three domain representations simultaneously.
  */
-export type ThemableProps = {
-    /** Component primary color - any valid CSS color value
-     * @default "blue"
-     */
-    color?: string;
-
-    /** Roundness for component corners/caps
-     * Normalized value between 0.0 (square) and 1.0 (fully rounded)
-     * @default 0.3
-     */
-    roundness?: number;
-
-    /** Thickness for component strokes/widths
-     * Normalized value between 0.0 (smallest) and 1.0 (largest)
-     * @default 0.4
-     */
-    thickness?: number;
+export type AudioControlEvent<T = number> = {
+    /** The real-world value (e.g. -6.0 dB, 440 Hz, true/false) */
+    value: T;
+    /** The normalized value (0.0 to 1.0) used for UI rendering and host automation */
+    normalizedValue: number;
+    /** The MIDI value (integer, e.g. 0-127 or 0-16383) used for hardware/protocol communication */
+    midiValue: number;
+    /** The parameter definition driving this value */
+    parameter?: any; // To avoid circular deps
 };
 
 /**
- * Base props for all components
+ * Props for interactive controls (drag, wheel, keyboard)
+ * Used by both continuous and enum controls.
+ *
+ * T is the real value type emitted by the control:
+ * - number for continuous controls (Knob, Slider)
+ * - boolean for boolean controls (not commonly using this type)
+ * - custom types for enum-like controls (e.g. KnobSwitch)
  */
-export type BaseProps = {
-    /** Additional CSS classes */
-    className?: string;
-    /** Additional inline styles */
-    style?: React.CSSProperties;
-    /** Click event handler */
-    onClick?: React.MouseEventHandler;
-    /** Mouse down event handler */
-    onMouseDown?: React.MouseEventHandler;
-    /** Mouse up event handler */
-    onMouseUp?: React.MouseEventHandler;
-    /** Mouse enter event handler */
-    onMouseEnter?: React.MouseEventHandler;
-    /** Mouse leave event handler */
-    onMouseLeave?: React.MouseEventHandler;
+export type InteractiveControlProps<T = number> = {
+    /**
+     * Handler for value changes.
+     * Receives a rich event object with real, normalized, and MIDI representations.
+     */
+    onChange?: (event: AudioControlEvent<T>) => void;
+
+    /**
+     * Interaction mode: drag, wheel, or both.
+     * @default "both"
+     */
+    interactionMode?: InteractionMode;
+
+    /**
+     * Sensitivity of the control.
+     * Represents the amount of normalized value change per pixel (drag) or unit (wheel).
+     * @default Component-specific
+     */
+    interactionSensitivity?: number;
+
+    /**
+     * Direction of the interaction.
+     * Overrides the default direction defined by the component's view.
+     */
+    interactionDirection?: InteractionDirection;
 };
 
 /**
@@ -110,59 +124,56 @@ export type AdaptiveBoxProps = {
 };
 
 /**
- * Variant options for the Knob component
+ * Metadata for a control component.
+ * Used for display in customization interfaces and documentation.
  */
-export type KnobVariant = "abstract" | "simplest" | "plainCap" | "iconCap";
+export interface ControlComponentMetadata {
+    /** Display name/title for the component */
+    title: string;
+    /** Optional description of what the component does */
+    description?: string;
+}
 
 /**
- * Standard event object emitted by all AudioUI controls.
- * Provides the value in all three domain representations simultaneously.
+ * Props for themable components
  */
-export type AudioControlEvent<T = number> = {
-    /** The real-world value (e.g. -6.0 dB, 440 Hz, true/false) */
-    value: T;
-    /** The normalized value (0.0 to 1.0) used for UI rendering and host automation */
-    normalizedValue: number;
-    /** The MIDI value (integer, e.g. 0-127 or 0-16383) used for hardware/protocol communication */
-    midiValue: number;
-    /** The parameter definition driving this value */
-    parameter?: any; // To avoid circular deps
+export type ThemableProps = {
+    /** Component primary color - any valid CSS color value
+     * @default "blue"
+     */
+    color?: string;
+
+    /** Roundness for component corners/caps
+     * Normalized value between 0.0 (square) and 1.0 (fully rounded)
+     * @default 0.3
+     */
+    roundness?: number;
+
+    /** Thickness for component strokes/widths
+     * Normalized value between 0.0 (smallest) and 1.0 (largest)
+     * @default 0.4
+     */
+    thickness?: number;
 };
 
 /**
- * Props for interactive controls (drag, wheel, keyboard)
- * Used by both continuous and enum controls.
- *
- * T is the real value type emitted by the control:
- * - number for continuous controls (Knob, Slider)
- * - boolean for boolean controls (not commonly using this type)
- * - custom types for enum-like controls (e.g. KnobSwitch)
+ * BaseProps for all components
  */
-export type InteractiveControlProps<T = number> = {
-    /**
-     * Handler for value changes.
-     * Receives a rich event object with real, normalized, and MIDI representations.
-     */
-    onChange?: (event: AudioControlEvent<T>) => void;
-
-    /**
-     * Interaction mode: drag, wheel, or both.
-     * @default "both"
-     */
-    interactionMode?: InteractionMode;
-
-    /**
-     * Sensitivity of the control.
-     * Represents the amount of normalized value change per pixel (drag) or unit (wheel).
-     * @default Component-specific
-     */
-    interactionSensitivity?: number;
-
-    /**
-     * Direction of the interaction.
-     * Overrides the default direction defined by the component's view.
-     */
-    interactionDirection?: InteractionDirection;
+export type BaseProps = {
+    /** Additional CSS classes */
+    className?: string;
+    /** Additional inline styles */
+    style?: React.CSSProperties;
+    /** Click event handler */
+    onClick?: React.MouseEventHandler;
+    /** Mouse down event handler */
+    onMouseDown?: React.MouseEventHandler;
+    /** Mouse up event handler */
+    onMouseUp?: React.MouseEventHandler;
+    /** Mouse enter event handler */
+    onMouseEnter?: React.MouseEventHandler;
+    /** Mouse leave event handler */
+    onMouseLeave?: React.MouseEventHandler;
 };
 
 /**
@@ -339,14 +350,3 @@ export interface ControlComponentViewProps {
 export type ControlComponent<P = {}> = React.ComponentType<ControlComponentViewProps & P> &
     ControlComponentView &
     Partial<ControlComponentMetadata>;
-
-/**
- * Metadata for a control component.
- * Used for display in customization interfaces and documentation.
- */
-export interface ControlComponentMetadata {
-    /** Display name/title for the component */
-    title: string;
-    /** Optional description of what the component does */
-    description?: string;
-}
