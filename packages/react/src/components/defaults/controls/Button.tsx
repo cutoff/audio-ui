@@ -13,7 +13,7 @@ import "@cutoff/audio-ui-core/styles.css";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BooleanControlProps, ThemableProps } from "@/types";
 import { useThemableProps } from "@/defaults/AudioUiProvider";
-import SvgButton from "./SvgButton";
+import ButtonView from "./ButtonView";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { clampNormalized } from "@cutoff/audio-ui-core";
@@ -190,8 +190,8 @@ function Button({
             minHeight={40}
         >
             <AdaptiveBox.Svg
-                viewBoxWidth={SvgButton.viewBox.width}
-                viewBoxHeight={SvgButton.viewBox.height}
+                viewBoxWidth={ButtonView.viewBox.width}
+                viewBoxHeight={ButtonView.viewBox.height}
                 className={svgClassNames}
                 onClick={onClick}
                 onMouseDown={handleMouseDown}
@@ -220,7 +220,7 @@ function Button({
                     }
                 }}
             >
-                <SvgButton
+                <ButtonView
                     normalizedValue={normalizedValue}
                     threshold={0.5}
                     roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}

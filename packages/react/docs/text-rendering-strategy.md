@@ -149,10 +149,10 @@ The `children` are automatically rendered via `AdaptiveBox.HtmlOverlay` as a sib
 
 ## SVG View Components
 
-With this architecture, SVG view components (like `SvgKnob`) only render SVG graphics:
+With this architecture, SVG view components (like `KnobView`) only render SVG graphics:
 
 ```tsx
-function SvgKnob({ normalizedValue, color, ... }) {
+function KnobView({ normalizedValue, color, ... }) {
     return (
         <g>
             <ValueRing ... />

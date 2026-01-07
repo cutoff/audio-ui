@@ -532,7 +532,7 @@ function App() {
 
 ```tsx
 // Knob uses transparency variants
-<SvgKnob color="blue" />
+<KnobView color="blue" />
 // Generates: primary, primary50 (50% opacity), primary20 (20% opacity)
 
 // Keybed uses luminosity variants

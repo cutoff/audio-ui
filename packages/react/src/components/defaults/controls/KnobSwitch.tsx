@@ -9,7 +9,7 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "@/primitives/AdaptiveBox";
-import SvgKnob from "./SvgKnob";
+import KnobView from "./KnobView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, InteractiveControlProps, ThemableProps } from "@/types";
 import { useThemableProps } from "@/defaults/AudioUiProvider";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
@@ -259,8 +259,8 @@ function KnobSwitch({
             minHeight={40}
         >
             <AdaptiveBox.Svg
-                viewBoxWidth={SvgKnob.viewBox.width}
-                viewBoxHeight={SvgKnob.viewBox.height}
+                viewBoxWidth={KnobView.viewBox.width}
+                viewBoxHeight={KnobView.viewBox.height}
                 className={svgClassNames}
                 style={svgStyle}
                 onWheel={interactiveProps.onWheel}
@@ -277,7 +277,7 @@ function KnobSwitch({
                 aria-valuetext={formattedValue}
                 aria-label={effectiveLabel}
             >
-                <SvgKnob
+                <KnobView
                     normalizedValue={normalizedValue}
                     bipolar={false}
                     thickness={clampedThickness}

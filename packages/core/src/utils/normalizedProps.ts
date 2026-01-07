@@ -20,7 +20,7 @@ export function clampNormalized(value: number): number {
 }
 
 /**
- * Translate normalized roundness (0.0-1.0) to SvgKnob legacy value.
+ * Translate normalized roundness (0.0-1.0) to KnobView legacy value.
  * 0.0 = square (legacy: 0), >0.0 = round (legacy: 1+)
  */
 export function translateKnobRoundness(normalized: number): number {

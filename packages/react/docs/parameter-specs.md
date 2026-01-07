@@ -26,7 +26,7 @@ To robustly handle audio and MIDI data, we identify three distinct value domains
     - **Characteristics**:
       - Linear with respect to the **Control Travel** (0% to 100% rotation).
       - Linear with respect to **MIDI Values**.
-    - **Usage**: Used by visual components (`SvgKnob`) and Host Automation (VST3/AU).
+    - **Usage**: Used by visual components (`KnobView`) and Host Automation (VST3/AU).
 
 3.  **Real Value (The Audio/DSP Reality)**
     - **Type**: `number | boolean | string` (Polymorphic).
@@ -361,12 +361,12 @@ function Knob(props: KnobProps) {
   return (
     <AdaptiveBox>
       <AdaptiveBox.Svg onWheel={handleWheel}>
-        <SvgKnob
+        <KnobView
           normalizedValue={normalizedValue}
           // ... pass other styling props ...
         >
           {formattedValue}
-        </SvgKnob>
+        </KnobView>
       </AdaptiveBox.Svg>
       <AdaptiveBox.Label>{props.label ?? paramConfig.name}</AdaptiveBox.Label>
     </AdaptiveBox>

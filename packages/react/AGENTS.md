@@ -32,7 +32,7 @@
 
 - `src/components/`: Component .tsx with .test.tsx
   - `defaults/`: Default/built-in components and theme system
-    - `controls/`: Interactive controls (Button, Knob, Slider, KnobSwitch) and their SVG views (SvgButton, SvgKnob, SvgSlider). Knob and Slider use ContinuousControl internally.
+    - `controls/`: Interactive controls (Button, Knob, Slider, KnobSwitch) and their SVG views (ButtonView, KnobView, SliderView). Knob and Slider use ContinuousControl internally.
     - `devices/`: Device components (Keybed)
     - `AudioUiProvider.tsx`: Default theme system provider
   - `primitives/`: Base components for building final components, excluding theme-specific
@@ -47,7 +47,7 @@
 - Include `ThemableProps` (`color`, `roundness`) via type extensions
 - Opinionated, production-ready with full theming integration
 - Props: `KnobProps`, `SliderProps`, `ButtonProps` extend primitives with `ThemableProps`
-- SVG view components (SvgButton, SvgKnob, SvgSlider) are co-located with the controls that use them
+- SVG view components (ButtonView, KnobView, SliderView) are co-located with the controls that use them
 
 **Customizable Primitives** (`src/components/primitives/`):
 
@@ -84,7 +84,7 @@ The library uses TypeScript path aliases to simplify imports and avoid cluttered
 
 - `@/defaults/*` → `src/components/defaults/*`
   - Example: `import { useThemableProps } from "@/defaults/AudioUiProvider";`
-  - Example: `import SvgKnob from "@/defaults/controls/SvgKnob";`
+  - Example: `import KnobView from "@/defaults/controls/KnobView";`
 
 - `@/utils/*` → `src/utils/*`
   - Example: `import { propCompare } from "@/utils/propCompare";`
@@ -156,9 +156,9 @@ The library provides a generic `ContinuousControl` component that decouples beha
   - `interaction`: Preferred mode ("drag" | "wheel" | "both") and direction ("vertical" | "horizontal" | "circular")
 - **Props**: The view receives `ControlComponentViewProps` (normalizedValue, children, className, style) plus any custom props (passed through generic type parameter `P`).
 - **Reference Implementations**:
-  - `SvgKnob` (located in `defaults/controls/`) - implements contract with `viewBox: {width: 100, height: 100}`, `labelHeightUnits: 20`, `interaction: {mode: "both", direction: "vertical"}`
-  - `SvgVerticalSlider` / `SvgHorizontalSlider` (located in `defaults/controls/`) - specialized slider views with orientation-specific viewBox and interaction direction
-- **Internal Usage**: `Knob` wraps `ContinuousControl` with `view={SvgKnob}`, `Slider` wraps with `view={SvgVerticalSlider}` or `view={SvgHorizontalSlider}` based on orientation
+  - `KnobView` (located in `defaults/controls/`) - implements contract with `viewBox: {width: 100, height: 100}`, `labelHeightUnits: 20`, `interaction: {mode: "both", direction: "vertical"}`
+  - `VerticalSliderView` / `HorizontalSliderView` (located in `defaults/controls/`) - specialized slider views with orientation-specific viewBox and interaction direction
+- **Internal Usage**: `Knob` wraps `ContinuousControl` with `view={KnobView}`, `Slider` wraps with `view={VerticalSliderView}` or `view={HorizontalSliderView}` based on orientation
 - **Performance**: Double memoization (both wrapper and ContinuousControl are memoized) provides optimal re-render protection
 - **Type Exports**: `ControlComponent`, `ControlComponentView`, and `ControlComponentViewProps` are exported from `src/index.ts` for users creating custom view components
 

@@ -14,9 +14,9 @@ import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import { ControlComponent } from "@/types";
 
 /**
- * Props for the SvgSlider component
+ * Props for the SliderView component
  */
-export type SvgSliderProps = {
+export type SliderViewProps = {
     /** Normalized value between 0 and 1 */
     normalizedValue: number;
     /** Whether to start fill from center (bipolar mode) */
@@ -47,7 +47,7 @@ export type SvgSliderProps = {
  * @param color - Resolved color string
  * @param className - Optional CSS class
  */
-function SvgSlider({
+function SliderView({
     normalizedValue,
     bipolar = false,
     orientation = "vertical",
@@ -55,7 +55,7 @@ function SvgSlider({
     roundness = DEFAULT_ROUNDNESS,
     color,
     className,
-}: SvgSliderProps): JSX.Element {
+}: SliderViewProps): JSX.Element {
     // Translate normalized thickness to legacy range (1-50)
     const legacyThickness = useMemo(() => {
         return translateSliderThickness(thickness);
@@ -150,24 +150,24 @@ const SLIDER_VIEWBOX = {
 } as const;
 
 /**
- * ViewBox dimensions for the SvgSlider component.
+ * ViewBox dimensions for the SliderView component.
  * The parent component should use these values when setting up the SVG container.
  * Dimensions vary based on orientation.
  */
-SvgSlider.viewBox = SLIDER_VIEWBOX;
+SliderView.viewBox = SLIDER_VIEWBOX;
 
 /**
  * Props for specialized slider views (without normalizedValue, children, className, style, orientation)
  */
 type SpecializedSliderProps = Omit<
-    SvgSliderProps,
+    SliderViewProps,
     "normalizedValue" | "children" | "className" | "style" | "orientation"
 >;
 
 /**
  * Specialized Vertical Slider for Generic Control System
  */
-function SvgVerticalSliderComponent(
+function VerticalSliderViewComponent(
     props: SpecializedSliderProps & {
         normalizedValue: number;
         children?: React.ReactNode;
@@ -175,32 +175,32 @@ function SvgVerticalSliderComponent(
         style?: React.CSSProperties;
     }
 ) {
-    return <SvgSlider {...props} orientation="vertical" />;
+    return <SliderView {...props} orientation="vertical" />;
 }
 
-const SvgVerticalSliderMemo = React.memo(SvgVerticalSliderComponent);
+const VerticalSliderViewMemo = React.memo(VerticalSliderViewComponent);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(SvgVerticalSliderMemo as any).viewBox = SLIDER_VIEWBOX.vertical;
+(VerticalSliderViewMemo as any).viewBox = SLIDER_VIEWBOX.vertical;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(SvgVerticalSliderMemo as any).labelHeightUnits = 40;
+(VerticalSliderViewMemo as any).labelHeightUnits = 40;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(SvgVerticalSliderMemo as any).interaction = {
+(VerticalSliderViewMemo as any).interaction = {
     mode: "both" as const,
     direction: "vertical" as const,
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(SvgVerticalSliderMemo as any).title = "Vertical Slider";
+(VerticalSliderViewMemo as any).title = "Vertical Slider";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(SvgVerticalSliderMemo as any).description = "A vertical fader control with linear fill indicator";
+(VerticalSliderViewMemo as any).description = "A vertical fader control with linear fill indicator";
 
 // Cast the memoized components to the ControlComponent type which includes the static properties
-const SvgVerticalSlider = SvgVerticalSliderMemo as unknown as ControlComponent<SpecializedSliderProps>;
+const VerticalSliderView = VerticalSliderViewMemo as unknown as ControlComponent<SpecializedSliderProps>;
 
 /**
  * Specialized Horizontal Slider for Generic Control System
  */
-function SvgHorizontalSliderComponent(
+function HorizontalSliderViewComponent(
     props: SpecializedSliderProps & {
         normalizedValue: number;
         children?: React.ReactNode;
@@ -208,26 +208,26 @@ function SvgHorizontalSliderComponent(
         style?: React.CSSProperties;
     }
 ) {
-    return <SvgSlider {...props} orientation="horizontal" />;
+    return <SliderView {...props} orientation="horizontal" />;
 }
 
-const SvgHorizontalSliderMemo = React.memo(SvgHorizontalSliderComponent);
+const HorizontalSliderViewMemo = React.memo(HorizontalSliderViewComponent);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(SvgHorizontalSliderMemo as any).viewBox = SLIDER_VIEWBOX.horizontal;
+(HorizontalSliderViewMemo as any).viewBox = SLIDER_VIEWBOX.horizontal;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(SvgHorizontalSliderMemo as any).labelHeightUnits = 40;
+(HorizontalSliderViewMemo as any).labelHeightUnits = 40;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(SvgHorizontalSliderMemo as any).interaction = {
+(HorizontalSliderViewMemo as any).interaction = {
     mode: "both" as const,
     direction: "horizontal" as const,
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(SvgHorizontalSliderMemo as any).title = "Horizontal Slider";
+(HorizontalSliderViewMemo as any).title = "Horizontal Slider";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(SvgHorizontalSliderMemo as any).description = "A horizontal fader control with linear fill indicator";
+(HorizontalSliderViewMemo as any).description = "A horizontal fader control with linear fill indicator";
 
-const SvgHorizontalSlider = SvgHorizontalSliderMemo as unknown as ControlComponent<SpecializedSliderProps>;
+const HorizontalSliderView = HorizontalSliderViewMemo as unknown as ControlComponent<SpecializedSliderProps>;
 
-export { SvgVerticalSlider, SvgHorizontalSlider };
-export default React.memo(SvgSlider);
+export { VerticalSliderView, HorizontalSliderView };
+export default React.memo(SliderView);

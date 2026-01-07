@@ -73,7 +73,7 @@ export interface UseAudioParameterResult {
  * );
  *
  * // Use normalizedValue for rendering
- * <SvgKnob normalizedValue={normalizedValue} />
+ * <KnobView normalizedValue={normalizedValue} />
  *
  * // Use adjustValue for relative changes
  * <div onWheel={(e) => adjustValue(e.deltaY, 0.001)} />

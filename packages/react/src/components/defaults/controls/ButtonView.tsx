@@ -12,9 +12,9 @@ import { translateButtonRoundness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
 /**
- * Props for the SvgButton component
+ * Props for the ButtonView component
  */
-export type SvgButtonProps = {
+export type ButtonViewProps = {
     /** Normalized value between 0 and 1 */
     normalizedValue: number;
     /** Threshold for determining "on" state (default 0.5) */
@@ -37,13 +37,13 @@ export type SvgButtonProps = {
  * @param color - Resolved color string
  * @param className - Optional CSS class
  */
-function SvgButton({
+function ButtonView({
     normalizedValue,
     threshold = 0.5,
     roundness = DEFAULT_ROUNDNESS,
     color,
     className,
-}: SvgButtonProps): JSX.Element {
+}: ButtonViewProps): JSX.Element {
     // Determine if button is "on" based on threshold
     const isOn = useMemo(() => normalizedValue > threshold, [normalizedValue, threshold]);
 
@@ -83,7 +83,7 @@ function SvgButton({
 }
 
 /**
- * ViewBox dimensions for the SvgButton component.
+ * ViewBox dimensions for the ButtonView component.
  * The parent component should use these values when setting up the SVG container.
  */
 const VIEW_BOX = {
@@ -91,10 +91,10 @@ const VIEW_BOX = {
     height: 60,
 } as const;
 
-const SvgButtonMemo = React.memo(SvgButton);
+const ButtonViewMemo = React.memo(ButtonView);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(SvgButtonMemo as any).viewBox = VIEW_BOX;
+(ButtonViewMemo as any).viewBox = VIEW_BOX;
 
-export default SvgButtonMemo as unknown as React.MemoExoticComponent<typeof SvgButton> & {
+export default ButtonViewMemo as unknown as React.MemoExoticComponent<typeof ButtonView> & {
     viewBox: typeof VIEW_BOX;
 };

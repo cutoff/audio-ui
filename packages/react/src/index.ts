@@ -31,9 +31,9 @@ export { default as LabelRing } from "./components/primitives/svg/LabelRing";
 export type { LabelRingProps } from "./components/primitives/svg/LabelRing";
 
 // Export SVG presentation components
-export { default as SvgButton } from "./components/defaults/controls/SvgButton";
-export { default as SvgKnob } from "./components/defaults/controls/SvgKnob";
-export { default as SvgSlider, SvgVerticalSlider, SvgHorizontalSlider } from "./components/defaults/controls/SvgSlider";
+export { default as ButtonView } from "./components/defaults/controls/ButtonView";
+export { default as KnobView } from "./components/defaults/controls/KnobView";
+export { default as SliderView, VerticalSliderView, HorizontalSliderView } from "./components/defaults/controls/SliderView";
 
 export { default as Keys } from "./components/defaults/devices/Keys";
 export { default as AdaptiveBox } from "./components/primitives/AdaptiveBox";
@@ -57,9 +57,9 @@ export type { ContinuousControlComponentProps } from "./components/primitives/co
 export type { KeysProps } from "./components/defaults/devices/Keys";
 
 // Export SVG component types
-export type { SvgButtonProps } from "./components/defaults/controls/SvgButton";
-export type { SvgKnobProps } from "./components/defaults/controls/SvgKnob";
-export type { SvgSliderProps } from "./components/defaults/controls/SvgSlider";
+export type { ButtonViewProps } from "./components/defaults/controls/ButtonView";
+export type { KnobViewProps } from "./components/defaults/controls/KnobView";
+export type { SliderViewProps } from "./components/defaults/controls/SliderView";
 
 // Export common types
 export type {

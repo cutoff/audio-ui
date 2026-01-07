@@ -4,7 +4,7 @@
  * See LICENSE.md for details.
  */
 
-import { ControlComponent, SvgHorizontalSlider, SvgKnob, SvgVerticalSlider } from "@cutoff/audio-ui-react";
+import { ControlComponent, HorizontalSliderView, KnobView, VerticalSliderView } from "@cutoff/audio-ui-react";
 import LabyrinthControl from "../examples/LabyrinthControl";
 import ClassicVectorKnob from "../examples/ClassicVectorKnob";
 import GuitarKnob from "../examples/GuitarKnob";
@@ -27,8 +27,8 @@ export const componentRegistry: ControlComponent<Record<string, unknown>>[] = [
     LabyrinthControl,
     ClassicVectorKnob,
     GuitarKnob,
-    SvgKnob,
-    SvgVerticalSlider,
-    SvgHorizontalSlider,
+    KnobView,
+    VerticalSliderView,
+    HorizontalSliderView,
     // Future components can be added here
 ];

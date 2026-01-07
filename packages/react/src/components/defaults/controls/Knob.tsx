@@ -9,7 +9,7 @@
 import React from "react";
 import classNames from "classnames";
 import { useThemableProps } from "@/defaults/AudioUiProvider";
-import SvgKnob from "./SvgKnob";
+import KnobView from "./KnobView";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
 import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps, KnobVariant } from "@/types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
@@ -208,7 +208,7 @@ function Knob({
             interactionSensitivity={interactionSensitivity ?? 0.008}
             valueFormatter={valueFormatter}
             valueAsLabel={valueAsLabel}
-            view={SvgKnob}
+            view={KnobView}
             viewProps={{
                 color: resolvedColor,
                 variant: variant,

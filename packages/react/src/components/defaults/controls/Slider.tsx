@@ -9,7 +9,7 @@
 import React from "react";
 import classNames from "classnames";
 import { useThemableProps } from "@/defaults/AudioUiProvider";
-import { SvgVerticalSlider, SvgHorizontalSlider } from "./SvgSlider";
+import { VerticalSliderView, HorizontalSliderView } from "./SliderView";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps } from "@/types";
@@ -120,7 +120,7 @@ function Slider({
     const mergedClassName = classNames(sizeClassName, className);
 
     // Select view component based on orientation (different SVG implementations for optimal rendering)
-    const ViewComponent = orientation === "vertical" ? SvgVerticalSlider : SvgHorizontalSlider;
+    const ViewComponent = orientation === "vertical" ? VerticalSliderView : HorizontalSliderView;
 
     return (
         <ContinuousControl

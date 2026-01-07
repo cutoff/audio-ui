@@ -16,9 +16,9 @@ import RotaryImage from "@/primitives/svg/RotaryImage";
 import RadialImage from "@/primitives/svg/RadialImage";
 
 /**
- * Props for the SvgKnob component
+ * Props for the KnobView component
  */
-export type SvgKnobProps = {
+export type KnobViewProps = {
     /** Normalized value between 0 and 1 */
     normalizedValue: number;
     /** Whether to start the arc from center (bipolar mode) */
@@ -73,7 +73,7 @@ export type SvgKnobProps = {
  * @param svgOverlayRotary - Whether to use RotaryImage (true) or RadialImage (false) for iconCap overlay (default false)
  * @param svgOverlay - SVG content to display as overlay in iconCap variant (typically an icon component)
  */
-function SvgKnob({
+function KnobView({
     normalizedValue,
     bipolar = false,
     variant = "abstract",
@@ -85,7 +85,7 @@ function SvgKnob({
     className,
     svgOverlayRotary = false,
     svgOverlay,
-}: SvgKnobProps) {
+}: KnobViewProps) {
     // Determine default thickness based on variant
     // abstract and simplest: 0.4 (8 units), others: 0.2 (4 units)
     const defaultThickness = variant === "abstract" || variant === "simplest" ? 0.4 : 0.2;
@@ -216,20 +216,20 @@ function SvgKnob({
 }
 
 // Create memoized component
-const MemoSvgKnob = React.memo(SvgKnob);
+const MemoKnobView = React.memo(KnobView);
 
 // Explicitly attach static properties to the memoized component
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(MemoSvgKnob as any).viewBox = { width: 100, height: 100 };
+(MemoKnobView as any).viewBox = { width: 100, height: 100 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(MemoSvgKnob as any).labelHeightUnits = 20;
+(MemoKnobView as any).labelHeightUnits = 20;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(MemoSvgKnob as any).interaction = { mode: "both", direction: "circular" } as const;
+(MemoKnobView as any).interaction = { mode: "both", direction: "circular" } as const;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(MemoSvgKnob as any).title = "Knob";
+(MemoKnobView as any).title = "Knob";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(MemoSvgKnob as any).description = "A rotary knob control with circular arc indicator";
+(MemoKnobView as any).description = "A rotary knob control with circular arc indicator";
 
-export default MemoSvgKnob as unknown as ControlComponent<
-    Omit<SvgKnobProps, "normalizedValue" | "className" | "style">
+export default MemoKnobView as unknown as ControlComponent<
+    Omit<KnobViewProps, "normalizedValue" | "className" | "style">
 >;
