@@ -40,6 +40,7 @@
         "test:watch": "vitest",
         "test:coverage": "vitest run --coverage",
         "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix || true",
         "lint:css": "stylelint \"src/**/*.css\"",
         "analyze": "pnpm build"
     },

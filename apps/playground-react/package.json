@@ -20,7 +20,8 @@
         "dev": "next dev --turbo -p 3009",
         "build": "next build --turbo",
         "start": "next start -p 3009",
-        "lint": "next lint",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix || true",
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
