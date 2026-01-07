@@ -93,6 +93,8 @@ function Slider({
     roundness,
     thickness = 0.4,
     parameter,
+    unit,
+    scale,
     paramId,
     interactionMode,
     interactionDirection,
@@ -142,6 +144,8 @@ function Slider({
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
             parameter={parameter}
+            unit={unit}
+            scale={scale}
             interactionMode={interactionMode}
             interactionDirection={interactionDirection}
             interactionSensitivity={interactionSensitivity}

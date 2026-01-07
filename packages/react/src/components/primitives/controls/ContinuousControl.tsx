@@ -97,11 +97,13 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         scale,
     });
 
-    const { normalizedValue, adjustValue, formattedValue } = useAudioParameter(
+    const { normalizedValue, adjustValue, effectiveLabel } = useAudioParameter(
         value,
         onChange,
         derivedParameter,
-        valueFormatter
+        valueFormatter,
+        label,
+        valueAsLabel
     );
 
     const effectiveInteractionMode = interactionMode ?? View.interaction.mode ?? "both";
@@ -123,13 +125,6 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
     const svgClassNames = useMemo(() => {
         return onChange || onClick ? CLASSNAMES.highlight : "";
     }, [onChange, onClick]);
-
-    const effectiveLabel = useMemo(() => {
-        if (valueAsLabel) {
-            return formattedValue;
-        }
-        return label ?? derivedParameter.name;
-    }, [valueAsLabel, formattedValue, label, derivedParameter]);
 
     const handleMouseDown = (e: React.MouseEvent) => {
         interactiveProps.onMouseDown(e);

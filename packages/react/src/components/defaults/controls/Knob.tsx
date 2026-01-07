@@ -201,6 +201,8 @@ function Knob({
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
             parameter={parameter}
+            unit={unit}
+            scale={scale}
             interactionMode={interactionMode}
             interactionDirection={interactionDirection}
             interactionSensitivity={interactionSensitivity ?? 0.008}

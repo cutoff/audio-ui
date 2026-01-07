@@ -13,6 +13,8 @@ export interface UseAudioParameterResult {
     normalizedValue: number;
     /** Formatted string representation of the current value */
     formattedValue: string;
+    /** The effective label to display (computed from userLabel, valueAsLabel, or parameter name) */
+    effectiveLabel: string;
     /** The full parameter model instance */
     converter: AudioParameterConverter;
     /**
@@ -46,15 +48,28 @@ export interface UseAudioParameterResult {
  * @param value The current real-world value (Source of Truth)
  * @param onChange Callback when value changes. Receives an AudioControlEvent with all value representations.
  * @param parameterDef The parameter definition (AudioParameter)
- * @param valueFormatter Optional custom renderer for the value display. If provided and returns a value, it takes precedence over the default formatter.
- * @returns Object containing normalizedValue, formattedValue, converter, setNormalizedValue, and adjustValue
+ * @param userValueFormatter Optional custom renderer for the value display. If provided and returns a value, it takes precedence over the default formatter.
+ * @param userLabel Optional custom label. If provided and valueAsLabel is false, takes precedence over parameter name.
+ * @param valueAsLabel When true, displays the formatted value as the label instead of the provided label or parameter name.
+ * @returns Object containing normalizedValue, formattedValue, effectiveLabel, converter, setNormalizedValue, and adjustValue
  *
  * @example
  * ```tsx
+ * // Basic usage
  * const { normalizedValue, formattedValue, adjustValue } = useAudioParameter(
  *   volume,
  *   (e) => setVolume(e.value),
  *   volumeParam
+ * );
+ *
+ * // With custom label and value formatter
+ * const { normalizedValue, formattedValue, effectiveLabel, adjustValue } = useAudioParameter(
+ *   volume,
+ *   (e) => setVolume(e.value),
+ *   volumeParam,
+ *   (val) => `${val.toFixed(1)} dB`, // Custom formatter
+ *   "Master Volume", // Custom label
+ *   false // Don't use value as label
  * );
  *
  * // Use normalizedValue for rendering
@@ -62,13 +77,18 @@ export interface UseAudioParameterResult {
  *
  * // Use adjustValue for relative changes
  * <div onWheel={(e) => adjustValue(e.deltaY, 0.001)} />
+ *
+ * // Use effectiveLabel for display
+ * <label>{effectiveLabel}</label>
  * ```
  */
 export function useAudioParameter<T extends number | boolean | string>(
     value: T,
     onChange: undefined | ((event: AudioControlEvent<T>) => void),
     parameterDef: AudioParameter,
-    valueFormatter?: (value: T, parameterDef: AudioParameter) => string | undefined
+    userValueFormatter?: (value: T, parameterDef: AudioParameter) => string | undefined,
+    userLabel?: string,
+    valueAsLabel?: boolean
 ): UseAudioParameterResult {
     const converter = useMemo(() => {
         return new AudioParameterConverter(parameterDef);
@@ -129,18 +149,27 @@ export function useAudioParameter<T extends number | boolean | string>(
 
     // Custom valueFormatter takes precedence if provided and returns a value; otherwise fall back to default formatter
     const formattedValue = useMemo(() => {
-        if (valueFormatter) {
-            const customValue = valueFormatter(value, parameterDef);
+        if (userValueFormatter) {
+            const customValue = userValueFormatter(value, parameterDef);
             if (customValue !== undefined) {
                 return customValue;
             }
         }
         return converter.format(value);
-    }, [value, converter, valueFormatter, parameterDef]);
+    }, [value, converter, userValueFormatter, parameterDef]);
+
+    // Compute effective label: valueAsLabel takes precedence, then userLabel, then parameter name
+    const effectiveLabel = useMemo(() => {
+        if (valueAsLabel) {
+            return formattedValue;
+        }
+        return userLabel ?? parameterDef.name;
+    }, [valueAsLabel, formattedValue, userLabel, parameterDef.name]);
 
     return {
         normalizedValue,
         formattedValue,
+        effectiveLabel,
         converter,
         setNormalizedValue,
         adjustValue,
