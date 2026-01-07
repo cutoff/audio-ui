@@ -351,7 +351,7 @@ function Knob(props: KnobProps) {
   }, [props.parameter, props.min, props.max, props.step, props.label, props.unit]);
 
   // Use the hook to handle all math
-  const { normalizedValue, displayValue, adjustValue } = useAudioParameter(props.value, props.onChange, paramConfig);
+  const { normalizedValue, formattedValue, adjustValue } = useAudioParameter(props.value, props.onChange, paramConfig);
 
   const handleWheel = (e: WheelEvent) => {
     // Reverse deltaY so scrolling up increases value
@@ -365,7 +365,7 @@ function Knob(props: KnobProps) {
           normalizedValue={normalizedValue}
           // ... pass other styling props ...
         >
-          {displayValue}
+          {formattedValue}
         </SvgKnob>
       </AdaptiveBox.Svg>
       <AdaptiveBox.Label>{props.label ?? paramConfig.name}</AdaptiveBox.Label>

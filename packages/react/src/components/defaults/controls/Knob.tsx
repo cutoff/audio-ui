@@ -155,7 +155,7 @@ function Knob({
         scale,
     });
 
-    const { displayValue } = useAudioParameter(value, onChange, parameterDef, valueFormatter);
+    const { formattedValue } = useAudioParameter(value, onChange, parameterDef, valueFormatter);
 
     const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
 
@@ -175,7 +175,7 @@ function Knob({
                     cursor: "inherit",
                 }}
             >
-                {displayValue}
+                {formattedValue}
             </div>
         ) : undefined;
 

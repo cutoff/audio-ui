@@ -19,7 +19,7 @@ describe("useAudioParameter", () => {
 
             // 64 is approx 0.5039 of 127
             expect(result.current.normalizedValue).toBeCloseTo(64 / 127, 4);
-            expect(result.current.displayValue).toBe("64");
+            expect(result.current.formattedValue).toBe("64");
         });
 
         it("updates via setNormalizedValue", () => {
@@ -64,7 +64,7 @@ describe("useAudioParameter", () => {
             const { result } = renderHook(() => useAudioParameter(64, undefined, param, valueFormatter));
 
             expect(valueFormatter).toHaveBeenCalledWith(64, param);
-            expect(result.current.displayValue).toBe("Custom: 64");
+            expect(result.current.formattedValue).toBe("Custom: 64");
         });
 
         it("falls back to default formatter when valueFormatter returns undefined", () => {
@@ -72,7 +72,7 @@ describe("useAudioParameter", () => {
             const { result } = renderHook(() => useAudioParameter(64, undefined, param, valueFormatter));
 
             expect(valueFormatter).toHaveBeenCalledWith(64, param);
-            expect(result.current.displayValue).toBe("64"); // Default formatter
+            expect(result.current.formattedValue).toBe("64"); // Default formatter
         });
     });
 
@@ -90,7 +90,7 @@ describe("useAudioParameter", () => {
             // MIDI conversion: round(0.5 * 127) = 64.
             // Final normalized: 64 / 127 ≈ 0.5039...
             expect(result.current.normalizedValue).toBeCloseTo(64 / 127, 4);
-            expect(result.current.displayValue).toBe("Saw");
+            expect(result.current.formattedValue).toBe("Saw");
         });
 
         it("snaps to nearest option on setNormalizedValue", () => {

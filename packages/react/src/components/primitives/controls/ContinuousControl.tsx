@@ -85,7 +85,7 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
     } = props;
 
     const bipolar = props.bipolar ?? false;
-    const { derivedParameter: paramConfig } = useContinuousParameterResolution({
+    const { derivedParameter } = useContinuousParameterResolution({
         parameter,
         paramId,
         label,
@@ -97,10 +97,10 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         scale,
     });
 
-    const { normalizedValue, adjustValue, displayValue } = useAudioParameter(
+    const { normalizedValue, adjustValue, formattedValue } = useAudioParameter(
         value,
         onChange,
-        paramConfig,
+        derivedParameter,
         valueFormatter
     );
 
@@ -126,10 +126,10 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
 
     const effectiveLabel = useMemo(() => {
         if (valueAsLabel) {
-            return displayValue;
+            return formattedValue;
         }
-        return label ?? (parameter ? paramConfig.name : undefined);
-    }, [valueAsLabel, displayValue, label, parameter, paramConfig.name]);
+        return label ?? derivedParameter.name;
+    }, [valueAsLabel, formattedValue, label, derivedParameter]);
 
     const handleMouseDown = (e: React.MouseEvent) => {
         interactiveProps.onMouseDown(e);

@@ -12,7 +12,7 @@ export interface UseAudioParameterResult {
     /** The normalized value (0..1) for UI rendering */
     normalizedValue: number;
     /** Formatted string representation of the current value */
-    displayValue: string;
+    formattedValue: string;
     /** The full parameter model instance */
     converter: AudioParameterConverter;
     /**
@@ -38,7 +38,7 @@ export interface UseAudioParameterResult {
  *
  * The hook provides:
  * - `normalizedValue`: 0..1 value for UI rendering
- * - `displayValue`: Formatted string for display
+ * - `formattedValue`: Formatted string for display
  * - `converter`: The AudioParameterConverter instance for advanced operations
  * - `setNormalizedValue`: Set value from normalized input (e.g., from UI slider)
  * - `adjustValue`: Adjust value relatively (e.g., from mouse wheel or drag)
@@ -47,11 +47,11 @@ export interface UseAudioParameterResult {
  * @param onChange Callback when value changes. Receives an AudioControlEvent with all value representations.
  * @param parameterDef The parameter definition (AudioParameter)
  * @param valueFormatter Optional custom renderer for the value display. If provided and returns a value, it takes precedence over the default formatter.
- * @returns Object containing normalizedValue, displayValue, converter, setNormalizedValue, and adjustValue
+ * @returns Object containing normalizedValue, formattedValue, converter, setNormalizedValue, and adjustValue
  *
  * @example
  * ```tsx
- * const { normalizedValue, displayValue, adjustValue } = useAudioParameter(
+ * const { normalizedValue, formattedValue, adjustValue } = useAudioParameter(
  *   volume,
  *   (e) => setVolume(e.value),
  *   volumeParam
@@ -128,7 +128,7 @@ export function useAudioParameter<T extends number | boolean | string>(
     );
 
     // Custom valueFormatter takes precedence if provided and returns a value; otherwise fall back to default formatter
-    const displayValue = useMemo(() => {
+    const formattedValue = useMemo(() => {
         if (valueFormatter) {
             const customValue = valueFormatter(value, parameterDef);
             if (customValue !== undefined) {
@@ -140,7 +140,7 @@ export function useAudioParameter<T extends number | boolean | string>(
 
     return {
         normalizedValue,
-        displayValue,
+        formattedValue,
         converter,
         setNormalizedValue,
         adjustValue,

@@ -101,7 +101,7 @@ function KnobSwitch({
 
     const effectiveValue = value !== undefined ? value : defaultVal;
 
-    const { normalizedValue, setNormalizedValue, displayValue, adjustValue, converter } = useAudioParameter(
+    const { normalizedValue, setNormalizedValue, formattedValue, adjustValue, converter } = useAudioParameter(
         effectiveValue,
         onChange,
         derivedParameter
@@ -189,9 +189,9 @@ function KnobSwitch({
             if (opt) return wrapContent(renderOption(opt));
         }
 
-        return displayValue;
+        return formattedValue;
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [visualContentMap, effectiveValue, renderOption, optionByValueMap, displayValue, iconWrapperStyle]);
+    }, [visualContentMap, effectiveValue, renderOption, optionByValueMap, formattedValue, iconWrapperStyle]);
 
     const effectiveLabel = label ?? derivedParameter.name;
 
@@ -294,7 +294,7 @@ function KnobSwitch({
                 tabIndex={interactiveProps.tabIndex}
                 role={interactiveProps.role}
                 aria-valuenow={typeof effectiveValue === "number" ? effectiveValue : undefined}
-                aria-valuetext={displayValue}
+                aria-valuetext={formattedValue}
                 aria-label={effectiveLabel}
             >
                 <SvgKnob
