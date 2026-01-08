@@ -282,13 +282,13 @@ The class wraps the configuration and handles the math for all types using the M
 
 Components are not generic "do-it-all" wrappers. They declare which Parameter Types they support.
 
-| Component      | Supported Types | Constraints                                         |
-| :------------- | :-------------- | :-------------------------------------------------- |
-| **Knob**       | `continuous`    | Rejects Boolean/Enum. Use for variable control.     |
-| **Slider**     | `continuous`    | Rejects Boolean/Enum.                               |
-| **Switch**     | `boolean`       | Rejects Continuous/Enum. Use for On/Off.            |
-| **KnobSwitch** | `enum`          | Specialized for discrete steps. Rejects Continuous. |
-| **Button**     | `boolean`       | Momentary or Toggle.                                |
+| Component       | Supported Types | Constraints                                         |
+| :-------------- | :-------------- | :-------------------------------------------------- |
+| **Knob**        | `continuous`    | Rejects Boolean/Enum. Use for variable control.     |
+| **Slider**      | `continuous`    | Rejects Boolean/Enum.                               |
+| **Switch**      | `boolean`       | Rejects Continuous/Enum. Use for On/Off.            |
+| **CycleButton** | `enum`          | Specialized for discrete steps. Rejects Continuous. |
+| **Button**      | `boolean`       | Momentary or Toggle.                                |
 
 **Validation**: Components should throw a clear error (or render an error state) if passed an incompatible `AudioParameter`.
 
@@ -374,15 +374,15 @@ function Knob(props: KnobProps) {
 }
 ```
 
-### Integration in `KnobSwitch` (Enum Parameter)
+### Integration in `CycleButton` (Enum Parameter)
 
-`KnobSwitch` supports two modes for defining options: explicit Parameter Model or implicit Children (Ad-hoc).
+`CycleButton` supports two modes for defining options: explicit Parameter Model or implicit Children (Ad-hoc).
 
 **Mode A: Parameter Driven**
 
 ```tsx
 // Icons provided via render prop, data driven by parameter
-<KnobSwitch
+<CycleButton
   parameter={waveformParam} // type: "enum"
   value={currentWave}
   onChange={setWave}
@@ -394,14 +394,14 @@ function Knob(props: KnobProps) {
 The component infers the `EnumParameter` from the children structure.
 
 ```tsx
-<KnobSwitch value={val} onChange={setVal}>
+<CycleButton value={val} onChange={setVal}>
   <Option value="saw">
     <SawIcon />
   </Option>
   <Option value="sqr">
     <SquareIcon />
   </Option>
-</KnobSwitch>
+</CycleButton>
 ```
 
 **Internal Logic:**

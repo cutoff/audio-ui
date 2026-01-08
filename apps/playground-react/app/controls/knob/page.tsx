@@ -10,8 +10,8 @@ import { useState } from "react";
 import {
     Knob,
     KnobProps,
-    KnobSwitch,
-    KnobSwitchProps,
+    CycleButton,
+    CycleButtonProps,
     Option,
     AudioParameter,
     KnobVariant,
@@ -85,13 +85,13 @@ function generateCodeSnippet(
     unit: string | undefined
 ): string {
     if (enableOptions) {
-        return `<KnobSwitch value={${value}} label='${label}'${color !== undefined ? ` color='${color}'` : ""}>
+        return `<CycleButton value={${value}} label='${label}'${color !== undefined ? ` color='${color}'` : ""}>
     <Option value={0} label="Sine"><SineWaveIcon /></Option>
     <Option value={1} label="Triangle"><TriangleWaveIcon /></Option>
     <Option value={2} label="Square"><SquareWaveIcon /></Option>
     <Option value={3} label="Saw"><SawWaveIcon /></Option>
     <Option value={4} label="Other">Oth</Option>
-</KnobSwitch>
+</CycleButton>
 `;
     } else {
         // Start with variant prop if not default (first prop)
@@ -182,7 +182,7 @@ type KnobComponentProps = {
     valueAsLabel?: ValueLabelMode | undefined;
     unit?: string;
     onChange?: (event: AudioControlEvent<number | string>) => void;
-    onClick?: KnobProps["onClick"] | KnobSwitchProps["onClick"];
+    onClick?: KnobProps["onClick"] | CycleButtonProps["onClick"];
 };
 
 function KnobComponent({
@@ -211,7 +211,7 @@ function KnobComponent({
 }: KnobComponentProps) {
     if (enableOptions) {
         return (
-            <KnobSwitch
+            <CycleButton
                 value={value}
                 adaptiveSize={adaptiveSize}
                 label={label}
@@ -223,7 +223,7 @@ function KnobComponent({
                 color={color}
             >
                 {sampleOptions}
-            </KnobSwitch>
+            </CycleButton>
         );
     } else {
         // Get the selected icon component
@@ -613,7 +613,7 @@ export default function KnobDemoPage() {
             color="#33cc66" // Green
             onClick={() => handleExampleClick(2)}
         />,
-        <KnobSwitch
+        <CycleButton
             key="3"
             value={0}
             label="Enum"
@@ -623,7 +623,7 @@ export default function KnobDemoPage() {
             onClick={() => handleExampleClick(3)}
         >
             {sampleOptions}
-        </KnobSwitch>,
+        </CycleButton>,
         <Knob
             key="4"
             min={0}

@@ -32,7 +32,7 @@
 
 - `src/components/`: Component .tsx with .test.tsx
   - `defaults/`: Default/built-in components and theme system
-    - `controls/`: Interactive controls (Button, Knob, Slider, KnobSwitch) and their SVG views (ButtonView, KnobView, SliderView). Knob and Slider use ContinuousControl internally.
+    - `controls/`: Interactive controls (Button, Knob, Slider, CycleButton) and their SVG views (ButtonView, KnobView, SliderView). Knob and Slider use ContinuousControl internally.
     - `devices/`: Device components (Keybed)
     - `AudioUiProvider.tsx`: Default theme system provider
   - `primitives/`: Base components for building final components, excluding theme-specific
@@ -43,7 +43,7 @@
 
 **Built-in Controls** (`src/components/defaults/controls/`):
 
-- Ready-to-use components (Button, Knob, Slider, KnobSwitch)
+- Ready-to-use components (Button, Knob, Slider, CycleButton)
 - Include `ThemableProps` (`color`, `roundness`) via type extensions
 - Opinionated, production-ready with full theming integration
 - Props: `KnobProps`, `SliderProps`, `ButtonProps` extend primitives with `ThemableProps`
@@ -171,12 +171,12 @@ The library provides a generic `ContinuousControl` component that decouples beha
 - **Hook Location**: `packages/react/src/hooks/useInteractiveControl.ts` (wrapper around core's `InteractionController`)
 - **Core Logic**: `packages/core/src/controller/InteractionController.ts`
 - **Interaction Modes**: Controls support `interactionMode` ("drag" | "wheel" | "both") to restrict input methods.
-- **Interaction Direction**: High-level components (Knob, KnobSwitch, Slider) support `interactionDirection` ("vertical" | "horizontal" | "circular") to define drag behavior. Knobs default to "circular" for rotary behavior.
+- **Interaction Direction**: Continuous controls (Knob, Slider) support `interactionDirection` ("vertical" | "horizontal" | "circular") to define drag behavior. Knobs default to "circular" for rotary behavior. CycleButton is discrete-only and does not support drag interaction.
 - **Interaction Sensitivity**: High-level components support `interactionSensitivity` to tune drag responsiveness. Lower-level components use `direction` and `sensitivity` internally.
 - **Sensitivity Tuning**:
   - Knob: `0.008` drag (increased for responsiveness)
   - Slider: `0.005` drag (standard)
-  - KnobSwitch: `0.1` drag, `stepSize / 4` wheel (high sensitivity for enumerated steps)
+  - CycleButton: Discrete-only (no continuous interaction - click/keyboard only)
 - **Mouse/Touch**:
   - `user-select: none` applied during drag to prevent text selection.
   - `preventDefault` on `onMouseDown` is AVOIDED to allow element focus (enabling keyboard support).
@@ -185,8 +185,8 @@ The library provides a generic `ContinuousControl` component that decouples beha
   - Standard focus management via `tabIndex={0}`.
   - Arrow keys increment/decrement values (clamped at min/max).
   - Home/End jump to min/max.
-  - `KnobSwitch`: Space key and Click cycle through options ("rotate" with wrap-around).
-  - `KnobSwitch`: Arrow keys step increment/decrement (clamped, no wrap).
+  - `CycleButton`: Space key and Click cycle through options ("rotate" with wrap-around).
+  - `CycleButton`: Arrow keys step increment/decrement (clamped, no wrap).
 - **Wheel**:
   - Native non-passive listeners are used in `AdaptiveBox.Svg` to reliably `preventDefault` and stop page scrolling.
   - Direction: Positive `deltaY` (scrolling down/pulling) increases value, consistent with standard audio knob behavior.
@@ -197,21 +197,18 @@ The library provides a generic `ContinuousControl` component that decouples beha
   - All controls must include `.audioui-component-container` class for focus styles to work.
 - **Performance**:
   - Uses `useRef` for mutable state to avoid stale closures.
-  - O(1) value-to-index Map lookups in KnobSwitch.
+  - O(1) value-to-index Map lookups in CycleButton.
   - Memoized event handlers with `useCallback`.
 
-### KnobSwitch (Enum Parameters)
+### CycleButton (Enum Parameters)
 
-- **Icon Theming**: Uses inline SVG components with `fill="currentColor"` to inherit text color automatically. Library CSS applies `fill: currentColor` to all inline SVGs within knob content. Third-party icon libraries (e.g., react-icons) work seamlessly.
+- **Discrete-Only Control**: CycleButton is a discrete interaction control only. It does not support continuous interaction (drag/wheel). All interactions result in discrete step changes.
+- **Visual Variants**: Designed to support multiple visual variants (rotary knob-style, LED indicators, etc.). The current implementation uses a rotary knob-style visual, but the architecture supports other variants.
+- **Icon Theming**: Uses inline SVG components with `fill="currentColor"` to inherit text color automatically. Library CSS applies `fill: currentColor` to all inline SVGs within content. Third-party icon libraries (e.g., react-icons) work seamlessly.
 - **Interaction Methods**:
   - **Click**: Cycles to next value (same as Space key, wraps to first when reaching end)
   - **Space Key**: Cycles to next value (wraps to first when reaching end)
   - **Arrow Keys**: Step increment/decrement (clamped at min/max, no wrap)
-  - **Wheel**: Discrete step-by-step navigation (one option per wheel tick) using O(1) value-to-index Map lookups
-  - **Drag/Touch**: High sensitivity (0.1) for responsive enumerated step changes
-- **Sensitivity**:
-  - Drag: `0.1` (much higher than continuous controls for responsive step changes)
-  - Wheel: `stepSize / 4` (ensures one wheel notch ≈ one step)
 - **Performance Optimizations**:
   - Value-to-index Map for O(1) lookups instead of O(n) array searches
   - Option-by-value Map for O(1) content rendering lookups

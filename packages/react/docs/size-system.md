@@ -30,7 +30,7 @@ Each component type has a fixed aspect ratio that defines its shape:
 
 - **Button**: 1x1 (square)
 - **Knob**: 1x1 (square)
-- **KnobSwitch**: 1x1 (square)
+- **CycleButton**: 1x1 (square)
 - **Horizontal Slider**: 1x3 (width:height) - width > height
 - **Vertical Slider**: 3x1 (width:height) - height > width
 - **Keybed**: 1x5 (width:height) - width > height
@@ -50,7 +50,7 @@ Size dimensions are defined in `themes.css` using CSS variables:
 --audioui-size-mult-large: 2;
 --audioui-size-mult-xlarge: 2.5;
 
-/* Square components (Button, Knob, KnobSwitch) */
+/* Square components (Button, Knob, CycleButton) */
 --audioui-size-square-{size}: calc(var(--audioui-unit) * var(--audioui-size-mult-{size}));
 
 /* Horizontal Slider (1x3) */
@@ -147,7 +147,7 @@ getSizeStyleForComponent("slider", "normal", "vertical");
 
 ### Built-in Controls
 
-All built-in controls (Button, Knob, Slider, KnobSwitch, Keybed) implement size support:
+All built-in controls (Button, Knob, Slider, CycleButton, Keybed) implement size support:
 
 1. Get size class name using utility functions
 2. Merge size class with user className (user takes precedence)

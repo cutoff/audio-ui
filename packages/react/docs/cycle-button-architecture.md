@@ -4,11 +4,11 @@
  See LICENSE.md for details.
 -->
 
-# KnobSwitch Architecture & Specification
+# CycleButton Architecture & Specification
 
 ## Overview
 
-`KnobSwitch` is a specialized rotary control for enumerations (discrete options) that combines the visual language of a knob with the behavior of a multi-state switch. It supports cycling through options via click, drag, or keyboard.
+`CycleButton` is a discrete interaction control for enumerations (discrete options) that cycles through a set of values. It supports multiple visual variants (rotary knob-style, LED indicators, etc.) and handles discrete step-based interactions only. It supports cycling through options via click or keyboard.
 
 ## Modes of Operation
 
@@ -21,17 +21,17 @@ Designed for simple use cases where the component infers the data model directly
 - **Input**: `Option` children only. No `parameter` prop.
 - **Model**: An `EnumParameter` is generated automatically.
   - `options`: Derived from children.
-  - `defaultValue`: Derived from `defaultValue` prop on `KnobSwitch` (or first option).
+  - `defaultValue`: Derived from `defaultValue` prop on `CycleButton` (or first option).
   - `label`: Derived from `label` prop on Option > `children` (if text) > `value`.
 - **View**: Mapped directly from `children`.
 
 ```tsx
-import { KnobSwitch, Option } from "@cutoff/audio-ui-react";
+import { CycleButton, Option } from "@cutoff/audio-ui-react";
 
-<KnobSwitch defaultValue="sine" label="Waveform">
+<CycleButton defaultValue="sine" label="Waveform">
   <Option value="sine">Sine</Option>
   <Option value="square">Square</Option>
-</KnobSwitch>;
+</CycleButton>;
 ```
 
 ### 2. Strict Mode (Parameter Only)
@@ -43,7 +43,7 @@ Designed for data-driven applications where the model is defined externally.
 - **View**: Uses `renderOption` prop (if provided) or falls back to `parameter.options[i].label`.
 
 ```tsx
-<KnobSwitch parameter={waveformParam} renderOption={(opt) => <Icon name={opt.label} />} />
+<CycleButton parameter={waveformParam} renderOption={(opt) => <Icon name={opt.label} />} />
 ```
 
 ### 3. Hybrid Mode (Parameter + Children)
@@ -55,16 +55,16 @@ Designed for cases where you have a strict model but want to declare custom visu
 - **View**: Visual content is looked up in the children by matching `value`.
 
 ```tsx
-import { KnobSwitch, Option } from "@cutoff/audio-ui-react";
+import { CycleButton, Option } from "@cutoff/audio-ui-react";
 
-<KnobSwitch parameter={waveformParam}>
+<CycleButton parameter={waveformParam}>
   <Option value="sine">
     <SineIcon />
   </Option>
   <Option value="square">
     <SquareIcon />
   </Option>
-</KnobSwitch>;
+</CycleButton>;
 ```
 
 ## Option Component Specification
@@ -94,11 +94,23 @@ When inferring the `label` for the generated `EnumParameter`:
 
 **`selected` Prop Removed**: The `selected` prop has been removed from `Option` to enforce React's controlled/uncontrolled patterns.
 
-- **Controlled**: Use `value` prop on `KnobSwitch`.
-- **Uncontrolled**: Use `defaultValue` prop on `KnobSwitch`.
+- **Controlled**: Use `value` prop on `CycleButton`.
+- **Uncontrolled**: Use `defaultValue` prop on `CycleButton`.
 - **Fallback**: Defaults to the first option if neither is provided.
 
 ## Interaction Behavior
 
+`CycleButton` is a **discrete-only** control. It does not support continuous interaction (drag/wheel). All interactions result in discrete step changes.
+
 - **Click / Space**: Cycles to the next value (wraps around).
 - **Arrow Keys**: Steps up/down (clamped at min/max, does not wrap).
+
+## Visual Variants
+
+`CycleButton` is designed to support multiple visual variants:
+
+- **Rotary variant**: Uses a knob-style visual (current default implementation)
+- **LED variant**: Uses LED indicators to show the current value (planned)
+- **Other variants**: Additional visual styles can be added as needed
+
+The component architecture separates the discrete interaction logic from the visual representation, allowing different visual variants to share the same interaction behavior.

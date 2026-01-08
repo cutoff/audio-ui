@@ -8,7 +8,7 @@ export { default as Option } from "./components/primitives/controls/Option";
 
 export { default as Button } from "./components/defaults/controls/Button";
 export { default as Knob } from "./components/defaults/controls/Knob";
-export { default as KnobSwitch } from "./components/defaults/controls/KnobSwitch";
+export { default as CycleButton } from "./components/defaults/controls/CycleButton";
 export { default as Slider } from "./components/defaults/controls/Slider";
 export { default as ContinuousControl } from "./components/primitives/controls/ContinuousControl";
 
@@ -52,7 +52,7 @@ export { default as AudioUiProvider, useAudioUiTheme, useThemableProps } from ".
 export type { AudioUiProviderProps } from "./components/defaults/AudioUiProvider";
 
 // Also export types for consuming applications
-export type { KnobSwitchProps } from "./components/defaults/controls/KnobSwitch";
+export type { CycleButtonProps } from "./components/defaults/controls/CycleButton";
 export type { OptionProps } from "./components/primitives/controls/Option";
 export type { KnobProps } from "./components/defaults/controls/Knob";
 export type { SliderProps } from "./components/defaults/controls/Slider";

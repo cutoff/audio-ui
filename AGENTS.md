@@ -164,10 +164,10 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - **Core Architecture**: Interaction logic is centralized in `packages/core/src/controller/ContinuousInteractionController.ts` (pure TS class).
 - **React Adapter**: `useContinuousInteraction` hook in `packages/react` wraps `ContinuousInteractionController` to bind it to React events.
 - **Generic Control Architecture**: `Knob` and `Slider` are implemented using `ContinuousControl`, a generic component that decouples behavior (AudioParameter, interaction logic) from visualization (SVG rendering). This architecture allows easy customization by providing custom view components that implement the `ControlComponentView` contract.
-- **Unified Interaction Hook**: All interactive controls (Knob, Slider, KnobSwitch, Button) use `useContinuousInteraction` hook for consistent behavior
+- **Unified Interaction Hook**: Continuous controls (Knob, Slider) use `useContinuousInteraction` hook. Discrete controls (CycleButton, Button) use discrete interaction hooks.
 - **Input Methods**: Supports drag (mouse/touch), wheel, and keyboard interactions
 - **Interaction Modes**: Configurable via `interactionMode` prop ("drag" | "wheel" | "both")
-- **Sensitivity Tuning**: Component-specific defaults tuned for optimal feel (Knob: 0.008, Slider: 0.005, KnobSwitch: 0.1 drag, stepSize/5 wheel)
+- **Sensitivity Tuning**: Component-specific defaults tuned for optimal feel (Knob: 0.008, Slider: 0.005). CycleButton is discrete-only (no continuous interaction).
 - **Focus Management**:
   - Custom highlight effect (brightness/contrast boost + shadow) replaces browser ring
   - Applied via `:focus-visible` (keyboard) and `:focus-within` (click/touch)
@@ -177,8 +177,8 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - **Keyboard Support**:
   - Arrow keys (step/increment)
   - Home/End (min/max)
-  - Space/Enter (Button activate, KnobSwitch cycle)
-- **KnobSwitch Special**: Supports click-to-cycle and Space-to-cycle with wrap-around
+  - Space/Enter (Button activate, CycleButton cycle)
+- **CycleButton Special**: Supports click-to-cycle and Space-to-cycle with wrap-around
 - **Performance**: Lazy global event listeners (only during drag), refs for mutable state, O(1) lookups for enums
 - **Comprehensive Documentation**: See `packages/react/docs/interaction-system.md` for complete architecture, design decisions, and implementation details
 
@@ -197,7 +197,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 
 - **Base Unit System**: All component sizes derive from `--audioui-unit` (48px default) with size multipliers (xsmall: 1x, small: 1.25x, normal: 1.5x, large: 2x, xlarge: 2.5x)
 - **Component Aspect Ratios**:
-  - Button, Knob, KnobSwitch: 1x1 (square)
+  - Button, Knob, CycleButton: 1x1 (square)
   - Horizontal Slider: 1x3 (width:height) - width > height
   - Vertical Slider: 3x1 (width:height) - height > width
   - Keybed: 1x5 (width:height) - width > height

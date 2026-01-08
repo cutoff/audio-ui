@@ -49,7 +49,7 @@ export type AudioControlEvent<T = number> = {
  * T is the real value type emitted by the control:
  * - number for continuous controls (Knob, Slider)
  * - boolean for boolean controls (not commonly using this type)
- * - custom types for enum-like controls (e.g. KnobSwitch)
+ * - custom types for enum-like controls (e.g. CycleButton)
  */
 export type InteractiveControlProps<T = number> = {
     /**

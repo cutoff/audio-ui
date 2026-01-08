@@ -123,7 +123,7 @@ SVG icons need explicit sizing to render correctly across browsers. The `.audiou
 1. **`AdaptiveBox.Svg`**: Renders SVG graphics in the main content grid cell
 2. **`AdaptiveBox.HtmlOverlay`**: Renders HTML content in the same grid cell (stacks on top)
 3. **`ContinuousControl`**: Renders `children` via `AdaptiveBox.HtmlOverlay` as a sibling to `AdaptiveBox.Svg`
-4. **`Knob`/`KnobSwitch`**: Accept `children` for custom content
+4. **`Knob`/`CycleButton`**: Accept `children` for custom content
 5. **View components** (`KnobView`, etc.): Render only SVG graphics, no center content
 
 ## Usage

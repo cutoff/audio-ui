@@ -82,10 +82,10 @@ Instead of embedding HTML inside the SVG via `<foreignObject>`, we render HTML c
 Text and icons use `cqmin` (container query minimum) units to scale with the component size:
 
 ```tsx
-// Text sizing in Knob and KnobSwitch
+// Text sizing in Knob and CycleButton
 fontSize: "22cqmin"; // Scales with container
 
-// Icon sizing in KnobSwitch
+// Icon sizing in CycleButton
 width: "50cqmin";
 height: "50cqmin";
 ```
@@ -114,7 +114,7 @@ SVG icons need explicit sizing to render correctly. The `.audioui-icon-wrapper` 
 
 ## Usage
 
-### Built-in Controls (Knob, KnobSwitch, Slider)
+### Built-in Controls (Knob, CycleButton, Slider)
 
 For built-in controls, pass content as `children`:
 
@@ -126,12 +126,12 @@ For built-in controls, pass content as `children`:
     </div>
 </Knob>
 
-// Icon content (KnobSwitch)
-<KnobSwitch options={waveOptions}>
+// Icon content (CycleButton)
+<CycleButton options={waveOptions}>
     {waveOptions.map((opt, i) => (
         <WaveIcon key={i} type={opt.value} />
     ))}
-</KnobSwitch>
+</CycleButton>
 ```
 
 ### Custom Controls with ContinuousControl

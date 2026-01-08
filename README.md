@@ -10,7 +10,7 @@ AudioUI provides a range of components essential for building audio applications
 - **Slider:** A linear slider for horizontal or vertical adjustments.
 - **Button:** A customizable button with styles suited for audio interfaces.
 - **Keybed:** A responsive and interactive piano keyboard.
-- **KnobSwitch:** A multi-position rotary switch for selecting modes or options.
+- **CycleButton:** A discrete control for cycling through a set of options. Supports multiple visual variants (rotary knob-style, LED indicators, etc.).
 
 ## Features
 

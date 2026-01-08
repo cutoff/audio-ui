@@ -22,9 +22,9 @@ import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
 /**
- * Props for the KnobSwitch component
+ * Props for the CycleButton component
  */
-export type KnobSwitchProps = AdaptiveSizeProps &
+export type CycleButtonProps = AdaptiveSizeProps &
     AdaptiveBoxProps &
     BaseProps &
     ThemableProps & {
@@ -44,39 +44,41 @@ export type KnobSwitchProps = AdaptiveSizeProps &
         parameter?: EnumParameter;
         /** Custom renderer for options (used when parameter is provided but no children map exists) */
         renderOption?: (option: { value: string | number; label: string }) => React.ReactNode;
-        /** Thickness of the knob's stroke (normalized 0.0-1.0, maps to 1-20) */
+        /** Thickness of the stroke (normalized 0.0-1.0, maps to 1-20). Used by rotary variant. */
         thickness?: number;
     };
 
 /**
- * A switch component that uses a knob interface to cycle through options.
+ * A discrete interaction control that cycles through a set of discrete options.
  *
- * This control supports discrete interaction (click to cycle, keyboard to step).
+ * This control supports discrete interaction only (click to cycle, keyboard to step).
+ * It does not support continuous interaction (drag/wheel).
  *
- * Supports three modes of operation:
+ * Supports multiple visual variants (rotary knob-style, LED indicators, etc.) and
+ * three modes of operation:
  * 1. Ad-Hoc Mode (Children only): Model inferred from Option children.
  * 2. Strict Mode (Parameter only): Model provided via parameter prop. View via renderOption.
  * 3. Hybrid Mode (Parameter + Children): Model from parameter, View from children (matched by value).
  *
  * @param props - Component props
- * @returns Rendered KnobSwitch component
+ * @returns Rendered CycleButton component
  *
  * @example
  * ```tsx
  * // Ad-Hoc Mode
- * <KnobSwitch defaultValue="sine" label="Waveform">
+ * <CycleButton defaultValue="sine" label="Waveform">
  *   <Option value="sine">Sine</Option>
  *   <Option value="square">Square</Option>
- * </KnobSwitch>
+ * </CycleButton>
  *
  * // Strict Mode with custom renderer
- * <KnobSwitch
+ * <CycleButton
  *   parameter={waveformParam}
  *   renderOption={(opt) => <Icon name={opt.value} />}
  * />
  * ```
  */
-function KnobSwitch({
+function CycleButton({
     value,
     defaultValue,
     onChange,
@@ -101,7 +103,7 @@ function KnobSwitch({
     className,
     style,
     children,
-}: KnobSwitchProps) {
+}: CycleButtonProps) {
     const clampedRoundness = roundness !== undefined ? clampNormalized(roundness) : undefined;
     const clampedThickness = clampNormalized(thickness);
     const { resolvedColor, resolvedRoundness } = useThemableProps(
@@ -264,4 +266,4 @@ function KnobSwitch({
     );
 }
 
-export default React.memo(KnobSwitch);
+export default React.memo(CycleButton);

@@ -6,7 +6,7 @@
 
 "use client";
 
-import { Button, Knob, KnobSwitch, Slider, Keys, Option, SizeType } from "@cutoff/audio-ui-react";
+import { Button, Knob, CycleButton, Slider, Keys, Option, SizeType } from "@cutoff/audio-ui-react";
 import { SawWaveIcon, SineWaveIcon, SquareWaveIcon, TriangleWaveIcon } from "@/components/wave-icons";
 
 const sizeTypes: SizeType[] = ["xsmall", "small", "normal", "large", "xlarge"];
@@ -42,7 +42,7 @@ export default function SizingPage() {
                 <section className="mb-12">
                     <h2 className="text-2xl font-semibold mb-6">Square Components (1:1)</h2>
                     <p className="text-muted-foreground mb-6">
-                        Button, Knob, and KnobSwitch share the same square aspect ratio, making them perfect for
+                        Button, Knob, and CycleButton share the same square aspect ratio, making them perfect for
                         side-by-side layouts.
                     </p>
 
@@ -72,15 +72,15 @@ export default function SizingPage() {
                         </div>
                     </div>
 
-                    {/* KnobSwitch */}
+                    {/* CycleButton */}
                     <div className="mb-10">
-                        <h3 className="text-xl font-medium mb-4">KnobSwitch</h3>
+                        <h3 className="text-xl font-medium mb-4">CycleButton</h3>
                         <div className="flex flex-wrap gap-8 md:gap-12 items-end">
                             {sizeTypes.map((size) => (
                                 <div key={size} className="flex flex-col items-center gap-2">
-                                    <KnobSwitch value={0} label={size} size={size}>
+                                    <CycleButton value={0} label={size} size={size}>
                                         {sampleOptions}
-                                    </KnobSwitch>
+                                    </CycleButton>
                                     <span className="text-xs text-muted-foreground font-mono">{size}</span>
                                 </div>
                             ))}

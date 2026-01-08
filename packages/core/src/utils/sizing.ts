@@ -7,7 +7,7 @@
 import { SizeType } from "../types";
 
 /**
- * Maps size values to CSS class names for square components (Button, Knob, KnobSwitch)
+ * Maps size values to CSS class names for square components (Button, Knob, CycleButton)
  */
 export const squareSizeClassMap: Record<SizeType, string> = {
     xsmall: "audioui-size-square-xsmall",

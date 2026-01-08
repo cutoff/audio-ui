@@ -47,7 +47,7 @@ svg foreignObject div > * svg {
 }
 
 /* Icon wrapper class for HTML overlay - ensures SVG icons fill their container */
-/* Used by KnobSwitch and other components that render icons in the overlay */
+/* Used by CycleButton and other components that render icons in the overlay */
 .audioui-icon-wrapper {
     display: flex;
     align-items: center;
@@ -154,7 +154,7 @@ svg foreignObject div > * svg {
     color: var(--audioui-primary-color);
 }
 
-/* Size utility classes - Square components (Button, Knob, KnobSwitch) */
+/* Size utility classes - Square components (Button, Knob, CycleButton) */
 .audioui-size-square-xsmall {
     width: var(--audioui-size-square-xsmall);
     height: var(--audioui-size-square-xsmall);

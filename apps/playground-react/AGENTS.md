@@ -35,7 +35,7 @@
 
 - Add new playground page: Create app/[route]/[component]/page.tsx; import from @cutoff/audio-ui-react; add examples with props; use shadcn for UI
 - Control demo pages: Use `ControlSkeletonPage` component; examples use `size="large"` for visibility; no individual Size showcases (centralized in `/layout/sizing`)
-- Sizing showcase: Centralized at `/layout/sizing`; showcases all components (Button, Knob, KnobSwitch, Slider, Keys) with all sizes (xsmall through xlarge)
+- Sizing showcase: Centralized at `/layout/sizing`; showcases all components (Button, Knob, CycleButton, Slider, Keys) with all sizes (xsmall through xlarge)
 - Theming: next-themes in providers; toggle dark mode
 - Testing demos: Run pnpm dev; validate components from library
 - Building: pnpm build for prod; Next.js optimization

@@ -6,7 +6,7 @@
 
 # Interaction System
 
-The interaction system in AudioUI provides a unified way to handle user input across all control components (Knob, Slider, KnobSwitch, Button). It is designed to be performant, accessible, and consistent with professional audio software standards.
+The interaction system in AudioUI provides a unified way to handle user input across all control components. Continuous controls (Knob, Slider) use continuous interaction (drag/wheel), while discrete controls (CycleButton, Button) use discrete interaction (click/keyboard). It is designed to be performant, accessible, and consistent with professional audio software standards.
 
 ## Architecture
 
@@ -33,7 +33,7 @@ const handlers = useContinuousInteraction({
 });
 ```
 
-**Note**: High-level components (Knob, KnobSwitch, Slider) expose these props as `interactionDirection` and `interactionSensitivity` for clarity. The internal hook uses `direction` and `sensitivity`.
+**Note**: High-level components (Knob, CycleButton, Slider) expose these props as `interactionDirection` and `interactionSensitivity` for clarity. The internal hook uses `direction` and `sensitivity`.
 
 It returns a set of event handlers (`onMouseDown`, `onTouchStart`, `onWheel`, `onKeyDown`) and accessibility props (`tabIndex`, `role`, `aria-*`) that should be spread onto the interactive element.
 
@@ -69,7 +69,7 @@ It returns a set of event handlers (`onMouseDown`, `onTouchStart`, `onWheel`, `o
   - `End`: Set to Maximum.
   - `Space` / `Enter`:
     - **Button**: Toggle/Activate.
-    - **KnobSwitch**: Cycle to next value (wraps around).
+    - **CycleButton**: Cycle to next value (wraps around).
 
 ## Component Implementation
 
@@ -79,7 +79,7 @@ It returns a set of event handlers (`onMouseDown`, `onTouchStart`, `onWheel`, `o
 - **Wheel**: Fine adjustments.
 - **Keyboard**: Step-based increments.
 
-### KnobSwitch (Discrete/Enum)
+### CycleButton (Discrete/Enum)
 
 - **Click**: Clicking the control cycles to the next value (like `Space`).
 - **Keyboard**:

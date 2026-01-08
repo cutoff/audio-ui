@@ -35,7 +35,7 @@
     --audioui-size-mult-large: 2;
     --audioui-size-mult-xlarge: 2.5;
 
-    /* Square Components (1x1): Button, Knob, KnobSwitch */
+    /* Square Components (1x1): Button, Knob, CycleButton */
     --audioui-size-square-xsmall: var(--audioui-unit);
     --audioui-size-square-small: calc(var(--audioui-unit) * var(--audioui-size-mult-small));
     --audioui-size-square-normal: calc(var(--audioui-unit) * var(--audioui-size-mult-normal));

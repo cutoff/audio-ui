@@ -12,13 +12,7 @@ import { useThemableProps } from "@/defaults/AudioUiProvider";
 import { VerticalSliderView, HorizontalSliderView } from "./SliderView";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
-import {
-    AdaptiveBoxProps,
-    AdaptiveSizeProps,
-    ContinuousControlProps,
-    ThemableProps,
-    ValueLabelMode,
-} from "@/types";
+import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps, ValueLabelMode } from "@/types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
