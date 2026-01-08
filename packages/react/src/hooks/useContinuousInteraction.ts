@@ -10,6 +10,14 @@ import { ContinuousInteractionController, ContinuousInteractionConfig, CIRCULAR_
 export type UseContinuousInteractionProps = Omit<ContinuousInteractionConfig, "adjustValue"> & {
     adjustValue: (delta: number, sensitivity?: number) => void;
     editable?: boolean;
+    /** Optional user-provided mouse down handler (composed with hook handler) */
+    onMouseDown?: React.MouseEventHandler;
+    /** Optional user-provided touch start handler (composed with hook handler) */
+    onTouchStart?: React.TouchEventHandler;
+    /** Optional user-provided wheel handler (composed with hook handler) */
+    onWheel?: React.WheelEventHandler;
+    /** Optional user-provided keyboard key down handler (composed with hook handler) */
+    onKeyDown?: React.KeyboardEventHandler;
 };
 
 export interface ContinuousInteractionHandlers {
@@ -45,6 +53,10 @@ export interface ContinuousInteractionHandlers {
  * @param editable Whether the control is editable (default: true). When false, cursor changes to "default".
  * @param onDragStart Callback when drag interaction starts
  * @param onDragEnd Callback when drag interaction ends
+ * @param onMouseDown Optional user-provided mouse down handler (composed with hook handler)
+ * @param onTouchStart Optional user-provided touch start handler (composed with hook handler)
+ * @param onWheel Optional user-provided wheel handler (composed with hook handler)
+ * @param onKeyDown Optional user-provided keyboard key down handler (composed with hook handler)
  * @returns Object containing React event handlers (onMouseDown, onTouchStart, onWheel, onKeyDown) and accessibility props
  *
  * @example
@@ -74,6 +86,10 @@ export function useContinuousInteraction({
     editable = true,
     onDragStart,
     onDragEnd,
+    onMouseDown: userOnMouseDown,
+    onTouchStart: userOnTouchStart,
+    onWheel: userOnWheel,
+    onKeyDown: userOnKeyDown,
 }: UseContinuousInteractionProps): ContinuousInteractionHandlers {
     const controllerRef = useRef<ContinuousInteractionController | null>(null);
 
@@ -121,20 +137,46 @@ export function useContinuousInteraction({
         };
     }, []);
 
-    // Handlers
+    // Handlers with user handler composition
     const handlers = useMemo(() => {
         const ctrl = controllerRef.current!;
 
         return {
-            onMouseDown: (e: React.MouseEvent) => ctrl.handleMouseDown(e.clientX, e.clientY, e.currentTarget),
-            onTouchStart: (e: React.TouchEvent) => {
-                const touch = e.touches[0];
-                ctrl.handleTouchStart(touch.clientX, touch.clientY, e.currentTarget);
+            onMouseDown: (e: React.MouseEvent) => {
+                // Call user handler first
+                userOnMouseDown?.(e);
+                // Only call hook handler if not prevented
+                if (!e.defaultPrevented) {
+                    ctrl.handleMouseDown(e.clientX, e.clientY, e.currentTarget);
+                }
             },
-            onWheel: (e: React.WheelEvent) => ctrl.handleWheel(e as unknown as WheelEvent),
-            onKeyDown: (e: React.KeyboardEvent) => ctrl.handleKeyDown(e as unknown as KeyboardEvent),
+            onTouchStart: (e: React.TouchEvent) => {
+                // Call user handler first
+                userOnTouchStart?.(e);
+                // Only call hook handler if not prevented
+                if (!e.defaultPrevented) {
+                    const touch = e.touches[0];
+                    ctrl.handleTouchStart(touch.clientX, touch.clientY, e.currentTarget);
+                }
+            },
+            onWheel: (e: React.WheelEvent) => {
+                // Call user handler first
+                userOnWheel?.(e);
+                // Only call hook handler if not prevented
+                if (!e.defaultPrevented) {
+                    ctrl.handleWheel(e as unknown as WheelEvent);
+                }
+            },
+            onKeyDown: (e: React.KeyboardEvent) => {
+                // Call user handler first
+                userOnKeyDown?.(e);
+                // Only call hook handler if not prevented
+                if (!e.defaultPrevented) {
+                    ctrl.handleKeyDown(e as unknown as KeyboardEvent);
+                }
+            },
         };
-    }, []);
+    }, [userOnMouseDown, userOnTouchStart, userOnWheel, userOnKeyDown]);
 
     const cursor = disabled
         ? "not-allowed"

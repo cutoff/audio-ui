@@ -218,6 +218,59 @@ describe("useDiscreteInteraction", () => {
 
                 expect(onValueChange).not.toHaveBeenCalled();
             });
+
+            it("calls user-provided onClick handler before hook handler", () => {
+                const userOnClick = vi.fn();
+                const { result } = renderHook(() =>
+                    useDiscreteInteraction({
+                        value: 0,
+                        options,
+                        onValueChange,
+                        onClick: userOnClick,
+                    })
+                );
+
+                const mockEvent = {
+                    defaultPrevented: false,
+                } as React.MouseEvent;
+
+                act(() => {
+                    result.current.handleClick(mockEvent);
+                });
+
+                expect(userOnClick).toHaveBeenCalledWith(mockEvent);
+                expect(userOnClick).toHaveBeenCalledTimes(1);
+                expect(onValueChange).toHaveBeenCalledWith(1);
+            });
+
+            it("respects defaultPrevented from user onClick handler", () => {
+                const userOnClick = vi.fn((e: React.MouseEvent) => {
+                    e.preventDefault();
+                });
+                const { result } = renderHook(() =>
+                    useDiscreteInteraction({
+                        value: 0,
+                        options,
+                        onValueChange,
+                        onClick: userOnClick,
+                    })
+                );
+
+                const mockEvent = {
+                    defaultPrevented: false,
+                    preventDefault: vi.fn(() => {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        (mockEvent as any).defaultPrevented = true;
+                    }),
+                } as unknown as React.MouseEvent;
+
+                act(() => {
+                    result.current.handleClick(mockEvent);
+                });
+
+                expect(userOnClick).toHaveBeenCalled();
+                expect(onValueChange).not.toHaveBeenCalled();
+            });
         });
 
         describe("handleKeyDown", () => {
@@ -396,6 +449,92 @@ describe("useDiscreteInteraction", () => {
 
                 expect(preventDefault).not.toHaveBeenCalled();
                 expect(onValueChange).not.toHaveBeenCalled();
+            });
+
+            it("calls user-provided onKeyDown handler before hook handler", () => {
+                const userOnKeyDown = vi.fn();
+                const { result } = renderHook(() =>
+                    useDiscreteInteraction({
+                        value: 0,
+                        options,
+                        onValueChange,
+                        onKeyDown: userOnKeyDown,
+                    })
+                );
+
+                const preventDefault = vi.fn();
+                const mockEvent = {
+                    key: "ArrowRight",
+                    preventDefault,
+                    defaultPrevented: false,
+                } as React.KeyboardEvent;
+
+                act(() => {
+                    result.current.handleKeyDown(mockEvent);
+                });
+
+                expect(userOnKeyDown).toHaveBeenCalledWith(mockEvent);
+                expect(userOnKeyDown).toHaveBeenCalledTimes(1);
+                expect(onValueChange).toHaveBeenCalledWith(1);
+            });
+
+            it("respects defaultPrevented from user onKeyDown handler", () => {
+                const userOnKeyDown = vi.fn((e: React.KeyboardEvent) => {
+                    e.preventDefault();
+                });
+                const { result } = renderHook(() =>
+                    useDiscreteInteraction({
+                        value: 0,
+                        options,
+                        onValueChange,
+                        onKeyDown: userOnKeyDown,
+                    })
+                );
+
+                const preventDefault = vi.fn(() => {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (mockEvent as any).defaultPrevented = true;
+                });
+                const mockEvent = {
+                    key: "ArrowRight",
+                    preventDefault,
+                    defaultPrevented: false,
+                } as unknown as React.KeyboardEvent;
+
+                act(() => {
+                    result.current.handleKeyDown(mockEvent);
+                });
+
+                expect(userOnKeyDown).toHaveBeenCalled();
+                expect(onValueChange).not.toHaveBeenCalled();
+            });
+        });
+
+        describe("handleMouseDown", () => {
+            it("passes through user-provided onMouseDown handler", () => {
+                const userOnMouseDown = vi.fn();
+                const { result } = renderHook(() =>
+                    useDiscreteInteraction({
+                        value: 0,
+                        options,
+                        onValueChange,
+                        onMouseDown: userOnMouseDown,
+                    })
+                );
+
+                expect(result.current.handleMouseDown).toBe(userOnMouseDown);
+            });
+
+            it("returns undefined when no user handler provided", () => {
+                const { result } = renderHook(() =>
+                    useDiscreteInteraction({
+                        value: 0,
+                        options,
+                        onValueChange,
+                    })
+                );
+
+                expect(result.current.handleMouseDown).toBeUndefined();
             });
         });
     });

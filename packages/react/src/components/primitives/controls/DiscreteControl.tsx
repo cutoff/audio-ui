@@ -114,39 +114,19 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
         [setNormalizedValue, converter]
     );
 
-    const { handleClick: handleDiscreteClick, handleKeyDown: handleDiscreteKeyDown } = useDiscreteInteraction({
+    const { handleClick, handleKeyDown, handleMouseDown } = useDiscreteInteraction({
         value: effectiveValue,
         options: derivedParameter.options,
         onValueChange: handleValueChange,
         disabled: !onChange,
+        // Type cast needed because onClick prop expects React.MouseEvent<SVGSVGElement>
+        // but hook accepts React.MouseEvent
+        onClick: onClick
+            ? (e: React.MouseEvent) => onClick(e as unknown as React.MouseEvent<SVGSVGElement>)
+            : undefined,
+        onMouseDown,
+        onKeyDown: undefined, // DiscreteControl doesn't have onKeyDown prop, only uses hook handler
     });
-
-    const handleMouseDown = useCallback(
-        (e: React.MouseEvent) => {
-            onMouseDown?.(e);
-        },
-        [onMouseDown]
-    );
-
-    const handleClick = useCallback(
-        (e: React.MouseEvent<SVGSVGElement>) => {
-            onClick?.(e as unknown as React.MouseEvent);
-            // The hook handles the cycle logic if defaultPrevented is false
-            if (!e.defaultPrevented) {
-                handleDiscreteClick(e);
-            }
-        },
-        [onClick, handleDiscreteClick]
-    );
-
-    const handleKeyDown = useCallback(
-        (e: React.KeyboardEvent) => {
-            if (!e.defaultPrevented) {
-                handleDiscreteKeyDown(e);
-            }
-        },
-        [handleDiscreteKeyDown]
-    );
 
     const effectiveLabel = label ?? derivedParameter.name;
 

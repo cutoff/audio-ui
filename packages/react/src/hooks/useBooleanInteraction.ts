@@ -16,6 +16,14 @@ export interface UseBooleanInteractionProps {
     onValueChange: (value: boolean) => void;
     /** Whether the control is disabled */
     disabled?: boolean;
+    /** Optional user-provided mouse down handler (composed with hook handler) */
+    onMouseDown?: React.MouseEventHandler;
+    /** Optional user-provided mouse up handler (composed with hook handler) */
+    onMouseUp?: React.MouseEventHandler;
+    /** Optional user-provided keyboard key down handler (composed with hook handler) */
+    onKeyDown?: React.KeyboardEventHandler;
+    /** Optional user-provided keyboard key up handler (composed with hook handler) */
+    onKeyUp?: React.KeyboardEventHandler;
 }
 
 export interface UseBooleanInteractionResult {
@@ -51,6 +59,10 @@ export interface UseBooleanInteractionResult {
  * @param {BooleanInteractionMode} props.mode - Interaction mode: "toggle" or "momentary"
  * @param {(value: boolean) => void} props.onValueChange - Callback to update the value
  * @param {boolean} [props.disabled=false] - Whether the control is disabled
+ * @param {React.MouseEventHandler} [props.onMouseDown] - Optional user-provided mouse down handler
+ * @param {React.MouseEventHandler} [props.onMouseUp] - Optional user-provided mouse up handler
+ * @param {React.KeyboardEventHandler} [props.onKeyDown] - Optional user-provided keyboard key down handler
+ * @param {React.KeyboardEventHandler} [props.onKeyUp] - Optional user-provided keyboard key up handler
  * @returns {UseBooleanInteractionResult} Object containing event handlers
  *
  * @example
@@ -74,6 +86,10 @@ export function useBooleanInteraction({
     mode,
     onValueChange,
     disabled = false,
+    onMouseDown: userOnMouseDown,
+    onMouseUp: userOnMouseUp,
+    onKeyDown: userOnKeyDown,
+    onKeyUp: userOnKeyUp,
 }: UseBooleanInteractionProps): UseBooleanInteractionResult {
     const controllerRef = useRef<BooleanInteractionController | null>(null);
 
@@ -112,27 +128,59 @@ export function useBooleanInteraction({
         return undefined;
     }, [mode, disabled, handleGlobalMouseUp]);
 
-    const handleMouseDown = useCallback((e: React.MouseEvent) => {
-        controllerRef.current?.handleMouseDown(e.defaultPrevented);
-    }, []);
+    const handleMouseDown = useCallback(
+        (e: React.MouseEvent) => {
+            // Call user handler first
+            userOnMouseDown?.(e);
+            // Only call hook handler if not prevented
+            if (!e.defaultPrevented) {
+                controllerRef.current?.handleMouseDown(e.defaultPrevented);
+            }
+        },
+        [userOnMouseDown]
+    );
 
-    const handleMouseUp = useCallback((e: React.MouseEvent) => {
-        controllerRef.current?.handleMouseUp(e.defaultPrevented);
-    }, []);
+    const handleMouseUp = useCallback(
+        (e: React.MouseEvent) => {
+            // Call user handler first
+            userOnMouseUp?.(e);
+            // Only call hook handler if not prevented
+            if (!e.defaultPrevented) {
+                controllerRef.current?.handleMouseUp(e.defaultPrevented);
+            }
+        },
+        [userOnMouseUp]
+    );
 
-    const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-        const handled = controllerRef.current?.handleKeyDown(e.key);
-        if (handled) {
-            e.preventDefault();
-        }
-    }, []);
+    const handleKeyDown = useCallback(
+        (e: React.KeyboardEvent) => {
+            // Call user handler first
+            userOnKeyDown?.(e);
+            // Only call hook handler if not prevented
+            if (!e.defaultPrevented) {
+                const handled = controllerRef.current?.handleKeyDown(e.key);
+                if (handled) {
+                    e.preventDefault();
+                }
+            }
+        },
+        [userOnKeyDown]
+    );
 
-    const handleKeyUp = useCallback((e: React.KeyboardEvent) => {
-        const handled = controllerRef.current?.handleKeyUp(e.key);
-        if (handled) {
-            e.preventDefault();
-        }
-    }, []);
+    const handleKeyUp = useCallback(
+        (e: React.KeyboardEvent) => {
+            // Call user handler first
+            userOnKeyUp?.(e);
+            // Only call hook handler if not prevented
+            if (!e.defaultPrevented) {
+                const handled = controllerRef.current?.handleKeyUp(e.key);
+                if (handled) {
+                    e.preventDefault();
+                }
+            }
+        },
+        [userOnKeyUp]
+    );
 
     return {
         handleMouseDown,

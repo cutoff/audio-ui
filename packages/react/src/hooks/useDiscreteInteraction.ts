@@ -16,6 +16,12 @@ export interface UseDiscreteInteractionProps {
     onValueChange: (value: string | number) => void;
     /** Whether the control is disabled */
     disabled?: boolean;
+    /** Optional user-provided click handler (composed with hook handler) */
+    onClick?: React.MouseEventHandler;
+    /** Optional user-provided mouse down handler (composed with hook handler) */
+    onMouseDown?: React.MouseEventHandler;
+    /** Optional user-provided keyboard key down handler (composed with hook handler) */
+    onKeyDown?: React.KeyboardEventHandler;
 }
 
 export interface UseDiscreteInteractionResult {
@@ -23,6 +29,8 @@ export interface UseDiscreteInteractionResult {
     handleClick: (e: React.MouseEvent) => void;
     /** Handler for keyboard events (Arrows to step, Space/Enter to cycle) */
     handleKeyDown: (e: React.KeyboardEvent) => void;
+    /** Handler for mouse down events (passes through to user handler if provided) */
+    handleMouseDown?: React.MouseEventHandler;
     /** Manually cycle to the next value (wrapping around) */
     cycleNext: () => void;
     /** Manually step to the next value (clamped) */
@@ -49,6 +57,9 @@ export interface UseDiscreteInteractionResult {
  * @param {Array<{ value: string | number }>} props.options - List of available options
  * @param {(value: string | number) => void} props.onValueChange - Callback to update the value
  * @param {boolean} [props.disabled=false] - Whether the control is disabled
+ * @param {React.MouseEventHandler} [props.onClick] - Optional user-provided click handler
+ * @param {React.MouseEventHandler} [props.onMouseDown] - Optional user-provided mouse down handler
+ * @param {React.KeyboardEventHandler} [props.onKeyDown] - Optional user-provided keyboard key down handler
  * @returns {UseDiscreteInteractionResult} Object containing event handlers and manual control methods
  *
  * @example
@@ -67,6 +78,9 @@ export function useDiscreteInteraction({
     options,
     onValueChange,
     disabled = false,
+    onClick: userOnClick,
+    onMouseDown: userOnMouseDown,
+    onKeyDown: userOnKeyDown,
 }: UseDiscreteInteractionProps): UseDiscreteInteractionResult {
     const controllerRef = useRef<DiscreteInteractionController | null>(null);
 
@@ -92,20 +106,40 @@ export function useDiscreteInteraction({
     const stepNext = useCallback(() => controllerRef.current?.stepNext(), []);
     const stepPrev = useCallback(() => controllerRef.current?.stepPrev(), []);
 
-    const handleClick = useCallback((e: React.MouseEvent) => {
-        controllerRef.current?.handleClick(e.defaultPrevented);
-    }, []);
+    const handleClick = useCallback(
+        (e: React.MouseEvent) => {
+            // Call user handler first
+            userOnClick?.(e);
+            // Only call hook handler if not prevented
+            if (!e.defaultPrevented) {
+                controllerRef.current?.handleClick(e.defaultPrevented);
+            }
+        },
+        [userOnClick]
+    );
 
-    const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-        const handled = controllerRef.current?.handleKeyDown(e.key);
-        if (handled) {
-            e.preventDefault();
-        }
-    }, []);
+    const handleKeyDown = useCallback(
+        (e: React.KeyboardEvent) => {
+            // Call user handler first
+            userOnKeyDown?.(e);
+            // Only call hook handler if not prevented
+            if (!e.defaultPrevented) {
+                const handled = controllerRef.current?.handleKeyDown(e.key);
+                if (handled) {
+                    e.preventDefault();
+                }
+            }
+        },
+        [userOnKeyDown]
+    );
+
+    // Pass through mouse down handler if provided (no discrete interaction logic needed for mousedown)
+    const handleMouseDown = userOnMouseDown;
 
     return {
         handleClick,
         handleKeyDown,
+        handleMouseDown,
         cycleNext,
         stepNext,
         stepPrev,

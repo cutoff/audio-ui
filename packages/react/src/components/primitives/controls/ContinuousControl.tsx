@@ -165,6 +165,10 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         editable: !!onChange,
         onDragStart: valueAsLabel === "interactive" ? handleDragStart : undefined,
         onDragEnd: valueAsLabel === "interactive" ? handleDragEnd : undefined,
+        onMouseDown,
+        onTouchStart: undefined, // ContinuousControl doesn't have onTouchStart prop
+        onWheel: undefined, // ContinuousControl doesn't have onWheel prop
+        onKeyDown: undefined, // ContinuousControl doesn't have onKeyDown prop
     });
 
     const componentClassNames = useMemo(() => {
@@ -174,13 +178,6 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
     const svgClassNames = useMemo(() => {
         return onChange || onClick ? CLASSNAMES.highlight : "";
     }, [onChange, onClick]);
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-        onMouseDown?.(e);
-        if (!e.defaultPrevented) {
-            interactiveProps.onMouseDown(e);
-        }
-    };
 
     // Add pointer cursor when clickable but not draggable (onClick but no onChange)
     const svgStyle = {
@@ -204,7 +201,7 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
                 style={svgStyle}
                 onWheel={interactiveProps.onWheel}
                 onClick={onClick}
-                onMouseDown={handleMouseDown}
+                onMouseDown={interactiveProps.onMouseDown}
                 onTouchStart={interactiveProps.onTouchStart}
                 onKeyDown={interactiveProps.onKeyDown}
                 onMouseUp={onMouseUp}

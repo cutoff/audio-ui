@@ -117,55 +117,16 @@ function Button({
         [onChange, converter, derivedParameter]
     );
 
-    const {
-        handleMouseDown: handleBooleanMouseDown,
-        handleMouseUp: handleBooleanMouseUp,
-        handleKeyDown: handleBooleanKeyDown,
-        handleKeyUp: handleBooleanKeyUp,
-    } = useBooleanInteraction({
+    const { handleMouseDown, handleMouseUp, handleKeyDown, handleKeyUp } = useBooleanInteraction({
         value,
         mode: derivedParameter.mode ?? (latch ? "toggle" : "momentary"),
         onValueChange: fireChange,
         disabled: !onChange,
+        onMouseDown,
+        onMouseUp,
+        onKeyDown: undefined, // Button doesn't have onKeyDown prop, only uses hook handler
+        onKeyUp: undefined, // Button doesn't have onKeyUp prop, only uses hook handler
     });
-
-    const handleMouseDown = useCallback(
-        (e: React.MouseEvent) => {
-            onMouseDown?.(e);
-            if (!e.defaultPrevented) {
-                handleBooleanMouseDown(e);
-            }
-        },
-        [onMouseDown, handleBooleanMouseDown]
-    );
-
-    const handleMouseUp = useCallback(
-        (e: React.MouseEvent) => {
-            onMouseUp?.(e);
-            if (!e.defaultPrevented) {
-                handleBooleanMouseUp(e);
-            }
-        },
-        [onMouseUp, handleBooleanMouseUp]
-    );
-
-    const handleKeyDown = useCallback(
-        (e: React.KeyboardEvent) => {
-            if (!e.defaultPrevented) {
-                handleBooleanKeyDown(e);
-            }
-        },
-        [handleBooleanKeyDown]
-    );
-
-    const handleKeyUp = useCallback(
-        (e: React.KeyboardEvent) => {
-            if (!e.defaultPrevented) {
-                handleBooleanKeyUp(e);
-            }
-        },
-        [handleBooleanKeyUp]
-    );
 
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "button");
 

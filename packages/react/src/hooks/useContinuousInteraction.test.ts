@@ -6,6 +6,7 @@
 
 // @vitest-environment jsdom
 
+import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act, fireEvent } from "@testing-library/react";
 import { useContinuousInteraction } from "./useContinuousInteraction";
@@ -226,6 +227,241 @@ describe("useContinuousInteraction", () => {
             // End logic: delta = 1/sensitivity => 100
             // effectiveDelta = 100 * 5 = 500
             expect(adjustValue).toHaveBeenLastCalledWith(500, 0.01);
+        });
+    });
+
+    describe("User Handler Composition", () => {
+        describe("onMouseDown", () => {
+            it("calls user-provided onMouseDown handler before hook handler", () => {
+                const userOnMouseDown = vi.fn();
+                const { result } = renderHook(() =>
+                    useContinuousInteraction({
+                        adjustValue,
+                        onMouseDown: userOnMouseDown,
+                    })
+                );
+
+                const mockEvent = {
+                    clientX: 100,
+                    clientY: 100,
+                    currentTarget: document.createElement("div"),
+                    defaultPrevented: false,
+                } as React.MouseEvent;
+
+                act(() => {
+                    result.current.onMouseDown(mockEvent);
+                });
+
+                expect(userOnMouseDown).toHaveBeenCalledWith(mockEvent);
+                expect(userOnMouseDown).toHaveBeenCalledTimes(1);
+                // Verify hook handler was also called (adjustValue should be called during drag)
+            });
+
+            it("respects defaultPrevented from user onMouseDown handler", () => {
+                const userOnMouseDown = vi.fn((e: React.MouseEvent) => {
+                    e.preventDefault();
+                });
+                const { result } = renderHook(() =>
+                    useContinuousInteraction({
+                        adjustValue,
+                        onMouseDown: userOnMouseDown,
+                    })
+                );
+
+                const preventDefault = vi.fn(() => {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (mockEvent as any).defaultPrevented = true;
+                });
+                const mockEvent = {
+                    clientX: 100,
+                    clientY: 100,
+                    currentTarget: document.createElement("div"),
+                    defaultPrevented: false,
+                    preventDefault,
+                } as unknown as React.MouseEvent;
+
+                act(() => {
+                    result.current.onMouseDown(mockEvent);
+                });
+
+                expect(userOnMouseDown).toHaveBeenCalled();
+                expect(document.body.style.userSelect).toBe("");
+            });
+        });
+
+        describe("onWheel", () => {
+            it("calls user-provided onWheel handler before hook handler", () => {
+                const userOnWheel = vi.fn();
+                const { result } = renderHook(() =>
+                    useContinuousInteraction({
+                        adjustValue,
+                        onWheel: userOnWheel,
+                    })
+                );
+
+                const preventDefault = vi.fn();
+                const stopPropagation = vi.fn();
+                const mockEvent = {
+                    deltaY: 100,
+                    preventDefault,
+                    stopPropagation,
+                    defaultPrevented: false,
+                } as React.WheelEvent;
+
+                act(() => {
+                    result.current.onWheel(mockEvent);
+                });
+
+                expect(userOnWheel).toHaveBeenCalledWith(mockEvent);
+                expect(userOnWheel).toHaveBeenCalledTimes(1);
+                expect(adjustValue).toHaveBeenCalled();
+            });
+
+            it("respects defaultPrevented from user onWheel handler", () => {
+                const userOnWheel = vi.fn((e: React.WheelEvent) => {
+                    e.preventDefault();
+                });
+                const { result } = renderHook(() =>
+                    useContinuousInteraction({
+                        adjustValue,
+                        onWheel: userOnWheel,
+                    })
+                );
+
+                const preventDefault = vi.fn(() => {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (mockEvent as any).defaultPrevented = true;
+                });
+                const mockEvent = {
+                    deltaY: 100,
+                    preventDefault,
+                    stopPropagation: vi.fn(),
+                    defaultPrevented: false,
+                } as unknown as React.WheelEvent;
+
+                act(() => {
+                    result.current.onWheel(mockEvent);
+                });
+
+                expect(userOnWheel).toHaveBeenCalled();
+                expect(adjustValue).not.toHaveBeenCalled();
+            });
+        });
+
+        describe("onKeyDown", () => {
+            it("calls user-provided onKeyDown handler before hook handler", () => {
+                const userOnKeyDown = vi.fn();
+                const { result } = renderHook(() =>
+                    useContinuousInteraction({
+                        adjustValue,
+                        onKeyDown: userOnKeyDown,
+                    })
+                );
+
+                const preventDefault = vi.fn();
+                const mockEvent = {
+                    key: "ArrowUp",
+                    preventDefault,
+                    defaultPrevented: false,
+                } as React.KeyboardEvent;
+
+                act(() => {
+                    result.current.onKeyDown(mockEvent);
+                });
+
+                expect(userOnKeyDown).toHaveBeenCalledWith(mockEvent);
+                expect(userOnKeyDown).toHaveBeenCalledTimes(1);
+                expect(adjustValue).toHaveBeenCalled();
+            });
+
+            it("respects defaultPrevented from user onKeyDown handler", () => {
+                const userOnKeyDown = vi.fn((e: React.KeyboardEvent) => {
+                    e.preventDefault();
+                });
+                const { result } = renderHook(() =>
+                    useContinuousInteraction({
+                        adjustValue,
+                        onKeyDown: userOnKeyDown,
+                    })
+                );
+
+                const preventDefault = vi.fn(() => {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (mockEvent as any).defaultPrevented = true;
+                });
+                const mockEvent = {
+                    key: "ArrowUp",
+                    preventDefault,
+                    defaultPrevented: false,
+                } as unknown as React.KeyboardEvent;
+
+                act(() => {
+                    result.current.onKeyDown(mockEvent);
+                });
+
+                expect(userOnKeyDown).toHaveBeenCalled();
+                expect(adjustValue).not.toHaveBeenCalled();
+            });
+        });
+
+        describe("onTouchStart", () => {
+            it("calls user-provided onTouchStart handler before hook handler", () => {
+                const userOnTouchStart = vi.fn();
+                const { result } = renderHook(() =>
+                    useContinuousInteraction({
+                        adjustValue,
+                        onTouchStart: userOnTouchStart,
+                    })
+                );
+
+                const mockTouch = {
+                    clientX: 100,
+                    clientY: 100,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                } as any;
+                const mockEvent = {
+                    touches: [mockTouch],
+                    currentTarget: document.createElement("div"),
+                    defaultPrevented: false,
+                } as React.TouchEvent;
+
+                act(() => {
+                    result.current.onTouchStart(mockEvent);
+                });
+
+                expect(userOnTouchStart).toHaveBeenCalledWith(mockEvent);
+            });
+
+            it("respects defaultPrevented from user onTouchStart handler", () => {
+                const userOnTouchStart = vi.fn((e: React.TouchEvent) => {
+                    e.preventDefault();
+                });
+                const { result } = renderHook(() =>
+                    useContinuousInteraction({
+                        adjustValue,
+                        onTouchStart: userOnTouchStart,
+                    })
+                );
+
+                const preventDefault = vi.fn(() => {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (mockEvent as any).defaultPrevented = true;
+                });
+                const mockEvent = {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    touches: [{ clientX: 100, clientY: 100 } as any],
+                    currentTarget: document.createElement("div"),
+                    defaultPrevented: false,
+                    preventDefault,
+                } as unknown as React.TouchEvent;
+
+                act(() => {
+                    result.current.onTouchStart(mockEvent);
+                });
+
+                expect(userOnTouchStart).toHaveBeenCalled();
+                expect(document.body.style.userSelect).toBe("");
+            });
         });
     });
 });
