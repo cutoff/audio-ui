@@ -164,7 +164,10 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - **Core Architecture**: Interaction logic is centralized in `packages/core/src/controller/ContinuousInteractionController.ts` (pure TS class).
 - **React Adapter**: `useContinuousInteraction` hook in `packages/react` wraps `ContinuousInteractionController` to bind it to React events.
 - **Generic Control Architecture**: `Knob` and `Slider` are implemented using `ContinuousControl`, a generic component that decouples behavior (AudioParameter, interaction logic) from visualization (SVG rendering). This architecture allows easy customization by providing custom view components that implement the `ControlComponentView` contract.
-- **Unified Interaction Hook**: Continuous controls (Knob, Slider) use `useContinuousInteraction` hook. Discrete controls (CycleButton, Button) use discrete interaction hooks.
+- **Unified Interaction Hooks**:
+  - Continuous controls (Knob, Slider) use `useContinuousInteraction` hook.
+  - Boolean controls (Button) use `useBooleanInteraction` hook.
+  - Discrete/enum controls (CycleButton) use `useDiscreteInteraction` hook.
 - **Input Methods**: Supports drag (mouse/touch), wheel, and keyboard interactions
 - **Interaction Modes**: Configurable via `interactionMode` prop ("drag" | "wheel" | "both")
 - **Sensitivity Tuning**: Component-specific defaults tuned for optimal feel (Knob: 0.008, Slider: 0.005). CycleButton is discrete-only (no continuous interaction).
@@ -177,6 +180,13 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
   - **Global Pointer Tracking**: Tracks pointer state globally (not just on button element) to enable drag-in behavior from outside the button boundary.
   - **Mouse Enter/Leave Events**: Uses `mouseenter`/`mouseleave` to detect when pointer crosses button boundary while pressed.
   - **Step Sequencer Pattern**: Enables classic step sequencer interactions where multiple buttons can be activated with a single drag gesture.
+- **Discrete Interaction (CycleButton)**:
+  - **Core Architecture**: Interaction logic is centralized in `packages/core/src/controller/DiscreteInteractionController.ts` (pure TS class).
+  - **React Adapter**: `useDiscreteInteraction` hook in `packages/react` wraps `DiscreteInteractionController` to bind it to React events.
+  - **Cycling Behavior**: Click or Space/Enter cycles to the next value (wraps around to the start).
+  - **Stepping Behavior**: Arrow keys step up/down through options (clamped at min/max).
+  - **Value Resolution**: Automatically finds the nearest valid option index when the current value doesn't match any option.
+  - **Keyboard Support**: Arrow keys for stepping, Space/Enter for cycling.
 - **Focus Management**:
   - Custom highlight effect (brightness/contrast boost + shadow) replaces browser ring
   - Applied via `:focus-visible` (keyboard) and `:focus-within` (click/touch)

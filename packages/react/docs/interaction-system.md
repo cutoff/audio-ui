@@ -10,10 +10,11 @@ The interaction system in AudioUI provides a unified way to handle user input ac
 
 ## Architecture
 
-The interaction system consists of two main hooks:
+The interaction system consists of three main hooks:
 
 1. **`useContinuousInteraction`** - For continuous controls (Knob, Slider)
 2. **`useBooleanInteraction`** - For boolean controls (Button)
+3. **`useDiscreteInteraction`** - For discrete/enum controls (CycleButton)
 
 ### Continuous Interaction
 
@@ -34,6 +35,15 @@ The `useBooleanInteraction` hook wraps the framework-agnostic `BooleanInteractio
 - **Global Pointer Tracking**: Tracks pointer state globally to enable drag-in behavior from anywhere on the page.
 - **Keyboard Support**: Enter/Space for activation/release.
 
+### Discrete Interaction
+
+The `useDiscreteInteraction` hook wraps the framework-agnostic `DiscreteInteractionController` and provides:
+
+- **Cycling**: Click or Space/Enter to cycle to the next value (wraps around to the start).
+- **Stepping**: Arrow keys to step up/down through options (clamped at min/max).
+- **Value Resolution**: Automatically finds the nearest valid option index when the current value doesn't match any option.
+- **Keyboard Support**: Arrow keys for stepping, Space/Enter for cycling.
+
 ### `useContinuousInteraction` Hook
 
 This hook abstracts the complexity of event handling and state management.
@@ -53,6 +63,21 @@ const handlers = useContinuousInteraction({
 **Note**: High-level components (Knob, CycleButton, Slider) expose these props as `interactionDirection` and `interactionSensitivity` for clarity. The internal hook uses `direction` and `sensitivity`.
 
 It returns a set of event handlers (`onMouseDown`, `onTouchStart`, `onWheel`, `onKeyDown`) and accessibility props (`tabIndex`, `role`, `aria-*`) that should be spread onto the interactive element.
+
+### `useDiscreteInteraction` Hook
+
+This hook provides discrete interaction logic for controls that cycle through a set of options.
+
+```typescript
+const handlers = useDiscreteInteraction({
+  value, // Current value (string or number)
+  options, // Array of { value: string | number }
+  onValueChange, // Callback to update the value
+  disabled, // Whether the control is disabled
+});
+```
+
+It returns event handlers (`handleClick`, `handleKeyDown`) and manual control methods (`cycleNext`, `stepNext`, `stepPrev`) that can be used to programmatically control the discrete value.
 
 ## Interaction Modes
 
@@ -98,10 +123,12 @@ It returns a set of event handlers (`onMouseDown`, `onTouchStart`, `onWheel`, `o
 
 ### CycleButton (Discrete/Enum)
 
-- **Click**: Clicking the control cycles to the next value (like `Space`).
+- **Click**: Clicking the control cycles to the next value (wraps around to the start).
 - **Keyboard**:
-  - `Arrow Keys`: Step up/down (clamped at min/max).
-  - `Space`: Cycle next (wraps around).
+  - `Arrow Up` / `Arrow Right`: Step to next value (clamped at max).
+  - `Arrow Down` / `Arrow Left`: Step to previous value (clamped at min).
+  - `Space` / `Enter`: Cycle to next value (wraps around).
+- **Implementation**: Uses `useDiscreteInteraction` hook which wraps `DiscreteInteractionController` for framework-agnostic discrete option management.
 
 ### Button
 
