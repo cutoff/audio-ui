@@ -12,8 +12,6 @@ import ComponentSkeletonPage from "@/components/ComponentSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle } from "lucide-react";
 import { ColorPickerField } from "@/components/ColorPickerField";
 
 // Define the NoteName type to match the one in the Keys component
@@ -413,49 +411,41 @@ export default function KeysPage() {
                     </div>
 
                     {/* MIDI Input Section */}
-                    {!webMidiSupported ? (
-                        <Alert variant="destructive">
-                            <AlertTriangle className="h-4 w-4" />
-                            <AlertTitle>WebMIDI Not Supported</AlertTitle>
-                            <AlertDescription>
-                                Your browser does not support WebMIDI. Please use a browser that supports WebMIDI, such
-                                as Chrome, Edge, or Opera. Safari does not currently support WebMIDI.
-                            </AlertDescription>
-                        </Alert>
-                    ) : (
-                        <div>
-                            <h2 className="text-xl md:text-2xl font-medium mb-4">MIDI Input</h2>
-                            <label className="block text-sm font-medium mb-2">Select MIDI Input</label>
-                            <Select value={selectedInputId} onValueChange={setSelectedInputId}>
-                                <SelectTrigger className="w-full md:w-80">
-                                    <SelectValue placeholder="Select a MIDI input device" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {midiInputs.length === 0 ? (
-                                        <SelectItem value="none" disabled>
-                                            No MIDI devices found
-                                        </SelectItem>
-                                    ) : (
-                                        midiInputs.map((input) => (
-                                            <SelectItem key={input.id} value={input.id}>
-                                                {input.name || `MIDI Input ${input.id}`}
+                    {webMidiSupported && (
+                        <>
+                            <div>
+                                <h2 className="text-xl md:text-2xl font-medium mb-4">MIDI Input</h2>
+                                <label className="block text-sm font-medium mb-2">Select MIDI Input</label>
+                                <Select value={selectedInputId} onValueChange={setSelectedInputId}>
+                                    <SelectTrigger className="w-full md:w-80">
+                                        <SelectValue placeholder="Select a MIDI input device" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {midiInputs.length === 0 ? (
+                                            <SelectItem value="none" disabled>
+                                                No MIDI devices found
                                             </SelectItem>
-                                        ))
-                                    )}
-                                </SelectContent>
-                            </Select>
-                        </div>
+                                        ) : (
+                                            midiInputs.map((input) => (
+                                                <SelectItem key={input.id} value={input.id}>
+                                                    {input.name || `MIDI Input ${input.id}`}
+                                                </SelectItem>
+                                            ))
+                                        )}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                                <p>Connect a MIDI keyboard and select it from the dropdown to play notes.</p>
+                                <p className="mt-2">
+                                    Active notes:{" "}
+                                    {notesOn
+                                        .map((note) => (typeof note === "number" ? noteNumToNote(note) : note))
+                                        .join(", ") || "None"}
+                                </p>
+                            </div>
+                        </>
                     )}
-
-                    <div className="text-sm text-muted-foreground">
-                        <p>Connect a MIDI keyboard and select it from the dropdown to play notes.</p>
-                        <p className="mt-2">
-                            Active notes:{" "}
-                            {notesOn
-                                .map((note) => (typeof note === "number" ? noteNumToNote(note) : note))
-                                .join(", ") || "None"}
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>
