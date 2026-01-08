@@ -56,7 +56,7 @@ export default function CustomizationPage() {
     }, []);
 
     return (
-        <div className="flex flex-col min-h-[calc(100vh-4rem)] p-2 sm:p-4 md:p-6 lg:p-8 gap-3 sm:gap-6 md:gap-8 lg:gap-12">
+        <div className="flex flex-col min-h-[calc(100dvh-4rem)] p-2 sm:p-4 md:p-6 lg:p-8 gap-3 sm:gap-6 md:gap-8 lg:gap-12">
             <div className="flex flex-col gap-2 sm:gap-3 md:gap-4 text-center items-center px-2">
                 <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">Component Laboratory</h1>
                 <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-[600px]">

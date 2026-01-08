@@ -112,6 +112,12 @@ export default {
                 "accordion-up": "accordion-up 0.2s ease-out",
                 "caret-blink": "caret-blink 1.25s ease-out infinite",
             },
+            height: {
+                screen: "100dvh", // Use dynamic viewport height for mobile/tablet compatibility
+            },
+            minHeight: {
+                screen: "100dvh", // Use dynamic viewport height for mobile/tablet compatibility
+            },
         },
     },
     plugins: [tailwindcssAnimate, tailwindcssContainerQueries],
