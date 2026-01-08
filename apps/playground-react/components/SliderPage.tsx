@@ -290,6 +290,96 @@ export default function SliderPage({ orientation }: SliderPageProps) {
     };
 
     const properties = [
+        // Behavior props
+        <div key="bipolar" className="flex items-center gap-2 pt-2">
+            <Checkbox id="bipolarProp" checked={bipolar} onCheckedChange={(checked) => setBipolar(checked === true)} />
+            <Label htmlFor="bipolarProp" className="cursor-pointer">
+                Bipolar
+            </Label>
+        </div>,
+        <div key="midiBipolar" className="flex items-center gap-2 pt-2">
+            <Checkbox
+                id="midiBipolarProp"
+                checked={useMidiBipolar}
+                disabled={!bipolar}
+                onCheckedChange={(checked) => setUseMidiBipolar(checked === true)}
+            />
+            <Label htmlFor="midiBipolarProp" className="cursor-pointer">
+                MIDI Bipolar Format
+            </Label>
+        </div>,
+        // Display/Formatting props
+        <div key="unit" className="grid gap-2">
+            <Label htmlFor="unitProp">Unit</Label>
+            <Input
+                id="unitProp"
+                value={unit !== undefined ? unit : ""}
+                onChange={(e) => {
+                    const val = e.target.value === "" ? undefined : e.target.value;
+                    setUnit(val);
+                }}
+                placeholder="None"
+            />
+        </div>,
+        <div key="valueAsLabel" className="grid gap-2">
+            <Label htmlFor="valueAsLabelProp">Value as Label</Label>
+            <Select
+                value={valueAsLabel === undefined ? "default" : valueAsLabel}
+                onValueChange={(value) => {
+                    if (value === "default") {
+                        setValueAsLabel(undefined);
+                    } else {
+                        setValueAsLabel(value as ValueLabelMode);
+                    }
+                }}
+            >
+                <SelectTrigger id="valueAsLabelProp">
+                    <SelectValue placeholder="Select mode" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="default">Default (Label Only)</SelectItem>
+                    <SelectItem value="labelOnly">Label Only</SelectItem>
+                    <SelectItem value="valueOnly">Value Only</SelectItem>
+                    <SelectItem value="interactive">Interactive</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>,
+        // Visual/Styling props
+        <div key="color" className="grid gap-2">
+            <ColorPickerField id="colorProp" label="Color" value={color} onChange={setColor} />
+        </div>,
+        <div key="roundness" className="grid gap-2">
+            <Label htmlFor="roundnessProp">Roundness (0.0-1.0)</Label>
+            <Input
+                id="roundnessProp"
+                type="number"
+                min="0"
+                max="1"
+                step="0.01"
+                value={roundness !== undefined ? roundness : ""}
+                onChange={(e) => {
+                    const value = e.target.value === "" ? undefined : Math.max(0, Math.min(1, Number(e.target.value)));
+                    setRoundness(value);
+                }}
+            />
+        </div>,
+        <div key="thickness" className="grid gap-2">
+            <Label htmlFor="thicknessProp">Thickness (0.0-1.0)</Label>
+            <Input
+                id="thicknessProp"
+                type="number"
+                min="0"
+                max="1"
+                step="0.01"
+                value={thickness !== undefined ? thickness : ""}
+                onChange={(e) => {
+                    const value = e.target.value === "" ? undefined : Math.max(0, Math.min(1, Number(e.target.value)));
+                    setThickness(value);
+                }}
+                placeholder="Default"
+            />
+        </div>,
+        // Basic/Required props
         <div key="label" className="grid gap-2">
             <Label htmlFor="labelProp">Label</Label>
             <Input id="labelProp" value={label} onChange={(e) => setLabel(e.target.value)} />
@@ -314,92 +404,6 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 }}
                 placeholder="Continuous"
             />
-        </div>,
-        <div key="unit" className="grid gap-2">
-            <Label htmlFor="unitProp">Unit</Label>
-            <Input
-                id="unitProp"
-                value={unit !== undefined ? unit : ""}
-                onChange={(e) => {
-                    const val = e.target.value === "" ? undefined : e.target.value;
-                    setUnit(val);
-                }}
-                placeholder="None"
-            />
-        </div>,
-        <div key="thickness" className="grid gap-2">
-            <Label htmlFor="thicknessProp">Thickness (0.0-1.0)</Label>
-            <Input
-                id="thicknessProp"
-                type="number"
-                min="0"
-                max="1"
-                step="0.01"
-                value={thickness !== undefined ? thickness : ""}
-                onChange={(e) => {
-                    const value = e.target.value === "" ? undefined : Math.max(0, Math.min(1, Number(e.target.value)));
-                    setThickness(value);
-                }}
-                placeholder="Default"
-            />
-        </div>,
-        <div key="roundness" className="grid gap-2">
-            <Label htmlFor="roundnessProp">Roundness (0.0-1.0)</Label>
-            <Input
-                id="roundnessProp"
-                type="number"
-                min="0"
-                max="1"
-                step="0.01"
-                value={roundness !== undefined ? roundness : ""}
-                onChange={(e) => {
-                    const value = e.target.value === "" ? undefined : Math.max(0, Math.min(1, Number(e.target.value)));
-                    setRoundness(value);
-                }}
-            />
-        </div>,
-        <div key="bipolar" className="flex items-center gap-2 pt-2">
-            <Checkbox id="bipolarProp" checked={bipolar} onCheckedChange={(checked) => setBipolar(checked === true)} />
-            <Label htmlFor="bipolarProp" className="cursor-pointer">
-                Bipolar
-            </Label>
-        </div>,
-        <div key="midiBipolar" className="flex items-center gap-2 pt-2">
-            <Checkbox
-                id="midiBipolarProp"
-                checked={useMidiBipolar}
-                disabled={!bipolar}
-                onCheckedChange={(checked) => setUseMidiBipolar(checked === true)}
-            />
-            <Label htmlFor="midiBipolarProp" className="cursor-pointer">
-                MIDI Bipolar Format
-            </Label>
-        </div>,
-        <div key="color" className="grid gap-2">
-            <ColorPickerField id="colorProp" label="Color" value={color} onChange={setColor} />
-        </div>,
-        <div key="valueAsLabel" className="grid gap-2">
-            <Label htmlFor="valueAsLabelProp">Value as Label</Label>
-            <Select
-                value={valueAsLabel === undefined ? "default" : valueAsLabel}
-                onValueChange={(value) => {
-                    if (value === "default") {
-                        setValueAsLabel(undefined);
-                    } else {
-                        setValueAsLabel(value as ValueLabelMode);
-                    }
-                }}
-            >
-                <SelectTrigger id="valueAsLabelProp">
-                    <SelectValue placeholder="Select mode" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="default">Default (Label Only)</SelectItem>
-                    <SelectItem value="labelOnly">Label Only</SelectItem>
-                    <SelectItem value="valueOnly">Value Only</SelectItem>
-                    <SelectItem value="interactive">Interactive</SelectItem>
-                </SelectContent>
-            </Select>
         </div>,
     ];
 
