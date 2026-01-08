@@ -28,12 +28,12 @@ type ThemeColor = {
     color: string; // Tailwind class for display
     name: string;
     value: string; // CSS color value to use
-    // CSS color value to use
 };
 
 // List of components to display in the sidebar
 const controls: Page[] = [
     { name: "Knob", path: "/controls/knob" },
+    { name: "CycleButton", path: "/controls/cyclebutton" },
     { name: "Slider (vertical)", path: "/controls/vslider" },
     { name: "Slider (horizontal)", path: "/controls/hslider" },
     { name: "Button", path: "/controls/button" },

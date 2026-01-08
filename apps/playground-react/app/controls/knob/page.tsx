@@ -10,9 +10,6 @@ import { useState } from "react";
 import {
     Knob,
     KnobProps,
-    CycleButton,
-    CycleButtonProps,
-    Option,
     AudioParameter,
     KnobVariant,
     AudioControlEvent,
@@ -38,24 +35,6 @@ const midiBipolarFormatter = (value: number, parameterDef: AudioParameter): stri
     return shiftedValue > 0 ? `+${shiftedValue}` : shiftedValue.toString();
 };
 
-const sampleOptions = [
-    <Option key={0} value={0} label="Sine">
-        <SineWaveIcon />
-    </Option>,
-    <Option key={1} value={1} label="Triangle">
-        <TriangleWaveIcon />
-    </Option>,
-    <Option key={2} value={2} label="Square">
-        <SquareWaveIcon />
-    </Option>,
-    <Option key={3} value={3} label="Saw">
-        <SawWaveIcon />
-    </Option>,
-    <Option key={4} value={4} label="Other">
-        Oth
-    </Option>,
-];
-
 // Icon options for iconCap variant
 const iconOptions = [
     { value: "sine", label: "Sine", icon: <SineWaveIcon /> },
@@ -67,7 +46,6 @@ const iconOptions = [
 type IconOptionValue = (typeof iconOptions)[number]["value"];
 
 function generateCodeSnippet(
-    enableOptions: boolean,
     value: number,
     label: string,
     min: number,
@@ -84,80 +62,69 @@ function generateCodeSnippet(
     valueAsLabel: ValueLabelMode | undefined,
     unit: string | undefined
 ): string {
-    if (enableOptions) {
-        return `<CycleButton value={${value}} label='${label}'${color !== undefined ? ` color='${color}'` : ""}>
-    <Option value={0} label="Sine"><SineWaveIcon /></Option>
-    <Option value={1} label="Triangle"><TriangleWaveIcon /></Option>
-    <Option value={2} label="Square"><SquareWaveIcon /></Option>
-    <Option value={3} label="Saw"><SawWaveIcon /></Option>
-    <Option value={4} label="Other">Oth</Option>
-</CycleButton>
-`;
-    } else {
-        // Start with variant prop if not default (first prop)
-        let props = "";
-        if (variant !== "abstract") {
-            props = `variant="${variant}"`;
-        }
+    // Start with variant prop if not default (first prop)
+    let props = "";
+    if (variant !== "abstract") {
+        props = `variant="${variant}"`;
+    }
 
-        // Add required props
-        let requiredProps = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}}`;
-        if (thickness !== undefined) {
-            requiredProps += ` thickness={${thickness}}`;
-        }
-        props = props ? `${props} ${requiredProps}` : requiredProps;
+    // Add required props
+    let requiredProps = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}}`;
+    if (thickness !== undefined) {
+        requiredProps += ` thickness={${thickness}}`;
+    }
+    props = props ? `${props} ${requiredProps}` : requiredProps;
 
-        if (step !== undefined) {
-            props += ` step={${step}}`;
-        }
+    if (step !== undefined) {
+        props += ` step={${step}}`;
+    }
 
-        if (unit !== undefined) {
-            props += ` unit='${unit}'`;
-        }
+    if (unit !== undefined) {
+        props += ` unit='${unit}'`;
+    }
 
-        // Add optional props only if they're defined
-        if (roundness !== undefined) {
-            props += ` roundness={${roundness}}`;
-        }
+    // Add optional props only if they're defined
+    if (roundness !== undefined) {
+        props += ` roundness={${roundness}}`;
+    }
 
-        if (color !== undefined) {
-            props += ` color='${color}'`;
-        }
+    if (color !== undefined) {
+        props += ` color='${color}'`;
+    }
 
-        // Add valueFormatter prop if using MIDI bipolar formatter
-        if (bipolar && useMidiBipolar) {
-            props += `\n  valueFormatter={midiBipolarFormatter}`;
-        }
+    // Add valueFormatter prop if using MIDI bipolar formatter
+    if (bipolar && useMidiBipolar) {
+        props += `\n  valueFormatter={midiBipolarFormatter}`;
+    }
 
-        // Add rotaryOverlay prop if defined
-        if (rotaryOverlay !== undefined) {
-            props += `\n  rotaryOverlay={${rotaryOverlay}}`;
-        }
+    // Add rotaryOverlay prop if defined
+    if (rotaryOverlay !== undefined) {
+        props += `\n  rotaryOverlay={${rotaryOverlay}}`;
+    }
 
-        // Add valueAsLabel prop only if explicitly defined
-        if (valueAsLabel !== undefined) {
-            props += `\n  valueAsLabel='${valueAsLabel}'`;
-        }
+    // Add valueAsLabel prop only if explicitly defined
+    if (valueAsLabel !== undefined) {
+        props += `\n  valueAsLabel='${valueAsLabel}'`;
+    }
 
-        // Add children if icon is selected and variant is iconCap
-        if (variant === "iconCap" && selectedIcon !== undefined) {
-            const iconComponent = iconOptions.find((opt) => opt.value === selectedIcon);
-            if (iconComponent) {
-                const iconNameMap: Record<IconOptionValue, string> = {
-                    sine: "SineWaveIcon",
-                    triangle: "TriangleWaveIcon",
-                    square: "SquareWaveIcon",
-                    saw: "SawWaveIcon",
-                };
-                const iconName = iconNameMap[selectedIcon];
-                return `<Knob ${props}>
+    // Add children if icon is selected and variant is iconCap
+    if (variant === "iconCap" && selectedIcon !== undefined) {
+        const iconComponent = iconOptions.find((opt) => opt.value === selectedIcon);
+        if (iconComponent) {
+            const iconNameMap: Record<IconOptionValue, string> = {
+                sine: "SineWaveIcon",
+                triangle: "TriangleWaveIcon",
+                square: "SquareWaveIcon",
+                saw: "SawWaveIcon",
+            };
+            const iconName = iconNameMap[selectedIcon];
+            return `<Knob ${props}>
   <${iconName} />
 </Knob>`;
-            }
         }
-
-        return `<Knob ${props} />`;
     }
+
+    return `<Knob ${props} />`;
 }
 
 type KnobComponentProps = {
@@ -167,7 +134,6 @@ type KnobComponentProps = {
     step?: number;
     label?: string;
     bipolar?: boolean;
-    enableOptions: boolean;
     useMidiBipolar?: boolean;
     roundness?: number;
     thickness?: number;
@@ -182,7 +148,7 @@ type KnobComponentProps = {
     valueAsLabel?: ValueLabelMode | undefined;
     unit?: string;
     onChange?: (event: AudioControlEvent<number | string>) => void;
-    onClick?: KnobProps["onClick"] | CycleButtonProps["onClick"];
+    onClick?: KnobProps["onClick"];
 };
 
 function KnobComponent({
@@ -193,7 +159,6 @@ function KnobComponent({
     label,
     bipolar,
     useMidiBipolar,
-    enableOptions,
     roundness,
     thickness,
     adaptiveSize,
@@ -209,54 +174,36 @@ function KnobComponent({
     valueAsLabel,
     unit,
 }: KnobComponentProps) {
-    if (enableOptions) {
-        return (
-            <CycleButton
-                value={value}
-                adaptiveSize={adaptiveSize}
-                label={label}
-                style={style}
-                className={className}
-                onClick={onClick}
-                onChange={onChange}
-                size={size}
-                color={color}
-            >
-                {sampleOptions}
-            </CycleButton>
-        );
-    } else {
-        // Get the selected icon component
-        const iconComponent = selectedIcon ? iconOptions.find((opt) => opt.value === selectedIcon)?.icon : undefined;
+    // Get the selected icon component
+    const iconComponent = selectedIcon ? iconOptions.find((opt) => opt.value === selectedIcon)?.icon : undefined;
 
-        // Directly pass all props to Knob component, including conditional valueFormatter
-        return (
-            <Knob
-                min={min}
-                max={max}
-                step={step}
-                value={value}
-                label={label}
-                bipolar={bipolar}
-                roundness={roundness}
-                thickness={thickness}
-                adaptiveSize={adaptiveSize}
-                style={style}
-                className={className}
-                onClick={onClick}
-                onChange={onChange}
-                size={size}
-                color={color}
-                variant={variant}
-                rotaryOverlay={rotaryOverlay}
-                valueAsLabel={valueAsLabel}
-                unit={unit}
-                valueFormatter={bipolar && useMidiBipolar ? midiBipolarFormatter : undefined}
-            >
-                {iconComponent}
-            </Knob>
-        );
-    }
+    // Directly pass all props to Knob component, including conditional valueFormatter
+    return (
+        <Knob
+            min={min}
+            max={max}
+            step={step}
+            value={value}
+            label={label}
+            bipolar={bipolar}
+            roundness={roundness}
+            thickness={thickness}
+            adaptiveSize={adaptiveSize}
+            style={style}
+            className={className}
+            onClick={onClick}
+            onChange={onChange}
+            size={size}
+            color={color}
+            variant={variant}
+            rotaryOverlay={rotaryOverlay}
+            valueAsLabel={valueAsLabel}
+            unit={unit}
+            valueFormatter={bipolar && useMidiBipolar ? midiBipolarFormatter : undefined}
+        >
+            {iconComponent}
+        </Knob>
+    );
 }
 
 export default function KnobDemoPage() {
@@ -267,7 +214,6 @@ export default function KnobDemoPage() {
     const [label, setLabel] = useState("Default");
     const [bipolar, setBipolar] = useState(false);
     const [useMidiBipolar, setUseMidiBipolar] = useState(false);
-    const [enableOptions, setEnableOptions] = useState(false);
     const [roundness, setRoundness] = useState<number | undefined>(undefined);
     const [thickness, setThickness] = useState<number | undefined>(undefined);
     const [color, setColor] = useState<string | undefined>(undefined); // Allow undefined to use theme values
@@ -277,7 +223,7 @@ export default function KnobDemoPage() {
     const [valueAsLabel, setValueAsLabel] = useState<ValueLabelMode | undefined>(undefined);
     const [unit, setUnit] = useState<string | undefined>(undefined);
 
-    const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4 | 5 | 6): void => {
+    const handleExampleClick = (num: 0 | 1 | 2 | 4 | 5 | 6): void => {
         switch (num) {
             case 0:
                 setValue(42);
@@ -287,7 +233,6 @@ export default function KnobDemoPage() {
                 setLabel("Default");
                 setBipolar(false);
                 setUseMidiBipolar(false);
-                setEnableOptions(false);
                 setThickness(undefined);
                 setRoundness(undefined); // Use theme roundness
                 setColor(undefined); // Use theme color
@@ -305,7 +250,6 @@ export default function KnobDemoPage() {
                 setLabel("Bipolar");
                 setBipolar(true);
                 setUseMidiBipolar(false);
-                setEnableOptions(false);
                 setThickness(undefined);
                 setRoundness(0.3);
                 setColor("#ff3366"); // Pink
@@ -323,28 +267,9 @@ export default function KnobDemoPage() {
                 setLabel("Bipolar0");
                 setBipolar(true);
                 setUseMidiBipolar(false);
-                setEnableOptions(false);
                 setThickness(undefined);
                 setRoundness(0.3);
                 setColor("#33cc66"); // Green
-                setVariant("abstract");
-                setRotaryOverlay(undefined);
-                setSelectedIcon("sine");
-                setValueAsLabel(undefined);
-                setUnit(undefined);
-                break;
-            case 3:
-                setValue(0);
-                setMin(0);
-                setMax(4);
-                setStep(1);
-                setLabel("Enum");
-                setBipolar(false);
-                setUseMidiBipolar(false);
-                setEnableOptions(true);
-                setThickness(undefined);
-                setRoundness(0.3);
-                setColor("#9966ff"); // Purple
                 setVariant("abstract");
                 setRotaryOverlay(undefined);
                 setSelectedIcon("sine");
@@ -359,7 +284,6 @@ export default function KnobDemoPage() {
                 setLabel("MIDI Bipolar");
                 setBipolar(true);
                 setUseMidiBipolar(true);
-                setEnableOptions(false);
                 setThickness(undefined);
                 setRoundness(0.3);
                 setColor("#ff9933"); // Orange
@@ -377,7 +301,6 @@ export default function KnobDemoPage() {
                 setLabel("Tuning");
                 setBipolar(true);
                 setUseMidiBipolar(false);
-                setEnableOptions(false);
                 setThickness(undefined);
                 setRoundness(undefined); // Use theme roundness
                 setColor(undefined); // Use theme color
@@ -395,7 +318,6 @@ export default function KnobDemoPage() {
                 setLabel("Tuning");
                 setBipolar(true);
                 setUseMidiBipolar(false);
-                setEnableOptions(false);
                 setThickness(undefined);
                 setRoundness(undefined); // Use theme roundness
                 setColor(undefined); // Use theme color
@@ -511,16 +433,6 @@ export default function KnobDemoPage() {
                 MIDI Bipolar Format
             </Label>
         </div>,
-        <div key="options" className="flex items-center gap-2 pt-2">
-            <Checkbox
-                id="enableOptionsProp"
-                checked={enableOptions}
-                onCheckedChange={(checked) => setEnableOptions(checked === true)}
-            />
-            <Label htmlFor="enableOptionsProp" className="cursor-pointer">
-                Options
-            </Label>
-        </div>,
         <div key="rotaryOverlay" className="flex items-center gap-2 pt-2">
             <Checkbox
                 id="rotaryOverlayProp"
@@ -613,17 +525,6 @@ export default function KnobDemoPage() {
             color="#33cc66" // Green
             onClick={() => handleExampleClick(2)}
         />,
-        <CycleButton
-            key="3"
-            value={0}
-            label="Enum"
-            size="large"
-            roundness={12}
-            color="#9966ff" // Purple
-            onClick={() => handleExampleClick(3)}
-        >
-            {sampleOptions}
-        </CycleButton>,
         <Knob
             key="4"
             min={0}
@@ -669,7 +570,6 @@ export default function KnobDemoPage() {
     ];
 
     const codeString = generateCodeSnippet(
-        enableOptions,
         value,
         label,
         min,
@@ -694,7 +594,6 @@ export default function KnobDemoPage() {
         step,
         value,
         label,
-        enableOptions,
         roundness,
         thickness,
         color,
