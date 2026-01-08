@@ -10,12 +10,29 @@ The interaction system in AudioUI provides a unified way to handle user input ac
 
 ## Architecture
 
-The core of the system is the `useContinuousInteraction` hook, which centralizes the logic for:
+The interaction system consists of two main hooks:
+
+1. **`useContinuousInteraction`** - For continuous controls (Knob, Slider)
+2. **`useBooleanInteraction`** - For boolean controls (Button)
+
+### Continuous Interaction
+
+The core of continuous interaction is the `useContinuousInteraction` hook, which centralizes the logic for:
 
 - **Pointer Dragging**: Mouse and Touch support with velocity-sensitive value adjustment.
 - **Mouse Wheel**: High-precision scrolling with configurable sensitivity.
 - **Keyboard Navigation**: Accessible control via Arrow keys, Home/End, and specialized handlers (Space/Enter).
 - **Focus Management**: Consistent focus behavior and styling.
+
+### Boolean Interaction
+
+The `useBooleanInteraction` hook wraps the framework-agnostic `BooleanInteractionController` and provides:
+
+- **Momentary Mode**: Press to activate, release to deactivate (with global pointer tracking).
+- **Toggle Mode**: Click to toggle state.
+- **Drag-In/Drag-Out**: Hardware-like behavior where buttons respond to pointer entering/leaving while pressed, even when press starts outside the button.
+- **Global Pointer Tracking**: Tracks pointer state globally to enable drag-in behavior from anywhere on the page.
+- **Keyboard Support**: Enter/Space for activation/release.
 
 ### `useContinuousInteraction` Hook
 
@@ -90,6 +107,19 @@ It returns a set of event handlers (`onMouseDown`, `onTouchStart`, `onWheel`, `o
 
 - **Interaction**: Click or `Space`/`Enter` to activate.
 - **Modes**: Supports `momentary` (active only while pressed) and `latch` (toggle on/off).
+- **Drag-In/Drag-Out Behavior**: Buttons support hardware-like drag-in/drag-out interactions that work even when the press starts outside the button boundary:
+  - **Momentary Mode**:
+    - Press inside button → turns on
+    - Drag out while still pressed → turns off
+    - Drag back in while still pressed → turns on again
+    - Works even when press starts outside the button
+  - **Toggle/Latch Mode**:
+    - Press inside button → toggles state
+    - Drag out while still pressed → no change (state remains)
+    - Drag back in while still pressed → toggles again
+    - Works even when press starts outside the button
+- **Step Sequencer Pattern**: The drag-in/drag-out behavior enables classic step sequencer interactions where multiple buttons can be activated with a single drag gesture, perfect for programming drum patterns or melodic sequences.
+- **Implementation**: Uses global pointer tracking (`BooleanInteractionController`) and `mouseenter`/`mouseleave` events to detect when pointer crosses button boundary while pressed.
 
 ## Styling & Accessibility
 

@@ -168,6 +168,15 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - **Input Methods**: Supports drag (mouse/touch), wheel, and keyboard interactions
 - **Interaction Modes**: Configurable via `interactionMode` prop ("drag" | "wheel" | "both")
 - **Sensitivity Tuning**: Component-specific defaults tuned for optimal feel (Knob: 0.008, Slider: 0.005). CycleButton is discrete-only (no continuous interaction).
+- **Boolean Interaction (Button)**:
+  - **Core Architecture**: Interaction logic is centralized in `packages/core/src/controller/BooleanInteractionController.ts` (pure TS class).
+  - **React Adapter**: `useBooleanInteraction` hook in `packages/react` wraps `BooleanInteractionController` to bind it to React events.
+  - **Drag-In/Drag-Out Behavior**: Buttons support hardware-like drag-in/drag-out interactions:
+    - **Momentary Mode**: Press inside → turns on; drag out while pressed → turns off; drag back in while pressed → turns on again. Works even when press starts outside the button.
+    - **Toggle/Latch Mode**: Press inside → toggles state; drag out while pressed → no change; drag back in while pressed → toggles again. Works even when press starts outside the button.
+  - **Global Pointer Tracking**: Tracks pointer state globally (not just on button element) to enable drag-in behavior from outside the button boundary.
+  - **Mouse Enter/Leave Events**: Uses `mouseenter`/`mouseleave` to detect when pointer crosses button boundary while pressed.
+  - **Step Sequencer Pattern**: Enables classic step sequencer interactions where multiple buttons can be activated with a single drag gesture.
 - **Focus Management**:
   - Custom highlight effect (brightness/contrast boost + shadow) replaces browser ring
   - Applied via `:focus-visible` (keyboard) and `:focus-within` (click/touch)

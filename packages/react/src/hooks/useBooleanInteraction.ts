@@ -35,6 +35,10 @@ export interface UseBooleanInteractionResult {
     handleMouseDown: (e: React.MouseEvent) => void;
     /** Handler for mouse up events */
     handleMouseUp: (e: React.MouseEvent) => void;
+    /** Handler for mouse enter events (for drag-in behavior) */
+    handleMouseEnter: (e: React.MouseEvent) => void;
+    /** Handler for mouse leave events (for drag-out behavior) */
+    handleMouseLeave: (e: React.MouseEvent) => void;
     /** Handler for touch start events */
     handleTouchStart: (e: React.TouchEvent) => void;
     /** Handler for touch end events */
@@ -50,7 +54,8 @@ export interface UseBooleanInteractionResult {
  *
  * Provides standardized logic for:
  * - Toggle mode: Click or Space/Enter to flip the value
- * - Momentary mode: Press to activate, release to deactivate (with global mouseup handling)
+ * - Momentary mode: Press to activate, release to deactivate (with global pointer tracking)
+ * - Drag-in/drag-out behavior: Buttons respond to pointer entering/leaving while pressed, even when press starts outside the button
  * - Keyboard support: Enter/Space for activation/release
  *
  * The hook wraps the framework-agnostic `BooleanInteractionController` and provides React
@@ -58,9 +63,14 @@ export interface UseBooleanInteractionResult {
  * references across renders using `useCallback` and updates the controller configuration via
  * `useEffect` when props change.
  *
- * For momentary buttons, the hook automatically attaches global mouseup and touchend listeners
- * to ensure the button releases even if the pointer is moved outside the button before release
- * (common in audio applications).
+ * **Drag-In/Drag-Out Behavior:**
+ * - **Momentary Mode**: Press inside → turns on; drag out while pressed → turns off; drag back in while pressed → turns on again. Works even when press starts outside the button.
+ * - **Toggle Mode**: Press inside → toggles state; drag out while pressed → no change; drag back in while pressed → toggles again. Works even when press starts outside the button.
+ *
+ * The hook automatically attaches global pointer listeners (mousedown, mouseup, touchstart, touchend)
+ * to track pointer state globally, enabling drag-in behavior from anywhere on the page. It also
+ * handles mouseenter/mouseleave events to detect when the pointer crosses the button boundary
+ * while pressed.
  *
  * @param {UseBooleanInteractionProps} props - Configuration for the boolean interaction hook
  * @param {boolean} props.value - Current value of the control
@@ -73,11 +83,11 @@ export interface UseBooleanInteractionResult {
  * @param {React.TouchEventHandler} [props.onTouchEnd] - Optional user-provided touch end handler
  * @param {React.KeyboardEventHandler} [props.onKeyDown] - Optional user-provided keyboard key down handler
  * @param {React.KeyboardEventHandler} [props.onKeyUp] - Optional user-provided keyboard key up handler
- * @returns {UseBooleanInteractionResult} Object containing event handlers
+ * @returns {UseBooleanInteractionResult} Object containing event handlers including handleMouseEnter and handleMouseLeave for drag-in/drag-out behavior
  *
  * @example
  * ```tsx
- * const { handleMouseDown, handleMouseUp, handleTouchStart, handleTouchEnd, handleKeyDown, handleKeyUp } = useBooleanInteraction({
+ * const { handleMouseDown, handleMouseUp, handleMouseEnter, handleMouseLeave, handleTouchStart, handleTouchEnd, handleKeyDown, handleKeyUp } = useBooleanInteraction({
  *   value,
  *   mode: "momentary",
  *   onValueChange: (val) => setValue(val)
@@ -86,6 +96,8 @@ export interface UseBooleanInteractionResult {
  * <div
  *   onMouseDown={handleMouseDown}
  *   onMouseUp={handleMouseUp}
+ *   onMouseEnter={handleMouseEnter}
+ *   onMouseLeave={handleMouseLeave}
  *   onTouchStart={handleTouchStart}
  *   onTouchEnd={handleTouchEnd}
  *   onKeyDown={handleKeyDown}
@@ -125,34 +137,46 @@ export function useBooleanInteraction({
         });
     }, [value, mode, onValueChange, disabled]);
 
-    // Global mouseup handler for momentary buttons
-    // This ensures the button releases even if the mouse is moved outside the button
-    // before the mouse button is released (common in audio applications)
+    // Global pointer down handler - tracks when ANY pointer is pressed anywhere
+    // This enables drag-in behavior: pressing outside and dragging into the button
+    const handleGlobalMouseDown = useCallback((e: MouseEvent) => {
+        // Only track primary button (left click)
+        if (e.button === 0) {
+            controllerRef.current?.handleGlobalPointerDown(false);
+        }
+    }, []);
+
+    const handleGlobalTouchStart = useCallback((_e: TouchEvent) => {
+        controllerRef.current?.handleGlobalPointerDown(false);
+    }, []);
+
+    // Global pointer up handler - resets global pointer state and handles release
     const handleGlobalMouseUp = useCallback(() => {
-        controllerRef.current?.handleGlobalMouseUp();
+        controllerRef.current?.handleGlobalPointerUp();
     }, []);
 
-    // Global touchend handler for momentary buttons
-    // This ensures the button releases even if the touch is moved outside the button
-    // before the touch ends (common in audio applications, especially on tablets)
-    // Note: Uses the same controller method as mouseup since the controller handles both cases
+    // Global touchend handler - resets global pointer state and handles release
     const handleGlobalTouchEnd = useCallback(() => {
-        controllerRef.current?.handleGlobalMouseUp();
+        controllerRef.current?.handleGlobalPointerUp();
     }, []);
 
-    // Attach global mouseup and touchend listeners for momentary buttons
-    // This is necessary because users may drag the pointer outside the button before releasing
+    // Attach global pointer listeners for drag-in/drag-out behavior
+    // This enables buttons to respond even when press starts outside the button
     useEffect(() => {
-        if (mode === "momentary" && !disabled) {
+        if (!disabled) {
+            window.addEventListener("mousedown", handleGlobalMouseDown);
             window.addEventListener("mouseup", handleGlobalMouseUp);
+            window.addEventListener("touchstart", handleGlobalTouchStart, { passive: true });
             window.addEventListener("touchend", handleGlobalTouchEnd);
             return () => {
+                window.removeEventListener("mousedown", handleGlobalMouseDown);
                 window.removeEventListener("mouseup", handleGlobalMouseUp);
+                window.removeEventListener("touchstart", handleGlobalTouchStart);
                 window.removeEventListener("touchend", handleGlobalTouchEnd);
             };
         }
         return undefined;
-    }, [mode, disabled, handleGlobalMouseUp, handleGlobalTouchEnd]);
+    }, [disabled, handleGlobalMouseDown, handleGlobalMouseUp, handleGlobalTouchStart, handleGlobalTouchEnd]);
 
     const handleMouseDown = useCallback(
         (e: React.MouseEvent) => {
@@ -177,6 +201,14 @@ export function useBooleanInteraction({
         },
         [userOnMouseUp]
     );
+
+    const handleMouseEnter = useCallback((_e: React.MouseEvent) => {
+        controllerRef.current?.handleMouseEnter();
+    }, []);
+
+    const handleMouseLeave = useCallback((_e: React.MouseEvent) => {
+        controllerRef.current?.handleMouseLeave();
+    }, []);
 
     const handleTouchStart = useCallback(
         (e: React.TouchEvent) => {
@@ -239,6 +271,8 @@ export function useBooleanInteraction({
     return {
         handleMouseDown,
         handleMouseUp,
+        handleMouseEnter,
+        handleMouseLeave,
         handleTouchStart,
         handleTouchEnd,
         handleKeyDown,

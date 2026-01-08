@@ -59,6 +59,7 @@ const devices: Page[] = [
 const examples: Page[] = [
     { name: "Customization", path: "/examples/customization" },
     { name: "Control Surface", path: "/examples/control-surface" },
+    { name: "Drag Interaction", path: "/examples/drag-interaction" },
     { name: "Stress Test", path: "/examples/stress-test" },
     // More example pages can be added here in the future
 ];
