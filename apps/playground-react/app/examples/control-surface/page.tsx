@@ -211,7 +211,11 @@ function ControlSurfacePage() {
                                 </div>
 
                                 {/* Fader */}
-                                <div className="flex flex-1 items-stretch">
+                                {/* WORKAROUND: Override height to achieve 1:3 aspect ratio (width:height) for faders.
+                                    The size system uses 1:2 ratio for general-purpose sliders, but faders need the
+                                    taller 1:3 ratio. This inline style override will be removed once a proper fader
+                                    component or aspect ratio prop is introduced. */}
+                                <div className="flex flex-1 items-stretch min-h-0">
                                     <div className="flex-1 flex items-center justify-center">
                                         <AudioSlider
                                             adaptiveSize={false}
@@ -226,12 +230,15 @@ function ControlSurfacePage() {
                                             onChange={(e) =>
                                                 setChannelFaderDb((prev) => ({ ...prev, [id]: e.value as number }))
                                             }
+                                            style={{
+                                                height: "calc(var(--audioui-size-vslider-width-large) * 3)",
+                                            }}
                                         />
                                     </div>
                                 </div>
 
                                 {/* Transport buttons for the channel */}
-                                <div className="grid grid-cols-2 gap-2">
+                                <div className="grid grid-cols-2 gap-2 min-h-[60px]">
                                     <Button
                                         adaptiveSize={true}
                                         latch={true}
@@ -280,7 +287,9 @@ function ControlSurfacePage() {
                                 />
                             </div>
 
-                            <div className="flex flex-1 items-stretch">
+                            {/* WORKAROUND: Override height to achieve 1:3 aspect ratio (width:height) for faders.
+                                See channel fader comment above for details. */}
+                            <div className="flex flex-1 items-stretch min-h-0">
                                 <div className="flex-1 flex items-center justify-center">
                                     <AudioSlider
                                         adaptiveSize={false}
@@ -293,11 +302,14 @@ function ControlSurfacePage() {
                                         value={masterFaderDb}
                                         unit="dB"
                                         onChange={(e) => setMasterFaderDb(e.value as number)}
+                                        style={{
+                                            height: "calc(var(--audioui-size-vslider-width-large) * 3)",
+                                        }}
                                     />
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 gap-2">
+                            <div className="grid grid-cols-1 gap-2 min-h-[60px]">
                                 <Button
                                     adaptiveSize={true}
                                     latch={true}
