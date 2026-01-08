@@ -145,12 +145,12 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
     // Wrap adjustValue to trigger activity on changes (wheel, keyboard)
     const wrappedAdjustValue = React.useCallback(
         (delta: number, sensitivity?: number) => {
-            if (valueAsLabel === "interactive") {
+            if (valueAsLabel === "interactive" && onChange) {
                 handleActivity();
             }
             adjustValue(delta, sensitivity);
         },
-        [adjustValue, valueAsLabel, handleActivity]
+        [adjustValue, valueAsLabel, handleActivity, onChange]
     );
 
     const effectiveInteractionMode = interactionMode ?? View.interaction.mode ?? "both";
@@ -163,8 +163,8 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         direction: effectiveDirection,
         sensitivity: interactionSensitivity,
         editable: !!onChange,
-        onDragStart: valueAsLabel === "interactive" ? handleDragStart : undefined,
-        onDragEnd: valueAsLabel === "interactive" ? handleDragEnd : undefined,
+        onDragStart: valueAsLabel === "interactive" && onChange ? handleDragStart : undefined,
+        onDragEnd: valueAsLabel === "interactive" && onChange ? handleDragEnd : undefined,
         onMouseDown,
         onTouchStart: undefined, // ContinuousControl doesn't have onTouchStart prop
         onWheel: undefined, // ContinuousControl doesn't have onWheel prop
