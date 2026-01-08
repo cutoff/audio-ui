@@ -43,6 +43,10 @@ export interface UseBooleanInteractionResult {
     handleTouchStart: (e: React.TouchEvent) => void;
     /** Handler for touch end events */
     handleTouchEnd: (e: React.TouchEvent) => void;
+    /** Handler for touch move events (for touch drag-in/drag-out behavior) */
+    handleTouchMove: (e: React.TouchEvent) => void;
+    /** Ref callback to attach to the button element for touch tracking */
+    setButtonElement: (element: HTMLElement | SVGSVGElement | null) => void;
     /** Handler for keyboard key down events (Enter/Space to activate) */
     handleKeyDown: (e: React.KeyboardEvent) => void;
     /** Handler for keyboard key up events (Enter/Space to release momentary buttons) */
@@ -67,10 +71,11 @@ export interface UseBooleanInteractionResult {
  * - **Momentary Mode**: Press inside → turns on; drag out while pressed → turns off; drag back in while pressed → turns on again. Works even when press starts outside the button.
  * - **Toggle Mode**: Press inside → toggles state; drag out while pressed → no change; drag back in while pressed → toggles again. Works even when press starts outside the button.
  *
- * The hook automatically attaches global pointer listeners (mousedown, mouseup, touchstart, touchend)
- * to track pointer state globally, enabling drag-in behavior from anywhere on the page. It also
- * handles mouseenter/mouseleave events to detect when the pointer crosses the button boundary
- * while pressed.
+ * The hook automatically attaches global pointer listeners (mousedown, mouseup, touchstart, touchmove, touchend)
+ * to track pointer state globally, enabling drag-in behavior from anywhere on the page. For mouse interactions,
+ * it handles mouseenter/mouseleave events to detect when the pointer crosses the button boundary while pressed.
+ * For touch interactions, it manually tracks touch position using touchmove events and elementFromPoint to detect
+ * when the touch point crosses button boundaries (since touch events don't fire mouseenter/mouseleave).
  *
  * @param {UseBooleanInteractionProps} props - Configuration for the boolean interaction hook
  * @param {boolean} props.value - Current value of the control
@@ -118,6 +123,9 @@ export function useBooleanInteraction({
     onKeyUp: userOnKeyUp,
 }: UseBooleanInteractionProps): UseBooleanInteractionResult {
     const controllerRef = useRef<BooleanInteractionController | null>(null);
+    const buttonElementRef = useRef<HTMLElement | SVGSVGElement | null>(null);
+    const touchIsInsideRef = useRef<boolean>(false);
+    const isGlobalPointerDownRef = useRef<boolean>(false);
 
     if (!controllerRef.current) {
         controllerRef.current = new BooleanInteractionController({
@@ -142,22 +150,63 @@ export function useBooleanInteraction({
     const handleGlobalMouseDown = useCallback((e: MouseEvent) => {
         // Only track primary button (left click)
         if (e.button === 0) {
+            isGlobalPointerDownRef.current = true;
             controllerRef.current?.handleGlobalPointerDown(false);
         }
     }, []);
 
     const handleGlobalTouchStart = useCallback((_e: TouchEvent) => {
+        isGlobalPointerDownRef.current = true;
         controllerRef.current?.handleGlobalPointerDown(false);
     }, []);
 
     // Global pointer up handler - resets global pointer state and handles release
     const handleGlobalMouseUp = useCallback(() => {
+        isGlobalPointerDownRef.current = false;
         controllerRef.current?.handleGlobalPointerUp();
     }, []);
 
     // Global touchend handler - resets global pointer state and handles release
     const handleGlobalTouchEnd = useCallback(() => {
+        isGlobalPointerDownRef.current = false;
+        touchIsInsideRef.current = false;
         controllerRef.current?.handleGlobalPointerUp();
+    }, []);
+
+    // Global touchmove handler - tracks touch position to detect enter/leave for touch devices
+    // Touch events don't fire mouseenter/mouseleave, so we need to manually track when touch
+    // crosses button boundaries
+    const handleGlobalTouchMove = useCallback((e: TouchEvent) => {
+        if (!controllerRef.current || !buttonElementRef.current) return;
+
+        // Only track if global pointer is down
+        if (!isGlobalPointerDownRef.current) return;
+
+        const controller = controllerRef.current;
+        const buttonElement = buttonElementRef.current;
+
+        // Get the first touch point
+        if (e.touches.length === 0) return;
+        const touch = e.touches[0];
+
+        // Find element at touch point
+        const elementAtPoint = document.elementFromPoint(touch.clientX, touch.clientY);
+
+        // Check if touch is over this button (or any child of it)
+        const isInside = elementAtPoint === buttonElement || buttonElement.contains(elementAtPoint);
+
+        // Only react if state changed
+        if (isInside !== touchIsInsideRef.current) {
+            touchIsInsideRef.current = isInside;
+
+            if (isInside) {
+                // Touch entered the button
+                controller.handleMouseEnter();
+            } else {
+                // Touch left the button
+                controller.handleMouseLeave();
+            }
+        }
     }, []);
 
     // Attach global pointer listeners for drag-in/drag-out behavior
@@ -167,16 +216,25 @@ export function useBooleanInteraction({
             window.addEventListener("mousedown", handleGlobalMouseDown);
             window.addEventListener("mouseup", handleGlobalMouseUp);
             window.addEventListener("touchstart", handleGlobalTouchStart, { passive: true });
+            window.addEventListener("touchmove", handleGlobalTouchMove, { passive: false });
             window.addEventListener("touchend", handleGlobalTouchEnd);
             return () => {
                 window.removeEventListener("mousedown", handleGlobalMouseDown);
                 window.removeEventListener("mouseup", handleGlobalMouseUp);
                 window.removeEventListener("touchstart", handleGlobalTouchStart);
+                window.removeEventListener("touchmove", handleGlobalTouchMove);
                 window.removeEventListener("touchend", handleGlobalTouchEnd);
             };
         }
         return undefined;
-    }, [disabled, handleGlobalMouseDown, handleGlobalMouseUp, handleGlobalTouchStart, handleGlobalTouchEnd]);
+    }, [
+        disabled,
+        handleGlobalMouseDown,
+        handleGlobalMouseUp,
+        handleGlobalTouchStart,
+        handleGlobalTouchMove,
+        handleGlobalTouchEnd,
+    ]);
 
     const handleMouseDown = useCallback(
         (e: React.MouseEvent) => {
@@ -184,6 +242,9 @@ export function useBooleanInteraction({
             userOnMouseDown?.(e);
             // Only call hook handler if not prevented
             if (!e.defaultPrevented) {
+                // Store button element reference for potential touch tracking
+                buttonElementRef.current = e.currentTarget as HTMLElement;
+                isGlobalPointerDownRef.current = true;
                 controllerRef.current?.handleMouseDown(e.defaultPrevented);
             }
         },
@@ -196,6 +257,7 @@ export function useBooleanInteraction({
             userOnMouseUp?.(e);
             // Only call hook handler if not prevented
             if (!e.defaultPrevented) {
+                isGlobalPointerDownRef.current = false;
                 controllerRef.current?.handleMouseUp(e.defaultPrevented);
             }
         },
@@ -210,6 +272,11 @@ export function useBooleanInteraction({
         controllerRef.current?.handleMouseLeave();
     }, []);
 
+    // Set button element reference (called when component mounts or element changes)
+    const setButtonElement = useCallback((element: HTMLElement | SVGSVGElement | null) => {
+        buttonElementRef.current = element;
+    }, []);
+
     const handleTouchStart = useCallback(
         (e: React.TouchEvent) => {
             // Call user handler first
@@ -218,6 +285,9 @@ export function useBooleanInteraction({
             if (!e.defaultPrevented) {
                 // Prevent default to avoid mouse event emulation and double-firing
                 e.preventDefault();
+                // Store button element reference for touch tracking
+                buttonElementRef.current = e.currentTarget as HTMLElement;
+                touchIsInsideRef.current = true; // Touch started on this button
                 controllerRef.current?.handleMouseDown(false);
             }
         },
@@ -233,10 +303,17 @@ export function useBooleanInteraction({
                 // Prevent default to avoid mouse event emulation and double-firing
                 e.preventDefault();
                 controllerRef.current?.handleMouseUp(false);
+                touchIsInsideRef.current = false;
             }
         },
         [userOnTouchEnd]
     );
+
+    // Touch move handler - prevents default scrolling and allows touch tracking
+    const handleTouchMove = useCallback((e: React.TouchEvent) => {
+        // Prevent default scrolling during touch drag
+        e.preventDefault();
+    }, []);
 
     const handleKeyDown = useCallback(
         (e: React.KeyboardEvent) => {
@@ -275,6 +352,8 @@ export function useBooleanInteraction({
         handleMouseLeave,
         handleTouchStart,
         handleTouchEnd,
+        handleTouchMove,
+        setButtonElement,
         handleKeyDown,
         handleKeyUp,
     };

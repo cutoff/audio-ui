@@ -32,6 +32,8 @@ export default [
                 performance: "readonly",
                 EventTarget: "readonly",
                 HTMLElement: "readonly",
+                SVGSVGElement: "readonly",
+                Element: "readonly",
                 MouseEvent: "readonly",
                 TouchEvent: "readonly",
                 WheelEvent: "readonly",

@@ -117,6 +117,8 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
         handleMouseLeave,
         handleTouchStart,
         handleTouchEnd,
+        handleTouchMove,
+        setButtonElement,
         handleKeyDown,
         handleKeyUp,
     } = useBooleanInteraction({
@@ -150,6 +152,23 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
         [onClick, onChange]
     );
 
+    // Wrap handlers to set element reference
+    const handleMouseDownWithRef = useCallback(
+        (e: React.MouseEvent<SVGSVGElement>) => {
+            setButtonElement(e.currentTarget);
+            handleMouseDown(e);
+        },
+        [setButtonElement, handleMouseDown]
+    );
+
+    const handleTouchStartWithRef = useCallback(
+        (e: React.TouchEvent<SVGSVGElement>) => {
+            setButtonElement(e.currentTarget);
+            handleTouchStart(e);
+        },
+        [setButtonElement, handleTouchStart]
+    );
+
     return (
         <AdaptiveBox
             displayMode={displayMode ?? "scaleToFit"}
@@ -164,7 +183,7 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
                 className={svgClassNames}
                 style={svgStyle}
                 onClick={onClick}
-                onMouseDown={handleMouseDown}
+                onMouseDown={handleMouseDownWithRef}
                 onMouseUp={handleMouseUp}
                 onMouseEnter={(e) => {
                     handleMouseEnter(e);
@@ -174,8 +193,9 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
                     handleMouseLeave(e);
                     onMouseLeave?.(e);
                 }}
-                onTouchStart={handleTouchStart}
+                onTouchStart={handleTouchStartWithRef}
                 onTouchEnd={handleTouchEnd}
+                onTouchMove={handleTouchMove}
                 onKeyDown={handleKeyDown}
                 onKeyUp={handleKeyUp}
                 tabIndex={0}

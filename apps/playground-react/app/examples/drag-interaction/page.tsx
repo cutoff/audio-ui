@@ -180,7 +180,10 @@ export default function DragInteractionPage() {
                     <div className="grid grid-cols-[35px_repeat(8,minmax(0,1fr))] sm:grid-cols-[45px_repeat(8,minmax(0,1fr))] md:grid-cols-[60px_repeat(8,minmax(0,1fr))] lg:grid-cols-[80px_repeat(8,minmax(0,1fr))] gap-1 sm:gap-1.5 md:gap-2 lg:gap-3 w-full max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl mx-auto px-1 sm:px-2 md:px-4">
                         <div></div>
                         {Array.from({ length: 8 }, (_, i) => (
-                            <div key={i} className="text-center text-[10px] sm:text-xs md:text-sm font-medium text-muted-foreground">
+                            <div
+                                key={i}
+                                className="text-center text-[10px] sm:text-xs md:text-sm font-medium text-muted-foreground"
+                            >
                                 {i + 1}
                             </div>
                         ))}
