@@ -37,9 +37,14 @@ function generateCodeSnippet(
     value: number,
     label: string,
     roundness: number | undefined,
+    thickness: number | undefined,
     color: string | undefined
 ): string {
     let props = `value={${value}} label='${label}'`;
+
+    if (thickness !== undefined) {
+        props += ` thickness={${thickness}}`;
+    }
 
     if (roundness !== undefined) {
         props += ` roundness={${roundness}}`;
@@ -62,6 +67,7 @@ type CycleButtonComponentProps = {
     value: number;
     label?: string;
     roundness?: number;
+    thickness?: number;
     adaptiveSize?: boolean;
     style?: React.CSSProperties;
     className?: string;
@@ -75,6 +81,7 @@ function CycleButtonComponent({
     value,
     label,
     roundness,
+    thickness,
     adaptiveSize,
     onChange,
     onClick,
@@ -95,6 +102,7 @@ function CycleButtonComponent({
             size={size}
             color={color}
             roundness={roundness}
+            thickness={thickness}
         >
             {sampleOptions}
         </CycleButton>
@@ -105,12 +113,14 @@ export default function CycleButtonDemoPage() {
     const [value, setValue] = useState(0);
     const [label, setLabel] = useState("Waveform");
     const [roundness, setRoundness] = useState<number | undefined>(undefined);
+    const [thickness, setThickness] = useState<number | undefined>(undefined);
     const [color, setColor] = useState<string | undefined>(undefined); // Allow undefined to use theme values
 
     const handleExampleClick = (): void => {
         setValue(0);
         setLabel("Waveform");
         setRoundness(undefined); // Use theme roundness
+        setThickness(undefined); // Use theme thickness
         setColor(undefined); // Use theme color
     };
 
@@ -118,6 +128,22 @@ export default function CycleButtonDemoPage() {
         <div key="label" className="grid gap-2">
             <Label htmlFor="labelProp">Label</Label>
             <Input id="labelProp" value={label} onChange={(e) => setLabel(e.target.value)} />
+        </div>,
+        <div key="thickness" className="grid gap-2">
+            <Label htmlFor="thicknessProp">Thickness (0.0-1.0)</Label>
+            <Input
+                id="thicknessProp"
+                type="number"
+                min="0"
+                max="1"
+                step="0.01"
+                value={thickness !== undefined ? thickness : ""}
+                onChange={(e) => {
+                    const value = e.target.value === "" ? undefined : Math.max(0, Math.min(1, Number(e.target.value)));
+                    setThickness(value);
+                }}
+                placeholder="Default"
+            />
         </div>,
         <div key="roundness" className="grid gap-2">
             <Label htmlFor="roundnessProp">Roundness (0.0-1.0)</Label>
@@ -145,11 +171,12 @@ export default function CycleButtonDemoPage() {
         </CycleButton>,
     ];
 
-    const codeString = generateCodeSnippet(value, label, roundness, color);
+    const codeString = generateCodeSnippet(value, label, roundness, thickness, color);
     const componentProps = {
         value,
         label,
         roundness,
+        thickness,
         color,
     };
 
