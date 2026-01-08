@@ -251,8 +251,8 @@ export default function KnobDemoPage() {
                 setBipolar(true);
                 setUseMidiBipolar(false);
                 setThickness(undefined);
-                setRoundness(0.3);
-                setColor("#ff3366"); // Pink
+                setRoundness(undefined); // Use theme roundness
+                setColor(undefined); // Use theme color
                 setVariant("abstract");
                 setRotaryOverlay(undefined);
                 setSelectedIcon("sine");
@@ -268,8 +268,8 @@ export default function KnobDemoPage() {
                 setBipolar(true);
                 setUseMidiBipolar(false);
                 setThickness(undefined);
-                setRoundness(0.3);
-                setColor("#33cc66"); // Green
+                setRoundness(undefined); // Use theme roundness
+                setColor(undefined); // Use theme color
                 setVariant("abstract");
                 setRotaryOverlay(undefined);
                 setSelectedIcon("sine");
@@ -285,8 +285,8 @@ export default function KnobDemoPage() {
                 setBipolar(true);
                 setUseMidiBipolar(true);
                 setThickness(undefined);
-                setRoundness(0.3);
-                setColor("#ff9933"); // Orange
+                setRoundness(undefined); // Use theme roundness
+                setColor(undefined); // Use theme color
                 setVariant("abstract");
                 setRotaryOverlay(undefined);
                 setSelectedIcon("sine");
@@ -508,8 +508,6 @@ export default function KnobDemoPage() {
             value={64}
             label="Bipolar"
             size="large"
-            roundness={12}
-            color="#ff3366" // Pink
             onClick={() => handleExampleClick(1)}
         />,
         <Knob
@@ -521,8 +519,6 @@ export default function KnobDemoPage() {
             value={0}
             label="Bipolar0"
             size="large"
-            roundness={12}
-            color="#33cc66" // Green
             onClick={() => handleExampleClick(2)}
         />,
         <Knob
@@ -534,8 +530,6 @@ export default function KnobDemoPage() {
             label="MIDI Bipolar"
             size="large"
             bipolar={true}
-            roundness={12}
-            color="#ff9933" // Orange
             valueFormatter={midiBipolarFormatter}
             onClick={() => handleExampleClick(4)}
         />,

@@ -39,8 +39,8 @@ export default function Page() {
             case 1:
                 setValue(false);
                 setLabel("Latch");
-                setRoundness(0.3);
-                setColor("#ff3366"); // Pink
+                setRoundness(undefined); // Use theme roundness
+                setColor(undefined); // Use theme color
                 setLatch(true);
                 break;
         }
@@ -102,16 +102,7 @@ export default function Page() {
             // Use undefined color and roundness to inherit from theme
             onChange={() => handleExampleClick(0)}
         />,
-        <Button
-            key="1"
-            value={false}
-            label="Latch"
-            size="large"
-            latch={true}
-            roundness={0.3}
-            color="#ff3366" // Pink
-            onChange={() => handleExampleClick(1)}
-        />,
+        <Button key="1" value={false} label="Latch" size="large" latch={true} onChange={() => handleExampleClick(1)} />,
     ];
 
     return (
