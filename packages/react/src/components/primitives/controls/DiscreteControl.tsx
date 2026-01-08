@@ -13,7 +13,7 @@ import { AdaptiveBoxProps, DiscreteControlProps, ControlComponent } from "@/type
 import AdaptiveBox from "../AdaptiveBox";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useDiscreteInteraction } from "@/hooks/useDiscreteInteraction";
-import { useEnumParameterResolution } from "@/hooks/useEnumParameterResolution";
+import { useDiscreteParameterResolution } from "@/hooks/useDiscreteParameterResolution";
 
 export type DiscreteControlComponentProps<P extends object = Record<string, unknown>> =
     // Base Control Props (includes all DiscreteControlProps)
@@ -39,7 +39,7 @@ export type DiscreteControlComponentProps<P extends object = Record<string, unkn
         };
 
 /**
- * A Generic Discrete Control that connects a Data Model (EnumParameter)
+ * A Generic Discrete Control that connects a Data Model (DiscreteParameter)
  * to a Visualization View (ControlComponent).
  *
  * This component handles parameter resolution, value management, interaction handling,
@@ -91,7 +91,7 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
         onMouseLeave,
     } = props;
 
-    const { derivedParameter, effectiveDefaultValue } = useEnumParameterResolution({
+    const { derivedParameter, effectiveDefaultValue } = useDiscreteParameterResolution({
         children,
         paramId,
         parameter,

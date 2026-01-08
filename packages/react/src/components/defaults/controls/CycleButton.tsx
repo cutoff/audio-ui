@@ -13,8 +13,8 @@ import KnobView from "./KnobView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, AudioControlEvent, ThemableProps } from "@/types";
 import { useThemableProps } from "@/defaults/AudioUiProvider";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
-import { useEnumParameterResolution } from "@/hooks/useEnumParameterResolution";
-import { clampNormalized, EnumParameter } from "@cutoff/audio-ui-core";
+import { useDiscreteParameterResolution } from "@/hooks/useDiscreteParameterResolution";
+import { clampNormalized, DiscreteParameter } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
 const CONTENT_WRAPPER_STYLE: React.CSSProperties = {
@@ -54,7 +54,7 @@ export type CycleButtonProps = AdaptiveSizeProps &
         /** Identifier for the parameter this control represents */
         paramId?: string;
         /** Audio Parameter definition (Strict Model Mode) */
-        parameter?: EnumParameter;
+        parameter?: DiscreteParameter;
         /** Custom renderer for options (used when parameter is provided but no children map exists) */
         renderOption?: (option: { value: string | number; label: string }) => React.ReactNode;
         /** Thickness of the stroke (normalized 0.0-1.0, maps to 1-20). Used by rotary variant. */
@@ -125,10 +125,10 @@ function CycleButton({
     );
 
     // Get visualContentMap and derivedParameter for content rendering.
-    // Note: DiscreteControl also calls useEnumParameterResolution internally for parameter resolution,
+    // Note: DiscreteControl also calls useDiscreteParameterResolution internally for parameter resolution,
     // but we need visualContentMap and derivedParameter here to render the HTML overlay content
     // (icons, text, or custom renderOption output) based on the current value.
-    const { visualContentMap, derivedParameter, effectiveDefaultValue } = useEnumParameterResolution({
+    const { visualContentMap, derivedParameter, effectiveDefaultValue } = useDiscreteParameterResolution({
         children,
         paramId,
         parameter,

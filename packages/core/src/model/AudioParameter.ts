@@ -4,7 +4,7 @@
  * See LICENSE.md for details.
  */
 
-export type AudioParameterType = "continuous" | "boolean" | "enum";
+export type AudioParameterType = "continuous" | "boolean" | "discrete";
 
 /**
  * A scale function that transforms normalized values (0..1) to scaled values (0..1)
@@ -109,8 +109,8 @@ export interface BooleanParameter extends BaseAudioParameter {
     falseLabel?: string;
 }
 
-export interface EnumParameter extends BaseAudioParameter {
-    type: "enum";
+export interface DiscreteParameter extends BaseAudioParameter {
+    type: "discrete";
     defaultValue?: number | string;
     options: Array<{
         value: number | string;
@@ -121,7 +121,7 @@ export interface EnumParameter extends BaseAudioParameter {
     midiMapping?: "spread" | "sequential" | "custom";
 }
 
-export type AudioParameter = ContinuousParameter | BooleanParameter | EnumParameter;
+export type AudioParameter = ContinuousParameter | BooleanParameter | DiscreteParameter;
 
 /**
  * Implementation class that handles normalization, denormalization, and MIDI conversion.
@@ -193,8 +193,8 @@ export class AudioParameterConverter {
             case "boolean": {
                 return realValue ? 1.0 : 0.0;
             }
-            case "enum": {
-                const conf = this.config as EnumParameter;
+            case "discrete": {
+                const conf = this.config as DiscreteParameter;
                 const index = conf.options.findIndex((o) => o.value === realValue);
                 if (index === -1) return 0;
                 const count = conf.options.length;
@@ -248,8 +248,8 @@ export class AudioParameterConverter {
             case "boolean": {
                 return clamped >= 0.5;
             }
-            case "enum": {
-                const conf = this.config as EnumParameter;
+            case "discrete": {
+                const conf = this.config as DiscreteParameter;
                 const count = conf.options.length;
                 if (count === 0) return 0;
                 const index = Math.round(clamped * (count - 1));
@@ -292,8 +292,8 @@ export class AudioParameterConverter {
             case "boolean": {
                 return realValue ? this.maxMidi : 0;
             }
-            case "enum": {
-                const conf = this.config as EnumParameter;
+            case "discrete": {
+                const conf = this.config as DiscreteParameter;
                 const mapping = conf.midiMapping ?? "spread";
 
                 if (mapping === "custom") {
@@ -354,8 +354,8 @@ export class AudioParameterConverter {
                 const threshold = this.maxMidi / 2;
                 return clampedMidi >= threshold;
             }
-            case "enum": {
-                const conf = this.config as EnumParameter;
+            case "discrete": {
+                const conf = this.config as DiscreteParameter;
                 const mapping = conf.midiMapping ?? "spread";
 
                 if (mapping === "custom") {
@@ -411,7 +411,7 @@ export class AudioParameterConverter {
      *
      * - Continuous parameters: Includes unit suffix and precision based on step size
      * - Boolean parameters: Uses trueLabel/falseLabel or defaults to "On"/"Off"
-     * - Enum parameters: Returns the label of the matching option
+     * - Discrete parameters: Returns the label of the matching option
      *
      * @param value The value to format (number, boolean, or string)
      * @returns Formatted string representation
@@ -448,8 +448,8 @@ export class AudioParameterConverter {
                 const conf = this.config as BooleanParameter;
                 return (value ? conf.trueLabel : conf.falseLabel) ?? (value ? "On" : "Off");
             }
-            case "enum": {
-                const conf = this.config as EnumParameter;
+            case "discrete": {
+                const conf = this.config as DiscreteParameter;
                 const opt = conf.options.find((o) => o.value === value);
                 return opt?.label ?? String(value);
             }
@@ -506,8 +506,8 @@ export class AudioParameterConverter {
                 const falseStr = conf.falseLabel ?? "Off";
                 return trueStr.length >= falseStr.length ? trueStr : falseStr;
             }
-            case "enum": {
-                const conf = this.config as EnumParameter;
+            case "discrete": {
+                const conf = this.config as DiscreteParameter;
                 let longest = "";
                 for (const opt of conf.options) {
                     const label = opt.label ?? String(opt.value);
@@ -716,14 +716,14 @@ export const AudioParameterFactory = {
     }),
 
     /**
-     * Creates an enumeration (selector) parameter.
+     * Creates a discrete (selector) parameter.
      *
-     * This factory method creates an enum parameter suitable for mode selectors,
+     * This factory method creates a discrete parameter suitable for mode selectors,
      * preset switches, or any control that cycles through discrete options.
      *
      * @param name The parameter name (used to generate ID and name fields)
      * @param options Array of option objects, each with a value and label
-     * @returns An EnumParameter configured as a selector
+     * @returns A DiscreteParameter configured as a selector
      *
      * @example
      * ```ts
@@ -734,10 +734,10 @@ export const AudioParameterFactory = {
      * ]);
      * ```
      */
-    createSelector: (name: string, options: Array<{ value: string | number; label: string }>): EnumParameter => ({
+    createSelector: (name: string, options: Array<{ value: string | number; label: string }>): DiscreteParameter => ({
         id: `sel-${name.toLowerCase().replace(/\s+/g, "-")}`,
         name,
-        type: "enum",
+        type: "discrete",
         options,
         defaultValue: options[0]?.value,
         midiResolution: 7,

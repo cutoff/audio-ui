@@ -77,7 +77,7 @@ describe("AudioParameterConverter", () => {
         });
     });
 
-    describe("Enum Parameter", () => {
+    describe("Discrete Parameter", () => {
         const param = AudioParameterFactory.createSelector("test-enum", [
             { value: "one", label: "One" },
             { value: "two", label: "Two" },
@@ -212,7 +212,7 @@ describe("AudioParameterConverter", () => {
             });
         });
 
-        describe("Enum Parameter", () => {
+        describe("Discrete Parameter", () => {
             it("returns longest option label", () => {
                 const param = AudioParameterFactory.createSelector("test", [
                     { value: "a", label: "Short" },

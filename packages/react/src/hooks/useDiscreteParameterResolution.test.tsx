@@ -7,11 +7,11 @@
 import React from "react";
 import { describe, it, expect } from "vitest";
 import { renderHook } from "@testing-library/react";
-import { useEnumParameterResolution } from "./useEnumParameterResolution";
+import { useDiscreteParameterResolution } from "./useDiscreteParameterResolution";
 import Option from "../components/primitives/controls/Option";
-import { EnumParameter } from "@cutoff/audio-ui-core";
+import { DiscreteParameter } from "@cutoff/audio-ui-core";
 
-describe("useEnumParameterResolution", () => {
+describe("useDiscreteParameterResolution", () => {
     describe("Ad-Hoc Mode (Children only)", () => {
         it("infers parameter options from Option children", () => {
             const children = [
@@ -23,12 +23,12 @@ describe("useEnumParameterResolution", () => {
                 </Option>,
             ];
 
-            const { result } = renderHook(() => useEnumParameterResolution({ children, paramId: "test-param" }));
+            const { result } = renderHook(() => useDiscreteParameterResolution({ children, paramId: "test-param" }));
 
             const { derivedParameter, visualContentMap, effectiveDefaultValue } = result.current;
 
             expect(derivedParameter.id).toBe("test-param");
-            expect(derivedParameter.type).toBe("enum");
+            expect(derivedParameter.type).toBe("discrete");
             expect(derivedParameter.options).toHaveLength(2);
             expect(derivedParameter.options[0]).toEqual({ value: "a", label: "Option A" });
             expect(derivedParameter.options[1]).toEqual({ value: "b", label: "Option B" });
@@ -51,7 +51,7 @@ describe("useEnumParameterResolution", () => {
                 </Option>,
             ];
 
-            const { result } = renderHook(() => useEnumParameterResolution({ children }));
+            const { result } = renderHook(() => useDiscreteParameterResolution({ children }));
 
             const { derivedParameter } = result.current;
             expect(derivedParameter.options[0].label).toBe("Zero");
@@ -61,7 +61,7 @@ describe("useEnumParameterResolution", () => {
         it("falls back to stringified value if no label or text content", () => {
             const children = [<Option key="1" value={10} />];
 
-            const { result } = renderHook(() => useEnumParameterResolution({ children }));
+            const { result } = renderHook(() => useDiscreteParameterResolution({ children }));
             expect(result.current.derivedParameter.options[0].label).toBe("10");
         });
 
@@ -75,13 +75,13 @@ describe("useEnumParameterResolution", () => {
                 </Option>,
             ];
 
-            const { result } = renderHook(() => useEnumParameterResolution({ children, defaultValue: "b" }));
+            const { result } = renderHook(() => useDiscreteParameterResolution({ children, defaultValue: "b" }));
             expect(result.current.effectiveDefaultValue).toBe("b");
             expect(result.current.derivedParameter.defaultValue).toBe("b");
         });
 
         it("handles empty children gracefully", () => {
-            const { result } = renderHook(() => useEnumParameterResolution({ children: [] }));
+            const { result } = renderHook(() => useDiscreteParameterResolution({ children: [] }));
 
             expect(result.current.derivedParameter.options).toHaveLength(1);
             expect(result.current.derivedParameter.options[0]).toEqual({ value: 0, label: "None" });
@@ -98,7 +98,7 @@ describe("useEnumParameterResolution", () => {
                 "Just Text", // Should be ignored as it's not an Option element
             ];
 
-            const { result } = renderHook(() => useEnumParameterResolution({ children }));
+            const { result } = renderHook(() => useDiscreteParameterResolution({ children }));
 
             expect(result.current.derivedParameter.options).toHaveLength(1);
             expect(result.current.derivedParameter.options[0].value).toBe("a");
@@ -107,7 +107,7 @@ describe("useEnumParameterResolution", () => {
         it("uses index as value when value prop is missing", () => {
             const children = [<Option key="0">First</Option>, <Option key="1">Second</Option>];
 
-            const { result } = renderHook(() => useEnumParameterResolution({ children }));
+            const { result } = renderHook(() => useDiscreteParameterResolution({ children }));
 
             expect(result.current.derivedParameter.options[0].value).toBe(0);
             expect(result.current.derivedParameter.options[1].value).toBe(1);
@@ -120,7 +120,7 @@ describe("useEnumParameterResolution", () => {
                 </Option>,
             ];
             const { result } = renderHook(() =>
-                useEnumParameterResolution({
+                useDiscreteParameterResolution({
                     children,
                     paramId: "custom-id",
                     label: "Custom Param Label",
@@ -133,9 +133,9 @@ describe("useEnumParameterResolution", () => {
     });
 
     describe("Strict Mode (Parameter only)", () => {
-        const param: EnumParameter = {
+        const param: DiscreteParameter = {
             id: "strict-param",
-            type: "enum",
+            type: "discrete",
             name: "Strict",
             defaultValue: "x",
             options: [
@@ -145,7 +145,7 @@ describe("useEnumParameterResolution", () => {
         };
 
         it("uses provided parameter directly", () => {
-            const { result } = renderHook(() => useEnumParameterResolution({ parameter: param }));
+            const { result } = renderHook(() => useDiscreteParameterResolution({ parameter: param }));
 
             expect(result.current.derivedParameter).toBe(param);
             expect(result.current.effectiveDefaultValue).toBe("x");
@@ -153,15 +153,17 @@ describe("useEnumParameterResolution", () => {
         });
 
         it("overrides defaultValue if provided", () => {
-            const { result } = renderHook(() => useEnumParameterResolution({ parameter: param, defaultValue: "y" }));
+            const { result } = renderHook(() =>
+                useDiscreteParameterResolution({ parameter: param, defaultValue: "y" })
+            );
             expect(result.current.effectiveDefaultValue).toBe("y");
         });
     });
 
     describe("Hybrid Mode (Parameter + Children)", () => {
-        const param: EnumParameter = {
+        const param: DiscreteParameter = {
             id: "hybrid-param",
-            type: "enum",
+            type: "discrete",
             name: "Hybrid",
             defaultValue: 1,
             options: [
@@ -180,7 +182,7 @@ describe("useEnumParameterResolution", () => {
                 </Option>,
             ];
 
-            const { result } = renderHook(() => useEnumParameterResolution({ parameter: param, children }));
+            const { result } = renderHook(() => useDiscreteParameterResolution({ parameter: param, children }));
 
             expect(result.current.derivedParameter).toBe(param);
 
@@ -202,7 +204,7 @@ describe("useEnumParameterResolution", () => {
                 </Option>,
             ];
 
-            const { result } = renderHook(() => useEnumParameterResolution({ parameter: param, children }));
+            const { result } = renderHook(() => useDiscreteParameterResolution({ parameter: param, children }));
 
             expect(result.current.visualContentMap.get(1)).not.toBeUndefined();
             expect(result.current.visualContentMap.get(2)).not.toBeUndefined();

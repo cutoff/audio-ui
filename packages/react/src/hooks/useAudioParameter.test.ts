@@ -76,7 +76,7 @@ describe("useAudioParameter", () => {
         });
     });
 
-    describe("Enum Parameter", () => {
+    describe("Discrete Parameter", () => {
         const param = AudioParameterFactory.createSelector("Wave", [
             { value: "sin", label: "Sine" },
             { value: "saw", label: "Saw" },
@@ -85,7 +85,7 @@ describe("useAudioParameter", () => {
 
         it("initializes correctly", () => {
             const { result } = renderHook(() => useAudioParameter("saw", undefined, param));
-            // Enum parameters (7-bit resolution) are quantized.
+            // Discrete parameters (7-bit resolution) are quantized.
             // "saw" is index 1 of 3 (0, 1, 2). Normalized ideal is 0.5.
             // MIDI conversion: round(0.5 * 127) = 64.
             // Final normalized: 64 / 127 ≈ 0.5039...

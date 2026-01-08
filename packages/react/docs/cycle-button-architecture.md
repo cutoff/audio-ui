@@ -19,7 +19,7 @@ The component logic is designed to unify **Model** (logical parameter definition
 Designed for simple use cases where the component infers the data model directly from the UI markup.
 
 - **Input**: `Option` children only. No `parameter` prop.
-- **Model**: An `EnumParameter` is generated automatically.
+- **Model**: A `DiscreteParameter` is generated automatically.
   - `options`: Derived from children.
   - `defaultValue`: Derived from `defaultValue` prop on `CycleButton` (or first option).
   - `label`: Derived from `label` prop on Option > `children` (if text) > `value`.
@@ -38,7 +38,7 @@ import { CycleButton, Option } from "@cutoff/audio-ui-react";
 
 Designed for data-driven applications where the model is defined externally.
 
-- **Input**: `parameter` prop (EnumParameter). No children.
+- **Input**: `parameter` prop (DiscreteParameter). No children.
 - **Model**: Uses the provided `parameter` as the single source of truth.
 - **View**: Uses `renderOption` prop (if provided) or falls back to `parameter.options[i].label`.
 
@@ -84,7 +84,7 @@ The `Option` component serves two purposes depending on the mode:
 
 ### Label Inference Logic (Ad-Hoc Mode)
 
-When inferring the `label` for the generated `EnumParameter`:
+When inferring the `label` for the generated `DiscreteParameter`:
 
 1.  **`props.label`** (Highest Priority) - _Always use this for Icons._
 2.  **`props.children`** (if string/number) - _Convenient for text options._

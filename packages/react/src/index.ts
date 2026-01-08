@@ -114,5 +114,5 @@ export { DEFAULT_ROUNDNESS, DEFAULT_THICKNESS } from "@cutoff/audio-ui-core";
 export * from "@cutoff/audio-ui-core";
 export * from "./hooks/useAudioParameter";
 export * from "./hooks/useAdaptiveSize";
-export * from "./hooks/useEnumParameterResolution";
+export * from "./hooks/useDiscreteParameterResolution";
 export * from "./hooks/useContinuousParameterResolution";

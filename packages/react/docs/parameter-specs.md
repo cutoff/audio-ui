@@ -220,13 +220,13 @@ export interface BooleanParameter extends BaseAudioParameter {
   - `false` -> 0 (Min)
   - `true` -> MaxMidi (e.g., 127)
 
-#### 3. Enumeration Parameter (Discrete Choices)
+#### 3. Discrete Parameter (Discrete Choices)
 
 Used for Waveforms (Sine/Saw/Square), Filter Types (LP/BP/HP).
 
 ```typescript
-export interface EnumParameter extends BaseAudioParameter {
-  type: "enum";
+export interface DiscreteParameter extends BaseAudioParameter {
+  type: "discrete";
   defaultValue?: number | string;
   options: Array<{
     value: number | string;
@@ -251,7 +251,7 @@ export interface EnumParameter extends BaseAudioParameter {
 #### The Union Type
 
 ```typescript
-export type AudioParameter = ContinuousParameter | BooleanParameter | EnumParameter;
+export type AudioParameter = ContinuousParameter | BooleanParameter | DiscreteParameter;
 ```
 
 ### 2. Implementation (`AudioParameterConverter`)
@@ -374,7 +374,7 @@ function Knob(props: KnobProps) {
 }
 ```
 
-### Integration in `CycleButton` (Enum Parameter)
+### Integration in `CycleButton` (Discrete Parameter)
 
 `CycleButton` supports two modes for defining options: explicit Parameter Model or implicit Children (Ad-hoc).
 
@@ -383,7 +383,7 @@ function Knob(props: KnobProps) {
 ```tsx
 // Icons provided via render prop, data driven by parameter
 <CycleButton
-  parameter={waveformParam} // type: "enum"
+  parameter={waveformParam} // type: "discrete"
   value={currentWave}
   onChange={setWave}
   renderOption={(opt) => (opt.value === "saw" ? <SawIcon /> : <SquareIcon />)}
@@ -391,7 +391,7 @@ function Knob(props: KnobProps) {
 ```
 
 **Mode B: Children Driven (Ad-hoc)**
-The component infers the `EnumParameter` from the children structure.
+The component infers the `DiscreteParameter` from the children structure.
 
 ```tsx
 <CycleButton value={val} onChange={setVal}>
@@ -406,7 +406,7 @@ The component infers the `EnumParameter` from the children structure.
 
 **Internal Logic:**
 
-1. Scan children to build `EnumParameter`:
+1. Scan children to build `DiscreteParameter`:
    `options: [{value: "saw", label: "saw"}, {value: "sqr", label: "sqr"}]`
 2. Build visual map: `{"saw": <SawIcon />, "sqr": <SquareIcon />}`
 3. Use `useAudioParameter` with the generated parameter.

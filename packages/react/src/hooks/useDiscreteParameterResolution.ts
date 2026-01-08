@@ -5,25 +5,25 @@
  */
 
 import React, { useMemo } from "react";
-import { EnumParameter } from "@cutoff/audio-ui-core";
+import { DiscreteParameter } from "@cutoff/audio-ui-core";
 import { OptionProps } from "@/primitives/controls/Option";
 
-export interface UseEnumParameterResolutionProps {
+export interface UseDiscreteParameterResolutionProps {
     /** Child elements (Option components) to parse in Ad-Hoc or Hybrid mode */
     children?: React.ReactNode;
     /** Identifier for the parameter (used in Ad-Hoc mode) */
     paramId?: string;
     /** The parameter definition (Strict or Hybrid mode) */
-    parameter?: EnumParameter;
+    parameter?: DiscreteParameter;
     /** Default value (Ad-Hoc mode) or override for parameter default */
     defaultValue?: string | number;
     /** Label for the parameter (Ad-Hoc mode) */
     label?: string;
 }
 
-export interface UseEnumParameterResolutionResult {
-    /** The resolved EnumParameter (derived from props or children) */
-    derivedParameter: EnumParameter;
+export interface UseDiscreteParameterResolutionResult {
+    /** The resolved DiscreteParameter (derived from props or children) */
+    derivedParameter: DiscreteParameter;
     /** Map of values to visual content (ReactNodes) from children */
     visualContentMap: Map<string | number, React.ReactNode>;
     /** The effective default value (resolved from parameter, prop, or first option) */
@@ -31,25 +31,25 @@ export interface UseEnumParameterResolutionResult {
 }
 
 /**
- * Hook to resolve an EnumParameter and visual content from props and/or children.
+ * Hook to resolve a DiscreteParameter and visual content from props and/or children.
  *
  * Supports three modes of operation:
  * 1. Ad-Hoc Mode (Children only): Model inferred from Option children.
  * 2. Strict Mode (Parameter only): Model provided via parameter prop. View via renderOption.
  * 3. Hybrid Mode (Parameter + Children): Model from parameter, View from children (matched by value).
  *
- * @param props - Configuration object for enum parameter resolution
+ * @param props - Configuration object for discrete parameter resolution
  * @param props.children - Child elements (Option components) to parse in Ad-Hoc or Hybrid mode
  * @param props.paramId - Identifier for the parameter (used in Ad-Hoc mode)
  * @param props.parameter - The parameter definition (Strict or Hybrid mode)
  * @param props.defaultValue - Default value (Ad-Hoc mode) or override for parameter default
  * @param props.label - Label for the parameter (Ad-Hoc mode)
- * @returns Object containing the resolved EnumParameter, visual content map, and effective default value
+ * @returns Object containing the resolved DiscreteParameter, visual content map, and effective default value
  *
  * @example
  * ```tsx
  * // Ad-Hoc Mode
- * const { derivedParameter, visualContentMap, effectiveDefaultValue } = useEnumParameterResolution({
+ * const { derivedParameter, visualContentMap, effectiveDefaultValue } = useDiscreteParameterResolution({
  *   children: [
  *     <Option value="sine">Sine</Option>,
  *     <Option value="square">Square</Option>
@@ -58,19 +58,19 @@ export interface UseEnumParameterResolutionResult {
  * });
  *
  * // Strict Mode
- * const result = useEnumParameterResolution({
- *   parameter: myEnumParameter,
+ * const result = useDiscreteParameterResolution({
+ *   parameter: myDiscreteParameter,
  *   defaultValue: "custom"
  * });
  * ```
  */
-export function useEnumParameterResolution({
+export function useDiscreteParameterResolution({
     children,
     paramId,
     parameter,
     defaultValue,
     label,
-}: UseEnumParameterResolutionProps): UseEnumParameterResolutionResult {
+}: UseDiscreteParameterResolutionProps): UseDiscreteParameterResolutionResult {
     return useMemo(() => {
         // Build visual content map from children
         const optionEls = React.Children.toArray(children).filter(
@@ -96,7 +96,7 @@ export function useEnumParameterResolution({
         });
 
         // Determine parameter model
-        let param: EnumParameter;
+        let param: DiscreteParameter;
         let effectiveDefaultValue: string | number;
 
         if (parameter) {
@@ -123,8 +123,8 @@ export function useEnumParameterResolution({
             effectiveDefaultValue = defaultValue !== undefined ? defaultValue : options[0].value;
 
             param = {
-                id: paramId ?? "adhoc-enum",
-                type: "enum",
+                id: paramId ?? "adhoc-discrete",
+                type: "discrete",
                 name: label || "",
                 options,
                 defaultValue: effectiveDefaultValue,

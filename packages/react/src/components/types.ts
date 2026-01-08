@@ -5,7 +5,13 @@
  */
 
 import React from "react";
-import { ContinuousParameter, BooleanParameter, EnumParameter, ScaleType, AudioParameter } from "@cutoff/audio-ui-core";
+import {
+    ContinuousParameter,
+    BooleanParameter,
+    DiscreteParameter,
+    ScaleType,
+    AudioParameter,
+} from "@cutoff/audio-ui-core";
 
 // Re-export types from core
 export type { SizeType, InteractionMode, InteractionDirection } from "@cutoff/audio-ui-core";
@@ -312,7 +318,7 @@ export type DiscreteControlProps = BaseProps & {
      * Audio Parameter definition (Model)
      * If provided, overrides label/options from ad-hoc props
      */
-    parameter?: EnumParameter;
+    parameter?: DiscreteParameter;
 
     /** Child elements (Option components) for Ad-Hoc or Hybrid mode */
     children?: React.ReactNode;

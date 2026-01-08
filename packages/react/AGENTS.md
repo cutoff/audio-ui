@@ -200,7 +200,7 @@ The library provides a generic `ContinuousControl` component that decouples beha
   - O(1) value-to-index Map lookups in CycleButton.
   - Memoized event handlers with `useCallback`.
 
-### CycleButton (Enum Parameters)
+### CycleButton (Discrete Parameters)
 
 - **Discrete-Only Control**: CycleButton is a discrete interaction control only. It does not support continuous interaction (drag/wheel). All interactions result in discrete step changes.
 - **Visual Variants**: Designed to support multiple visual variants (rotary knob-style, LED indicators, etc.). The current implementation uses a rotary knob-style visual, but the architecture supports other variants.
