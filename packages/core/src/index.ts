@@ -12,6 +12,7 @@ export * from "./constants/cssVars";
 export * from "./constants/cursors";
 export * from "./controller/ContinuousInteractionController";
 export * from "./controller/DiscreteInteractionController";
+export * from "./controller/BooleanInteractionController";
 export * from "./model/AudioParameter";
 export * from "./utils/math";
 export * from "./utils/svg";

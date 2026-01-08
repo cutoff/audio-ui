@@ -6,7 +6,7 @@
 
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "@/primitives/AdaptiveBox";
 import "@cutoff/audio-ui-core/styles.css";
@@ -17,6 +17,7 @@ import ButtonView from "./ButtonView";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { useBooleanParameterResolution } from "@/hooks/useBooleanParameterResolution";
+import { useBooleanInteraction } from "@/hooks/useBooleanInteraction";
 
 /**
  * Props for the Button component (built-in control with theming support)
@@ -116,78 +117,55 @@ function Button({
         [onChange, converter, derivedParameter]
     );
 
-    // Track press state for momentary buttons (needed for global mouseup handling)
-    // When a momentary button is pressed, we need to detect mouseup events even if
-    // they occur outside the button (e.g., user drags mouse away before releasing)
-    const isPressedRef = useRef(false);
-
-    const handleInternalMouseDown = useCallback(
-        (_e: React.MouseEvent) => {
-            if (onChange) {
-                if (derivedParameter.mode === "toggle") {
-                    // Toggle mode: flip the value on each press
-                    fireChange(!value);
-                } else {
-                    // Momentary mode: set to true on press, will be set to false on release
-                    isPressedRef.current = true;
-                    fireChange(true);
-                }
-            }
-        },
-        [onChange, derivedParameter.mode, value, fireChange]
-    );
-
-    const handleInternalMouseUp = useCallback(
-        (_e: React.MouseEvent) => {
-            // Only handle release for momentary buttons that are currently pressed
-            // This prevents false releases if the button wasn't actually pressed
-            if (onChange && derivedParameter.mode === "momentary" && isPressedRef.current) {
-                isPressedRef.current = false;
-                fireChange(false);
-            }
-        },
-        [onChange, derivedParameter.mode, fireChange]
-    );
+    const {
+        handleMouseDown: handleBooleanMouseDown,
+        handleMouseUp: handleBooleanMouseUp,
+        handleKeyDown: handleBooleanKeyDown,
+        handleKeyUp: handleBooleanKeyUp,
+    } = useBooleanInteraction({
+        value,
+        mode: derivedParameter.mode ?? (latch ? "toggle" : "momentary"),
+        onValueChange: fireChange,
+        disabled: !onChange,
+    });
 
     const handleMouseDown = useCallback(
         (e: React.MouseEvent) => {
             onMouseDown?.(e);
             if (!e.defaultPrevented) {
-                handleInternalMouseDown(e);
+                handleBooleanMouseDown(e);
             }
         },
-        [onMouseDown, handleInternalMouseDown]
+        [onMouseDown, handleBooleanMouseDown]
     );
 
     const handleMouseUp = useCallback(
         (e: React.MouseEvent) => {
             onMouseUp?.(e);
             if (!e.defaultPrevented) {
-                handleInternalMouseUp(e);
+                handleBooleanMouseUp(e);
             }
         },
-        [onMouseUp, handleInternalMouseUp]
+        [onMouseUp, handleBooleanMouseUp]
     );
 
-    // Global mouseup handler for momentary buttons
-    // This ensures the button releases even if the mouse is moved outside the button
-    // before the mouse button is released (common in audio applications)
-    const handleGlobalMouseUp = useCallback(() => {
-        if (isPressedRef.current) {
-            isPressedRef.current = false;
-            fireChange(false);
-        }
-    }, [fireChange]);
+    const handleKeyDown = useCallback(
+        (e: React.KeyboardEvent) => {
+            if (!e.defaultPrevented) {
+                handleBooleanKeyDown(e);
+            }
+        },
+        [handleBooleanKeyDown]
+    );
 
-    // Attach global mouseup listener for momentary buttons
-    // This is necessary because users may drag the mouse outside the button before releasing
-    useEffect(() => {
-        if (derivedParameter.mode === "momentary" && onChange) {
-            window.addEventListener("mouseup", handleGlobalMouseUp);
-            return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
-        }
-        return undefined;
-    }, [derivedParameter.mode, onChange, handleGlobalMouseUp]);
+    const handleKeyUp = useCallback(
+        (e: React.KeyboardEvent) => {
+            if (!e.defaultPrevented) {
+                handleBooleanKeyUp(e);
+            }
+        },
+        [handleBooleanKeyUp]
+    );
 
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "button");
 
@@ -229,20 +207,8 @@ function Button({
                 style={{
                     cursor: isInteractive ? "pointer" : "default",
                 }}
-                onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        if (onChange) {
-                            fireChange(latch ? !value : true);
-                        }
-                    }
-                }}
-                onKeyUp={(e) => {
-                    if (!latch && onChange && (e.key === "Enter" || e.key === " ")) {
-                        e.preventDefault();
-                        fireChange(false);
-                    }
-                }}
+                onKeyDown={handleKeyDown}
+                onKeyUp={handleKeyUp}
             >
                 <ButtonView
                     normalizedValue={normalizedValue}
