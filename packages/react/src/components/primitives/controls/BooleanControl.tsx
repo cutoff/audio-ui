@@ -110,16 +110,17 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
         [onChange, converter, derivedParameter]
     );
 
-    const { handleMouseDown, handleMouseUp, handleKeyDown, handleKeyUp } = useBooleanInteraction({
-        value,
-        mode: derivedParameter.mode ?? (latch ? "toggle" : "momentary"),
-        onValueChange: fireChange,
-        disabled: !onChange,
-        onMouseDown,
-        onMouseUp,
-        onKeyDown: undefined, // BooleanControl doesn't have onKeyDown prop, only uses hook handler
-        onKeyUp: undefined, // BooleanControl doesn't have onKeyUp prop, only uses hook handler
-    });
+    const { handleMouseDown, handleMouseUp, handleTouchStart, handleTouchEnd, handleKeyDown, handleKeyUp } =
+        useBooleanInteraction({
+            value,
+            mode: derivedParameter.mode ?? (latch ? "toggle" : "momentary"),
+            onValueChange: fireChange,
+            disabled: !onChange,
+            onMouseDown,
+            onMouseUp,
+            onKeyDown: undefined, // BooleanControl doesn't have onKeyDown prop, only uses hook handler
+            onKeyUp: undefined, // BooleanControl doesn't have onKeyUp prop, only uses hook handler
+        });
 
     const effectiveLabel = label ?? derivedParameter.name;
 
@@ -132,9 +133,11 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
     }, [onChange, onClick]);
 
     // Add pointer cursor when interactive (onChange or onClick)
+    // Add touchAction: "none" to prevent default touch behaviors (scrolling/zooming)
     const svgStyle = useMemo(
         () => ({
             ...(onClick || onChange ? { cursor: "pointer" as const } : {}),
+            touchAction: "none" as const,
         }),
         [onClick, onChange]
     );
@@ -155,6 +158,8 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
                 onClick={onClick}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
                 onKeyDown={handleKeyDown}
                 onKeyUp={handleKeyUp}
                 onMouseEnter={onMouseEnter}

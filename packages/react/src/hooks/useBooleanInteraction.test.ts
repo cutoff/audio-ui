@@ -30,10 +30,14 @@ describe("useBooleanInteraction", () => {
 
             expect(result.current).toHaveProperty("handleMouseDown");
             expect(result.current).toHaveProperty("handleMouseUp");
+            expect(result.current).toHaveProperty("handleTouchStart");
+            expect(result.current).toHaveProperty("handleTouchEnd");
             expect(result.current).toHaveProperty("handleKeyDown");
             expect(result.current).toHaveProperty("handleKeyUp");
             expect(typeof result.current.handleMouseDown).toBe("function");
             expect(typeof result.current.handleMouseUp).toBe("function");
+            expect(typeof result.current.handleTouchStart).toBe("function");
+            expect(typeof result.current.handleTouchEnd).toBe("function");
             expect(typeof result.current.handleKeyDown).toBe("function");
             expect(typeof result.current.handleKeyUp).toBe("function");
         });
@@ -96,6 +100,30 @@ describe("useBooleanInteraction", () => {
                     key: "Enter",
                     preventDefault,
                 } as React.KeyboardEvent);
+            });
+
+            expect(preventDefault).toHaveBeenCalled();
+            expect(onValueChange).toHaveBeenCalledWith(true);
+        });
+
+        it("toggles value on touch start", () => {
+            const { result } = renderHook(() =>
+                useBooleanInteraction({
+                    value: false,
+                    mode: "toggle",
+                    onValueChange,
+                })
+            );
+
+            const preventDefault = vi.fn();
+            const mockTouchEvent = {
+                defaultPrevented: false,
+                preventDefault,
+                touches: [{ clientX: 0, clientY: 0 }],
+            } as unknown as React.TouchEvent;
+
+            act(() => {
+                result.current.handleTouchStart(mockTouchEvent);
             });
 
             expect(preventDefault).toHaveBeenCalled();
@@ -190,6 +218,72 @@ describe("useBooleanInteraction", () => {
             });
 
             // Verify button deactivates via global mouseup handler
+            expect(onValueChange).toHaveBeenCalledWith(false);
+        });
+
+        it("activates on touch start and deactivates on touch end", () => {
+            const { result } = renderHook(() =>
+                useBooleanInteraction({
+                    value: false,
+                    mode: "momentary",
+                    onValueChange,
+                })
+            );
+
+            const preventDefault = vi.fn();
+            const mockTouchEvent = {
+                defaultPrevented: false,
+                preventDefault,
+                touches: [{ clientX: 0, clientY: 0 }],
+            } as unknown as React.TouchEvent;
+
+            act(() => {
+                result.current.handleTouchStart(mockTouchEvent);
+            });
+
+            expect(preventDefault).toHaveBeenCalled();
+            expect(onValueChange).toHaveBeenCalledWith(true);
+            onValueChange.mockClear();
+
+            act(() => {
+                result.current.handleTouchEnd(mockTouchEvent);
+            });
+
+            expect(preventDefault).toHaveBeenCalled();
+            expect(onValueChange).toHaveBeenCalledWith(false);
+        });
+
+        it("deactivates on global touch end when touch leaves button", () => {
+            const { result } = renderHook(() =>
+                useBooleanInteraction({
+                    value: false,
+                    mode: "momentary",
+                    onValueChange,
+                })
+            );
+
+            const preventDefault = vi.fn();
+            const mockTouchEvent = {
+                defaultPrevented: false,
+                preventDefault,
+                touches: [{ clientX: 0, clientY: 0 }],
+            } as unknown as React.TouchEvent;
+
+            // Activate button
+            act(() => {
+                result.current.handleTouchStart(mockTouchEvent);
+            });
+
+            expect(onValueChange).toHaveBeenCalledWith(true);
+            onValueChange.mockClear();
+
+            // Simulate global touch end (touch moved outside button)
+            act(() => {
+                const touchEndEvent = new TouchEvent("touchend", { bubbles: true });
+                window.dispatchEvent(touchEndEvent);
+            });
+
+            // Verify button deactivates via global touchend handler
             expect(onValueChange).toHaveBeenCalledWith(false);
         });
     });
@@ -465,6 +559,140 @@ describe("useBooleanInteraction", () => {
                 expect(onValueChange).not.toHaveBeenCalled();
             });
         });
+
+        describe("onTouchStart", () => {
+            it("calls user-provided onTouchStart handler before hook handler", () => {
+                const userOnTouchStart = vi.fn();
+                const { result } = renderHook(() =>
+                    useBooleanInteraction({
+                        value: false,
+                        mode: "toggle",
+                        onValueChange,
+                        onTouchStart: userOnTouchStart,
+                    })
+                );
+
+                const preventDefault = vi.fn();
+                const mockTouchEvent = {
+                    defaultPrevented: false,
+                    preventDefault,
+                    touches: [{ clientX: 0, clientY: 0 }],
+                } as unknown as React.TouchEvent;
+
+                act(() => {
+                    result.current.handleTouchStart(mockTouchEvent);
+                });
+
+                expect(userOnTouchStart).toHaveBeenCalledWith(mockTouchEvent);
+                expect(userOnTouchStart).toHaveBeenCalledTimes(1);
+                expect(onValueChange).toHaveBeenCalledWith(true);
+            });
+
+            it("respects defaultPrevented from user onTouchStart handler", () => {
+                const userOnTouchStart = vi.fn((e: React.TouchEvent) => {
+                    e.preventDefault();
+                });
+                const { result } = renderHook(() =>
+                    useBooleanInteraction({
+                        value: false,
+                        mode: "toggle",
+                        onValueChange,
+                        onTouchStart: userOnTouchStart,
+                    })
+                );
+
+                const preventDefault = vi.fn(() => {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (mockTouchEvent as any).defaultPrevented = true;
+                });
+                const mockTouchEvent = {
+                    defaultPrevented: false,
+                    preventDefault,
+                    touches: [{ clientX: 0, clientY: 0 }],
+                } as unknown as React.TouchEvent;
+
+                act(() => {
+                    result.current.handleTouchStart(mockTouchEvent);
+                });
+
+                expect(userOnTouchStart).toHaveBeenCalled();
+                expect(onValueChange).not.toHaveBeenCalled();
+            });
+        });
+
+        describe("onTouchEnd", () => {
+            it("calls user-provided onTouchEnd handler before hook handler", () => {
+                const userOnTouchEnd = vi.fn();
+                const { result } = renderHook(() =>
+                    useBooleanInteraction({
+                        value: false,
+                        mode: "momentary",
+                        onValueChange,
+                        onTouchEnd: userOnTouchEnd,
+                    })
+                );
+
+                const preventDefault = vi.fn();
+                const mockTouchEvent = {
+                    defaultPrevented: false,
+                    preventDefault,
+                    touches: [{ clientX: 0, clientY: 0 }],
+                } as unknown as React.TouchEvent;
+
+                // First activate the button
+                act(() => {
+                    result.current.handleTouchStart(mockTouchEvent);
+                });
+                onValueChange.mockClear();
+                userOnTouchEnd.mockClear();
+
+                // Then release it
+                act(() => {
+                    result.current.handleTouchEnd(mockTouchEvent);
+                });
+
+                expect(userOnTouchEnd).toHaveBeenCalledWith(mockTouchEvent);
+                expect(userOnTouchEnd).toHaveBeenCalledTimes(1);
+                expect(onValueChange).toHaveBeenCalledWith(false);
+            });
+
+            it("respects defaultPrevented from user onTouchEnd handler", () => {
+                const userOnTouchEnd = vi.fn((e: React.TouchEvent) => {
+                    e.preventDefault();
+                });
+                const { result } = renderHook(() =>
+                    useBooleanInteraction({
+                        value: false,
+                        mode: "momentary",
+                        onValueChange,
+                        onTouchEnd: userOnTouchEnd,
+                    })
+                );
+
+                const preventDefault = vi.fn(() => {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (mockTouchEvent as any).defaultPrevented = true;
+                });
+                const mockTouchEvent = {
+                    defaultPrevented: false,
+                    preventDefault,
+                    touches: [{ clientX: 0, clientY: 0 }],
+                } as unknown as React.TouchEvent;
+
+                // First activate the button
+                act(() => {
+                    result.current.handleTouchStart(mockTouchEvent);
+                });
+                onValueChange.mockClear();
+
+                act(() => {
+                    result.current.handleTouchEnd(mockTouchEvent);
+                });
+
+                expect(userOnTouchEnd).toHaveBeenCalled();
+                expect(onValueChange).not.toHaveBeenCalled();
+            });
+        });
     });
 
     describe("Config Updates", () => {
@@ -558,6 +786,8 @@ describe("useBooleanInteraction", () => {
             const initialHandlers = {
                 handleMouseDown: result.current.handleMouseDown,
                 handleMouseUp: result.current.handleMouseUp,
+                handleTouchStart: result.current.handleTouchStart,
+                handleTouchEnd: result.current.handleTouchEnd,
                 handleKeyDown: result.current.handleKeyDown,
                 handleKeyUp: result.current.handleKeyUp,
             };
@@ -566,6 +796,8 @@ describe("useBooleanInteraction", () => {
 
             expect(result.current.handleMouseDown).toBe(initialHandlers.handleMouseDown);
             expect(result.current.handleMouseUp).toBe(initialHandlers.handleMouseUp);
+            expect(result.current.handleTouchStart).toBe(initialHandlers.handleTouchStart);
+            expect(result.current.handleTouchEnd).toBe(initialHandlers.handleTouchEnd);
             expect(result.current.handleKeyDown).toBe(initialHandlers.handleKeyDown);
             expect(result.current.handleKeyUp).toBe(initialHandlers.handleKeyUp);
         });

@@ -263,6 +263,7 @@ export interface AdaptiveBoxSvgProps extends PropsWithChildren {
     onMouseEnter?: React.MouseEventHandler<SVGSVGElement>;
     onMouseLeave?: React.MouseEventHandler<SVGSVGElement>;
     onTouchStart?: React.TouchEventHandler<SVGSVGElement>;
+    onTouchEnd?: React.TouchEventHandler<SVGSVGElement>;
     onKeyDown?: React.KeyboardEventHandler<SVGSVGElement>;
     onKeyUp?: React.KeyboardEventHandler<SVGSVGElement>;
     tabIndex?: number;

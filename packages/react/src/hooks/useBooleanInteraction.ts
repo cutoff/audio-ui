@@ -20,6 +20,10 @@ export interface UseBooleanInteractionProps {
     onMouseDown?: React.MouseEventHandler;
     /** Optional user-provided mouse up handler (composed with hook handler) */
     onMouseUp?: React.MouseEventHandler;
+    /** Optional user-provided touch start handler (composed with hook handler) */
+    onTouchStart?: React.TouchEventHandler;
+    /** Optional user-provided touch end handler (composed with hook handler) */
+    onTouchEnd?: React.TouchEventHandler;
     /** Optional user-provided keyboard key down handler (composed with hook handler) */
     onKeyDown?: React.KeyboardEventHandler;
     /** Optional user-provided keyboard key up handler (composed with hook handler) */
@@ -31,6 +35,10 @@ export interface UseBooleanInteractionResult {
     handleMouseDown: (e: React.MouseEvent) => void;
     /** Handler for mouse up events */
     handleMouseUp: (e: React.MouseEvent) => void;
+    /** Handler for touch start events */
+    handleTouchStart: (e: React.TouchEvent) => void;
+    /** Handler for touch end events */
+    handleTouchEnd: (e: React.TouchEvent) => void;
     /** Handler for keyboard key down events (Enter/Space to activate) */
     handleKeyDown: (e: React.KeyboardEvent) => void;
     /** Handler for keyboard key up events (Enter/Space to release momentary buttons) */
@@ -50,9 +58,9 @@ export interface UseBooleanInteractionResult {
  * references across renders using `useCallback` and updates the controller configuration via
  * `useEffect` when props change.
  *
- * For momentary buttons, the hook automatically attaches a global mouseup listener to ensure
- * the button releases even if the mouse is moved outside the button before release (common
- * in audio applications).
+ * For momentary buttons, the hook automatically attaches global mouseup and touchend listeners
+ * to ensure the button releases even if the pointer is moved outside the button before release
+ * (common in audio applications).
  *
  * @param {UseBooleanInteractionProps} props - Configuration for the boolean interaction hook
  * @param {boolean} props.value - Current value of the control
@@ -61,13 +69,15 @@ export interface UseBooleanInteractionResult {
  * @param {boolean} [props.disabled=false] - Whether the control is disabled
  * @param {React.MouseEventHandler} [props.onMouseDown] - Optional user-provided mouse down handler
  * @param {React.MouseEventHandler} [props.onMouseUp] - Optional user-provided mouse up handler
+ * @param {React.TouchEventHandler} [props.onTouchStart] - Optional user-provided touch start handler
+ * @param {React.TouchEventHandler} [props.onTouchEnd] - Optional user-provided touch end handler
  * @param {React.KeyboardEventHandler} [props.onKeyDown] - Optional user-provided keyboard key down handler
  * @param {React.KeyboardEventHandler} [props.onKeyUp] - Optional user-provided keyboard key up handler
  * @returns {UseBooleanInteractionResult} Object containing event handlers
  *
  * @example
  * ```tsx
- * const { handleMouseDown, handleMouseUp, handleKeyDown, handleKeyUp } = useBooleanInteraction({
+ * const { handleMouseDown, handleMouseUp, handleTouchStart, handleTouchEnd, handleKeyDown, handleKeyUp } = useBooleanInteraction({
  *   value,
  *   mode: "momentary",
  *   onValueChange: (val) => setValue(val)
@@ -76,6 +86,8 @@ export interface UseBooleanInteractionResult {
  * <div
  *   onMouseDown={handleMouseDown}
  *   onMouseUp={handleMouseUp}
+ *   onTouchStart={handleTouchStart}
+ *   onTouchEnd={handleTouchEnd}
  *   onKeyDown={handleKeyDown}
  *   onKeyUp={handleKeyUp}
  * />
@@ -88,6 +100,8 @@ export function useBooleanInteraction({
     disabled = false,
     onMouseDown: userOnMouseDown,
     onMouseUp: userOnMouseUp,
+    onTouchStart: userOnTouchStart,
+    onTouchEnd: userOnTouchEnd,
     onKeyDown: userOnKeyDown,
     onKeyUp: userOnKeyUp,
 }: UseBooleanInteractionProps): UseBooleanInteractionResult {
@@ -118,15 +132,27 @@ export function useBooleanInteraction({
         controllerRef.current?.handleGlobalMouseUp();
     }, []);
 
-    // Attach global mouseup listener for momentary buttons
-    // This is necessary because users may drag the mouse outside the button before releasing
+    // Global touchend handler for momentary buttons
+    // This ensures the button releases even if the touch is moved outside the button
+    // before the touch ends (common in audio applications, especially on tablets)
+    // Note: Uses the same controller method as mouseup since the controller handles both cases
+    const handleGlobalTouchEnd = useCallback(() => {
+        controllerRef.current?.handleGlobalMouseUp();
+    }, []);
+
+    // Attach global mouseup and touchend listeners for momentary buttons
+    // This is necessary because users may drag the pointer outside the button before releasing
     useEffect(() => {
         if (mode === "momentary" && !disabled) {
             window.addEventListener("mouseup", handleGlobalMouseUp);
-            return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
+            window.addEventListener("touchend", handleGlobalTouchEnd);
+            return () => {
+                window.removeEventListener("mouseup", handleGlobalMouseUp);
+                window.removeEventListener("touchend", handleGlobalTouchEnd);
+            };
         }
         return undefined;
-    }, [mode, disabled, handleGlobalMouseUp]);
+    }, [mode, disabled, handleGlobalMouseUp, handleGlobalTouchEnd]);
 
     const handleMouseDown = useCallback(
         (e: React.MouseEvent) => {
@@ -150,6 +176,34 @@ export function useBooleanInteraction({
             }
         },
         [userOnMouseUp]
+    );
+
+    const handleTouchStart = useCallback(
+        (e: React.TouchEvent) => {
+            // Call user handler first
+            userOnTouchStart?.(e);
+            // Only call hook handler if not prevented
+            if (!e.defaultPrevented) {
+                // Prevent default to avoid mouse event emulation and double-firing
+                e.preventDefault();
+                controllerRef.current?.handleMouseDown(false);
+            }
+        },
+        [userOnTouchStart]
+    );
+
+    const handleTouchEnd = useCallback(
+        (e: React.TouchEvent) => {
+            // Call user handler first
+            userOnTouchEnd?.(e);
+            // Only call hook handler if not prevented
+            if (!e.defaultPrevented) {
+                // Prevent default to avoid mouse event emulation and double-firing
+                e.preventDefault();
+                controllerRef.current?.handleMouseUp(false);
+            }
+        },
+        [userOnTouchEnd]
     );
 
     const handleKeyDown = useCallback(
@@ -185,6 +239,8 @@ export function useBooleanInteraction({
     return {
         handleMouseDown,
         handleMouseUp,
+        handleTouchStart,
+        handleTouchEnd,
         handleKeyDown,
         handleKeyUp,
     };
