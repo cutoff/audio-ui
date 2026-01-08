@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { ContinuousParameter, BooleanParameter, ScaleType, AudioParameter } from "@cutoff/audio-ui-core";
+import { ContinuousParameter, BooleanParameter, EnumParameter, ScaleType, AudioParameter } from "@cutoff/audio-ui-core";
 
 // Re-export types from core
 export type { SizeType, InteractionMode, InteractionDirection } from "@cutoff/audio-ui-core";
@@ -275,6 +275,48 @@ export type ContinuousControlProps = BaseProps &
          */
         step?: number;
     };
+
+/**
+ * Props for discrete value controls (primitives like DiscreteControl).
+ *
+ * This type is size-agnostic: it does not include AdaptiveSizeProps.
+ * Built-in controls (CycleButton) combine this with AdaptiveSizeProps
+ * so only high-level components handle size and stretch.
+ *
+ * Supports three modes:
+ * 1. Ad-Hoc Mode (Children only): Model inferred from Option children.
+ * 2. Strict Mode (Parameter only): Model provided via parameter prop. View via renderOption.
+ * 3. Hybrid Mode (Parameter + Children): Model from parameter, View from children (matched by value).
+ *
+ * When `parameter` is provided, it takes precedence over ad-hoc props.
+ */
+export type DiscreteControlProps = BaseProps & {
+    /** Current value of the control (Controlled mode) */
+    value?: string | number;
+
+    /** Default value of the component (Uncontrolled mode) */
+    defaultValue?: string | number;
+
+    /** Handler for value changes */
+    onChange?: (event: AudioControlEvent<string | number>) => void;
+
+    /** Label displayed below the component */
+    label?: string;
+
+    /** Identifier for the parameter this control represents
+     * Used when creating ad-hoc parameters
+     */
+    paramId?: string;
+
+    /**
+     * Audio Parameter definition (Model)
+     * If provided, overrides label/options from ad-hoc props
+     */
+    parameter?: EnumParameter;
+
+    /** Child elements (Option components) for Ad-Hoc or Hybrid mode */
+    children?: React.ReactNode;
+};
 
 /**
  * Props for boolean value controls (primitives).

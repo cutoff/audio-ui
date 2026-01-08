@@ -8,18 +8,31 @@
 
 import React, { useMemo } from "react";
 import classNames from "classnames";
-import AdaptiveBox from "@/primitives/AdaptiveBox";
+import DiscreteControl from "@/primitives/controls/DiscreteControl";
 import KnobView from "./KnobView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, AudioControlEvent, ThemableProps } from "@/types";
 import { useThemableProps } from "@/defaults/AudioUiProvider";
-import { CLASSNAMES } from "@cutoff/audio-ui-core";
-import { EnumParameter } from "@cutoff/audio-ui-core";
-import { useAudioParameter } from "@/hooks/useAudioParameter";
-import { useDiscreteInteraction } from "@/hooks/useDiscreteInteraction";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { useEnumParameterResolution } from "@/hooks/useEnumParameterResolution";
-import { clampNormalized } from "@cutoff/audio-ui-core";
+import { clampNormalized, EnumParameter } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
+
+const CONTENT_WRAPPER_STYLE: React.CSSProperties = {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "22cqmin",
+    fontWeight: "500",
+    color: "var(--audioui-text-color)",
+    cursor: "inherit",
+};
+
+const ICON_WRAPPER_STYLE: React.CSSProperties = {
+    width: "50cqmin",
+    height: "50cqmin",
+};
 
 /**
  * Props for the CycleButton component
@@ -111,7 +124,11 @@ function CycleButton({
         { color: undefined, roundness: DEFAULT_ROUNDNESS }
     );
 
-    const { derivedParameter, visualContentMap, effectiveDefaultValue } = useEnumParameterResolution({
+    // Get visualContentMap and derivedParameter for content rendering.
+    // Note: DiscreteControl also calls useEnumParameterResolution internally for parameter resolution,
+    // but we need visualContentMap and derivedParameter here to render the HTML overlay content
+    // (icons, text, or custom renderOption output) based on the current value.
+    const { visualContentMap, derivedParameter, effectiveDefaultValue } = useEnumParameterResolution({
         children,
         paramId,
         parameter,
@@ -121,70 +138,25 @@ function CycleButton({
 
     const effectiveValue = value !== undefined ? value : effectiveDefaultValue;
 
-    const { normalizedValue, setNormalizedValue, formattedValue, converter } = useAudioParameter(
-        effectiveValue,
-        onChange,
-        derivedParameter
-    );
-
-    const { handleClick: handleDiscreteClick, handleKeyDown: handleDiscreteKeyDown } = useDiscreteInteraction({
-        value: effectiveValue,
-        options: derivedParameter.options,
-        onValueChange: (val) => setNormalizedValue(converter.normalize(val)),
-        disabled: !onChange,
-    });
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-        onMouseDown?.(e);
-    };
-
-    const handleClick = (e: React.MouseEvent<SVGSVGElement>) => {
-        onClick?.(e as unknown as React.MouseEvent);
-        // The hook handles the cycle logic if defaultPrevented is false
-        handleDiscreteClick(e);
-    };
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        handleDiscreteKeyDown(e);
-    };
-
-    // Container query units for scalable text/icons
-    const contentWrapperStyle = useMemo(
-        () => ({
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "22cqmin",
-            fontWeight: "500",
-            color: "var(--audioui-text-color)",
-            cursor: "inherit",
-        }),
-        []
-    );
-
-    const iconWrapperStyle = useMemo(
-        () => ({
-            width: "50cqmin",
-            height: "50cqmin",
-        }),
-        []
-    );
-
-    const wrapContent = (node: React.ReactNode): React.ReactNode => {
-        if (typeof node === "string" || typeof node === "number") {
-            return node;
-        }
-
-        return (
-            <div className="audioui-icon-wrapper" style={iconWrapperStyle}>
-                {node}
-            </div>
-        );
-    };
+    // Get formattedValue for fallback display
+    const formattedValue = useMemo(() => {
+        const opt = derivedParameter.options.find((opt) => opt.value === effectiveValue);
+        return opt?.label ?? String(effectiveValue);
+    }, [derivedParameter.options, effectiveValue]);
 
     const content = useMemo(() => {
+        const wrapContent = (node: React.ReactNode): React.ReactNode => {
+            if (typeof node === "string" || typeof node === "number") {
+                return node;
+            }
+
+            return (
+                <div className="audioui-icon-wrapper" style={ICON_WRAPPER_STYLE}>
+                    {node}
+                </div>
+            );
+        };
+
         if (visualContentMap && visualContentMap.has(effectiveValue)) {
             return wrapContent(visualContentMap.get(effectiveValue));
         }
@@ -195,74 +167,40 @@ function CycleButton({
         }
 
         return formattedValue;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [visualContentMap, effectiveValue, renderOption, derivedParameter.options, formattedValue, iconWrapperStyle]);
-
-    const effectiveLabel = label ?? derivedParameter.name;
+    }, [visualContentMap, effectiveValue, renderOption, derivedParameter.options, formattedValue]);
 
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
 
-    const componentClassNames = useMemo(() => {
-        return classNames(sizeClassName, CLASSNAMES.root, CLASSNAMES.container, className);
-    }, [sizeClassName, className]);
-
-    const svgClassNames = useMemo(() => {
-        return onChange || onClick ? CLASSNAMES.highlight : "";
-    }, [onChange, onClick]);
-
-    // Add pointer cursor when interactive (onChange or onClick)
-    const svgStyle = {
-        // Override cursor for interactive controls
-        ...(onClick || onChange ? { cursor: "pointer" as const } : {}),
-    };
-
     return (
-        <AdaptiveBox
-            displayMode={displayMode ?? "scaleToFit"}
+        <DiscreteControl
+            value={value}
+            defaultValue={defaultValue}
+            onChange={onChange}
+            label={label}
+            paramId={paramId}
+            parameter={parameter}
+            displayMode={displayMode}
             labelMode={labelMode}
-            className={componentClassNames}
-            style={{
-                ...sizeStyle,
-                ...style,
+            labelPosition={labelPosition}
+            labelAlign={labelAlign}
+            className={classNames(sizeClassName, className)}
+            style={{ ...sizeStyle, ...style }}
+            onClick={onClick}
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            view={KnobView}
+            viewProps={{
+                bipolar: false,
+                thickness: clampedThickness,
+                roundness: resolvedRoundness ?? DEFAULT_ROUNDNESS,
+                color: resolvedColor,
             }}
-            labelHeightUnits={20}
-            minWidth={40}
-            minHeight={40}
+            htmlOverlay={<div style={CONTENT_WRAPPER_STYLE}>{content}</div>}
         >
-            <AdaptiveBox.Svg
-                viewBoxWidth={KnobView.viewBox.width}
-                viewBoxHeight={KnobView.viewBox.height}
-                className={svgClassNames}
-                style={svgStyle}
-                onClick={handleClick}
-                onMouseDown={handleMouseDown}
-                onKeyDown={handleKeyDown}
-                onMouseUp={onMouseUp}
-                onMouseEnter={onMouseEnter}
-                onMouseLeave={onMouseLeave}
-                tabIndex={0}
-                role="spinbutton"
-                aria-valuenow={typeof effectiveValue === "number" ? effectiveValue : undefined}
-                aria-valuetext={formattedValue}
-                aria-label={effectiveLabel}
-            >
-                <KnobView
-                    normalizedValue={normalizedValue}
-                    bipolar={false}
-                    thickness={clampedThickness}
-                    roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
-                    color={resolvedColor}
-                />
-            </AdaptiveBox.Svg>
-            <AdaptiveBox.HtmlOverlay>
-                <div style={contentWrapperStyle}>{content}</div>
-            </AdaptiveBox.HtmlOverlay>
-            {effectiveLabel && (
-                <AdaptiveBox.Label position={labelPosition} align={labelAlign ?? "center"}>
-                    {effectiveLabel}
-                </AdaptiveBox.Label>
-            )}
-        </AdaptiveBox>
+            {children}
+        </DiscreteControl>
     );
 }
 
