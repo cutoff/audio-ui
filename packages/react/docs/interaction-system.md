@@ -81,8 +81,6 @@ It returns a set of event handlers (`onMouseDown`, `onTouchStart`, `onWheel`, `o
 
 ### KnobSwitch (Discrete/Enum)
 
-- **Drag**: High sensitivity (`0.1`) to ensure steps are easy to trigger without excessive movement.
-- **Wheel**: High sensitivity (`stepSize / 4`) to allow "clicks" to correspond to steps.
 - **Click**: Clicking the control cycles to the next value (like `Space`).
 - **Keyboard**:
   - `Arrow Keys`: Step up/down (clamped at min/max).

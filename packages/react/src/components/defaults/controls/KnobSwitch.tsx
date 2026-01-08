@@ -10,12 +10,11 @@ import React, { useMemo } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "@/primitives/AdaptiveBox";
 import KnobView from "./KnobView";
-import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, InteractiveControlProps, ThemableProps } from "@/types";
+import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, AudioControlEvent, ThemableProps } from "@/types";
 import { useThemableProps } from "@/defaults/AudioUiProvider";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import { EnumParameter } from "@cutoff/audio-ui-core";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
-import { useContinuousInteraction } from "@/hooks/useContinuousInteraction";
 import { useDiscreteInteraction } from "@/hooks/useDiscreteInteraction";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { useEnumParameterResolution } from "@/hooks/useEnumParameterResolution";
@@ -27,13 +26,14 @@ import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
  */
 export type KnobSwitchProps = AdaptiveSizeProps &
     AdaptiveBoxProps &
-    InteractiveControlProps<string | number> &
     BaseProps &
     ThemableProps & {
         /** Label displayed below the component */
         label?: string;
         /** Current value of the component (Controlled mode) */
         value?: string | number;
+        /** Handler for value changes */
+        onChange?: (event: AudioControlEvent<string | number>) => void;
         /** Default value of the component (Uncontrolled mode) */
         defaultValue?: string | number;
         /** Child elements (Option components) */
@@ -50,6 +50,8 @@ export type KnobSwitchProps = AdaptiveSizeProps &
 
 /**
  * A switch component that uses a knob interface to cycle through options.
+ *
+ * This control supports discrete interaction (click to cycle, keyboard to step).
  *
  * Supports three modes of operation:
  * 1. Ad-Hoc Mode (Children only): Model inferred from Option children.
@@ -91,9 +93,6 @@ function KnobSwitch({
     thickness = 0.4,
     parameter,
     paramId,
-    interactionMode,
-    interactionDirection,
-    interactionSensitivity,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -120,32 +119,11 @@ function KnobSwitch({
 
     const effectiveValue = value !== undefined ? value : effectiveDefaultValue;
 
-    const { normalizedValue, setNormalizedValue, formattedValue, adjustValue, converter } = useAudioParameter(
+    const { normalizedValue, setNormalizedValue, formattedValue, converter } = useAudioParameter(
         effectiveValue,
         onChange,
         derivedParameter
     );
-
-    // Calculate step size for wheel interactions
-    // For N options, we have N-1 steps between them, so each step is 1/(N-1) of the normalized range
-    // This ensures smooth cycling through all options with wheel scrolling
-    const stepSize = useMemo(() => {
-        const count = derivedParameter.options.length;
-        return count > 1 ? 1 / (count - 1) : 0;
-    }, [derivedParameter.options.length]);
-
-    const interactiveProps = useContinuousInteraction({
-        adjustValue,
-        interactionMode: interactionMode ?? "both",
-        direction: interactionDirection ?? "vertical",
-        sensitivity: interactionSensitivity ?? 0.1,
-        // Standard mouse wheel delta is ~100 per notch.
-        // We want 1 notch = 1 discrete step (stepSize).
-        // delta * sensitivity = change => 100 * sensitivity = stepSize
-        // sensitivity = stepSize / 100
-        wheelSensitivity: stepSize > 0 ? stepSize / 100 : 0,
-        editable: !!onChange,
-    });
 
     const { handleClick: handleDiscreteClick, handleKeyDown: handleDiscreteKeyDown } = useDiscreteInteraction({
         value: effectiveValue,
@@ -156,14 +134,9 @@ function KnobSwitch({
 
     const handleMouseDown = (e: React.MouseEvent) => {
         onMouseDown?.(e);
-        if (!e.defaultPrevented) {
-            interactiveProps.onMouseDown(e);
-        }
     };
 
     const handleClick = (e: React.MouseEvent<SVGSVGElement>) => {
-        if (interactionMode === "wheel") return;
-
         onClick?.(e as unknown as React.MouseEvent);
         // The hook handles the cycle logic if defaultPrevented is false
         handleDiscreteClick(e);
@@ -171,9 +144,6 @@ function KnobSwitch({
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         handleDiscreteKeyDown(e);
-        if (!e.defaultPrevented) {
-            interactiveProps.onKeyDown(e);
-        }
     };
 
     // Container query units for scalable text/icons
@@ -238,11 +208,10 @@ function KnobSwitch({
         return onChange || onClick ? CLASSNAMES.highlight : "";
     }, [onChange, onClick]);
 
-    // Add pointer cursor when clickable but not draggable (onClick but no onChange)
+    // Add pointer cursor when interactive (onChange or onClick)
     const svgStyle = {
-        ...(interactiveProps.style ?? {}),
-        // Override cursor for click-only controls
-        ...(onClick && !onChange ? { cursor: "pointer" as const } : {}),
+        // Override cursor for interactive controls
+        ...(onClick || onChange ? { cursor: "pointer" as const } : {}),
     };
 
     return (
@@ -263,16 +232,14 @@ function KnobSwitch({
                 viewBoxHeight={KnobView.viewBox.height}
                 className={svgClassNames}
                 style={svgStyle}
-                onWheel={interactiveProps.onWheel}
                 onClick={handleClick}
                 onMouseDown={handleMouseDown}
-                onTouchStart={interactiveProps.onTouchStart}
                 onKeyDown={handleKeyDown}
                 onMouseUp={onMouseUp}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
-                tabIndex={interactiveProps.tabIndex}
-                role={interactiveProps.role}
+                tabIndex={0}
+                role="spinbutton"
                 aria-valuenow={typeof effectiveValue === "number" ? effectiveValue : undefined}
                 aria-valuetext={formattedValue}
                 aria-label={effectiveLabel}

@@ -102,5 +102,3 @@ When inferring the `label` for the generated `EnumParameter`:
 
 - **Click / Space**: Cycles to the next value (wraps around).
 - **Arrow Keys**: Steps up/down (clamped at min/max, does not wrap).
-- **Drag**: High sensitivity (0.1) for responsive stepping.
-- **Wheel**: Discrete stepping (1 notch ≈ 1 step).
