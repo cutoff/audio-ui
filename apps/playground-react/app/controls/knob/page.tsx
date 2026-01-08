@@ -223,7 +223,7 @@ export default function KnobDemoPage() {
     const [valueAsLabel, setValueAsLabel] = useState<ValueLabelMode | undefined>(undefined);
     const [unit, setUnit] = useState<string | undefined>(undefined);
 
-    const handleExampleClick = (num: 0 | 1 | 2 | 4 | 5 | 6): void => {
+    const handleExampleClick = (num: 0 | 1 | 2 | 4 | 5 | 6 | 7 | 8): void => {
         switch (num) {
             case 0:
                 setValue(42);
@@ -326,6 +326,42 @@ export default function KnobDemoPage() {
                 setSelectedIcon("sine");
                 setValueAsLabel("interactive");
                 setUnit("cents");
+                break;
+            case 7:
+                // Oscillator - iconCap with default rotary overlay
+                setValue(64);
+                setMin(0);
+                setMax(127);
+                setStep(1);
+                setLabel("Oscillator");
+                setBipolar(false);
+                setUseMidiBipolar(false);
+                setThickness(undefined);
+                setRoundness(undefined);
+                setColor(undefined);
+                setVariant("iconCap");
+                setRotaryOverlay(undefined);
+                setSelectedIcon("triangle");
+                setValueAsLabel("interactive");
+                setUnit(undefined);
+                break;
+            case 8:
+                // LFO - iconCap with rotary overlay enabled
+                setValue(0);
+                setMin(-64);
+                setMax(64);
+                setStep(1);
+                setLabel("LFO");
+                setBipolar(true);
+                setUseMidiBipolar(false);
+                setThickness(undefined);
+                setRoundness(undefined);
+                setColor(undefined);
+                setVariant("iconCap");
+                setRotaryOverlay(true);
+                setSelectedIcon("square");
+                setValueAsLabel("interactive");
+                setUnit(undefined);
                 break;
         }
     };
@@ -566,6 +602,36 @@ export default function KnobDemoPage() {
             unit="cents"
             onClick={() => handleExampleClick(6)}
         />,
+        <Knob
+            key="7"
+            min={0}
+            max={127}
+            step={1}
+            value={64}
+            size="large"
+            label="Oscillator"
+            variant="iconCap"
+            valueAsLabel="interactive"
+            onClick={() => handleExampleClick(7)}
+        >
+            <TriangleWaveIcon />
+        </Knob>,
+        <Knob
+            key="8"
+            min={-64}
+            max={64}
+            step={1}
+            value={0}
+            size="large"
+            label="LFO"
+            variant="iconCap"
+            bipolar={true}
+            rotaryOverlay={true}
+            valueAsLabel="interactive"
+            onClick={() => handleExampleClick(8)}
+        >
+            <SquareWaveIcon />
+        </Knob>,
     ];
 
     const codeString = generateCodeSnippet(
