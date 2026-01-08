@@ -43,6 +43,8 @@ export interface ContinuousInteractionHandlers {
  * @param wheelSensitivity Optional separate sensitivity for wheel events. Defaults to sensitivity / 4.
  * @param disabled Whether the control is disabled (default: false)
  * @param editable Whether the control is editable (default: true). When false, cursor changes to "default".
+ * @param onDragStart Callback when drag interaction starts
+ * @param onDragEnd Callback when drag interaction ends
  * @returns Object containing React event handlers (onMouseDown, onTouchStart, onWheel, onKeyDown) and accessibility props
  *
  * @example
@@ -70,6 +72,8 @@ export function useContinuousInteraction({
     wheelSensitivity,
     disabled = false,
     editable = true,
+    onDragStart,
+    onDragEnd,
 }: UseContinuousInteractionProps): ContinuousInteractionHandlers {
     const controllerRef = useRef<ContinuousInteractionController | null>(null);
 
@@ -82,6 +86,8 @@ export function useContinuousInteraction({
             sensitivity,
             wheelSensitivity,
             disabled,
+            onDragStart,
+            onDragEnd,
         });
     }
 
@@ -94,8 +100,20 @@ export function useContinuousInteraction({
             sensitivity,
             wheelSensitivity,
             disabled,
+            onDragStart,
+            onDragEnd,
         });
-    }, [adjustValue, keyboardStep, interactionMode, direction, sensitivity, wheelSensitivity, disabled]);
+    }, [
+        adjustValue,
+        keyboardStep,
+        interactionMode,
+        direction,
+        sensitivity,
+        wheelSensitivity,
+        disabled,
+        onDragStart,
+        onDragEnd,
+    ]);
 
     useEffect(() => {
         return () => {

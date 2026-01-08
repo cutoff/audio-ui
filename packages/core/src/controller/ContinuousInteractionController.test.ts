@@ -252,4 +252,21 @@ describe("ContinuousInteractionController", () => {
             expect(adjustValue).toHaveBeenCalledWith(-5, 0.01);
         });
     });
+
+    describe("Callbacks", () => {
+        it("should call onDragStart when drag starts", () => {
+            const onDragStart = vi.fn();
+            controller.updateConfig({ onDragStart });
+            controller.handleMouseDown(100, 100);
+            expect(onDragStart).toHaveBeenCalled();
+        });
+
+        it("should call onDragEnd when drag ends", () => {
+            const onDragEnd = vi.fn();
+            controller.updateConfig({ onDragEnd });
+            controller.handleMouseDown(100, 100);
+            (controller as unknown as TestController).handleGlobalMouseUp();
+            expect(onDragEnd).toHaveBeenCalled();
+        });
+    });
 });

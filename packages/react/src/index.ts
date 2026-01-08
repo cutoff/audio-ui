@@ -33,7 +33,11 @@ export type { LabelRingProps } from "./components/primitives/svg/LabelRing";
 // Export SVG presentation components
 export { default as ButtonView } from "./components/defaults/controls/ButtonView";
 export { default as KnobView } from "./components/defaults/controls/KnobView";
-export { default as SliderView, VerticalSliderView, HorizontalSliderView } from "./components/defaults/controls/SliderView";
+export {
+    default as SliderView,
+    VerticalSliderView,
+    HorizontalSliderView,
+} from "./components/defaults/controls/SliderView";
 
 export { default as Keys } from "./components/defaults/devices/Keys";
 export { default as AdaptiveBox } from "./components/primitives/AdaptiveBox";
@@ -76,6 +80,7 @@ export type {
     AudioControlEvent,
     ControlComponentMetadata,
     KnobVariant,
+    ValueLabelMode,
 } from "./components/types";
 
 // Export value formatters

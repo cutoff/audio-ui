@@ -9,7 +9,7 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
-import { AdaptiveBoxProps, ContinuousControlProps, ControlComponent } from "@/types";
+import { AdaptiveBoxProps, ContinuousControlProps, ControlComponent, ValueLabelMode } from "@/types";
 import AdaptiveBox from "../AdaptiveBox";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useContinuousInteraction } from "@/hooks/useContinuousInteraction";
@@ -38,11 +38,13 @@ export type ContinuousControlComponentProps<P extends object = Record<string, un
             htmlOverlay?: React.ReactNode;
 
             /**
-             * When true, displays the formatted value as the label instead of the provided label.
-             * When false (default), uses the provided label or falls back to the parameter definition's label.
-             * @default false
+             * Controls how the label and value are displayed.
+             * - "labelOnly": Always shows the label (default)
+             * - "valueOnly": Always shows the value
+             * - "interactive": Shows label normally, but temporarily swaps to value during interaction
+             * @default "labelOnly"
              */
-            valueAsLabel?: boolean;
+            valueAsLabel?: ValueLabelMode;
         };
 
 /**
@@ -81,7 +83,7 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         unit,
         scale,
         valueFormatter,
-        valueAsLabel = false,
+        valueAsLabel = "labelOnly",
     } = props;
 
     const bipolar = props.bipolar ?? false;
@@ -97,13 +99,58 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         scale,
     });
 
+    // Interaction state for valueAsLabel="interactive"
+    const [isDragging, setIsDragging] = React.useState(false);
+    const [isRecentlyActive, setIsRecentlyActive] = React.useState(false);
+    const activityTimerRef = React.useRef<number | undefined>(undefined);
+
+    const handleDragStart = React.useCallback(() => {
+        setIsDragging(true);
+        setIsRecentlyActive(true);
+        if (activityTimerRef.current) window.clearTimeout(activityTimerRef.current);
+    }, []);
+
+    const handleDragEnd = React.useCallback(() => {
+        setIsDragging(false);
+        // Start decay timer
+        if (activityTimerRef.current) window.clearTimeout(activityTimerRef.current);
+        activityTimerRef.current = window.setTimeout(() => {
+            setIsRecentlyActive(false);
+        }, 1000);
+    }, []);
+
+    const handleActivity = React.useCallback(() => {
+        setIsRecentlyActive(true);
+        if (activityTimerRef.current) window.clearTimeout(activityTimerRef.current);
+        // If not dragging, start decay immediately (debounce effect)
+        if (!isDragging) {
+            activityTimerRef.current = window.setTimeout(() => {
+                setIsRecentlyActive(false);
+            }, 1000);
+        }
+    }, [isDragging]);
+
+    const showValueAsLabel =
+        valueAsLabel === "valueOnly" || (valueAsLabel === "interactive" && (isDragging || isRecentlyActive));
+
     const { normalizedValue, adjustValue, effectiveLabel } = useAudioParameter(
         value,
         onChange,
         derivedParameter,
         valueFormatter,
         label,
-        valueAsLabel
+        showValueAsLabel
+    );
+
+    // Wrap adjustValue to trigger activity on changes (wheel, keyboard)
+    const wrappedAdjustValue = React.useCallback(
+        (delta: number, sensitivity?: number) => {
+            if (valueAsLabel === "interactive") {
+                handleActivity();
+            }
+            adjustValue(delta, sensitivity);
+        },
+        [adjustValue, valueAsLabel, handleActivity]
     );
 
     const effectiveInteractionMode = interactionMode ?? View.interaction.mode ?? "both";
@@ -111,11 +158,13 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
 
     // Only editable when onChange is provided (onClick is not relevant for interaction controller)
     const interactiveProps = useContinuousInteraction({
-        adjustValue,
+        adjustValue: wrappedAdjustValue,
         interactionMode: effectiveInteractionMode,
         direction: effectiveDirection,
         sensitivity: interactionSensitivity,
         editable: !!onChange,
+        onDragStart: valueAsLabel === "interactive" ? handleDragStart : undefined,
+        onDragEnd: valueAsLabel === "interactive" ? handleDragEnd : undefined,
     });
 
     const componentClassNames = useMemo(() => {

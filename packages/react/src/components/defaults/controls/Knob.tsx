@@ -11,7 +11,14 @@ import classNames from "classnames";
 import { useThemableProps } from "@/defaults/AudioUiProvider";
 import KnobView from "./KnobView";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
-import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps, KnobVariant } from "@/types";
+import {
+    AdaptiveBoxProps,
+    AdaptiveSizeProps,
+    ContinuousControlProps,
+    ThemableProps,
+    KnobVariant,
+    ValueLabelMode,
+} from "@/types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
@@ -73,11 +80,13 @@ export type KnobProps = ContinuousControlProps &
          */
         children?: React.ReactNode;
         /**
-         * When true, displays the formatted value as the label instead of the provided label.
-         * When false (default), uses the provided label or falls back to the parameter definition's label.
-         * @default false
+         * Controls how the label and value are displayed.
+         * - "labelOnly": Always shows the label (default)
+         * - "valueOnly": Always shows the value
+         * - "interactive": Shows label normally, but temporarily swaps to value during interaction
+         * @default "labelOnly"
          */
-        valueAsLabel?: boolean;
+        valueAsLabel?: ValueLabelMode;
     };
 
 /**
@@ -127,7 +136,7 @@ function Knob({
     interactionSensitivity,
     rotaryOverlay: svgOverlayRotary = false,
     children: svgOverlay,
-    valueAsLabel = false,
+    valueAsLabel = "labelOnly",
     onClick,
     onMouseDown,
     onMouseUp,

@@ -7,12 +7,13 @@
 "use client";
 
 import { useState } from "react";
-import { Slider } from "@cutoff/audio-ui-react";
+import { Slider, ValueLabelMode } from "@cutoff/audio-ui-react";
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColorPickerField } from "@/components/ColorPickerField";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export type SliderPageProps = {
     orientation: "horizontal" | "vertical";
@@ -28,6 +29,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
     const [thickness, setThickness] = useState<number | undefined>(undefined);
     const [roundness, setRoundness] = useState<number | undefined>(undefined);
     const [color, setColor] = useState<string | undefined>(undefined); // Allow undefined to use theme values
+    const [valueAsLabel, setValueAsLabel] = useState<ValueLabelMode | undefined>(undefined);
 
     // Generate code snippet with all props
     const codeString = `<Slider
@@ -36,7 +38,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
   value={${value}}
   label='${label}'${thickness !== undefined ? `\n  thickness={${thickness}}` : ""}
   bipolar={${bipolar}}${roundness !== undefined ? `\n  roundness={${roundness}}` : ""}
-  orientation='${orientation}'${color !== undefined ? `\n  color='${color}'` : ""}
+  orientation='${orientation}'${color !== undefined ? `\n  color='${color}'` : ""}${valueAsLabel !== undefined ? `\n  valueAsLabel='${valueAsLabel}'` : ""}
 />`;
 
     const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4): void => {
@@ -51,6 +53,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setThickness(undefined);
                 setRoundness(undefined); // Use theme roundness
                 setColor(undefined); // Use theme color
+                setValueAsLabel(undefined);
                 break;
             case 1:
                 setValue(64);
@@ -62,6 +65,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setThickness(undefined);
                 setRoundness(0.3);
                 setColor("#ff3366"); // Pink
+                setValueAsLabel(undefined);
                 break;
             case 2:
                 setValue(22);
@@ -73,11 +77,24 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setThickness(undefined);
                 setRoundness(0.3);
                 setColor("#33cc66"); // Green
+                setValueAsLabel(undefined);
                 break;
         }
     };
 
-    const componentProps = { min, bipolar, max, step, value, label, thickness, roundness, orientation, color };
+    const componentProps = {
+        min,
+        bipolar,
+        max,
+        step,
+        value,
+        label,
+        thickness,
+        roundness,
+        orientation,
+        color,
+        valueAsLabel,
+    };
 
     const properties = [
         <div key="label" className="grid gap-2">
@@ -144,6 +161,29 @@ export default function SliderPage({ orientation }: SliderPageProps) {
         </div>,
         <div key="color" className="grid gap-2">
             <ColorPickerField id="colorProp" label="Color" value={color} onChange={setColor} />
+        </div>,
+        <div key="valueAsLabel" className="grid gap-2">
+            <Label htmlFor="valueAsLabelProp">Value as Label</Label>
+            <Select
+                value={valueAsLabel === undefined ? "default" : valueAsLabel}
+                onValueChange={(value) => {
+                    if (value === "default") {
+                        setValueAsLabel(undefined);
+                    } else {
+                        setValueAsLabel(value as ValueLabelMode);
+                    }
+                }}
+            >
+                <SelectTrigger id="valueAsLabelProp">
+                    <SelectValue placeholder="Select mode" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="default">Default (Label Only)</SelectItem>
+                    <SelectItem value="labelOnly">Label Only</SelectItem>
+                    <SelectItem value="valueOnly">Value Only</SelectItem>
+                    <SelectItem value="interactive">Interactive</SelectItem>
+                </SelectContent>
+            </Select>
         </div>,
     ];
 

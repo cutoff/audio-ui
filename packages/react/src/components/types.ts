@@ -19,6 +19,14 @@ import { SizeType, InteractionMode, InteractionDirection } from "@cutoff/audio-u
 export type KnobVariant = "abstract" | "simplest" | "plainCap" | "iconCap";
 
 /**
+ * Mode for displaying value vs label.
+ * - "labelOnly": Always shows the label (default)
+ * - "valueOnly": Always shows the value
+ * - "interactive": Shows label normally, but temporarily swaps to value during interaction
+ */
+export type ValueLabelMode = "labelOnly" | "valueOnly" | "interactive";
+
+/**
  * Standard event object emitted by all AudioUI controls.
  * Provides the value in all three domain representations simultaneously.
  */
@@ -217,6 +225,15 @@ export type ContinuousControlProps = BaseProps &
          * @returns A string representation of the value, or undefined to fall back to default formatter
          */
         valueFormatter?: (value: number, parameterDef: AudioParameter) => string | undefined;
+
+        /**
+         * Controls how the label and value are displayed.
+         * - "labelOnly": Always shows the label (default)
+         * - "valueOnly": Always shows the value
+         * - "interactive": Shows label normally, but temporarily swaps to value during interaction
+         * @default "labelOnly"
+         */
+        valueAsLabel?: ValueLabelMode;
 
         /**
          * Whether the component should operate in bipolar mode

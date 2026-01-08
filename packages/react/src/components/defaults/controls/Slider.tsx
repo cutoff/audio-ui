@@ -12,7 +12,13 @@ import { useThemableProps } from "@/defaults/AudioUiProvider";
 import { VerticalSliderView, HorizontalSliderView } from "./SliderView";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
-import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps } from "@/types";
+import {
+    AdaptiveBoxProps,
+    AdaptiveSizeProps,
+    ContinuousControlProps,
+    ThemableProps,
+    ValueLabelMode,
+} from "@/types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
@@ -30,11 +36,13 @@ export type SliderProps = ContinuousControlProps &
          * @default 0.4 */
         thickness?: number;
         /**
-         * When true, displays the formatted value as the label instead of the provided label.
-         * When false (default), uses the provided label or falls back to the parameter definition's label.
-         * @default false
+         * Controls how the label and value are displayed.
+         * - "labelOnly": Always shows the label (default)
+         * - "valueOnly": Always shows the value
+         * - "interactive": Shows label normally, but temporarily swaps to value during interaction
+         * @default "labelOnly"
          */
-        valueAsLabel?: boolean;
+        valueAsLabel?: ValueLabelMode;
     };
 
 /**
@@ -99,7 +107,7 @@ function Slider({
     interactionMode,
     interactionDirection,
     interactionSensitivity,
-    valueAsLabel = false,
+    valueAsLabel = "labelOnly",
     onClick,
     onMouseDown,
     onMouseUp,

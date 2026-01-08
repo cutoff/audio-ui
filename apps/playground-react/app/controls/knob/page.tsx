@@ -16,6 +16,7 @@ import {
     AudioParameter,
     KnobVariant,
     AudioControlEvent,
+    ValueLabelMode,
 } from "@cutoff/audio-ui-react";
 
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
@@ -80,7 +81,7 @@ function generateCodeSnippet(
     variant: KnobVariant,
     rotaryOverlay: boolean | undefined,
     selectedIcon: IconOptionValue | undefined,
-    valueAsLabel: boolean | undefined,
+    valueAsLabel: ValueLabelMode | undefined,
     unit: string | undefined
 ): string {
     if (enableOptions) {
@@ -133,9 +134,9 @@ function generateCodeSnippet(
             props += `\n  rotaryOverlay={${rotaryOverlay}}`;
         }
 
-        // Add valueAsLabel prop only if explicitly true
-        if (valueAsLabel === true) {
-            props += `\n  valueAsLabel={true}`;
+        // Add valueAsLabel prop only if explicitly defined
+        if (valueAsLabel !== undefined) {
+            props += `\n  valueAsLabel='${valueAsLabel}'`;
         }
 
         // Add children if icon is selected and variant is iconCap
@@ -178,7 +179,7 @@ type KnobComponentProps = {
     variant?: KnobVariant;
     rotaryOverlay?: boolean;
     selectedIcon?: IconOptionValue;
-    valueAsLabel?: boolean | undefined;
+    valueAsLabel?: ValueLabelMode | undefined;
     unit?: string;
     onChange?: (event: AudioControlEvent<number | string>) => void;
     onClick?: KnobProps["onClick"] | KnobSwitchProps["onClick"];
@@ -273,10 +274,10 @@ export default function KnobDemoPage() {
     const [variant, setVariant] = useState<KnobVariant>("abstract");
     const [rotaryOverlay, setRotaryOverlay] = useState<boolean | undefined>(undefined);
     const [selectedIcon, setSelectedIcon] = useState<IconOptionValue | undefined>("sine");
-    const [valueAsLabel, setValueAsLabel] = useState<boolean | undefined>(undefined);
+    const [valueAsLabel, setValueAsLabel] = useState<ValueLabelMode | undefined>(undefined);
     const [unit, setUnit] = useState<string | undefined>(undefined);
 
-    const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4 | 5): void => {
+    const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4 | 5 | 6): void => {
         switch (num) {
             case 0:
                 setValue(42);
@@ -373,7 +374,7 @@ export default function KnobDemoPage() {
                 setMin(-100);
                 setMax(100);
                 setStep(1);
-                setLabel("");
+                setLabel("Tuning");
                 setBipolar(true);
                 setUseMidiBipolar(false);
                 setEnableOptions(false);
@@ -383,7 +384,25 @@ export default function KnobDemoPage() {
                 setVariant("plainCap");
                 setRotaryOverlay(undefined);
                 setSelectedIcon("sine");
-                setValueAsLabel(true);
+                setValueAsLabel("valueOnly");
+                setUnit("cents");
+                break;
+            case 6:
+                setValue(0);
+                setMin(-100);
+                setMax(100);
+                setStep(1);
+                setLabel("Tuning");
+                setBipolar(true);
+                setUseMidiBipolar(false);
+                setEnableOptions(false);
+                setThickness(undefined);
+                setRoundness(undefined); // Use theme roundness
+                setColor(undefined); // Use theme color
+                setVariant("plainCap");
+                setRotaryOverlay(undefined);
+                setSelectedIcon("sine");
+                setValueAsLabel("interactive");
                 setUnit("cents");
                 break;
         }
@@ -534,22 +553,23 @@ export default function KnobDemoPage() {
         <div key="valueAsLabel" className="grid gap-2">
             <Label htmlFor="valueAsLabelProp">Value as Label</Label>
             <Select
-                value={valueAsLabel === undefined ? "default" : valueAsLabel ? "true" : "false"}
+                value={valueAsLabel === undefined ? "default" : valueAsLabel}
                 onValueChange={(value) => {
                     if (value === "default") {
                         setValueAsLabel(undefined);
                     } else {
-                        setValueAsLabel(value === "true");
+                        setValueAsLabel(value as ValueLabelMode);
                     }
                 }}
             >
                 <SelectTrigger id="valueAsLabelProp">
-                    <SelectValue placeholder="Select value" />
+                    <SelectValue placeholder="Select mode" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="default">Default</SelectItem>
-                    <SelectItem value="false">False</SelectItem>
-                    <SelectItem value="true">True</SelectItem>
+                    <SelectItem value="default">Default (Label Only)</SelectItem>
+                    <SelectItem value="labelOnly">Label Only</SelectItem>
+                    <SelectItem value="valueOnly">Value Only</SelectItem>
+                    <SelectItem value="interactive">Interactive</SelectItem>
                 </SelectContent>
             </Select>
         </div>,
@@ -625,11 +645,26 @@ export default function KnobDemoPage() {
             step={1}
             value={0}
             size="large"
+            label="Tuning"
             variant="plainCap"
             bipolar={true}
-            valueAsLabel={true}
+            valueAsLabel="valueOnly"
             unit="cents"
             onClick={() => handleExampleClick(5)}
+        />,
+        <Knob
+            key="6"
+            min={-100}
+            max={100}
+            step={1}
+            value={0}
+            size="large"
+            label="Tuning"
+            variant="plainCap"
+            bipolar={true}
+            valueAsLabel="interactive"
+            unit="cents"
+            onClick={() => handleExampleClick(6)}
         />,
     ];
 

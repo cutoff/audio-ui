@@ -46,6 +46,16 @@ export interface ContinuousInteractionConfig {
     keyboardStep?: number;
 
     /**
+     * Callback when a drag interaction starts
+     */
+    onDragStart?: () => void;
+
+    /**
+     * Callback when a drag interaction ends
+     */
+    onDragEnd?: () => void;
+
+    /**
      * Whether the control is disabled
      */
     disabled?: boolean;
@@ -56,7 +66,11 @@ export interface ContinuousInteractionConfig {
  * for continuous controls.
  */
 export class ContinuousInteractionController {
-    private config: Required<Omit<ContinuousInteractionConfig, "wheelSensitivity">> & { wheelSensitivity?: number };
+    private config: Required<Omit<ContinuousInteractionConfig, "wheelSensitivity" | "onDragStart" | "onDragEnd">> & {
+        wheelSensitivity?: number;
+        onDragStart?: () => void;
+        onDragEnd?: () => void;
+    };
     private startX = 0;
     private startY = 0;
     private centerX = 0;
@@ -117,6 +131,7 @@ export class ContinuousInteractionController {
         this.startX = x;
         this.startY = y;
         this.isDragging = true;
+        this.config.onDragStart?.();
 
         if (this.config.direction === "circular" && target && (target as HTMLElement).getBoundingClientRect) {
             const rect = (target as HTMLElement).getBoundingClientRect();
@@ -196,6 +211,7 @@ export class ContinuousInteractionController {
         if (!this.isDragging) return;
 
         this.isDragging = false;
+        this.config.onDragEnd?.();
 
         document.body.style.userSelect = "";
         document.body.style.cursor = "";
