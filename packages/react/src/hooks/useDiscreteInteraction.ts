@@ -16,8 +16,6 @@ export interface UseDiscreteInteractionProps {
     onValueChange: (value: string | number) => void;
     /** Whether the control is disabled */
     disabled?: boolean;
-    /** Whether interaction is handled elsewhere (e.g. wheel) */
-    skipWheel?: boolean;
 }
 
 export interface UseDiscreteInteractionResult {
@@ -37,9 +35,21 @@ export interface UseDiscreteInteractionResult {
  * Hook to manage interactions for discrete controls (switches, toggles, selectors).
  *
  * Provides standardized logic for:
- * - Cycling through options (wrapping) via Click or Space
+ * - Cycling through options (wrapping) via Click or Space/Enter
  * - Stepping through options (clamped) via Arrow keys
- * - Finding the nearest valid option index
+ * - Finding the nearest valid option index when value doesn't match
+ *
+ * The hook wraps the framework-agnostic `DiscreteInteractionController` and provides React
+ * event handlers that can be attached directly to DOM elements. It maintains stable callback
+ * references across renders using `useCallback` and updates the controller configuration via
+ * `useEffect` when props change.
+ *
+ * @param {UseDiscreteInteractionProps} props - Configuration for the discrete interaction hook
+ * @param {string | number} props.value - Current value of the control
+ * @param {Array<{ value: string | number }>} props.options - List of available options
+ * @param {(value: string | number) => void} props.onValueChange - Callback to update the value
+ * @param {boolean} [props.disabled=false] - Whether the control is disabled
+ * @returns {UseDiscreteInteractionResult} Object containing event handlers and manual control methods
  *
  * @example
  * ```tsx
