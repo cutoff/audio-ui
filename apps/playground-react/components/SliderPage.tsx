@@ -178,9 +178,24 @@ export default function SliderPage({ orientation }: SliderPageProps) {
 
     const codeString = generateCodeSnippet();
 
-    const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4 | 5): void => {
+    const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4 | 5 | 6): void => {
         switch (num) {
             case 0:
+                // Default - matches initial state
+                setValue(42);
+                setMin(0);
+                setMax(100);
+                setStep(1);
+                setLabel("Default");
+                setBipolar(false);
+                setUseMidiBipolar(false);
+                setThickness(undefined);
+                setRoundness(undefined);
+                setColor(undefined);
+                setValueAsLabel(undefined);
+                setUnit(undefined);
+                break;
+            case 1:
                 // Volume - unipolar, percentage
                 setValue(75);
                 setMin(0);
@@ -195,7 +210,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setValueAsLabel("interactive");
                 setUnit("%");
                 break;
-            case 1:
+            case 2:
                 // Pan - bipolar, L100-C-R100 format
                 setValue(0);
                 setMin(-100);
@@ -210,7 +225,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setValueAsLabel("interactive");
                 setUnit(undefined);
                 break;
-            case 2:
+            case 3:
                 // Cutoff - unipolar, MIDI range, no unit
                 setValue(64);
                 setMin(0);
@@ -225,7 +240,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setValueAsLabel("interactive");
                 setUnit(undefined);
                 break;
-            case 3:
+            case 4:
                 // Gain - bipolar, dB, decimal step
                 setValue(0);
                 setMin(-12);
@@ -240,7 +255,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setValueAsLabel("interactive");
                 setUnit("dB");
                 break;
-            case 4:
+            case 5:
                 // Delay Time - unipolar, milliseconds, larger range, step 10
                 setValue(500);
                 setMin(0);
@@ -255,7 +270,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setValueAsLabel("interactive");
                 setUnit("ms");
                 break;
-            case 5:
+            case 6:
                 // Tuning - bipolar, cents, smaller range
                 setValue(0);
                 setMin(-50);
@@ -414,16 +429,29 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 min={0}
                 max={100}
                 step={1}
+                value={42}
+                label="Default"
+                size="large"
+                orientation={orientation}
+                onClick={() => handleExampleClick(0)}
+            />
+        </div>,
+        <div key="1" className={orientation === "vertical" ? "h-64" : "w-64"}>
+            <Slider
+                style={{ cursor: "pointer" }}
+                min={0}
+                max={100}
+                step={1}
                 value={75}
                 label="Volume"
                 size="large"
                 orientation={orientation}
                 valueAsLabel="interactive"
                 unit="%"
-                onClick={() => handleExampleClick(0)}
+                onClick={() => handleExampleClick(1)}
             />
         </div>,
-        <div key="1" className={orientation === "vertical" ? "h-64" : "w-64"}>
+        <div key="2" className={orientation === "vertical" ? "h-64" : "w-64"}>
             <Slider
                 style={{ cursor: "pointer" }}
                 min={-100}
@@ -436,10 +464,10 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 bipolar={true}
                 valueAsLabel="interactive"
                 valueFormatter={panFormatter}
-                onClick={() => handleExampleClick(1)}
+                onClick={() => handleExampleClick(2)}
             />
         </div>,
-        <div key="2" className={orientation === "vertical" ? "h-64" : "w-64"}>
+        <div key="3" className={orientation === "vertical" ? "h-64" : "w-64"}>
             <Slider
                 style={{ cursor: "pointer" }}
                 min={0}
@@ -450,10 +478,10 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 size="large"
                 orientation={orientation}
                 valueAsLabel="interactive"
-                onClick={() => handleExampleClick(2)}
+                onClick={() => handleExampleClick(3)}
             />
         </div>,
-        <div key="3" className={orientation === "vertical" ? "h-64" : "w-64"}>
+        <div key="4" className={orientation === "vertical" ? "h-64" : "w-64"}>
             <Slider
                 style={{ cursor: "pointer" }}
                 min={-12}
@@ -466,10 +494,10 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 bipolar={true}
                 valueAsLabel="interactive"
                 unit="dB"
-                onClick={() => handleExampleClick(3)}
+                onClick={() => handleExampleClick(4)}
             />
         </div>,
-        <div key="4" className={orientation === "vertical" ? "h-64" : "w-64"}>
+        <div key="5" className={orientation === "vertical" ? "h-64" : "w-64"}>
             <Slider
                 style={{ cursor: "pointer" }}
                 min={0}
@@ -481,10 +509,10 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 orientation={orientation}
                 valueAsLabel="interactive"
                 unit="ms"
-                onClick={() => handleExampleClick(4)}
+                onClick={() => handleExampleClick(5)}
             />
         </div>,
-        <div key="5" className={orientation === "vertical" ? "h-64" : "w-64"}>
+        <div key="6" className={orientation === "vertical" ? "h-64" : "w-64"}>
             <Slider
                 style={{ cursor: "pointer" }}
                 min={-50}
@@ -497,7 +525,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 bipolar={true}
                 valueAsLabel="interactive"
                 unit="cents"
-                onClick={() => handleExampleClick(5)}
+                onClick={() => handleExampleClick(6)}
             />
         </div>,
     ];
