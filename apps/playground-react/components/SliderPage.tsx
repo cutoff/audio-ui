@@ -6,8 +6,8 @@
 
 "use client";
 
-import { useState } from "react";
-import { Slider, ValueLabelMode } from "@cutoff/audio-ui-react";
+import React, { useState } from "react";
+import { Slider, ValueLabelMode, AudioParameter, AudioControlEvent } from "@cutoff/audio-ui-react";
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,9 +15,105 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ColorPickerField } from "@/components/ColorPickerField";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+// MIDI bipolar formatter for demo purposes
+const midiBipolarFormatter = (value: number, parameterDef: AudioParameter): string | undefined => {
+    if (parameterDef.type !== "continuous") {
+        return undefined; // Fall back to default formatter for non-continuous parameters
+    }
+    const { min, max } = parameterDef;
+    const centerValue = Math.floor((max - min + 1) / 2) + min;
+    const shiftedValue = value - centerValue;
+    return shiftedValue > 0 ? `+${shiftedValue}` : shiftedValue.toString();
+};
+
+// Pan formatter for L100-C-R100 display
+const panFormatter = (value: number, parameterDef: AudioParameter): string | undefined => {
+    if (parameterDef.type !== "continuous") {
+        return undefined;
+    }
+    if (value === 0) return "C";
+    const side = value < 0 ? "L" : "R";
+    const pct = Math.round(Math.abs(value));
+    return `${side}${pct}`;
+};
+
 export type SliderPageProps = {
     orientation: "horizontal" | "vertical";
 };
+
+type SliderComponentProps = {
+    value: number;
+    min: number;
+    max: number;
+    step?: number;
+    label?: string;
+    bipolar?: boolean;
+    useMidiBipolar?: boolean;
+    thickness?: number;
+    roundness?: number;
+    color?: string;
+    valueAsLabel?: ValueLabelMode;
+    unit?: string;
+    orientation: "horizontal" | "vertical";
+    adaptiveSize?: boolean;
+    onChange?: (event: AudioControlEvent<number | string>) => void;
+    onClick?: () => void;
+    style?: React.CSSProperties;
+    className?: string;
+    size?: "xsmall" | "small" | "normal" | "large" | "xlarge";
+};
+
+function SliderComponent({
+    value,
+    min,
+    max,
+    step,
+    label,
+    bipolar,
+    useMidiBipolar,
+    thickness,
+    roundness,
+    color,
+    valueAsLabel,
+    unit,
+    orientation,
+    adaptiveSize,
+    onChange,
+    onClick,
+    style,
+    className,
+    size,
+}: SliderComponentProps) {
+    return (
+        <Slider
+            min={min}
+            max={max}
+            step={step}
+            value={value}
+            label={label}
+            bipolar={bipolar}
+            roundness={roundness}
+            thickness={thickness}
+            style={style}
+            className={className}
+            onClick={onClick}
+            onChange={onChange}
+            size={size}
+            adaptiveSize={adaptiveSize}
+            color={color}
+            valueAsLabel={valueAsLabel}
+            unit={unit}
+            orientation={orientation}
+            valueFormatter={
+                bipolar && useMidiBipolar
+                    ? midiBipolarFormatter
+                    : bipolar && min === -100 && max === 100 && unit === undefined
+                      ? panFormatter
+                      : undefined
+            }
+        />
+    );
+}
 
 export default function SliderPage({ orientation }: SliderPageProps) {
     const [value, setValue] = useState(42);
@@ -26,58 +122,153 @@ export default function SliderPage({ orientation }: SliderPageProps) {
     const [step, setStep] = useState<number | undefined>(1);
     const [label, setLabel] = useState("Default");
     const [bipolar, setBipolar] = useState(false);
+    const [useMidiBipolar, setUseMidiBipolar] = useState(false);
     const [thickness, setThickness] = useState<number | undefined>(undefined);
     const [roundness, setRoundness] = useState<number | undefined>(undefined);
     const [color, setColor] = useState<string | undefined>(undefined); // Allow undefined to use theme values
     const [valueAsLabel, setValueAsLabel] = useState<ValueLabelMode | undefined>(undefined);
+    const [unit, setUnit] = useState<string | undefined>(undefined);
 
     // Generate code snippet with all props
-    const codeString = `<Slider
-  min={${min}}
-  max={${max}}${step !== undefined ? `\n  step={${step}}` : ""}
-  value={${value}}
-  label='${label}'${thickness !== undefined ? `\n  thickness={${thickness}}` : ""}
-  bipolar={${bipolar}}${roundness !== undefined ? `\n  roundness={${roundness}}` : ""}
-  orientation='${orientation}'${color !== undefined ? `\n  color='${color}'` : ""}${valueAsLabel !== undefined ? `\n  valueAsLabel='${valueAsLabel}'` : ""}
-/>`;
+    function generateCodeSnippet(): string {
+        let props = `min={${min}} max={${max}} value={${value}} label='${label}' bipolar={${bipolar}}`;
 
-    const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4): void => {
+        if (step !== undefined) {
+            props += ` step={${step}}`;
+        }
+
+        if (thickness !== undefined) {
+            props += ` thickness={${thickness}}`;
+        }
+
+        if (roundness !== undefined) {
+            props += ` roundness={${roundness}}`;
+        }
+
+        props += ` orientation='${orientation}'`;
+
+        if (color !== undefined) {
+            props += ` color='${color}'`;
+        }
+
+        if (unit !== undefined) {
+            props += ` unit='${unit}'`;
+        }
+
+        if (valueAsLabel !== undefined) {
+            props += ` valueAsLabel='${valueAsLabel}'`;
+        }
+
+        // Add valueFormatter prop if using MIDI bipolar formatter or pan formatter
+        if (bipolar && useMidiBipolar) {
+            return `<Slider ${props}
+  valueFormatter={midiBipolarFormatter}
+/>`;
+        }
+
+        // Check if it's a pan control (bipolar, -100 to 100, no unit)
+        if (bipolar && min === -100 && max === 100 && unit === undefined) {
+            return `<Slider ${props}
+  valueFormatter={panFormatter}
+/>`;
+        }
+
+        return `<Slider ${props} />`;
+    }
+
+    const codeString = generateCodeSnippet();
+
+    const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4 | 5): void => {
         switch (num) {
             case 0:
-                setValue(42);
+                // Volume - unipolar, percentage
+                setValue(75);
                 setMin(0);
                 setMax(100);
                 setStep(1);
-                setLabel("Default");
+                setLabel("Volume");
                 setBipolar(false);
+                setUseMidiBipolar(false);
                 setThickness(undefined);
-                setRoundness(undefined); // Use theme roundness
-                setColor(undefined); // Use theme color
-                setValueAsLabel(undefined);
+                setRoundness(undefined);
+                setColor(undefined);
+                setValueAsLabel("interactive");
+                setUnit("%");
                 break;
             case 1:
+                // Pan - bipolar, L100-C-R100 format
+                setValue(0);
+                setMin(-100);
+                setMax(100);
+                setStep(1);
+                setLabel("Pan");
+                setBipolar(true);
+                setUseMidiBipolar(false);
+                setThickness(undefined);
+                setRoundness(undefined);
+                setColor(undefined);
+                setValueAsLabel("interactive");
+                setUnit(undefined);
+                break;
+            case 2:
+                // Cutoff - unipolar, MIDI range, no unit
                 setValue(64);
                 setMin(0);
                 setMax(127);
                 setStep(1);
-                setLabel("Bipolar");
-                setBipolar(true);
-                setThickness(undefined);
-                setRoundness(0.3);
-                setColor("#ff3366"); // Pink
-                setValueAsLabel(undefined);
-                break;
-            case 2:
-                setValue(22);
-                setMin(0);
-                setMax(127);
-                setStep(1);
-                setLabel("Thick");
+                setLabel("Cutoff");
                 setBipolar(false);
+                setUseMidiBipolar(false);
                 setThickness(undefined);
-                setRoundness(0.3);
-                setColor("#33cc66"); // Green
-                setValueAsLabel(undefined);
+                setRoundness(undefined);
+                setColor(undefined);
+                setValueAsLabel("interactive");
+                setUnit(undefined);
+                break;
+            case 3:
+                // Gain - bipolar, dB, decimal step
+                setValue(0);
+                setMin(-12);
+                setMax(12);
+                setStep(0.1);
+                setLabel("Gain");
+                setBipolar(true);
+                setUseMidiBipolar(false);
+                setThickness(undefined);
+                setRoundness(undefined);
+                setColor(undefined);
+                setValueAsLabel("interactive");
+                setUnit("dB");
+                break;
+            case 4:
+                // Delay Time - unipolar, milliseconds, larger range, step 10
+                setValue(500);
+                setMin(0);
+                setMax(2000);
+                setStep(10);
+                setLabel("Delay");
+                setBipolar(false);
+                setUseMidiBipolar(false);
+                setThickness(undefined);
+                setRoundness(undefined);
+                setColor(undefined);
+                setValueAsLabel("interactive");
+                setUnit("ms");
+                break;
+            case 5:
+                // Tuning - bipolar, cents, smaller range
+                setValue(0);
+                setMin(-50);
+                setMax(50);
+                setStep(1);
+                setLabel("Tuning");
+                setBipolar(true);
+                setUseMidiBipolar(false);
+                setThickness(undefined);
+                setRoundness(undefined);
+                setColor(undefined);
+                setValueAsLabel("interactive");
+                setUnit("cents");
                 break;
         }
     };
@@ -85,6 +276,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
     const componentProps = {
         min,
         bipolar,
+        useMidiBipolar,
         max,
         step,
         value,
@@ -94,6 +286,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
         orientation,
         color,
         valueAsLabel,
+        unit,
     };
 
     const properties = [
@@ -120,6 +313,18 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                     setStep(val);
                 }}
                 placeholder="Continuous"
+            />
+        </div>,
+        <div key="unit" className="grid gap-2">
+            <Label htmlFor="unitProp">Unit</Label>
+            <Input
+                id="unitProp"
+                value={unit !== undefined ? unit : ""}
+                onChange={(e) => {
+                    const val = e.target.value === "" ? undefined : e.target.value;
+                    setUnit(val);
+                }}
+                placeholder="None"
             />
         </div>,
         <div key="thickness" className="grid gap-2">
@@ -153,10 +358,21 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 }}
             />
         </div>,
-        <div key="bipolar" className="grid gap-2">
+        <div key="bipolar" className="flex items-center gap-2 pt-2">
             <Checkbox id="bipolarProp" checked={bipolar} onCheckedChange={(checked) => setBipolar(checked === true)} />
             <Label htmlFor="bipolarProp" className="cursor-pointer">
                 Bipolar
+            </Label>
+        </div>,
+        <div key="midiBipolar" className="flex items-center gap-2 pt-2">
+            <Checkbox
+                id="midiBipolarProp"
+                checked={useMidiBipolar}
+                disabled={!bipolar}
+                onCheckedChange={(checked) => setUseMidiBipolar(checked === true)}
+            />
+            <Label htmlFor="midiBipolarProp" className="cursor-pointer">
+                MIDI Bipolar Format
             </Label>
         </div>,
         <div key="color" className="grid gap-2">
@@ -194,27 +410,28 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 min={0}
                 max={100}
                 step={1}
-                value={42}
-                label="Default"
+                value={75}
+                label="Volume"
                 size="large"
                 orientation={orientation}
-                // Use undefined color and roundness to inherit from theme
+                valueAsLabel="interactive"
+                unit="%"
                 onClick={() => handleExampleClick(0)}
             />
         </div>,
         <div key="1" className={orientation === "vertical" ? "h-64" : "w-64"}>
             <Slider
                 style={{ cursor: "pointer" }}
-                min={0}
-                bipolar={true}
-                max={127}
+                min={-100}
+                max={100}
                 step={1}
-                value={64}
-                label="Bipolar"
+                value={0}
+                label="Pan"
                 size="large"
                 orientation={orientation}
-                roundness={0.4}
-                color="#ff3366" // Pink
+                bipolar={true}
+                valueAsLabel="interactive"
+                valueFormatter={panFormatter}
                 onClick={() => handleExampleClick(1)}
             />
         </div>,
@@ -222,16 +439,61 @@ export default function SliderPage({ orientation }: SliderPageProps) {
             <Slider
                 style={{ cursor: "pointer" }}
                 min={0}
-                bipolar={false}
                 max={127}
                 step={1}
-                value={22}
-                label="Thick"
+                value={64}
+                label="Cutoff"
                 size="large"
                 orientation={orientation}
-                roundness={0.4}
-                color="#33cc66" // Green
+                valueAsLabel="interactive"
                 onClick={() => handleExampleClick(2)}
+            />
+        </div>,
+        <div key="3" className={orientation === "vertical" ? "h-64" : "w-64"}>
+            <Slider
+                style={{ cursor: "pointer" }}
+                min={-12}
+                max={12}
+                step={0.1}
+                value={0}
+                label="Gain"
+                size="large"
+                orientation={orientation}
+                bipolar={true}
+                valueAsLabel="interactive"
+                unit="dB"
+                onClick={() => handleExampleClick(3)}
+            />
+        </div>,
+        <div key="4" className={orientation === "vertical" ? "h-64" : "w-64"}>
+            <Slider
+                style={{ cursor: "pointer" }}
+                min={0}
+                max={2000}
+                step={10}
+                value={500}
+                label="Delay"
+                size="large"
+                orientation={orientation}
+                valueAsLabel="interactive"
+                unit="ms"
+                onClick={() => handleExampleClick(4)}
+            />
+        </div>,
+        <div key="5" className={orientation === "vertical" ? "h-64" : "w-64"}>
+            <Slider
+                style={{ cursor: "pointer" }}
+                min={-50}
+                max={50}
+                step={1}
+                value={0}
+                label="Tuning"
+                size="large"
+                orientation={orientation}
+                bipolar={true}
+                valueAsLabel="interactive"
+                unit="cents"
+                onClick={() => handleExampleClick(5)}
             />
         </div>,
     ];
@@ -240,12 +502,11 @@ export default function SliderPage({ orientation }: SliderPageProps) {
         <ControlSkeletonPage<number>
             componentName="Slider"
             codeSnippet={codeString}
-            PageComponent={Slider}
+            PageComponent={SliderComponent}
             componentProps={componentProps}
             properties={properties}
             examples={examples}
             onChange={(event) => setValue(event.value)}
-            orientation={orientation}
         />
     );
 }
