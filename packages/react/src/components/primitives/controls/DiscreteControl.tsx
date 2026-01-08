@@ -173,10 +173,10 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
             className={componentClassNames}
             style={style}
             labelHeightUnits={View.labelHeightUnits ?? 20}
+            viewBoxWidth={View.viewBox.width}
+            viewBoxHeight={View.viewBox.height}
         >
             <AdaptiveBox.Svg
-                viewBoxWidth={View.viewBox.width}
-                viewBoxHeight={View.viewBox.height}
                 className={svgClassNames}
                 style={svgStyle}
                 onClick={handleClick}

@@ -463,13 +463,12 @@ function Keys({
             labelMode="none"
             className={componentClassNames}
             style={{ ...sizeStyle, ...style }}
+            viewBoxWidth={keybedDimensions.width + keybedDimensions.innerStrokeWidth}
+            viewBoxHeight={keybedDimensions.whiteHeight + keybedDimensions.innerStrokeWidth}
             minWidth={40}
             minHeight={40}
         >
-            <AdaptiveBox.Svg
-                viewBoxWidth={keybedDimensions.width + keybedDimensions.innerStrokeWidth}
-                viewBoxHeight={keybedDimensions.whiteHeight + keybedDimensions.innerStrokeWidth}
-            >
+            <AdaptiveBox.Svg>
                 {renderWhiteKeys}
                 {renderBlackKeys}
             </AdaptiveBox.Svg>

@@ -206,6 +206,37 @@ Mapping to the React API
 - Overlay
   - To add an overlay above the SVG, render a sibling element inside `<AdaptiveBox>` after `<AdaptiveBox.Svg>` with style: position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", and gridRow matching the SVG row ("1 / 2" if label is below, "2 / 3" if label is above). Use a higher z-index as needed.
 
+Implementation Notes: Layout Shift Prevention
+
+During initial development, two layout shift issues were identified and resolved:
+
+**Issue 1: Label Space Reservation**
+
+**Problem**: Components would initially render without label space (as if `labelMode="none"`), then shift when the label registered via `useLayoutEffect`, causing a visible size change.
+
+**Root Cause**: The layout calculation checked both `labelMode !== "none"` AND whether `labelInfo` had been registered. Since registration happens in `useLayoutEffect` (after render), the initial render used incorrect dimensions.
+
+**Solution**: Changed the space reservation logic to depend solely on `labelMode`. If `labelMode !== "none"`, space is reserved immediately regardless of whether the Label component has registered yet. This ensures correct layout from the first render.
+
+**Key Insight**: AdaptiveBox only cares about `labelMode` for space reservation, not whether a label value exists or has been registered. The label value can be `undefined` - only the mode matters.
+
+**Issue 2: ViewBox Dimensions and Aspect Ratio**
+
+**Problem**: Components showed a visible zoom/shift effect during startup where proportions between the main component zone and label zone varied. Sliders (non-square aspect ratios) were particularly affected, with labels initially oversized and main components undersized.
+
+**Root Cause**: AdaptiveBox used default 100x100 dimensions until `AdaptiveBox.Svg` registered its actual viewBox via `useLayoutEffect`. This caused incorrect aspect ratio and grid template row calculations on first render.
+
+**Solution**: ViewBox dimensions (`viewBoxWidth` and `viewBoxHeight`) are now required props on `AdaptiveBox` itself, not on `AdaptiveBox.Svg`. This centralizes sizing concerns in AdaptiveBox (alongside `labelHeightUnits`) and ensures correct dimensions are available from the first render.
+
+**Architectural Decision**: ViewBox dimensions are specified once at the AdaptiveBox level, similar to how `labelHeightUnits` is specified. The SVG component reads these dimensions from context. This approach:
+
+- Eliminates prop duplication (no need to pass viewBox to both AdaptiveBox and AdaptiveBox.Svg)
+- Prevents layout shift by having dimensions available synchronously
+- Keeps sizing concerns centralized in AdaptiveBox
+- Documents that for SVG content, viewBox maps to SVG viewBox; for future Canvas/GL content, it will map to canvas/gl dimensions
+
+**Note**: React's render model prevents reading child values during parent render, so dimensions must be passed as props rather than derived from children. This is why viewBox dimensions are required props rather than being inferred from the SVG component.
+
 Further Reading
 
 - Source: packages/react/src/components/primitives/AdaptiveBox.tsx

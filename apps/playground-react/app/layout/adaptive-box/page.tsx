@@ -29,15 +29,12 @@ export default function AdaptiveBoxDemoPage() {
                     displayMode={displayMode}
                     labelMode={labelMode}
                     labelHeightUnits={labelHeightUnits}
+                    viewBoxWidth={svgViewBoxWidth}
+                    viewBoxHeight={svgViewBoxHeight}
                     debug={true}
                 >
                     <>
-                        <AdaptiveBox.Svg
-                            viewBoxWidth={svgViewBoxWidth}
-                            viewBoxHeight={svgViewBoxHeight}
-                            vAlign={asVAlign}
-                            hAlign={asHAlign}
-                        >
+                        <AdaptiveBox.Svg vAlign={asVAlign} hAlign={asHAlign}>
                             {shape === "square" && (
                                 <circle
                                     cx={svgViewBoxWidth / 2}

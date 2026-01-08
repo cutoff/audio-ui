@@ -186,12 +186,12 @@ function Button({
             className={componentClassNames}
             style={{ ...sizeStyle, ...style }}
             labelHeightUnits={30}
+            viewBoxWidth={ButtonView.viewBox.width}
+            viewBoxHeight={ButtonView.viewBox.height}
             minWidth={20}
             minHeight={40}
         >
             <AdaptiveBox.Svg
-                viewBoxWidth={ButtonView.viewBox.width}
-                viewBoxHeight={ButtonView.viewBox.height}
                 className={svgClassNames}
                 onClick={onClick}
                 onMouseDown={handleMouseDown}

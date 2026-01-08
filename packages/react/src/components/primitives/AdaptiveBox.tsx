@@ -37,11 +37,15 @@ interface BoxContextValue {
     labelHeightUnits: number;
     debug: boolean;
 
+    // ViewBox dimensions (for SVG this maps to viewBox; for Canvas/GL this will map to canvas/gl dimensions)
+    viewBoxWidth: number;
+    viewBoxHeight: number;
+
     // Computed grid row for main content (Svg, HtmlOverlay, Canvas, GL all use this)
     mainContentGridRow: string;
 
     // Registration APIs
-    registerSvg: (info: { width: number; height: number; hAlign?: FlexAlign; vAlign?: FlexAlign }) => void;
+    registerSvg: (info: { hAlign?: FlexAlign; vAlign?: FlexAlign }) => void;
     registerLabel: (info: { position?: LabelPosition; align?: FlexAlign }) => void;
 }
 
@@ -58,56 +62,77 @@ export interface AdaptiveBoxProps extends PropsWithChildren {
     style?: CSSProperties;
     displayMode?: DisplayMode;
     labelMode?: LabelMode;
-    labelHeightUnits?: number; // in the same units as SVG viewBox height; default 15
+    labelHeightUnits?: number; // in the same units as viewBox height; default 15
+    /**
+     * ViewBox width in the same coordinate system as the content.
+     * For SVG content, this maps to the SVG viewBox width.
+     * For Canvas/GL content (future), this will map to canvas/gl dimensions.
+     */
+    viewBoxWidth: number;
+    /**
+     * ViewBox height in the same coordinate system as the content.
+     * For SVG content, this maps to the SVG viewBox height.
+     * For Canvas/GL content (future), this will map to canvas/gl dimensions.
+     */
+    viewBoxHeight: number;
     minWidth?: number;
     minHeight?: number;
     debug?: boolean; // controls dev visuals (scaler border, svg background). Defaults to false
 }
 
+/**
+ * AdaptiveBox provides a CSS/SVG-based layout system for controls with labels.
+ *
+ * Handles aspect ratio preservation, label positioning, and responsive sizing using
+ * container queries. The component automatically adapts its layout based on labelMode
+ * and viewBox dimensions to prevent layout shift during initial render.
+ *
+ * @param props - Component props including layout configuration and viewBox dimensions
+ * @returns Rendered AdaptiveBox with subcomponents (Svg, Label, HtmlOverlay) available via context
+ *
+ * @example
+ * ```tsx
+ * <AdaptiveBox
+ *   viewBoxWidth={100}
+ *   viewBoxHeight={100}
+ *   labelMode="visible"
+ * >
+ *   <AdaptiveBox.Svg>
+ *     <circle cx={50} cy={50} r={40} />
+ *   </AdaptiveBox.Svg>
+ *   <AdaptiveBox.Label>Volume</AdaptiveBox.Label>
+ * </AdaptiveBox>
+ * ```
+ */
 export function AdaptiveBox({
     className,
     style,
     displayMode = "scaleToFit",
     labelMode = "visible",
     labelHeightUnits,
+    viewBoxWidth,
+    viewBoxHeight,
     minWidth,
     minHeight,
     debug = false,
     children,
 }: AdaptiveBoxProps) {
-    // Internal state populated by subcomponents
-    const [svgInfo, setSvgInfo] = useState<{
-        width: number;
-        height: number;
-        hAlign?: FlexAlign;
-        vAlign?: FlexAlign;
-    } | null>(null);
+    const [svgInfo, setSvgInfo] = useState<{ hAlign?: FlexAlign; vAlign?: FlexAlign } | null>(null);
     const [labelInfo, setLabelInfo] = useState<{ position: LabelPosition; align: FlexAlign } | null>(null);
 
     // Stable callbacks that only update state when values actually change
-    const registerSvg = useCallback(
-        (info: { width: number; height: number; hAlign?: FlexAlign; vAlign?: FlexAlign }) => {
-            setSvgInfo((prev) => {
-                const next = {
-                    width: info.width,
-                    height: info.height,
-                    hAlign: info.hAlign,
-                    vAlign: info.vAlign,
-                } as const;
-                if (
-                    !prev ||
-                    prev.width !== next.width ||
-                    prev.height !== next.height ||
-                    prev.hAlign !== next.hAlign ||
-                    prev.vAlign !== next.vAlign
-                ) {
-                    return { ...next };
-                }
-                return prev;
-            });
-        },
-        []
-    );
+    const registerSvg = useCallback((info: { hAlign?: FlexAlign; vAlign?: FlexAlign }) => {
+        setSvgInfo((prev) => {
+            const next = {
+                hAlign: info.hAlign,
+                vAlign: info.vAlign,
+            } as const;
+            if (!prev || prev.hAlign !== next.hAlign || prev.vAlign !== next.vAlign) {
+                return { ...next };
+            }
+            return prev;
+        });
+    }, []);
 
     const registerLabel = useCallback((info: { position?: LabelPosition; align?: FlexAlign }) => {
         setLabelInfo((prev) => {
@@ -125,8 +150,6 @@ export function AdaptiveBox({
     const labelHeightUnitsEffective = labelHeightUnits ?? 15;
 
     // Derived layout numbers (kept local for readability and to avoid context churn)
-    const svgViewBoxWidth = svgInfo?.width ?? 100;
-    const svgViewBoxHeight = svgInfo?.height ?? 100;
     const styleH = (style?.justifySelf as FlexAlign) ?? "center";
     const styleV = (style?.alignSelf as FlexAlign) ?? "center";
     const hAlign = svgInfo?.hAlign ?? styleH;
@@ -135,7 +158,9 @@ export function AdaptiveBox({
     const isFill = displayMode === "fill";
 
     // Compute grid row for main content (used by Svg, HtmlOverlay, Canvas, GL)
-    const showLabelSpace = labelMode !== "none" && !!labelInfo;
+    // Only labelMode matters for reserving space - not whether labelInfo has been registered yet
+    // This prevents layout shift during initial render when Label component registers via useLayoutEffect
+    const showLabelSpace = labelMode !== "none";
     const mainContentGridRow = showLabelSpace && effectiveLabelPosition === "above" ? "2 / 3" : "1 / 2";
 
     const ctxValue = useMemo<BoxContextValue>(
@@ -146,6 +171,8 @@ export function AdaptiveBox({
             labelMode,
             labelHeightUnits: labelHeightUnitsEffective,
             debug,
+            viewBoxWidth,
+            viewBoxHeight,
             mainContentGridRow,
             registerSvg,
             registerLabel,
@@ -156,18 +183,20 @@ export function AdaptiveBox({
             labelMode,
             labelHeightUnitsEffective,
             debug,
+            viewBoxWidth,
+            viewBoxHeight,
             mainContentGridRow,
             registerSvg,
             registerLabel,
         ]
     );
     const L = labelHeightUnitsEffective;
-    const combinedHeightUnits = showLabelSpace ? svgViewBoxHeight + L : svgViewBoxHeight;
+    const combinedHeightUnits = showLabelSpace ? viewBoxHeight + L : viewBoxHeight;
 
     // Grid template rows for SVG + (optional) label
     let gridTemplateRows = "1fr";
     if (showLabelSpace) {
-        const svgPercent = (svgViewBoxHeight / combinedHeightUnits) * 100;
+        const svgPercent = (viewBoxHeight / combinedHeightUnits) * 100;
         const labelPercent = (L / combinedHeightUnits) * 100;
         if (effectiveLabelPosition === "above") {
             gridTemplateRows = `${labelPercent}% ${svgPercent}%`;
@@ -197,10 +226,8 @@ export function AdaptiveBox({
                 <div
                     data-name="Aspect Scaler"
                     style={{
-                        aspectRatio: `${svgViewBoxWidth} / ${combinedHeightUnits}`,
-                        width: isFill
-                            ? "100%"
-                            : `min(100%, calc(100cqh * ${svgViewBoxWidth} / ${combinedHeightUnits}))`,
+                        aspectRatio: `${viewBoxWidth} / ${combinedHeightUnits}`,
+                        width: isFill ? "100%" : `min(100%, calc(100cqh * ${viewBoxWidth} / ${combinedHeightUnits}))`,
                         height: isFill ? "100%" : "auto",
                         display: "grid",
                         gridTemplateRows,
@@ -226,8 +253,6 @@ export function AdaptiveBox({
 export interface AdaptiveBoxSvgProps extends PropsWithChildren {
     vAlign?: FlexAlign;
     hAlign?: FlexAlign;
-    viewBoxWidth: number;
-    viewBoxHeight: number;
     className?: string;
     style?: CSSProperties;
     // Event handlers (use native WheelEvent as requested)
@@ -251,23 +276,14 @@ export interface AdaptiveBoxSvgProps extends PropsWithChildren {
     "aria-pressed"?: boolean | "mixed";
 }
 
-function Svg({
-    vAlign,
-    hAlign,
-    viewBoxWidth,
-    viewBoxHeight,
-    className,
-    style,
-    children,
-    onWheel,
-    ...rest
-}: AdaptiveBoxSvgProps) {
+function Svg({ vAlign, hAlign, className, style, children, onWheel, ...rest }: AdaptiveBoxSvgProps) {
     const ctx = useBoxContext();
 
+    // Register alignment preferences (viewBox dimensions come from AdaptiveBox props)
     useLayoutEffect(() => {
-        ctx.registerSvg({ width: viewBoxWidth, height: viewBoxHeight, hAlign, vAlign });
+        ctx.registerSvg({ hAlign, vAlign });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [viewBoxWidth, viewBoxHeight, hAlign, vAlign]);
+    }, [hAlign, vAlign]);
 
     const svgRef = useRef<SVGSVGElement>(null);
 
@@ -291,7 +307,7 @@ function Svg({
         <svg
             ref={svgRef}
             data-name="Main Component"
-            viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
+            viewBox={`0 0 ${ctx.viewBoxWidth} ${ctx.viewBoxHeight}`}
             preserveAspectRatio={preserveAspect as React.SVGProps<SVGSVGElement>["preserveAspectRatio"]}
             className={className}
             style={{
