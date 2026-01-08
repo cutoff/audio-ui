@@ -12,6 +12,7 @@ export { default as CycleButton } from "./components/defaults/controls/CycleButt
 export { default as Slider } from "./components/defaults/controls/Slider";
 export { default as ContinuousControl } from "./components/primitives/controls/ContinuousControl";
 export { default as DiscreteControl } from "./components/primitives/controls/DiscreteControl";
+export { default as BooleanControl } from "./components/primitives/controls/BooleanControl";
 
 // Export primitives
 export { default as ValueRing } from "./components/primitives/svg/ValueRing";
@@ -60,6 +61,7 @@ export type { SliderProps } from "./components/defaults/controls/Slider";
 export type { ButtonProps } from "./components/defaults/controls/Button";
 export type { ContinuousControlComponentProps } from "./components/primitives/controls/ContinuousControl";
 export type { DiscreteControlComponentProps } from "./components/primitives/controls/DiscreteControl";
+export type { BooleanControlComponentProps } from "./components/primitives/controls/BooleanControl";
 export type { KeysProps } from "./components/defaults/devices/Keys";
 
 // Export SVG component types

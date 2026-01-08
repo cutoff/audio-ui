@@ -6,18 +6,14 @@
 
 "use client";
 
-import React, { useCallback, useMemo } from "react";
+import React from "react";
 import classNames from "classnames";
-import AdaptiveBox from "@/primitives/AdaptiveBox";
-import "@cutoff/audio-ui-core/styles.css";
-import { CLASSNAMES, clampNormalized, DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
+import { clampNormalized, DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BooleanControlProps, ThemableProps } from "@/types";
 import { useThemableProps } from "@/defaults/AudioUiProvider";
 import ButtonView from "./ButtonView";
-import { useAudioParameter } from "@/hooks/useAudioParameter";
+import BooleanControl from "@/primitives/controls/BooleanControl";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
-import { useBooleanParameterResolution } from "@/hooks/useBooleanParameterResolution";
-import { useBooleanInteraction } from "@/hooks/useBooleanInteraction";
 
 /**
  * Props for the Button component (built-in control with theming support)
@@ -93,97 +89,34 @@ function Button({
         { color: undefined, roundness: DEFAULT_ROUNDNESS }
     );
 
-    const { derivedParameter } = useBooleanParameterResolution({
-        parameter,
-        paramId,
-        label,
-        latch,
-    });
-
-    const { normalizedValue, converter } = useAudioParameter(value, onChange, derivedParameter);
-
-    const fireChange = useCallback(
-        (newValue: boolean) => {
-            if (!onChange) return;
-            const normalized = converter.normalize(newValue);
-            const midi = converter.toMidi(newValue);
-            onChange({
-                value: newValue,
-                normalizedValue: normalized,
-                midiValue: midi,
-                parameter: derivedParameter,
-            });
-        },
-        [onChange, converter, derivedParameter]
-    );
-
-    const { handleMouseDown, handleMouseUp, handleKeyDown, handleKeyUp } = useBooleanInteraction({
-        value,
-        mode: derivedParameter.mode ?? (latch ? "toggle" : "momentary"),
-        onValueChange: fireChange,
-        disabled: !onChange,
-        onMouseDown,
-        onMouseUp,
-        onKeyDown: undefined, // Button doesn't have onKeyDown prop, only uses hook handler
-        onKeyUp: undefined, // Button doesn't have onKeyUp prop, only uses hook handler
-    });
-
-    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "button");
-
-    const componentClassNames = useMemo(() => {
-        return classNames(sizeClassName, CLASSNAMES.root, CLASSNAMES.container, className);
-    }, [sizeClassName, className]);
-
-    const svgClassNames = useMemo(() => {
-        return onChange || onClick ? CLASSNAMES.highlight : "";
-    }, [onChange, onClick]);
-
-    const effectiveLabel = label ?? (parameter ? derivedParameter.name : undefined);
-
-    const isInteractive = !!(onChange || onClick);
+    const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "button");
 
     return (
-        <AdaptiveBox
-            displayMode={displayMode ?? "scaleToFit"}
+        <BooleanControl
+            value={value}
+            onChange={onChange}
+            label={label}
+            displayMode={displayMode}
             labelMode={labelMode}
-            className={componentClassNames}
-            style={{ ...sizeStyle, ...style }}
-            labelHeightUnits={30}
-            viewBoxWidth={ButtonView.viewBox.width}
-            viewBoxHeight={ButtonView.viewBox.height}
-            minWidth={20}
-            minHeight={40}
-        >
-            <AdaptiveBox.Svg
-                className={svgClassNames}
-                onClick={onClick}
-                onMouseDown={handleMouseDown}
-                onMouseUp={handleMouseUp}
-                onMouseEnter={onMouseEnter}
-                onMouseLeave={onMouseLeave}
-                tabIndex={0}
-                role="button"
-                aria-pressed={value}
-                aria-label={effectiveLabel}
-                style={{
-                    cursor: isInteractive ? "pointer" : "default",
-                }}
-                onKeyDown={handleKeyDown}
-                onKeyUp={handleKeyUp}
-            >
-                <ButtonView
-                    normalizedValue={normalizedValue}
-                    threshold={0.5}
-                    roundness={resolvedRoundness ?? DEFAULT_ROUNDNESS}
-                    color={resolvedColor}
-                />
-            </AdaptiveBox.Svg>
-            {effectiveLabel && (
-                <AdaptiveBox.Label position={labelPosition} align={labelAlign ?? "center"}>
-                    {effectiveLabel}
-                </AdaptiveBox.Label>
-            )}
-        </AdaptiveBox>
+            labelPosition={labelPosition}
+            labelAlign={labelAlign}
+            className={classNames(sizeClassName, className)}
+            style={{ ...adaptiveSizeStyle, ...style }}
+            parameter={parameter}
+            paramId={paramId}
+            latch={latch}
+            onClick={onClick}
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            view={ButtonView}
+            viewProps={{
+                threshold: 0.5,
+                roundness: resolvedRoundness ?? DEFAULT_ROUNDNESS,
+                color: resolvedColor,
+            }}
+        />
     );
 }
 

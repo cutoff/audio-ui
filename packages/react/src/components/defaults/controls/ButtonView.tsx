@@ -10,6 +10,7 @@ import React, { useMemo } from "react";
 import { generateColorVariants } from "@cutoff/audio-ui-core";
 import { translateButtonRoundness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
+import { ControlComponent } from "@/types";
 
 /**
  * Props for the ButtonView component
@@ -94,7 +95,9 @@ const VIEW_BOX = {
 const ButtonViewMemo = React.memo(ButtonView);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (ButtonViewMemo as any).viewBox = VIEW_BOX;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(ButtonViewMemo as any).labelHeightUnits = 30;
 
-export default ButtonViewMemo as unknown as React.MemoExoticComponent<typeof ButtonView> & {
-    viewBox: typeof VIEW_BOX;
-};
+export default ButtonViewMemo as unknown as ControlComponent<
+    Omit<ButtonViewProps, "normalizedValue" | "className" | "style">
+>;
