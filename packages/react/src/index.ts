@@ -116,3 +116,4 @@ export * from "./hooks/useAudioParameter";
 export * from "./hooks/useAdaptiveSize";
 export * from "./hooks/useDiscreteParameterResolution";
 export * from "./hooks/useContinuousParameterResolution";
+export * from "./hooks/useBooleanParameterResolution";

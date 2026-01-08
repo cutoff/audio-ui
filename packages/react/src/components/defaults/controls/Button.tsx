@@ -10,14 +10,13 @@ import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "@/primitives/AdaptiveBox";
 import "@cutoff/audio-ui-core/styles.css";
-import { CLASSNAMES } from "@cutoff/audio-ui-core";
+import { CLASSNAMES, clampNormalized, DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BooleanControlProps, ThemableProps } from "@/types";
 import { useThemableProps } from "@/defaults/AudioUiProvider";
 import ButtonView from "./ButtonView";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
-import { clampNormalized } from "@cutoff/audio-ui-core";
-import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
+import { useBooleanParameterResolution } from "@/hooks/useBooleanParameterResolution";
 
 /**
  * Props for the Button component (built-in control with theming support)
@@ -26,7 +25,43 @@ export type ButtonProps = BooleanControlProps & AdaptiveSizeProps & AdaptiveBoxP
 
 /**
  * A button component for audio applications.
- * ...
+ *
+ * Supports both toggle (latch) and momentary modes, with proper handling of
+ * global mouse events for momentary buttons to ensure reliable release behavior
+ * even when the mouse is dragged outside the button before release.
+ *
+ * Supports two modes of operation:
+ * 1. Strict Mode (Parameter only): Model provided via parameter prop.
+ * 2. Ad-Hoc Mode (Props only): Model created from individual props (label, latch, etc.).
+ *
+ * @param props - Component props
+ * @returns Rendered Button component
+ *
+ * @example
+ * ```tsx
+ * // Ad-Hoc Mode - Toggle button
+ * <Button
+ *   label="Power"
+ *   latch={true}
+ *   value={isOn}
+ *   onChange={(e) => setIsOn(e.value)}
+ * />
+ *
+ * // Ad-Hoc Mode - Momentary button
+ * <Button
+ *   label="Record"
+ *   latch={false}
+ *   value={isRecording}
+ *   onChange={(e) => setIsRecording(e.value)}
+ * />
+ *
+ * // Strict Mode with parameter
+ * <Button
+ *   parameter={powerParam}
+ *   value={isOn}
+ *   onChange={(e) => setIsOn(e.value)}
+ * />
+ * ```
  */
 function Button({
     latch = false,
@@ -57,25 +92,14 @@ function Button({
         { color: undefined, roundness: DEFAULT_ROUNDNESS }
     );
 
-    const paramConfig = useMemo(() => {
-        if (parameter) {
-            if (parameter.type !== "boolean") {
-                console.error("Button component only supports boolean parameters.");
-            }
-            return parameter;
-        }
+    const { derivedParameter } = useBooleanParameterResolution({
+        parameter,
+        paramId,
+        label,
+        latch,
+    });
 
-        return {
-            id: paramId ?? "adhoc-button",
-            type: "boolean" as const,
-            name: label || "",
-            mode: (latch ? "toggle" : "momentary") as "toggle" | "momentary",
-            defaultValue: false,
-            midiResolution: 7 as const,
-        };
-    }, [parameter, label, latch, paramId]);
-
-    const { normalizedValue, converter } = useAudioParameter(value, onChange, paramConfig);
+    const { normalizedValue, converter } = useAudioParameter(value, onChange, derivedParameter);
 
     const fireChange = useCallback(
         (newValue: boolean) => {
@@ -86,10 +110,10 @@ function Button({
                 value: newValue,
                 normalizedValue: normalized,
                 midiValue: midi,
-                parameter: paramConfig,
+                parameter: derivedParameter,
             });
         },
-        [onChange, converter, paramConfig]
+        [onChange, converter, derivedParameter]
     );
 
     // Track press state for momentary buttons (needed for global mouseup handling)
@@ -100,7 +124,7 @@ function Button({
     const handleInternalMouseDown = useCallback(
         (_e: React.MouseEvent) => {
             if (onChange) {
-                if (paramConfig.mode === "toggle") {
+                if (derivedParameter.mode === "toggle") {
                     // Toggle mode: flip the value on each press
                     fireChange(!value);
                 } else {
@@ -110,19 +134,19 @@ function Button({
                 }
             }
         },
-        [onChange, paramConfig.mode, value, fireChange]
+        [onChange, derivedParameter.mode, value, fireChange]
     );
 
     const handleInternalMouseUp = useCallback(
         (_e: React.MouseEvent) => {
             // Only handle release for momentary buttons that are currently pressed
             // This prevents false releases if the button wasn't actually pressed
-            if (onChange && paramConfig.mode === "momentary" && isPressedRef.current) {
+            if (onChange && derivedParameter.mode === "momentary" && isPressedRef.current) {
                 isPressedRef.current = false;
                 fireChange(false);
             }
         },
-        [onChange, paramConfig.mode, fireChange]
+        [onChange, derivedParameter.mode, fireChange]
     );
 
     const handleMouseDown = useCallback(
@@ -158,12 +182,12 @@ function Button({
     // Attach global mouseup listener for momentary buttons
     // This is necessary because users may drag the mouse outside the button before releasing
     useEffect(() => {
-        if (paramConfig.mode === "momentary" && onChange) {
+        if (derivedParameter.mode === "momentary" && onChange) {
             window.addEventListener("mouseup", handleGlobalMouseUp);
             return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
         }
         return undefined;
-    }, [paramConfig.mode, onChange, handleGlobalMouseUp]);
+    }, [derivedParameter.mode, onChange, handleGlobalMouseUp]);
 
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "button");
 
@@ -175,7 +199,7 @@ function Button({
         return onChange || onClick ? CLASSNAMES.highlight : "";
     }, [onChange, onClick]);
 
-    const effectiveLabel = label ?? (parameter ? paramConfig.name : undefined);
+    const effectiveLabel = label ?? (parameter ? derivedParameter.name : undefined);
 
     const isInteractive = !!(onChange || onClick);
 
