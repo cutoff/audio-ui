@@ -40,6 +40,19 @@ const controls: Page[] = [
     // More components can be added here in the future
 ];
 
+// List of device pages
+const devices: Page[] = [
+    { name: "Keys", path: "/devices/keys" },
+    // More device pages can be added here in the future
+];
+
+// List of generic component pages
+const generic: Page[] = [
+    { name: "FilmStrip Continuous", path: "/generic/filmstrip-continuous" },
+    { name: "FilmStrip Discrete", path: "/generic/filmstrip-discrete" },
+    { name: "FilmStrip Boolean", path: "/generic/filmstrip-boolean" },
+];
+
 // List of primitive components
 const primitives: Page[] = [
     { name: "ValueRing", path: "/primitives/ring" },
@@ -49,10 +62,11 @@ const primitives: Page[] = [
     { name: "LabelRing", path: "/primitives/label-ring" },
 ];
 
-// List of device pages
-const devices: Page[] = [
-    { name: "Keys", path: "/devices/keys" },
-    // More device pages can be added here in the future
+// List of layout pages
+const layoutPages: Page[] = [
+    { name: "Size System", path: "/layout/sizing" },
+    { name: "Adaptive Box", path: "/layout/adaptive-box" },
+    { name: "Grid Layout", path: "/layout/grid-layout" },
 ];
 
 // List of example pages
@@ -62,13 +76,6 @@ const examples: Page[] = [
     { name: "Drag Interaction", path: "/examples/drag-interaction" },
     { name: "Stress Test", path: "/examples/stress-test" },
     // More example pages can be added here in the future
-];
-
-// List of layout pages
-const layoutPages: Page[] = [
-    { name: "Size System", path: "/layout/sizing" },
-    { name: "Adaptive Box", path: "/layout/adaptive-box" },
-    { name: "Grid Layout", path: "/layout/grid-layout" },
 ];
 
 // Theme color options
@@ -184,6 +191,23 @@ export default function SideBar() {
                     <h2 className="text-xl font-medium mb-4 text-foreground">Devices</h2>
                     <nav className="space-y-2 mb-6">
                         {devices.map((page) => (
+                            <Link
+                                key={page.name}
+                                href={page.path}
+                                className={`block px-3 py-2 rounded-md transition-colors ${
+                                    pathname === page.path
+                                        ? "bg-accent text-accent-foreground border-l-4 border-primary"
+                                        : "hover:bg-accent text-muted-foreground hover:text-accent-foreground"
+                                }`}
+                            >
+                                {page.name}
+                            </Link>
+                        ))}
+                    </nav>
+
+                    <h2 className="text-xl font-medium mb-4 text-foreground">Generic</h2>
+                    <nav className="space-y-2 mb-6">
+                        {generic.map((page) => (
                             <Link
                                 key={page.name}
                                 href={page.path}

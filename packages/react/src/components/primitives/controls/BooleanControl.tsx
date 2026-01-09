@@ -49,16 +49,35 @@ export type BooleanControlComponentProps<P extends object = Record<string, unkno
  * 1. Strict Mode (Parameter only): Model provided via parameter prop.
  * 2. Ad-Hoc Mode (Props only): Model created from individual props (label, latch, etc.).
  *
+ * **Interaction Modes:**
+ * - **Editable Control**: When `onChange` is provided, the control is editable and responds to
+ *   all interaction methods (mouse, touch, keyboard) to change the value. The full interaction
+ *   system handles complex behaviors like drag-in/drag-out for momentary buttons.
+ * - **Clickable View**: When only `onClick` is provided (no `onChange`), the control is a
+ *   clickable view that triggers the onClick handler but does not change its value. Touch events
+ *   are handled to ensure onClick works on touch devices.
+ * - **Both**: When both `onChange` and `onClick` are provided, the control is editable and
+ *   also triggers onClick for mouse clicks (onChange handles touch events for value changes).
+ *
  * @param props - Component props including parameter configuration, view component, and layout options
  * @returns Rendered boolean control component
  *
  * @example
  * ```tsx
+ * // Editable control
  * <BooleanControl
  *   value={isOn}
  *   onChange={(e) => setIsOn(e.value)}
  *   view={ButtonView}
  *   viewProps={{ color: "blue", roundness: 0.3 }}
+ * />
+ *
+ * // Clickable view (non-editable)
+ * <BooleanControl
+ *   value={false}
+ *   onClick={() => handleClick()}
+ *   view={ButtonView}
+ *   viewProps={{ color: "gray" }}
  * />
  * ```
  */
@@ -132,6 +151,41 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
         onKeyUp: undefined, // BooleanControl doesn't have onKeyUp prop, only uses hook handler
     });
 
+    // Handle onClick for touch events when onChange is not provided
+    // This ensures onClick works on touch devices even when the control is not editable
+    // When onChange is provided, the interaction system handles touch events and we don't need this
+    const handleTouchEndForClick = useCallback(
+        (e: React.TouchEvent<SVGSVGElement>) => {
+            if (!onChange && onClick) {
+                // Prevent default to avoid mouse event emulation
+                e.preventDefault();
+                // Create a synthetic mouse event for onClick
+                const touch = e.changedTouches[0];
+                if (touch) {
+                    const syntheticEvent = {
+                        ...e,
+                        clientX: touch.clientX,
+                        clientY: touch.clientY,
+                        currentTarget: e.currentTarget,
+                        type: "click",
+                    } as unknown as React.MouseEvent<SVGSVGElement>;
+                    onClick(syntheticEvent);
+                }
+            }
+        },
+        [onChange, onClick]
+    );
+
+    const handleTouchStartForClick = useCallback(
+        (e: React.TouchEvent<SVGSVGElement>) => {
+            if (!onChange && onClick) {
+                // Prevent default to avoid mouse event emulation
+                e.preventDefault();
+            }
+        },
+        [onChange, onClick]
+    );
+
     const effectiveLabel = label ?? derivedParameter.name;
 
     const componentClassNames = useMemo(() => {
@@ -183,22 +237,26 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
                 className={svgClassNames}
                 style={svgStyle}
                 onClick={onClick}
-                onMouseDown={handleMouseDownWithRef}
-                onMouseUp={handleMouseUp}
+                onMouseDown={onChange ? handleMouseDownWithRef : undefined}
+                onMouseUp={onChange ? handleMouseUp : undefined}
                 onMouseEnter={(e) => {
-                    handleMouseEnter(e);
+                    if (onChange) {
+                        handleMouseEnter(e);
+                    }
                     onMouseEnter?.(e);
                 }}
                 onMouseLeave={(e) => {
-                    handleMouseLeave(e);
+                    if (onChange) {
+                        handleMouseLeave(e);
+                    }
                     onMouseLeave?.(e);
                 }}
-                onTouchStart={handleTouchStartWithRef}
-                onTouchEnd={handleTouchEnd}
-                onTouchMove={handleTouchMove}
-                onKeyDown={handleKeyDown}
-                onKeyUp={handleKeyUp}
-                tabIndex={0}
+                onTouchStart={onChange ? handleTouchStartWithRef : onClick ? handleTouchStartForClick : undefined}
+                onTouchEnd={onChange ? handleTouchEnd : onClick ? handleTouchEndForClick : undefined}
+                onTouchMove={onChange ? handleTouchMove : undefined}
+                onKeyDown={onChange ? handleKeyDown : undefined}
+                onKeyUp={onChange ? handleKeyUp : undefined}
+                tabIndex={onChange || onClick ? 0 : undefined}
                 role="button"
                 aria-pressed={value}
                 aria-label={effectiveLabel}

@@ -100,9 +100,9 @@ export default function Page() {
             size="large"
             latch={false}
             // Use undefined color and roundness to inherit from theme
-            onChange={() => handleExampleClick(0)}
+            onClick={() => handleExampleClick(0)}
         />,
-        <Button key="1" value={false} label="Latch" size="large" latch={true} onChange={() => handleExampleClick(1)} />,
+        <Button key="1" value={false} label="Latch" size="large" latch={true} onClick={() => handleExampleClick(1)} />,
     ];
 
     return (

@@ -27,6 +27,12 @@ export type FilmstripImageProps = {
     orientation?: "vertical" | "horizontal";
     /** Optional frame rotation in degrees (default: 0) */
     frameRotation?: number;
+    /**
+     * If true, inverts the normalized value (0.0 -> 1.0 and 1.0 -> 0.0).
+     * Useful for filmstrips where frame 0 represents "on" and frame 1 represents "off".
+     * @default false
+     */
+    invertValue?: boolean;
     /** Additional CSS class name */
     className?: string;
     /** Inline styles */
@@ -52,6 +58,7 @@ export type FilmstripImageProps = {
  * @param {string} props.imageHref - URL to the sprite sheet/filmstrip image
  * @param {"vertical" | "horizontal"} [props.orientation="vertical"] - Orientation of the strip
  * @param {number} [props.frameRotation=0] - Optional frame rotation in degrees
+ * @param {boolean} [props.invertValue=false] - If true, inverts the normalized value (0.0 -> 1.0 and 1.0 -> 0.0)
  * @param {string} [props.className] - Additional CSS class name
  * @param {CSSProperties} [props.style] - Inline styles
  * @returns {JSX.Element} SVG group element containing the filmstrip frame
@@ -66,11 +73,14 @@ function FilmstripImage({
     imageHref,
     orientation = "vertical",
     frameRotation = 0,
+    invertValue = false,
     className,
     style,
 }: FilmstripImageProps) {
+    // Invert value if requested
+    const effectiveValue = invertValue ? 1 - normalizedValue : normalizedValue;
     // Clamp value between 0 and 1
-    const clampedValue = Math.max(0, Math.min(1, normalizedValue));
+    const clampedValue = Math.max(0, Math.min(1, effectiveValue));
 
     // Calculate frame index (0 to frameCount - 1)
     const frameIndex = Math.round(clampedValue * (frameCount - 1));

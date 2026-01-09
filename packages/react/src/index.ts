@@ -13,6 +13,9 @@ export { default as Slider } from "./components/defaults/controls/Slider";
 export { default as ContinuousControl } from "./components/primitives/controls/ContinuousControl";
 export { default as DiscreteControl } from "./components/primitives/controls/DiscreteControl";
 export { default as BooleanControl } from "./components/primitives/controls/BooleanControl";
+export { default as FilmStripContinuousControl } from "./components/generic/controls/FilmStripContinuousControl";
+export { default as FilmStripDiscreteControl } from "./components/generic/controls/FilmStripDiscreteControl";
+export { default as FilmStripBooleanControl } from "./components/generic/controls/FilmStripBooleanControl";
 
 // Export primitives
 export { default as ValueRing } from "./components/primitives/svg/ValueRing";
@@ -62,6 +65,12 @@ export type { ButtonProps } from "./components/defaults/controls/Button";
 export type { ContinuousControlComponentProps } from "./components/primitives/controls/ContinuousControl";
 export type { DiscreteControlComponentProps } from "./components/primitives/controls/DiscreteControl";
 export type { BooleanControlComponentProps } from "./components/primitives/controls/BooleanControl";
+export type {
+    FilmStripContinuousControlProps,
+    FilmstripProps,
+} from "./components/generic/controls/FilmStripContinuousControl";
+export type { FilmStripDiscreteControlProps } from "./components/generic/controls/FilmStripDiscreteControl";
+export type { FilmStripBooleanControlProps } from "./components/generic/controls/FilmStripBooleanControl";
 export type { KeysProps } from "./components/defaults/devices/Keys";
 
 // Export SVG component types

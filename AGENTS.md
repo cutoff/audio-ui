@@ -164,6 +164,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - **Core Architecture**: Interaction logic is centralized in `packages/core/src/controller/ContinuousInteractionController.ts` (pure TS class).
 - **React Adapter**: `useContinuousInteraction` hook in `packages/react` wraps `ContinuousInteractionController` to bind it to React events.
 - **Generic Control Architecture**: `Knob` and `Slider` are implemented using `ContinuousControl`, a generic component that decouples behavior (AudioParameter, interaction logic) from visualization (SVG rendering). This architecture allows easy customization by providing custom view components that implement the `ControlComponentView` contract.
+- **Filmstrip-Based Controls**: The library provides filmstrip-based controls (`FilmStripContinuousControl`, `FilmStripDiscreteControl`, `FilmStripBooleanControl`) that support the widely-used industry standard for control representation: bitmap sprite sheets (filmstrips). While bitmap-based visualization is more constrained than SVG, these components provide full access to all library features: complete layout system (AdaptiveBox), full parameter model (AudioParameter), complete interaction system (drag/wheel/keyboard), and all accessibility features. Filmstrip controls do not support themable props (color, roundness, thickness) as visuals are determined by the image content.
 - **Unified Interaction Hooks**:
   - Continuous controls (Knob, Slider) use `useContinuousInteraction` hook.
   - Boolean controls (Button) use `useBooleanInteraction` hook.

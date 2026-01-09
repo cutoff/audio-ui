@@ -18,15 +18,15 @@
 
 ## Quick Setup Summary (Load This First)
 
-| Category            | Details                                                                                                                                                                                                                                            |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Scripts             | `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm link`, `pnpm lint:css`                                                                                                                                                                          |
-| Env Vars            | None                                                                                                                                                                                                                                               |
-| Component Structure | Props with JSDoc; default params; function ComponentName() {}; arrow functions for handlers; SVG for graphics                                                                                                                                      |
-| Exports             | All from src/index.ts: Components (Button, Knob, Slider, Keybed, AdaptiveBox, ContinuousControl, etc.), Providers (AudioUiProvider, hooks), Types (including ControlComponent, ControlComponentView), Utils (formatters, note utils), Theme colors |
-| Testing             | Vitest; .test.tsx alongside; mock deps; React 18 compat                                                                                                                                                                                            |
-| Build               | Vite; generates dist/index.js, index.d.ts, style.css; ES modules                                                                                                                                                                                   |
-| Path Aliases        | Use `@/primitives/*`, `@/hooks/*`, `@/defaults/*`, `@/utils/*`, `@/types` instead of relative paths (configured in tsconfig.json and vite.config.ts)                                                                                               |
+| Category            | Details                                                                                                                                                                                                                                                                                                                           |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scripts             | `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm link`, `pnpm lint:css`                                                                                                                                                                                                                                                         |
+| Env Vars            | None                                                                                                                                                                                                                                                                                                                              |
+| Component Structure | Props with JSDoc; default params; function ComponentName() {}; arrow functions for handlers; SVG for graphics                                                                                                                                                                                                                     |
+| Exports             | All from src/index.ts: Components (Button, Knob, Slider, Keybed, AdaptiveBox, ContinuousControl, FilmStripContinuousControl, FilmStripDiscreteControl, FilmStripBooleanControl, etc.), Providers (AudioUiProvider, hooks), Types (including ControlComponent, ControlComponentView), Utils (formatters, note utils), Theme colors |
+| Testing             | Vitest; .test.tsx alongside; mock deps; React 18 compat                                                                                                                                                                                                                                                                           |
+| Build               | Vite; generates dist/index.js, index.d.ts, style.css; ES modules                                                                                                                                                                                                                                                                  |
+| Path Aliases        | Use `@/primitives/*`, `@/hooks/*`, `@/defaults/*`, `@/utils/*`, `@/types` instead of relative paths (configured in tsconfig.json and vite.config.ts)                                                                                                                                                                              |
 
 ## Key File Structure
 
@@ -35,11 +35,13 @@
     - `controls/`: Interactive controls (Button, Knob, Slider, CycleButton) and their SVG views (ButtonView, KnobView, SliderView). Knob and Slider use ContinuousControl internally.
     - `devices/`: Device components (Keybed)
     - `AudioUiProvider.tsx`: Default theme system provider
+  - `generic/`: Generic components that support industry-standard control representations
+    - `controls/`: Filmstrip-based controls (FilmStripContinuousControl, FilmStripDiscreteControl, FilmStripBooleanControl) that use bitmap sprite sheets (filmstrips) for visualization
   - `primitives/`: Base components for building final components, excluding theme-specific
-    - `controls/`: Control primitives (ContinuousControl, Option)
-    - `svg/`: SVG view primitives (ValueRing, RotaryImage, RadialImage, RadialText, etc.)
+    - `controls/`: Control primitives (ContinuousControl, DiscreteControl, BooleanControl, Option)
+    - `svg/`: SVG view primitives (ValueRing, RotaryImage, RadialImage, RadialText, FilmstripImage, etc.)
 
-## Component Architecture: Built-in vs Customizable
+## Component Architecture: Built-in vs Generic vs Customizable
 
 **Built-in Controls** (`src/components/defaults/controls/`):
 
@@ -48,12 +50,28 @@
 - Opinionated, production-ready with full theming integration
 - Props: `KnobProps`, `SliderProps`, `ButtonProps` extend primitives with `ThemableProps`
 - SVG view components (ButtonView, KnobView, SliderView) are co-located with the controls that use them
+- Use SVG for graphics, allowing dynamic theming and scaling
+
+**Generic Controls** (`src/components/generic/controls/`):
+
+- Filmstrip-based controls (FilmStripContinuousControl, FilmStripDiscreteControl, FilmStripBooleanControl)
+- Support the widely-used industry standard for control representation: bitmap sprite sheets (filmstrips)
+- While based on bitmap images (more constrained than SVG), these components provide full access to:
+  - Complete layout system (AdaptiveBox with all sizing, alignment, and label modes)
+  - Full parameter model (AudioParameter with min/max, scaling, units, formatting)
+  - Complete interaction system (drag, wheel, keyboard with all sensitivity and mode options)
+  - All accessibility features (ARIA attributes, focus management, keyboard navigation)
+- Use bitmap sprite sheets where each frame represents a control state
+- No themable props (color, roundness, thickness) - visuals are determined by the image content
+- Filmstrip-specific props: `frameWidth`, `frameHeight`, `frameCount`, `imageHref`, `orientation`, `frameRotation`
+- Location: `packages/react/src/components/generic/controls/`
+- View component: `FilmstripView` (uses `FilmstripImage` primitive)
 
 **Customizable Primitives** (`src/components/primitives/`):
 
 - Lower-level components organized by purpose:
-  - `controls/`: Control primitives (ContinuousControl, Option)
-  - `svg/`: SVG view primitives (ValueRing, RotaryImage, RadialImage, RadialText, etc.)
+  - `controls/`: Control primitives (ContinuousControl, DiscreteControl, BooleanControl, Option)
+  - `svg/`: SVG view primitives (ValueRing, RotaryImage, RadialImage, RadialText, FilmstripImage, etc.)
 - No built-in theming - users add their own theming props as needed
 - For building custom controls without theming constraints
 - Props: `ContinuousControlProps`, `BooleanControlProps` (no `ThemableProps` included)
@@ -144,23 +162,57 @@ Technical documentation is located in `docs/`:
 
 ## Component-Specific Notes
 
-### Generic Control Architecture (ContinuousControl)
+### Generic Control Architecture (ContinuousControl, DiscreteControl, BooleanControl)
 
-The library provides a generic `ContinuousControl` component that decouples behavior from visualization. `Knob` and `Slider` use `ContinuousControl` internally, eliminating code duplication.
+The library provides generic control components that decouple behavior from visualization. `Knob` and `Slider` use `ContinuousControl` internally, eliminating code duplication.
 
-- **Purpose**: Allows users to use any SVG component as a continuous control (knob, fader, etc.) without reimplementing interaction logic. Also used internally by `Knob` and `Slider` for shared behavior.
-- **Location**: `packages/react/src/components/primitives/controls/ContinuousControl.tsx`
+- **Purpose**: Allows users to use any visualization component (SVG or bitmap-based) as a control without reimplementing interaction logic. Also used internally by built-in controls for shared behavior.
+- **Location**: `packages/react/src/components/primitives/controls/`
+  - `ContinuousControl.tsx`: For continuous value controls
+  - `DiscreteControl.tsx`: For discrete/enum value controls
+  - `BooleanControl.tsx`: For boolean (on/off) controls
 - **Contract**: The view component must implement `ControlComponentView` interface, defining:
   - `viewBox`: Dimensions for the SVG (required)
   - `labelHeightUnits`: Label height in viewBox units (optional, defaults to 20)
   - `interaction`: Preferred mode ("drag" | "wheel" | "both") and direction ("vertical" | "horizontal" | "circular")
 - **Props**: The view receives `ControlComponentViewProps` (normalizedValue, children, className, style) plus any custom props (passed through generic type parameter `P`).
 - **Reference Implementations**:
-  - `KnobView` (located in `defaults/controls/`) - implements contract with `viewBox: {width: 100, height: 100}`, `labelHeightUnits: 20`, `interaction: {mode: "both", direction: "vertical"}`
-  - `VerticalSliderView` / `HorizontalSliderView` (located in `defaults/controls/`) - specialized slider views with orientation-specific viewBox and interaction direction
+  - `KnobView` (located in `defaults/controls/`) - SVG-based, implements contract with `viewBox: {width: 100, height: 100}`, `labelHeightUnits: 20`, `interaction: {mode: "both", direction: "vertical"}`
+  - `VerticalSliderView` / `HorizontalSliderView` (located in `defaults/controls/`) - SVG-based, specialized slider views with orientation-specific viewBox and interaction direction
+  - `FilmstripView` (located in `generic/controls/`) - Bitmap-based, uses `FilmstripImage` primitive to display frames from sprite sheets
 - **Internal Usage**: `Knob` wraps `ContinuousControl` with `view={KnobView}`, `Slider` wraps with `view={VerticalSliderView}` or `view={HorizontalSliderView}` based on orientation
-- **Performance**: Double memoization (both wrapper and ContinuousControl are memoized) provides optimal re-render protection
+- **Performance**: Double memoization (both wrapper and control primitive are memoized) provides optimal re-render protection
 - **Type Exports**: `ControlComponent`, `ControlComponentView`, and `ControlComponentViewProps` are exported from `src/index.ts` for users creating custom view components
+
+### Filmstrip-Based Controls (Generic Components)
+
+The library provides filmstrip-based controls that support the widely-used industry standard for control representation: bitmap sprite sheets (filmstrips). These components are located in `src/components/generic/controls/`.
+
+**Industry Standard Support**:
+
+- Filmstrips (bitmap sprite sheets) are a widely-used standard in the audio/MIDI industry for representing control states
+- Each frame in the sprite sheet represents a different control state (value, position, on/off, etc.)
+- This approach is commonly used in professional audio software and hardware interfaces
+
+**Trade-offs and Benefits**:
+
+- **Constraint**: Bitmap-based visualization is more constrained than SVG (no dynamic theming, fixed visual appearance)
+- **Benefit**: Despite using bitmaps, these components provide **full access to all library features**:
+  - Complete layout system: AdaptiveBox with all sizing modes, label positioning, alignment options
+  - Full parameter model: AudioParameter with min/max ranges, scaling functions (linear/log/exp), units, custom formatting
+  - Complete interaction system: Drag, wheel, and keyboard interactions with configurable sensitivity and modes
+  - Full accessibility: ARIA attributes, focus management, keyboard navigation
+  - All AdaptiveBox features: Container queries, responsive sizing, label modes (visible/hidden/none)
+
+**Components**:
+
+- `FilmStripContinuousControl`: Maps continuous values (0-1) to frame indices (0 to frameCount-1)
+- `FilmStripDiscreteControl`: Maps discrete values to frame indices based on option count
+- `FilmStripBooleanControl`: Maps boolean values to frames (typically 2 frames: false/off, true/on)
+
+**Props**: Filmstrip-specific props (`frameWidth`, `frameHeight`, `frameCount`, `imageHref`, `orientation`, `frameRotation`) are defined in `FilmstripProps` type. These components do NOT support themable props (color, roundness, thickness) as visuals are entirely determined by the image content.
+
+**View Component**: `FilmstripView` (located in `generic/controls/`) uses the `FilmstripImage` primitive to render frames from sprite sheets. The view component is created dynamically via `createFilmstripView()` factory function to support dynamic viewBox dimensions based on frame size.
 
 ### Unified Interaction System (useInteractiveControl)
 
