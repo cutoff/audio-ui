@@ -87,17 +87,17 @@ function FilmstripWrapper({
             <svg width="100%" height="100%" viewBox="0 0 100 100" style={{ display: "block" }}>
                 {/*
                   FilmstripImage primitive
-                  Using native rotation support
+                  Using native frameRotation support
                 */}
                 <FilmstripImage
                     cx={50}
                     cy={50}
-                    width={width}
-                    height={height}
+                    frameWidth={width}
+                    frameHeight={height}
                     frameCount={frameCount}
                     normalizedValue={normalizedValue}
                     imageHref={imageHref || SAMPLE_FILMSTRIP}
-                    rotation={rotation}
+                    frameRotation={rotation}
                 />
             </svg>
         </div>
@@ -116,12 +116,12 @@ function generateCodeSnippet(
     <FilmstripImage
         cx={50}
         cy={50}
-        width={${width}}
-        height={${height}}
+        frameWidth={${width}}
+        frameHeight={${height}}
         frameCount={${frameCount}}
         normalizedValue={${normalizedValue}}
         imageHref="${imageHref || "data:..."}"
-        rotation={${rotation}}
+        frameRotation={${rotation}}
     />
 </svg>`;
 }
@@ -266,10 +266,10 @@ export default function FilmstripDemoPage() {
     const componentProps = useMemo(
         () => ({
             normalizedValue,
-            rotation,
+            frameRotation: rotation,
             imageHref,
-            width: frameWidth,
-            height: frameHeight,
+            frameWidth,
+            frameHeight,
             frameCount,
         }),
         [normalizedValue, rotation, imageHref, frameWidth, frameHeight, frameCount]

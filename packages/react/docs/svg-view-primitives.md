@@ -218,13 +218,13 @@ Renders a frame from a sprite sheet (filmstrip) based on the normalized value. T
 type FilmstripImageProps = {
   cx: number; // X coordinate of center
   cy: number; // Y coordinate of center
-  width: number; // Width of a SINGLE frame
-  height: number; // Height of a SINGLE frame
+  frameWidth: number; // Width of a SINGLE frame
+  frameHeight: number; // Height of a SINGLE frame
   frameCount: number; // Total number of frames in the strip
   normalizedValue: number; // Value between 0 and 1
   imageHref: string; // URL to the sprite sheet/filmstrip image
   orientation?: "vertical" | "horizontal"; // Strip direction (default: "vertical")
-  rotation?: number; // Rotation in degrees (default: 0)
+  frameRotation?: number; // Frame rotation in degrees (default: 0)
   className?: string;
   style?: CSSProperties;
 };
@@ -236,7 +236,7 @@ type FilmstripImageProps = {
 // Standard vertical strip (KnobMan style)
 <FilmstripImage
   cx={50} cy={50}
-  width={64} height={64}
+  frameWidth={64} frameHeight={64}
   frameCount={100}
   normalizedValue={value}
   imageHref="/knobs/vintage-black.png"
@@ -245,7 +245,7 @@ type FilmstripImageProps = {
 // Horizontal strip
 <FilmstripImage
   cx={50} cy={50}
-  width={100} height={100}
+  frameWidth={100} frameHeight={100}
   frameCount={50}
   normalizedValue={value}
   orientation="horizontal"
@@ -255,11 +255,11 @@ type FilmstripImageProps = {
 // Rotated filmstrip
 <FilmstripImage
   cx={50} cy={50}
-  width={64} height={64}
+  frameWidth={64} frameHeight={64}
   frameCount={100}
   normalizedValue={value}
   imageHref="/knobs/vintage-black.png"
-  rotation={45} // Rotate entire strip by 45 degrees
+  frameRotation={45} // Rotate entire strip by 45 degrees
 />
 ```
 
@@ -268,7 +268,7 @@ type FilmstripImageProps = {
 - **Performance**: Uses a fixed `viewBox` with a CSS-transformed nested `<image>`. This uses `transform: translate()` which is hardware accelerated (compositor-only), avoiding expensive layout repaints associated with changing `viewBox` attributes.
 - **Hardware Acceleration**: Explicitly hinted with `will-change: transform` to ensure smooth scrubbing even on lower-end devices.
 - **Frame Calculation**: `frameIndex = Math.round(normalizedValue * (frameCount - 1))`
-- **Rotation**: Supported via the `rotation` prop, which rotates the entire filmstrip container using an SVG transform. This is useful for aligning filmstrips or creating rotating body effects.
+- **Rotation**: Supported via the `frameRotation` prop, which rotates the entire filmstrip container using an SVG transform. This is useful for aligning filmstrips or creating rotating body effects.
 - **Data Source**: Compatible with standard filmstrips exported from WebKnobMan and other VST development tools.
 
 ## RevealingPath

@@ -14,9 +14,9 @@ export type FilmstripImageProps = {
     /** Y coordinate of the center point */
     cy: number;
     /** Width of a SINGLE frame */
-    width: number;
+    frameWidth: number;
     /** Height of a SINGLE frame */
-    height: number;
+    frameHeight: number;
     /** Total number of frames in the strip */
     frameCount: number;
     /** Normalized value between 0 and 1 */
@@ -25,8 +25,8 @@ export type FilmstripImageProps = {
     imageHref: string;
     /** Orientation of the strip (default: "vertical") */
     orientation?: "vertical" | "horizontal";
-    /** Optional rotation in degrees (default: 0) */
-    rotation?: number;
+    /** Optional frame rotation in degrees (default: 0) */
+    frameRotation?: number;
     /** Additional CSS class name */
     className?: string;
     /** Inline styles */
@@ -41,17 +41,31 @@ export type FilmstripImageProps = {
  * It uses a nested SVG with a shifted viewBox to "scrub" through the filmstrip, which is hardware accelerated.
  *
  * The filmstrip image should contain all frames stacked vertically (default) or horizontally.
+ *
+ * @param {FilmstripImageProps} props - Component props
+ * @param {number} props.cx - X coordinate of the center point
+ * @param {number} props.cy - Y coordinate of the center point
+ * @param {number} props.frameWidth - Width of a single frame in the filmstrip
+ * @param {number} props.frameHeight - Height of a single frame in the filmstrip
+ * @param {number} props.frameCount - Total number of frames in the strip
+ * @param {number} props.normalizedValue - Normalized value between 0 and 1 (determines which frame to display)
+ * @param {string} props.imageHref - URL to the sprite sheet/filmstrip image
+ * @param {"vertical" | "horizontal"} [props.orientation="vertical"] - Orientation of the strip
+ * @param {number} [props.frameRotation=0] - Optional frame rotation in degrees
+ * @param {string} [props.className] - Additional CSS class name
+ * @param {CSSProperties} [props.style] - Inline styles
+ * @returns {JSX.Element} SVG group element containing the filmstrip frame
  */
 function FilmstripImage({
     cx,
     cy,
-    width,
-    height,
+    frameWidth,
+    frameHeight,
     frameCount,
     normalizedValue,
     imageHref,
     orientation = "vertical",
-    rotation = 0,
+    frameRotation = 0,
     className,
     style,
 }: FilmstripImageProps) {
@@ -62,21 +76,21 @@ function FilmstripImage({
     const frameIndex = Math.round(clampedValue * (frameCount - 1));
 
     // Calculate total dimensions of the strip
-    const totalWidth = orientation === "horizontal" ? width * frameCount : width;
-    const totalHeight = orientation === "vertical" ? height * frameCount : height;
+    const totalWidth = orientation === "horizontal" ? frameWidth * frameCount : frameWidth;
+    const totalHeight = orientation === "vertical" ? frameHeight * frameCount : frameHeight;
 
     // Calculate viewBox coordinates for the current frame
-    const viewBoxX = orientation === "horizontal" ? frameIndex * width : 0;
-    const viewBoxY = orientation === "vertical" ? frameIndex * height : 0;
+    const viewBoxX = orientation === "horizontal" ? frameIndex * frameWidth : 0;
+    const viewBoxY = orientation === "vertical" ? frameIndex * frameHeight : 0;
 
     return (
-        <g className={className} style={style} transform={`rotate(${rotation}, ${cx}, ${cy})`}>
+        <g className={className} style={style} transform={`rotate(${frameRotation}, ${cx}, ${cy})`}>
             <svg
-                x={cx - width / 2}
-                y={cy - height / 2}
-                width={width}
-                height={height}
-                viewBox={`0 0 ${width} ${height}`}
+                x={cx - frameWidth / 2}
+                y={cy - frameHeight / 2}
+                width={frameWidth}
+                height={frameHeight}
+                viewBox={`0 0 ${frameWidth} ${frameHeight}`}
                 preserveAspectRatio="none"
                 style={{ overflow: "hidden" }}
             >
