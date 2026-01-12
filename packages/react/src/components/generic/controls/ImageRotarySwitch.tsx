@@ -18,10 +18,7 @@ import { RotaryImageProps } from "./ImageKnob";
 /**
  * Props for the ImageRotarySwitch component
  */
-export type ImageRotarySwitchProps = DiscreteControlProps &
-    AdaptiveSizeProps &
-    AdaptiveBoxProps &
-    RotaryImageProps;
+export type ImageRotarySwitchProps = DiscreteControlProps & AdaptiveSizeProps & AdaptiveBoxProps & RotaryImageProps;
 
 /**
  * A discrete control that rotates an image based on discrete option values.
