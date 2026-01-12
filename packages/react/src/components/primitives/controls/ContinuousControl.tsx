@@ -67,6 +67,7 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         labelMode,
         labelPosition,
         labelAlign,
+        labelOverflow,
         className,
         style,
         onChange,
@@ -190,6 +191,7 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         <AdaptiveBox
             displayMode={displayMode ?? "scaleToFit"}
             labelMode={labelMode}
+            labelOverflow={labelOverflow}
             className={componentClassNames}
             style={style}
             labelHeightUnits={View.labelHeightUnits ?? 20}

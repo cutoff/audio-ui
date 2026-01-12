@@ -121,6 +121,7 @@ function Knob({
     labelMode,
     labelPosition,
     labelAlign,
+    labelOverflow,
     color,
     roundness,
     variant = "abstract",
@@ -200,6 +201,7 @@ function Knob({
             labelMode={labelMode}
             labelPosition={labelPosition}
             labelAlign={labelAlign}
+            labelOverflow={labelOverflow}
             className={classNames(sizeClassName, className)}
             style={{ ...adaptiveSizeStyle, ...style }}
             onChange={onChange}

@@ -71,6 +71,7 @@ function Button({
     labelMode,
     labelPosition,
     labelAlign,
+    labelOverflow,
     parameter,
     paramId,
     color,
@@ -100,6 +101,7 @@ function Button({
             labelMode={labelMode}
             labelPosition={labelPosition}
             labelAlign={labelAlign}
+            labelOverflow={labelOverflow}
             className={classNames(sizeClassName, className)}
             style={{ ...adaptiveSizeStyle, ...style }}
             parameter={parameter}

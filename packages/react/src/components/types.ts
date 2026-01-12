@@ -142,6 +142,16 @@ export type AdaptiveBoxProps = {
      * @default "center"
      */
     labelAlign?: "start" | "center" | "end";
+
+    /**
+     * How to handle label text overflow.
+     * - "ellipsis": Truncate with ellipsis when text is too long
+     * - "abbreviate": Abbreviate text to 3 characters max (e.g., "Volume" -> "Vol")
+     * - "auto": Automatically abbreviate when viewBoxWidth < viewBoxHeight, otherwise ellipsis
+     *
+     * @default "auto"
+     */
+    labelOverflow?: "ellipsis" | "abbreviate" | "auto";
 };
 
 /**

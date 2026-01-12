@@ -18,6 +18,7 @@ import React, {
     useRef,
     useState,
 } from "react";
+import { abbreviateText } from "@/utils/textUtils";
 
 // Shared string unions following the demo controls and spec
 export type FlexAlign = "start" | "center" | "end";
@@ -35,6 +36,7 @@ interface BoxContextValue {
     displayMode: DisplayMode;
     labelMode: LabelMode;
     labelHeightUnits: number;
+    labelOverflow: "ellipsis" | "abbreviate" | "auto";
     debug: boolean;
 
     // ViewBox dimensions (for SVG this maps to viewBox; for Canvas/GL this will map to canvas/gl dimensions)
@@ -63,6 +65,7 @@ export interface AdaptiveBoxProps extends PropsWithChildren {
     displayMode?: DisplayMode;
     labelMode?: LabelMode;
     labelHeightUnits?: number; // in the same units as viewBox height; default 15
+    labelOverflow?: "ellipsis" | "abbreviate" | "auto";
     /**
      * ViewBox width in the same coordinate system as the content.
      * For SVG content, this maps to the SVG viewBox width.
@@ -110,6 +113,7 @@ export function AdaptiveBox({
     displayMode = "scaleToFit",
     labelMode = "visible",
     labelHeightUnits,
+    labelOverflow = "auto",
     viewBoxWidth,
     viewBoxHeight,
     minWidth,
@@ -170,6 +174,7 @@ export function AdaptiveBox({
             displayMode,
             labelMode,
             labelHeightUnits: labelHeightUnitsEffective,
+            labelOverflow,
             debug,
             viewBoxWidth,
             viewBoxHeight,
@@ -182,6 +187,7 @@ export function AdaptiveBox({
             displayMode,
             labelMode,
             labelHeightUnitsEffective,
+            labelOverflow,
             debug,
             viewBoxWidth,
             viewBoxHeight,
@@ -344,6 +350,26 @@ function Label({ className, style, position = "below", align = "center", childre
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [position, align]);
 
+    // Determine if we should abbreviate based on labelOverflow prop
+    // Must be called before early return to satisfy React hooks rules
+    const shouldAbbreviate = useMemo(() => {
+        if (ctx.labelOverflow === "abbreviate") {
+            return true;
+        }
+        if (ctx.labelOverflow === "ellipsis") {
+            return false;
+        }
+        // "auto" mode: abbreviate only when viewBox is portrait (width < height)
+        return ctx.viewBoxWidth < ctx.viewBoxHeight;
+    }, [ctx.labelOverflow, ctx.viewBoxWidth, ctx.viewBoxHeight]);
+
+    const labelContent = useMemo(() => {
+        if (shouldAbbreviate && typeof children === "string" && children.length > 5) {
+            return abbreviateText(children, 3);
+        }
+        return children;
+    }, [children, shouldAbbreviate]);
+
     if (ctx.labelMode === "none") return null;
 
     const visibility = ctx.labelMode === "hidden" ? "hidden" : "visible";
@@ -371,10 +397,10 @@ function Label({ className, style, position = "below", align = "center", childre
                     lineHeight: 1,
                     whiteSpace: "nowrap",
                     overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    textOverflow: shouldAbbreviate ? "clip" : "ellipsis",
                 }}
             >
-                {children}
+                {labelContent}
             </span>
         </div>
     );

@@ -91,6 +91,7 @@ function Slider({
     labelMode,
     labelPosition,
     labelAlign,
+    labelOverflow,
     color,
     roundness,
     thickness = 0.4,
@@ -136,6 +137,7 @@ function Slider({
             labelMode={labelMode}
             labelPosition={labelPosition}
             labelAlign={labelAlign}
+            labelOverflow={labelOverflow}
             className={mergedClassName}
             style={{ ...sizeStyle, ...style }}
             onChange={onChange}

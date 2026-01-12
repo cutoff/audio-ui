@@ -82,6 +82,7 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
         labelMode,
         labelPosition,
         labelAlign,
+        labelOverflow,
         className,
         style,
         onClick,
@@ -150,6 +151,7 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
         <AdaptiveBox
             displayMode={displayMode ?? "scaleToFit"}
             labelMode={labelMode}
+            labelOverflow={labelOverflow}
             className={componentClassNames}
             style={style}
             labelHeightUnits={View.labelHeightUnits ?? 20}

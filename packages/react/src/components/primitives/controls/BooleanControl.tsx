@@ -96,6 +96,7 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
         labelMode,
         labelPosition,
         labelAlign,
+        labelOverflow,
         className,
         style,
         onClick,
@@ -227,6 +228,7 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
         <AdaptiveBox
             displayMode={displayMode ?? "scaleToFit"}
             labelMode={labelMode}
+            labelOverflow={labelOverflow}
             className={componentClassNames}
             style={style}
             labelHeightUnits={View.labelHeightUnits ?? 20}
