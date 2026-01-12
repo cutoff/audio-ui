@@ -16,6 +16,8 @@ export { default as BooleanControl } from "./components/primitives/controls/Bool
 export { default as FilmStripContinuousControl } from "./components/generic/controls/FilmStripContinuousControl";
 export { default as FilmStripDiscreteControl } from "./components/generic/controls/FilmStripDiscreteControl";
 export { default as FilmStripBooleanControl } from "./components/generic/controls/FilmStripBooleanControl";
+export { default as ImageKnob } from "./components/generic/controls/ImageKnob";
+export { default as ImageRotarySwitch } from "./components/generic/controls/ImageRotarySwitch";
 
 // Export primitives
 export { default as ValueRing } from "./components/primitives/svg/ValueRing";
@@ -79,6 +81,8 @@ export type {
 } from "./components/generic/controls/FilmStripContinuousControl";
 export type { FilmStripDiscreteControlProps } from "./components/generic/controls/FilmStripDiscreteControl";
 export type { FilmStripBooleanControlProps } from "./components/generic/controls/FilmStripBooleanControl";
+export type { ImageKnobProps, RotaryImageProps as RotaryImageControlProps } from "./components/generic/controls/ImageKnob";
+export type { ImageRotarySwitchProps } from "./components/generic/controls/ImageRotarySwitch";
 export type { KeysProps } from "./components/defaults/devices/Keys";
 
 // Export SVG component types

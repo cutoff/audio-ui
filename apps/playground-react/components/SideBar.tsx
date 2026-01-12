@@ -48,6 +48,8 @@ const devices: Page[] = [
 
 // List of generic component pages
 const generic: Page[] = [
+    { name: "Image Knob", path: "/generic/image-knob" },
+    { name: "Image Rotary Switch", path: "/generic/image-rotary-switch" },
     { name: "FilmStrip Continuous", path: "/generic/filmstrip-continuous" },
     { name: "FilmStrip Discrete", path: "/generic/filmstrip-discrete" },
     { name: "FilmStrip Boolean", path: "/generic/filmstrip-boolean" },
