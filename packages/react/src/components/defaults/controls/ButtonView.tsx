@@ -96,7 +96,7 @@ const ButtonViewMemo = React.memo(ButtonView);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (ButtonViewMemo as any).viewBox = VIEW_BOX;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(ButtonViewMemo as any).labelHeightUnits = 30;
+(ButtonViewMemo as any).labelHeightUnits = 20;
 
 export default ButtonViewMemo as unknown as ControlComponent<
     Omit<ButtonViewProps, "normalizedValue" | "className" | "style">
