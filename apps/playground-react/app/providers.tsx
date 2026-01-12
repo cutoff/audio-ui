@@ -8,7 +8,7 @@
 
 import React, { useEffect } from "react";
 import { ThemeProvider } from "next-themes";
-import { AudioUiProvider, useAudioUiTheme, DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-react";
+import { setThemeRoundness, getThemeColor, getThemeRoundness, DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-react";
 
 // Global state for audio UI theme
 export type AudioUiThemeState = {
@@ -18,12 +18,18 @@ export type AudioUiThemeState = {
     setRoundness: (roundness: number) => void;
 };
 
-// Create a default state with no-op setters
+// Create a default state with setters that use CSS variables
 export const defaultAudioUiTheme: AudioUiThemeState = {
     color: undefined,
     roundness: DEFAULT_ROUNDNESS,
-    setColor: () => {},
-    setRoundness: () => {},
+    setColor: (color: string) => {
+        if (typeof document !== "undefined") {
+            document.documentElement.style.setProperty("--audioui-primary-color", color);
+        }
+    },
+    setRoundness: (roundness: number) => {
+        setThemeRoundness(roundness);
+    },
 };
 
 // Create a global context to access this state from the sidebar
@@ -31,20 +37,28 @@ export const audioUiThemeState: { current: AudioUiThemeState } = {
     current: defaultAudioUiTheme,
 };
 
-// This component connects the AudioUiProvider's context to the global audioUiThemeState
-function ThemeConnector({ children }: { children: React.ReactNode }) {
-    // Get the actual theme context from AudioUiProvider
-    const { color, roundness, setColor, setRoundness } = useAudioUiTheme();
-
-    // Update the global reference with the actual context values and setters
+// This component initializes theme CSS variables on mount
+function ThemeInitializer({ children }: { children: React.ReactNode }) {
+    // Set initial theme values on mount
     useEffect(() => {
+        setThemeRoundness(DEFAULT_ROUNDNESS);
+
+        // Update global state with current values
         audioUiThemeState.current = {
-            color, // Can be undefined - components will use adaptive default
-            roundness: roundness ?? DEFAULT_ROUNDNESS,
-            setColor,
-            setRoundness,
+            color: getThemeColor() ?? undefined,
+            roundness: getThemeRoundness() ?? DEFAULT_ROUNDNESS,
+            setColor: (color: string) => {
+                if (typeof document !== "undefined") {
+                    document.documentElement.style.setProperty("--audioui-primary-color", color);
+                }
+                audioUiThemeState.current.color = color;
+            },
+            setRoundness: (roundness: number) => {
+                setThemeRoundness(roundness);
+                audioUiThemeState.current.roundness = roundness;
+            },
         };
-    }, [color, roundness, setColor, setRoundness]);
+    }, []);
 
     return <>{children}</>;
 }
@@ -52,9 +66,7 @@ function ThemeConnector({ children }: { children: React.ReactNode }) {
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
-            <AudioUiProvider initialRoundness={DEFAULT_ROUNDNESS}>
-                <ThemeConnector>{children}</ThemeConnector>
-            </AudioUiProvider>
+            <ThemeInitializer>{children}</ThemeInitializer>
         </ThemeProvider>
     );
 }

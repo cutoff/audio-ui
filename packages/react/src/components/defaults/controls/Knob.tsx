@@ -8,7 +8,6 @@
 
 import React from "react";
 import classNames from "classnames";
-import { useThemableProps } from "@/defaults/AudioUiProvider";
 import KnobView from "./KnobView";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
 import {
@@ -19,11 +18,11 @@ import {
     KnobVariant,
     ValueLabelMode,
 } from "@/types";
-import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { useContinuousParameterResolution } from "@/hooks/useContinuousParameterResolution";
+import { useThemableProps } from "@/hooks/useThemableProps";
 
 /**
  * Default openness for knob ring in degrees (matches ValueRing default)
@@ -146,12 +145,16 @@ function Knob({
     className,
     style,
 }: KnobProps) {
-    const clampedRoundness = roundness !== undefined ? clampNormalized(roundness) : undefined;
-    const clampedThickness = thickness !== undefined ? clampNormalized(thickness) : undefined;
-    const { resolvedColor, resolvedRoundness } = useThemableProps(
-        { color, roundness: clampedRoundness },
-        { color: undefined, roundness: DEFAULT_ROUNDNESS }
-    );
+    const {
+        style: themableStyle,
+        clampedRoundness,
+        clampedThickness,
+    } = useThemableProps({
+        color,
+        roundness,
+        thickness,
+        style,
+    });
 
     const { derivedParameter: parameterDef } = useContinuousParameterResolution({
         parameter,
@@ -203,7 +206,7 @@ function Knob({
             labelAlign={labelAlign}
             labelOverflow={labelOverflow}
             className={classNames(sizeClassName, className)}
-            style={{ ...adaptiveSizeStyle, ...style }}
+            style={{ ...adaptiveSizeStyle, ...themableStyle }}
             onChange={onChange}
             paramId={paramId}
             onClick={onClick}
@@ -221,10 +224,10 @@ function Knob({
             valueAsLabel={valueAsLabel}
             view={KnobView}
             viewProps={{
-                color: resolvedColor,
+                color: color ?? "var(--audioui-primary-color)",
                 variant: variant,
                 thickness: clampedThickness,
-                roundness: resolvedRoundness ?? DEFAULT_ROUNDNESS,
+                roundness: clampedRoundness ?? DEFAULT_ROUNDNESS,
                 openness: openness,
                 rotation: rotation,
                 svgOverlayRotary: svgOverlayRotary,

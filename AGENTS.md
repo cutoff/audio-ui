@@ -206,9 +206,12 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 
 - CSS vars for theming; adaptive named themes (blue, orange, pink, green, purple, yellow); .dark hue adjust
 - Default adaptive theme (black-ish light, white-ish dark)
-- Mapping: --audioui-primary-color to default (black-ish light, white-ish dark)
+- CSS variables: --audioui-primary-color, --audioui-roundness-base, --audioui-thickness-base
+- Color variants computed via CSS color-mix(): --audioui-primary-50, --audioui-primary-20
 - Classes: .audioui-stroke-primary, .audioui-fill-primary, .audioui-border-primary, .audioui-text-primary (all prefixed with `audioui-`)
-- Provider: AudioUiProvider defaults color; useThemableProps fallback
+- Theme utilities: setThemeColor(), setThemeRoundness(), setThemeThickness(), setTheme() for programmatic access
+- Components read CSS variables directly; props set CSS variables as convenience API
+- No Provider needed - pure CSS variable-based theming
 - **Comprehensive Documentation**: See `packages/react/docs/color-system.md` for complete color system architecture, and `apps/playground-react/docs/color-integration.md` for playground integration details
 - **Styling System Guidelines**: See `agents/audioui-styling-system.md` for complete styling conventions, naming patterns, constants usage, and Stylelint enforcement
 - **Performance Guidelines**: See `docs/internal/PERFORMANCE.md` for centralized performance findings, optimization best practices (SVG geometry vs CSS, memoization strategy, event handling), and benchmarking procedures.

@@ -121,7 +121,7 @@ export default function SideBar() {
     useEffect(() => {
         // Use the adaptive default theme by default
         changeTheme(themeColors.default);
-        // Sync roundness with the provider's value
+        // Sync roundness with CSS variable value
         const currentRoundness = audioUiThemeState.current.roundness;
         if (currentRoundness !== undefined) {
             setRoundnessValue(currentRoundness);

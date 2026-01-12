@@ -7,7 +7,6 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { generateColorVariants } from "@cutoff/audio-ui-core";
 import { translateButtonRoundness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import { ControlComponent } from "@/types";
@@ -22,7 +21,7 @@ export type ButtonViewProps = {
     threshold?: number;
     /** Corner roundness (normalized 0.0-1.0, maps to 0-50) */
     roundness?: number;
-    /** Resolved color string */
+    /** Color prop (kept for API compatibility, but colors are read from CSS variables) */
     color: string;
     /** Additional CSS class name */
     className?: string;
@@ -32,37 +31,38 @@ export type ButtonViewProps = {
  * Pure SVG presentation component for a button.
  * Renders a rectangle with conditional styling based on normalized value vs threshold.
  *
+ * Colors are read from CSS variables (`--audioui-primary-color`, `--audioui-primary-50`, `--audioui-primary-20`)
+ * which are set by the parent Button component based on the `color` prop.
+ *
  * @param normalizedValue - Value between 0 and 1
  * @param threshold - Threshold value (default 0.5), determines "on" state
  * @param roundness - Normalized roundness 0.0-1.0 (default 0.3, maps to 0-50)
- * @param color - Resolved color string
+ * @param color - Color prop (kept for API compatibility, but not used - CSS variables are used instead)
  * @param className - Optional CSS class
  */
 function ButtonView({
     normalizedValue,
     threshold = 0.5,
     roundness = DEFAULT_ROUNDNESS,
-    color,
+    color: _color, // Prefixed with _ to indicate intentionally unused (kept for API compatibility)
     className,
 }: ButtonViewProps): JSX.Element {
     // Determine if button is "on" based on threshold
     const isOn = useMemo(() => normalizedValue > threshold, [normalizedValue, threshold]);
-
-    // Generate color variants
-    const colorVariants = useMemo(() => generateColorVariants(color, "transparency"), [color]);
 
     // Translate normalized roundness to legacy range (0-50)
     const cornerRadius = useMemo(() => {
         return translateButtonRoundness(roundness);
     }, [roundness]);
 
-    // Determine button styles based on state
+    // Use CSS variables for colors - CSS handles variant generation via color-mix
     const buttonStyles = useMemo(
         () => ({
-            stroke: isOn ? colorVariants.primary50 : colorVariants.primary20,
-            fill: isOn ? colorVariants.primary : colorVariants.primary50,
+            stroke: isOn ? "var(--audioui-primary-50)" : "var(--audioui-primary-20)",
+            fill: isOn ? "var(--audioui-primary-color)" : "var(--audioui-primary-50)",
+            strokeWidth: "var(--audioui-button-stroke-width, 5px)",
         }),
-        [isOn, colorVariants]
+        [isOn]
     );
 
     return (
@@ -71,8 +71,8 @@ function ButtonView({
             style={{
                 stroke: buttonStyles.stroke,
                 fill: buttonStyles.fill,
+                strokeWidth: buttonStyles.strokeWidth,
             }}
-            strokeWidth="5"
             x={10}
             y={10}
             width={80}

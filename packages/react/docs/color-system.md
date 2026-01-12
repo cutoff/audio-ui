@@ -51,8 +51,8 @@ These are the fundamental requirements that define the color system. **These mus
    - Components must display seamlessly in either mode
 
 6. **Color Resolution Hierarchy**
-   - When the `color` prop of a component is `undefined`, the theme color from a theme provider should be used
-   - If the theme color is also `undefined`, it falls back to the component's default value (typically `undefined`, which then resolves to adaptive default)
+   - When the `color` prop of a component is `undefined`, the CSS variable `--audioui-primary-color` is used
+   - If the CSS variable is not set, it falls back to the adaptive default (`--audioui-adaptive-default-color`)
 
 ### Client App Requirements
 
@@ -78,22 +78,22 @@ These are the fundamental requirements that define the color system. **These mus
 
 ### Implementation Notes
 
-- Variants are computed in JavaScript at component level, not in CSS
-- CSS variables are used for theme definitions, but variants are not stored as CSS variables
+- Variants are computed in CSS using `color-mix()` for optimal performance
+- CSS variables are used for all theme values (color, roundness, thickness)
 - The adaptive default uses a CSS variable (`--audioui-adaptive-default-color`) to prevent hydration mismatches
-- Color mode tracking is shared at provider level for performance (not per-component)
+- Dark mode is handled automatically by CSS via `.dark` class - no JavaScript tracking needed
 
 ## Overview
 
 The Audio UI library uses a clean, idiomatic color system optimized for realtime audio applications:
 
 - **Uniform color type**: All colors (theme and component) are CSS color values (literal, function, or variable)
-- **Predefined theme colors**: Simple primary colors - variants are computed automatically
+- **Predefined theme colors**: Simple primary colors - variants are computed automatically via CSS `color-mix()`
 - **Adaptive default**: White in dark mode, black in light mode (via CSS variable)
-- **Automatic variant generation**: Components compute `primary50` and `primary20` variants from the primary color
-- **Mode-aware**: System automatically tracks light/dark mode changes
-- **Context-based theming**: Theme provider for global color management
-- **Performance optimized**: Shared observers, memoized calculations, minimal re-renders
+- **Automatic variant generation**: CSS computes `primary50` and `primary20` variants from the primary color using `color-mix()`
+- **Mode-aware**: Dark mode handled automatically by CSS via `.dark` class
+- **CSS variable-based theming**: Pure CSS variables for global theme management - no React Context needed
+- **Performance optimized**: No React re-renders for theme changes, CSS handles updates automatically
 
 ## Core Principles
 
@@ -111,38 +111,43 @@ The Audio UI library uses a clean, idiomatic color system optimized for realtime
 ```
 Component Prop (color="blue" or undefined)
     ↓
-useThemableProps Hook (memoized)
+CSS Variable Resolution
     ↓
-Resolves: Component Prop → Theme Context → Default (undefined) → Adaptive Default (CSS variable)
+Resolves: Component Prop → CSS Variable (--audioui-primary-color) → Adaptive Default (--audioui-adaptive-default-color)
     ↓
-generateColorVariants Utility (optimized)
+CSS color-mix() (automatic)
     ↓
-Creates: primary, primary50, primary20, highlight
+Creates: primary, primary50, primary20 via CSS variables
     ↓
-SVG Component Rendering
+SVG Component Rendering (reads CSS variables)
 ```
 
 ### Key Files
 
-- **`themes.css`**: Defines CSS theme variables for primary colors and adaptive default
+- **`themes.css`**: Defines CSS theme variables for primary colors, variants, roundness, thickness, and adaptive default
 - **`styles.css`**: Base styles and optional utility classes
-- **`colorUtils.ts`**: Generates color variants with optimized string operations
+- **`colorUtils.ts`**: Legacy utility for color variant generation (used by Keys component for luminosity variants)
 - **`themeColors.ts`**: Exports predefined theme colors as CSS color values
-- **`AudioUiProvider.tsx`**: React context for theme management with shared mode tracking
-- **Component files**: Use `useThemableProps` to resolve colors and compute variants
+- **`utils/theme.ts`**: Utility functions for programmatic theme management (setThemeColor, setThemeRoundness, etc.)
+- **Component files**: Read CSS variables directly, props set CSS variables as convenience API
 
 ## CSS Theme Variables
 
 ### Theme Variable Structure
 
-The library defines theme variables in `themes.css` with simple naming - **only primary colors, no variants**:
+The library defines theme variables in `themes.css`:
 
 ```css
---audioui-theme-{name}  /* Just the primary color */
+--audioui-theme-{name}  /* Predefined theme colors */
 --audioui-adaptive-default-color  /* CSS variable for adaptive default */
+--audioui-primary-color  /* Current theme color (set by user or defaults to adaptive) */
+--audioui-primary-50  /* 50% variant (computed via color-mix) */
+--audioui-primary-20  /* 20% variant (computed via color-mix) */
+--audioui-roundness-base  /* Base roundness (normalized 0.0-1.0) */
+--audioui-thickness-base  /* Base thickness (normalized 0.0-1.0) */
 ```
 
-**Note**: Variants (`primary50`, `primary20`) are **not** defined in CSS - they are computed automatically by components.
+**Note**: Variants (`primary50`, `primary20`) are computed automatically in CSS using `color-mix()` for optimal performance.
 
 ### Adaptive Default Color
 
@@ -199,9 +204,10 @@ This approach:
 
 ### Important Notes
 
-- **No variant CSS variables**: `--audioui-theme-blue-50` and `--audioui-theme-blue-20` do not exist
-- **Variants are computed**: Components generate variants dynamically using `generateColorVariants()`
-- **CSS variables are optional**: You can use direct color values, CSS variables, or any valid CSS color
+- **Variant CSS variables**: `--audioui-primary-50` and `--audioui-primary-20` are computed automatically via CSS `color-mix()`
+- **Variants are computed in CSS**: No JavaScript needed - CSS handles variant generation automatically
+- **CSS variables are the foundation**: Components read CSS variables, props set CSS variables as convenience
+- **Direct color values work**: You can still use direct color values via props, which set CSS variables
 
 ## Color Utilities
 
@@ -285,133 +291,101 @@ const variants = generateColorVariants("blue", "transparency");
 
 Components resolve colors using the following priority (highest to lowest):
 
-1. **Component `color` prop** (explicit prop)
-2. **Theme Context** (`AudioUiProvider` value)
-3. **Component default** (component-specific default, typically `undefined`)
-4. **Adaptive default** (`getAdaptiveDefaultColor()` - CSS variable that resolves to white in dark mode, black in light mode)
-
-### `useThemableProps` Hook
-
-**Location**: `packages/react/src/components/defaults/AudioUiProvider.tsx`
-
-**Usage**:
-
-```typescript
-const { resolvedColor, resolvedRoundness } = useThemableProps(
-  { color, roundness }, // Component props
-  { color: undefined, roundness: 12 } // Default values
-);
-```
-
-**Implementation**:
-
-```typescript
-export function useThemableProps(
-  props: Partial<ThemableProps>,
-  defaultValues: Partial<ThemableProps>
-): { resolvedColor: string; resolvedRoundness: number | undefined } {
-  const themeContext = useAudioUiTheme();
-
-  // Memoized resolution - only recomputes when inputs change
-  const resolvedColor = useMemo(() => {
-    return props.color ?? themeContext.color ?? defaultValues.color ?? getAdaptiveDefaultColor();
-  }, [props.color, themeContext.color, defaultValues.color, themeContext.isDarkMode]);
-
-  const resolvedRoundness = useMemo(() => {
-    return props.roundness ?? themeContext.roundness ?? defaultValues.roundness;
-  }, [props.roundness, themeContext.roundness, defaultValues.roundness]);
-
-  return { resolvedColor, resolvedRoundness };
-}
-```
-
-**Key Features**:
-
-- **Memoized**: Only recomputes when inputs actually change
-- **Mode-aware**: Includes `isDarkMode` in dependencies to react to mode changes
-- **Performance**: Prevents unnecessary recalculations on every render
+1. **Component `color` prop** (explicit prop - sets CSS variable)
+2. **CSS Variable** (`--audioui-primary-color` - set globally or via utility functions)
+3. **Adaptive default** (`--audioui-adaptive-default-color` - CSS variable that resolves to white in dark mode, black in light mode)
 
 ### Component Implementation Pattern
 
 All components follow this pattern:
 
 ```typescript
-function MyComponent({ color, roundness, ...otherProps }: MyComponentProps) {
-    // 1. Resolve color and roundness (memoized)
-    const { resolvedColor, resolvedRoundness } = useThemableProps(
-        { color, roundness },
-        { color: undefined, roundness: 12 } // undefined uses adaptive default
-    );
+function MyComponent({ color, roundness, thickness, style, ...otherProps }: MyComponentProps) {
+    // 1. Build CSS variables from props (if provided)
+    const cssVars = useMemo(() => {
+        const vars: React.CSSProperties = {};
+        if (roundness !== undefined) {
+            vars["--audioui-roundness-base"] = clampNormalized(roundness);
+        }
+        if (color !== undefined) {
+            vars["--audioui-primary-color"] = color;
+        }
+        if (thickness !== undefined) {
+            vars["--audioui-thickness-base"] = clampNormalized(thickness);
+        }
+        return { ...vars, ...style }; // User style takes precedence
+    }, [roundness, color, thickness, style]);
 
-    // 2. Generate color variants (memoized per component)
-    const colorVariants = useMemo(
-        () => generateColorVariants(resolvedColor, "transparency"),
-        [resolvedColor]
-    );
-
-    // 3. Use variants in SVG rendering
+    // 2. Pass CSS variables to component
     return (
         <SvgComponent
-            color={resolvedColor}
-            // or use colorVariants.primary, colorVariants.primary50, etc.
+            style={cssVars}
+            // CSS reads: var(--audioui-primary-color, var(--audioui-adaptive-default-color))
+            // CSS reads: var(--audioui-primary-50) for variants
         />
     );
 }
 ```
 
-## Theme Provider System
+**Key Features**:
 
-### `AudioUiProvider`
+- **CSS-native**: Components read CSS variables directly
+- **Props as convenience**: Props set CSS variables, but CSS-only customization works too
+- **No re-renders**: CSS updates automatically when variables change
+- **Performance**: No JavaScript calculations needed for theme changes
 
-**Location**: `packages/react/src/components/defaults/AudioUiProvider.tsx`
+## Theme Management System
 
-Provides React context for global theme management with **shared color mode tracking** (performance optimization).
+### CSS Variable-Based Theming
 
-**Props**:
+The library uses pure CSS variables for theming. No React Context or Provider needed.
 
-```typescript
-interface AudioUiProviderProps {
-  children: ReactNode;
-  initialColor?: string; // Default: undefined (uses adaptive default)
-  initialRoundness?: number; // Default: 12
+**CSS Variables**:
+
+```css
+:root {
+  --audioui-primary-color: var(--audioui-adaptive-default-color);
+  --audioui-roundness-base: 0.3;
+  --audioui-thickness-base: 0.4;
+  --audioui-primary-50: color-mix(in srgb, var(--audioui-primary-color) 50%, transparent);
+  --audioui-primary-20: color-mix(in srgb, var(--audioui-primary-color) 20%, transparent);
 }
 ```
 
-**Usage**:
+### Theme Utility Functions
 
-```tsx
-<AudioUiProvider initialColor="purple" initialRoundness={8}>
-  <App />
-</AudioUiProvider>
-```
+**Location**: `packages/react/src/utils/theme.ts`
 
-**Context Value**:
+Lightweight utility functions for programmatic theme management (no Context needed):
 
 ```typescript
-interface ThemeContextType {
-  color: string | undefined;
-  roundness: number;
-  isDarkMode: boolean; // Exposed for component reactivity
-  setColor: (color: string) => void;
-  setRoundness: (roundness: number) => void;
-}
+import { setThemeColor, setThemeRoundness, setThemeThickness, setTheme } from "@cutoff/audio-ui-react";
+
+// Set individual theme values
+setThemeColor("blue");
+setThemeRoundness(0.5);
+setThemeThickness(0.6);
+
+// Set multiple values at once
+setTheme({ color: "purple", roundness: 0.4, thickness: 0.5 });
 ```
+
+**Available Functions**:
+
+- `setThemeColor(color: string)` - Set global theme color
+- `setThemeRoundness(value: number)` - Set global theme roundness (0.0-1.0)
+- `setThemeThickness(value: number)` - Set global theme thickness (0.0-1.0)
+- `setTheme(theme: ThemeConfig)` - Set multiple theme values at once
+- `getThemeColor()` - Get current theme color from CSS variable
+- `getThemeRoundness()` - Get current theme roundness from CSS variable
+- `getThemeThickness()` - Get current theme thickness from CSS variable
 
 **Performance Features**:
 
-- **Shared mode tracking**: Single `MutationObserver` and `MediaQueryList` listener for all components (not per-component)
-- **Memoized context value**: Prevents unnecessary re-renders
-- **Automatic mode detection**: Tracks `.dark` class changes and system preferences
-
-### `useAudioUiTheme` Hook
-
-Access the theme context:
-
-```typescript
-const { color, roundness, isDarkMode, setColor, setRoundness } = useAudioUiTheme();
-```
-
-**Note**: Must be used within an `AudioUiProvider`.
+- **No React overhead**: Direct CSS variable manipulation
+- **No re-renders**: CSS updates automatically
+- **Works everywhere**: Can be used in vanilla JS, React, or any framework
+- **Dark mode automatic**: Handled by CSS `.dark` class - no JavaScript tracking needed
 
 ## Predefined Theme Colors
 
@@ -494,50 +468,79 @@ import { themeColors } from '@cutoff/audio-ui-react';
 <Button value={75} label="Power" color="var(--audioui-theme-purple)" />
 ```
 
-### Theme Provider Usage
+### Global Theme Setup
 
 ```tsx
-// Set global theme
-import { themeColors } from '@cutoff/audio-ui-react';
+// Set global theme using utility functions
+import { setTheme, themeColors } from "@cutoff/audio-ui-react";
+import { useEffect } from "react";
 
-<AudioUiProvider initialColor={themeColors.purple} initialRoundness={8}>
-    <App />
-</AudioUiProvider>
+function App() {
+  useEffect(() => {
+    // Set initial theme on mount
+    setTheme({
+      color: themeColors.purple,
+      roundness: 0.3,
+    });
+  }, []);
 
-// All components inherit the theme unless overridden
-<Knob value={50} label="Volume" /> {/* Uses purple */}
-<Button value={75} label="Power" color="blue" /> {/* Overrides with blue */}
+  return (
+    <>
+      {/* All components inherit the theme unless overridden */}
+      <Knob value={50} label="Volume" /> {/* Uses purple */}
+      <Button value={75} label="Power" color="blue" /> {/* Overrides with blue */}
+    </>
+  );
+}
 ```
 
 ### Dynamic Theme Switching
 
 ```tsx
-import { themeColors } from "@cutoff/audio-ui-react";
+import { setThemeColor, themeColors } from "@cutoff/audio-ui-react";
 
 function App() {
-  const { setColor } = useAudioUiTheme();
-
   return (
     <div>
-      <button onClick={() => setColor(themeColors.blue)}>Blue Theme</button>
-      <button onClick={() => setColor(themeColors.orange)}>Orange Theme</button>
-      <button onClick={() => setColor("#FF3366")}>Custom Color</button>
-      <Knob value={50} label="Volume" /> {/* Uses current theme */}
+      <button onClick={() => setThemeColor(themeColors.blue)}>Blue Theme</button>
+      <button onClick={() => setThemeColor(themeColors.orange)}>Orange Theme</button>
+      <button onClick={() => setThemeColor("#FF3366")}>Custom Color</button>
+      <Knob value={50} label="Volume" /> {/* Uses current theme - updates instantly */}
     </div>
   );
 }
 ```
 
+### CSS-Only Customization
+
+```tsx
+// No JavaScript needed - pure CSS
+<div style={{ '--audioui-primary-color': 'hsl(200, 100%, 50%)' }}>
+  <Knob value={50} label="Volume" /> {/* Inherits CSS variable */}
+</div>
+
+// Or via CSS classes
+<style>{`
+  .my-theme {
+    --audioui-primary-color: hsl(200, 100%, 50%);
+    --audioui-roundness-base: 0.5;
+  }
+`}</style>
+<div className="my-theme">
+  <Knob value={50} label="Volume" />
+</div>
+```
+
 ### Component-Specific Color Variants
 
 ```tsx
-// Knob uses transparency variants
+// Components read CSS variables automatically
 <KnobView color="blue" />
-// Generates: primary, primary50 (50% opacity), primary20 (20% opacity)
+// CSS uses: var(--audioui-primary-color) and var(--audioui-primary-50)
 
-// Keybed uses luminosity variants
+// Keybed uses luminosity variants (still computed in JS for compatibility)
 <Keybed color="blue" />
-// Generates: primary, primary50 (50% luminosity), primary20 (20% luminosity)
+// Uses generateColorVariants() for luminosity-based variants
 ```
 
 ### Custom Color with Variants
@@ -583,48 +586,43 @@ function App() {
 
 The color system is optimized for realtime audio UIs with the following features:
 
-### Shared Color Mode Tracking
+### CSS-Native Theming
 
-- **Single observer**: One `MutationObserver` and `MediaQueryList` listener at the provider level
-- **Not per-component**: Components don't create their own observers
-- **Result**: O(1) observers instead of O(n) where n = number of components
-- **Impact**: ~98% reduction in observer overhead for control surfaces with many components
+- **No React overhead**: CSS variables update directly - no React Context or re-renders
+- **Automatic updates**: CSS handles theme changes instantly without JavaScript
+- **No observers needed**: Dark mode handled by CSS `.dark` class - no MutationObserver or MediaQueryList
+- **Result**: Zero JavaScript overhead for theme changes
 
-### Memoized Color Resolution
+### CSS color-mix() for Variants
 
-- **Memoized calculations**: `resolvedColor` and `resolvedRoundness` only recompute when inputs change
-- **Dependency tracking**: Includes `isDarkMode` to ensure reactivity to mode changes
-- **Result**: No unnecessary recalculations on every render
+- **Native CSS**: Variants computed by browser using `color-mix()` - no JavaScript calculations
+- **GPU-accelerated**: Browser handles color mixing efficiently
+- **Result**: Faster variant generation than JavaScript
 
-### Optimized Color Utilities
+### Component-Level CSS Variables
 
-- **Pre-compiled regex**: No regex recompilation per call
-- **Efficient lookups**: O(1) hash map access for named colors
-- **Reduced operations**: Normalized color computed once and reused
-- **Result**: Faster color variant generation
-
-### Component-Level Memoization
-
-- **Color variants**: Memoized per component based on resolved color
-- **Prevents**: Unnecessary variant regeneration on unrelated re-renders
+- **Props set CSS variables**: Component props set CSS variables as convenience API
+- **CSS reads variables**: Components read CSS variables directly via `var()`
+- **Result**: No prop drilling, no Context overhead, pure CSS performance
 
 ### Expected Performance Impact
 
-| Metric            | Before                  | After        | Improvement          |
-| ----------------- | ----------------------- | ------------ | -------------------- |
-| Observers         | O(n) components         | O(1) shared  | ~98% reduction       |
-| Color Resolution  | Every render            | Memoized     | Only on input change |
-| String Operations | Multiple regex compiles | Pre-compiled | Faster execution     |
+| Metric         | Before (React Context) | After (CSS Variables) | Improvement      |
+| -------------- | ---------------------- | --------------------- | ---------------- |
+| Theme Updates  | React re-renders       | CSS-only              | No re-renders    |
+| Observers      | O(1) shared            | None needed           | 100% elimination |
+| Color Variants | JavaScript computation | CSS color-mix()       | GPU-accelerated  |
+| Memory         | Context overhead       | Zero overhead         | Reduced memory   |
 
 ## Best Practices
 
 1. **Use predefined colors** for consistency: `themeColors.blue`, `themeColors.purple`, etc.
-2. **Use CSS variables** when you want to leverage the theme system: `"var(--audioui-theme-blue)"`
-3. **Use custom colors** for one-off components or special cases: `"#FF5500"`, `"hsl(280, 80%, 60%)"`
-4. **Prefer theme provider** for global theming over individual component props
-5. **Use component props** when you need component-specific overrides
-6. **Let components compute variants** - don't try to set variants manually
-7. **Trust the memoization** - the system is optimized, don't over-optimize
+2. **Use CSS variables** for global theming: Set `--audioui-primary-color` at root or element level
+3. **Use utility functions** for programmatic theme changes: `setThemeColor()`, `setThemeRoundness()`
+4. **Use component props** for per-instance customization: Props set CSS variables automatically
+5. **Use CSS-only customization** when possible: Set CSS variables directly via `style` prop or classes
+6. **Let CSS compute variants** - `color-mix()` handles variant generation automatically
+7. **No Provider needed** - CSS variables work everywhere, no React Context required
 
 ## Technical Details
 

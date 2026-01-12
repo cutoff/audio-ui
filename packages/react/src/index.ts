@@ -52,9 +52,17 @@ export type {
     AdaptiveBoxHtmlOverlayProps,
 } from "./components/primitives/AdaptiveBox";
 
-// Export theme provider and hooks
-export { default as AudioUiProvider, useAudioUiTheme, useThemableProps } from "./components/defaults/AudioUiProvider";
-export type { AudioUiProviderProps } from "./components/defaults/AudioUiProvider";
+// Export theme utility functions
+export {
+    setThemeColor,
+    setThemeRoundness,
+    setThemeThickness,
+    setTheme,
+    getThemeColor,
+    getThemeRoundness,
+    getThemeThickness,
+} from "./utils/theme";
+export type { ThemeConfig } from "./utils/theme";
 
 // Also export types for consuming applications
 export type { CycleButtonProps } from "./components/defaults/controls/CycleButton";
@@ -125,6 +133,7 @@ export { DEFAULT_ROUNDNESS, DEFAULT_THICKNESS } from "@cutoff/audio-ui-core";
 export * from "@cutoff/audio-ui-core";
 export * from "./hooks/useAudioParameter";
 export * from "./hooks/useAdaptiveSize";
+export * from "./hooks/useThemableProps";
 export * from "./hooks/useDiscreteParameterResolution";
 export * from "./hooks/useContinuousParameterResolution";
 export * from "./hooks/useBooleanParameterResolution";

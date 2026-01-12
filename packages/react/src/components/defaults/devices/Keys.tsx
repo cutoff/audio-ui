@@ -12,6 +12,7 @@ import AdaptiveBox from "@/primitives/AdaptiveBox";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, ThemableProps } from "@/types";
 import { generateColorVariants } from "@cutoff/audio-ui-core";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
+import { useThemableProps } from "@/hooks/useThemableProps";
 import {
     createNoteNumSet,
     DIATONIC_TO_CHROMATIC,
@@ -24,7 +25,6 @@ import {
 import "@cutoff/audio-ui-core/styles.css";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import { CSS_VARS } from "@cutoff/audio-ui-core";
-import { useThemableProps } from "@/defaults/AudioUiProvider";
 import { translateKeybedRoundness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
@@ -221,19 +221,26 @@ function Keys({
         };
     }, [validNbKeys, startKey]);
 
-    // Use the themable props hook to resolve color and roundness with proper fallbacks
-    // Color is always resolved (even in classic modes) so active keys can use theme color
-    const defaultThemableProps = useMemo(() => ({ color: undefined, roundness: DEFAULT_ROUNDNESS }), []);
-    const { resolvedColor, resolvedRoundness } = useThemableProps({ color, roundness }, defaultThemableProps);
+    // Build CSS variables from props (if provided)
+    // Note: Keys doesn't use thickness, so we pass undefined
+    const { style: themableStyle, clampedRoundness } = useThemableProps({
+        color,
+        roundness,
+        thickness: undefined,
+        style,
+    });
 
     // Translate normalized roundness to legacy range (0-12)
+    // Use clamped value from hook, or default if not provided
     const legacyRoundness = useMemo(() => {
-        const normalized = resolvedRoundness ?? DEFAULT_ROUNDNESS;
+        const normalized = clampedRoundness ?? DEFAULT_ROUNDNESS;
         return translateKeybedRoundness(normalized);
-    }, [resolvedRoundness]);
+    }, [clampedRoundness]);
 
     // Generate color variants using the centralized utility
     // Used for theme mode rendering and for active keys in classic modes
+    // Read color from CSS variable if not provided as prop
+    const resolvedColor = color ?? "var(--audioui-primary-color)";
     const colorVariants = useMemo(() => {
         return generateColorVariants(resolvedColor, "luminosity");
     }, [resolvedColor]);
@@ -462,7 +469,7 @@ function Keys({
             // Keys does not expose labels; hide label row explicitly.
             labelMode="none"
             className={componentClassNames}
-            style={{ ...sizeStyle, ...style }}
+            style={{ ...sizeStyle, ...themableStyle }}
             viewBoxWidth={keybedDimensions.width + keybedDimensions.innerStrokeWidth}
             viewBoxHeight={keybedDimensions.whiteHeight + keybedDimensions.innerStrokeWidth}
             minWidth={40}

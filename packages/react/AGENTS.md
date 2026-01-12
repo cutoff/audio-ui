@@ -18,23 +18,22 @@
 
 ## Quick Setup Summary (Load This First)
 
-| Category            | Details                                                                                                                                                                                                                                                                                                                           |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Scripts             | `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm link`, `pnpm lint:css`                                                                                                                                                                                                                                                         |
-| Env Vars            | None                                                                                                                                                                                                                                                                                                                              |
-| Component Structure | Props with JSDoc; default params; function ComponentName() {}; arrow functions for handlers; SVG for graphics                                                                                                                                                                                                                     |
-| Exports             | All from src/index.ts: Components (Button, Knob, Slider, Keybed, AdaptiveBox, ContinuousControl, FilmStripContinuousControl, FilmStripDiscreteControl, FilmStripBooleanControl, etc.), Providers (AudioUiProvider, hooks), Types (including ControlComponent, ControlComponentView), Utils (formatters, note utils), Theme colors |
-| Testing             | Vitest; .test.tsx alongside; mock deps; React 18 compat                                                                                                                                                                                                                                                                           |
-| Build               | Vite; generates dist/index.js, index.d.ts, style.css; ES modules                                                                                                                                                                                                                                                                  |
-| Path Aliases        | Use `@/primitives/*`, `@/hooks/*`, `@/defaults/*`, `@/utils/*`, `@/types` instead of relative paths (configured in tsconfig.json and vite.config.ts)                                                                                                                                                                              |
+| Category            | Details                                                                                                                                                                                                                                                                                                                                                 |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scripts             | `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm link`, `pnpm lint:css`                                                                                                                                                                                                                                                                               |
+| Env Vars            | None                                                                                                                                                                                                                                                                                                                                                    |
+| Component Structure | Props with JSDoc; default params; function ComponentName() {}; arrow functions for handlers; SVG for graphics                                                                                                                                                                                                                                           |
+| Exports             | All from src/index.ts: Components (Button, Knob, Slider, Keybed, AdaptiveBox, ContinuousControl, FilmStripContinuousControl, FilmStripDiscreteControl, FilmStripBooleanControl, etc.), Theme utilities (setThemeColor, setThemeRoundness, etc.), Types (including ControlComponent, ControlComponentView), Utils (formatters, note utils), Theme colors |
+| Testing             | Vitest; .test.tsx alongside; mock deps; React 18 compat                                                                                                                                                                                                                                                                                                 |
+| Build               | Vite; generates dist/index.js, index.d.ts, style.css; ES modules                                                                                                                                                                                                                                                                                        |
+| Path Aliases        | Use `@/primitives/*`, `@/hooks/*`, `@/defaults/*`, `@/utils/*`, `@/types` instead of relative paths (configured in tsconfig.json and vite.config.ts)                                                                                                                                                                                                    |
 
 ## Key File Structure
 
 - `src/components/`: Component .tsx with .test.tsx
-  - `defaults/`: Default/built-in components and theme system
+  - `defaults/`: Default/built-in components
     - `controls/`: Interactive controls (Button, Knob, Slider, CycleButton) and their SVG views (ButtonView, KnobView, SliderView). Knob and Slider use ContinuousControl internally.
     - `devices/`: Device components (Keybed)
-    - `AudioUiProvider.tsx`: Default theme system provider
   - `generic/`: Generic components that support industry-standard control representations
     - `controls/`: Filmstrip-based controls (FilmStripContinuousControl, FilmStripDiscreteControl, FilmStripBooleanControl) that use bitmap sprite sheets (filmstrips) for visualization
   - `primitives/`: Base components for building final components, excluding theme-specific
@@ -101,8 +100,8 @@ The library uses TypeScript path aliases to simplify imports and avoid cluttered
   - Example: `import { useArcAngle } from "@/hooks/useArcAngle";`
 
 - `@/defaults/*` → `src/components/defaults/*`
-  - Example: `import { useThemableProps } from "@/defaults/AudioUiProvider";`
   - Example: `import KnobView from "@/defaults/controls/KnobView";`
+  - Example: `import ButtonView from "@/defaults/controls/ButtonView";`
 
 - `@/utils/*` → `src/utils/*`
   - Example: `import { propCompare } from "@/utils/propCompare";`
@@ -140,7 +139,7 @@ Technical documentation is located in `docs/`:
 
 - **`docs/adaptive-box-layout.md`**: Comprehensive specification for AdaptiveBox layout system (CSS/SVG-based, replaces AdaptiveContainer + SvgSurface). Covers DOM structure, sizing algorithms, label modes, alignment controls, and React API mapping.
 
-- **`docs/color-system.md`**: Complete color system architecture documentation. Covers axioms & requirements, CSS theme variables, color utilities (`generateColorVariants`, `getAdaptiveDefaultColor`), component color resolution hierarchy, theme provider system (`AudioUiProvider`, `useThemableProps`), predefined theme colors, usage examples, and performance optimizations.
+- **`docs/color-system.md`**: Complete color system architecture documentation. Covers axioms & requirements, CSS theme variables, color utilities, component color resolution hierarchy, CSS variable-based theming system, theme utility functions (`setThemeColor`, `setThemeRoundness`, etc.), predefined theme colors, usage examples, and performance optimizations.
 
 - **`docs/color-property-examples.md`**: Practical examples of using the `color` property with components. Includes basic usage, color animation, combining with other properties, dynamic colors, and component-specific color handling (Keybed luminosity variants).
 

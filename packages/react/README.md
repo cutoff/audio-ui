@@ -142,7 +142,7 @@ The library uses path aliases to simplify imports. Use these instead of relative
 // ✅ Good - using aliases
 import AdaptiveBox from "@/primitives/AdaptiveBox";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
-import { useThemableProps } from "@/defaults/AudioUiProvider";
+import { setThemeColor } from "@/utils/theme";
 import { AdaptiveBoxProps } from "@/types";
 
 // ❌ Avoid - relative paths

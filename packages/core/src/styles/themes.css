@@ -5,16 +5,15 @@
  */
 
 :root {
+    /* High-level theming parameters – Change this for global theme customization on default components */
+    --audioui-roundness-base: 0.3; /* Normalized 0.0-1.0 */
+    --audioui-thickness-base: 0.4; /* Normalized 0.0-1.0 */
+    --audioui-primary-color: var(--audioui-adaptive-default-color);
+
+    /* Colors  */
+
     --audioui-nearwhite: hsl(0, 0%, 96%);
     --audioui-nearblack: hsl(0, 0%, 10%);
-
-    /* Predefined theme colors - just the primary color */
-    /* Variants (primary50, primary20) are computed automatically by components */
-
-    /* Default theme — adaptive like shadcn: dark ink on light, light ink on dark */
-    --audioui-theme-default: var(--audioui-nearblack); /* Light mode: near-black */
-    /* CSS variable for adaptive default - resolves correctly on both server and client */
-    --audioui-adaptive-default-color: var(--audioui-theme-default);
 
     /* Named color themes */
     --audioui-theme-blue: hsl(204, 88%, 52%);
@@ -23,6 +22,35 @@
     --audioui-theme-green: hsl(160, 95%, 44%);
     --audioui-theme-purple: hsl(252, 96%, 54%);
     --audioui-theme-yellow: hsl(50, 100%, 50%);
+
+    /* Default theme — adaptive: dark ink on light, light ink on dark */
+    --audioui-theme-default: var(--audioui-nearblack); /* Light mode: near-black */
+    /* CSS variable for adaptive default - resolves correctly on both server and client */
+    --audioui-adaptive-default-color: var(--audioui-theme-default);
+
+    /* Color variants (computed via color-mix) */
+    --audioui-primary-50: color-mix(in srgb, var(--audioui-primary-color) 50%, transparent);
+    --audioui-primary-20: color-mix(in srgb, var(--audioui-primary-color) 20%, transparent);
+
+    /* Classic Piano Key Colors */
+    --audioui-keys-ivory: hsl(40, 20%, 95%); /* Warm off-white color for classic white keys */
+    --audioui-keys-ivory-stroke: hsl(40, 20%, 85%); /* Slightly darker for stroke contrast */
+    --audioui-keys-ebony: hsl(0, 0%, 15%); /* Deep black color for classic black keys */
+    --audioui-keys-ebony-stroke: hsl(0, 0%, 25%); /* Slightly lighter for stroke contrast */
+
+    /* Other component style customization */
+    --audioui-knob-cap-fill: #303030;
+    --audioui-button-stroke-width: 5px;
+
+    /* Component-specific roundness (calculated from base) */
+    --audioui-roundness-button: calc(var(--audioui-roundness-base) * 50px);
+    --audioui-roundness-knob: var(--audioui-roundness-base); /* Used as boolean in JS */
+    --audioui-roundness-slider: calc(var(--audioui-roundness-base) * 20px);
+    --audioui-roundness-keys: calc(var(--audioui-roundness-base) * 12px);
+
+    /* Component-specific thickness (calculated from base) */
+    --audioui-thickness-knob: calc(1px + var(--audioui-thickness-base) * 19px);
+    --audioui-thickness-slider: calc(1px + var(--audioui-thickness-base) * 49px);
 
     /* Size System - Base Unit */
     /* The atomic unit for consistent sizing across all components */
@@ -80,12 +108,6 @@
     --audioui-size-keys-width-normal: calc(var(--audioui-size-keys-height-normal) * 5);
     --audioui-size-keys-width-large: calc(var(--audioui-size-keys-height-large) * 5);
     --audioui-size-keys-width-xlarge: calc(var(--audioui-size-keys-height-xlarge) * 5);
-
-    /* Classic Piano Key Colors */
-    --audioui-keys-ivory: hsl(40, 20%, 95%); /* Warm off-white color for classic white keys */
-    --audioui-keys-ivory-stroke: hsl(40, 20%, 85%); /* Slightly darker for stroke contrast */
-    --audioui-keys-ebony: hsl(0, 0%, 15%); /* Deep black color for classic black keys */
-    --audioui-keys-ebony-stroke: hsl(0, 0%, 25%); /* Slightly lighter for stroke contrast */
 }
 
 /* Dark mode overrides */
@@ -102,4 +124,7 @@
     --audioui-theme-green: hsl(160, 98%, 37%);
     --audioui-theme-purple: hsl(252, 100%, 67%);
     --audioui-theme-yellow: hsl(50, 100%, 50%);
+
+    /* Other component style customization */
+    --audioui-knob-cap-fill: #4a4d50;
 }

@@ -8,12 +8,12 @@
 
 import React from "react";
 import classNames from "classnames";
-import { clampNormalized, DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
+import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BooleanControlProps, ThemableProps } from "@/types";
-import { useThemableProps } from "@/defaults/AudioUiProvider";
 import ButtonView from "./ButtonView";
 import BooleanControl from "@/primitives/controls/BooleanControl";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
+import { useThemableProps } from "@/hooks/useThemableProps";
 
 /**
  * Props for the Button component (built-in control with theming support)
@@ -84,12 +84,12 @@ function Button({
     className,
     style,
 }: ButtonProps) {
-    const clampedRoundness = roundness !== undefined ? clampNormalized(roundness) : undefined;
-    const { resolvedColor, resolvedRoundness } = useThemableProps(
-        { color, roundness: clampedRoundness },
-        { color: undefined, roundness: DEFAULT_ROUNDNESS }
-    );
-
+    const { style: themableStyle, clampedRoundness } = useThemableProps({
+        color,
+        roundness,
+        thickness: undefined,
+        style,
+    });
     const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "button");
 
     return (
@@ -103,7 +103,7 @@ function Button({
             labelAlign={labelAlign}
             labelOverflow={labelOverflow}
             className={classNames(sizeClassName, className)}
-            style={{ ...adaptiveSizeStyle, ...style }}
+            style={{ ...adaptiveSizeStyle, ...themableStyle }}
             parameter={parameter}
             paramId={paramId}
             latch={latch}
@@ -115,8 +115,8 @@ function Button({
             view={ButtonView}
             viewProps={{
                 threshold: 0.5,
-                roundness: resolvedRoundness ?? DEFAULT_ROUNDNESS,
-                color: resolvedColor,
+                roundness: clampedRoundness ?? DEFAULT_ROUNDNESS,
+                color: color ?? "var(--audioui-primary-color)",
             }}
         />
     );

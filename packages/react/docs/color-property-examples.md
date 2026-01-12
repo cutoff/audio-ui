@@ -12,7 +12,7 @@ This document provides practical examples of how to use the `color` property wit
 
 ## Basic Usage
 
-All components accept a `color` property that can be any valid CSS color value. If not specified, components use the theme color from `AudioUiProvider`, or fall back to the adaptive default (white in dark mode, black in light mode).
+All components accept a `color` property that can be any valid CSS color value. If not specified, components use the CSS variable `--audioui-primary-color`, which defaults to the adaptive default (white in dark mode, black in light mode).
 
 ```tsx
 // Using adaptive default (inherits from theme or uses adaptive default)

@@ -7,7 +7,6 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { generateColorVariants, getAdaptiveDefaultColor } from "@cutoff/audio-ui-core";
 import { computeFilledZone, Zone } from "@cutoff/audio-ui-core";
 import { translateSliderRoundness, translateSliderThickness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
@@ -27,7 +26,7 @@ export type SliderViewProps = {
     thickness?: number;
     /** Corner roundness (normalized 0.0-1.0, maps to 0-20) */
     roundness?: number;
-    /** Resolved color string */
+    /** Color prop (kept for API compatibility, but colors are read from CSS variables) */
     color?: string;
     /** Additional CSS class name */
     className?: string;
@@ -39,12 +38,15 @@ export type SliderViewProps = {
  * Pure SVG presentation component for a slider.
  * Renders background and filled rectangles based on normalized value.
  *
+ * Colors are read from CSS variables (`--audioui-primary-color`, `--audioui-primary-50`)
+ * which are set by the parent Slider component based on the `color` prop.
+ *
  * @param normalizedValue - Value between 0 and 1
  * @param bipolar - Whether to fill from center (default false)
  * @param orientation - Horizontal or vertical (default 'vertical')
  * @param thickness - Normalized thickness 0.0-1.0 (default 0.4, maps to 1-50)
  * @param roundness - Normalized roundness 0.0-1.0 (default 0.3, maps to 0-20)
- * @param color - Resolved color string
+ * @param color - Color prop (kept for API compatibility, but not used - CSS variables are used instead)
  * @param className - Optional CSS class
  */
 function SliderView({
@@ -53,7 +55,7 @@ function SliderView({
     orientation = "vertical",
     thickness = 0.4,
     roundness = DEFAULT_ROUNDNESS,
-    color,
+    color: _color, // Prefixed with _ to indicate intentionally unused (kept for API compatibility)
     className,
 }: SliderViewProps): JSX.Element {
     // Translate normalized thickness to legacy range (1-50)
@@ -105,17 +107,11 @@ function SliderView({
         return legacyRoundness;
     }, [roundness]);
 
-    // Generate color variants
-    const colorVariants = useMemo(
-        () => generateColorVariants(color ?? getAdaptiveDefaultColor(), "transparency"),
-        [color]
-    );
-
     return (
         <g className={className}>
             {/* Background Rectangle */}
             <rect
-                style={{ fill: colorVariants.primary50 }}
+                style={{ fill: "var(--audioui-primary-50)" }}
                 x={mainZone.x}
                 y={mainZone.y}
                 width={mainZone.w}
@@ -126,7 +122,7 @@ function SliderView({
 
             {/* Foreground Rectangle */}
             <rect
-                style={{ fill: colorVariants.primary }}
+                style={{ fill: "var(--audioui-primary-color)" }}
                 x={orientation === "horizontal" ? filledZone.x : mainZone.x}
                 y={orientation === "vertical" ? filledZone.y : mainZone.y}
                 width={orientation === "horizontal" ? filledZone.w : mainZone.w}

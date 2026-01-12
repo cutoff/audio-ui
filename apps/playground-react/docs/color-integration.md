@@ -16,13 +16,11 @@ The playground app serves as both a demonstration and testing environment for th
 
 ### Provider Hierarchy
 
-The app uses a nested provider structure:
+The app uses a simple provider structure:
 
 ```tsx
 <ThemeProvider attribute="class" defaultTheme="system">
-  <AudioUiProvider initialRoundness={12}>
-    <ThemeConnector>{children}</ThemeConnector>
-  </AudioUiProvider>
+  <ThemeInitializer>{children}</ThemeInitializer>
 </ThemeProvider>
 ```
 
@@ -35,15 +33,11 @@ The app uses a nested provider structure:
    - Adds/removes `.dark` class on `<html>` element
    - Enables system theme detection
 
-2. **AudioUiProvider** (from library)
-   - Provides theme context for library components
-   - Initial color: `undefined` (uses adaptive default)
-   - Initial roundness: `12`
-   - **Shared mode tracking**: Single observer for all components (performance optimization)
-
-3. **ThemeConnector**
-   - Bridges Audio UI context to global state
-   - Allows sidebar to access theme without React context
+2. **ThemeInitializer** (from playground app)
+   - Initializes CSS variables on mount
+   - Sets initial theme values (roundness, etc.)
+   - Updates global state for sidebar access
+   - **No React Context needed** - uses CSS variables directly
 
 ## Global State Bridge
 
@@ -59,28 +53,36 @@ export const audioUiThemeState: { current: AudioUiThemeState } = {
 };
 ```
 
-### ThemeConnector Component
+### ThemeInitializer Component
 
-The `ThemeConnector` component syncs the Audio UI context to the global state:
+The `ThemeInitializer` component sets up CSS variables and global state:
 
 ```typescript
-function ThemeConnector({ children }: { children: React.ReactNode }) {
-    const { color, roundness, setColor, setRoundness } = useAudioUiTheme();
-
+function ThemeInitializer({ children }: { children: React.ReactNode }) {
     useEffect(() => {
+        // Set initial theme values via CSS variables
+        setThemeRoundness(DEFAULT_ROUNDNESS);
+
+        // Update global state with current values
         audioUiThemeState.current = {
-            color, // Can be undefined - components will use adaptive default
-            roundness: roundness ?? 12,
-            setColor,
-            setRoundness,
+            color: getThemeColor() ?? undefined,
+            roundness: getThemeRoundness() ?? DEFAULT_ROUNDNESS,
+            setColor: (color: string) => {
+                setThemeColor(color);
+                audioUiThemeState.current.color = color;
+            },
+            setRoundness: (roundness: number) => {
+                setThemeRoundness(roundness);
+                audioUiThemeState.current.roundness = roundness;
+            },
         };
-    }, [color, roundness, setColor, setRoundness]);
+    }, []);
 
     return <>{children}</>;
 }
 ```
 
-This allows the sidebar to access theme controls without being wrapped in the provider.
+This allows the sidebar to access theme controls via global state, while components use CSS variables directly.
 
 ## Sidebar Theme Controls
 
@@ -105,39 +107,44 @@ The sidebar provides a dropdown to select from predefined themes using `themeCol
 ### Theme Switching Implementation
 
 ```typescript
-import { themeColors } from "@cutoff/audio-ui-react";
+import { themeColors, setThemeColor } from "@cutoff/audio-ui-react";
 
 const changeTheme = (themeColor: string) => {
   setCurrentTheme(themeColor);
-  audioUiThemeState.current.setColor(themeColor);
+  setThemeColor(themeColor); // Sets CSS variable directly
+  audioUiThemeState.current.setColor(themeColor); // Updates global state
 };
 ```
 
 **How it works**:
 
 1. User selects a theme color (e.g., `themeColors.blue` which is `"var(--audioui-theme-blue)"`)
-2. Sets the color directly in Audio UI context via `setColor()`
-3. All components automatically pick up the new theme
-4. Components compute variants automatically
+2. `setThemeColor()` sets the CSS variable `--audioui-primary-color` directly
+3. All components automatically pick up the new theme (CSS updates instantly)
+4. CSS computes variants automatically via `color-mix()`
 
 **Key Points**:
 
-- No CSS variable manipulation needed
-- Just set the color value - variants are computed automatically
+- CSS variable updates instantly - no React re-renders needed
+- Variants computed by CSS using `color-mix()` - no JavaScript calculations
 - Works with any CSS color value (not just predefined themes)
+- No React Context overhead
 
 ### Roundness Control
 
 The sidebar also provides a slider and input for adjusting global roundness:
 
 ```typescript
+import { setThemeRoundness } from "@cutoff/audio-ui-react";
+
 const changeRoundness = (value: number) => {
   setRoundnessValue(value);
-  audioUiThemeState.current.setRoundness(value);
+  setThemeRoundness(value); // Sets CSS variable directly
+  audioUiThemeState.current.setRoundness(value); // Updates global state
 };
 ```
 
-This updates the Audio UI context, which all components inherit.
+This updates the CSS variable `--audioui-roundness-base`, which all components read automatically.
 
 ## CSS Integration
 
@@ -179,10 +186,10 @@ const [color, setColor] = useState<string | undefined>(undefined);
 
 **Behavior**:
 
-- `undefined`: Component uses theme context (or adaptive default if no theme set)
-- String value: Component uses explicit color prop
+- `undefined`: Component uses CSS variable `--audioui-primary-color` (or adaptive default if not set)
+- String value: Component uses explicit color prop (sets CSS variable for that instance)
 
-This allows testing both theme-based and explicit color usage.
+This allows testing both CSS variable-based theming and explicit color usage.
 
 ### Example Usage
 
@@ -198,33 +205,31 @@ This allows testing both theme-based and explicit color usage.
 
 ### Initialization
 
-1. App loads with no initial theme color (uses adaptive default)
-2. AudioUiProvider initializes with `initialColor={undefined}`
-3. Components resolve to adaptive default via CSS variable: `"var(--audioui-adaptive-default-color)"`
+1. App loads with CSS variables set to defaults
+2. `ThemeInitializer` sets initial roundness via `setThemeRoundness()`
+3. Components read CSS variable `--audioui-primary-color` (defaults to `--audioui-adaptive-default-color`)
 4. Browser resolves to appropriate color based on `.dark` class
 
 ### Theme Switching
 
 1. User selects theme in sidebar (e.g., `themeColors.blue`)
-2. `changeTheme()` calls `setColor(themeColors.blue)` (which is `"var(--audioui-theme-blue)"`)
-3. Audio UI context updated
-4. All components re-render with new theme
-5. Components compute variants automatically
+2. `changeTheme()` calls `setThemeColor(themeColors.blue)` (which is `"var(--audioui-theme-blue)"`)
+3. CSS variable `--audioui-primary-color` updated directly
+4. All components update instantly (no React re-renders)
+5. CSS computes variants automatically via `color-mix()`
 
 ### Component Resolution
 
 For a component like `<Knob color={color} />`:
 
-1. If `color` prop provided → use it
-2. Else if Audio UI context has color → use context
-3. Else if component default → use `undefined`
-4. Else → use `"var(--audioui-adaptive-default-color)"` (CSS variable)
+1. If `color` prop provided → sets `--audioui-primary-color` CSS variable for that instance
+2. Else → reads `--audioui-primary-color` CSS variable (set globally or defaults to `--audioui-adaptive-default-color`)
 
-When using CSS variable:
+When using CSS variables:
 
-- Resolves to current theme variable (e.g., `--audioui-theme-blue`)
-- Which has light/dark mode variants in CSS
-- Components compute their own variants from the primary color
+- Components read `var(--audioui-primary-color)` directly
+- CSS computes variants via `color-mix()` automatically
+- Dark mode handled by `.dark` class in CSS
 
 ## Light/Dark Mode
 
@@ -262,12 +267,12 @@ Library theme variables automatically adapt:
 
 ### Automatic Mode Detection
 
-The library's `AudioUiProvider` automatically tracks mode changes:
+Dark mode is handled automatically by CSS:
 
-- Single shared `MutationObserver` watches for `.dark` class changes
-- Single shared `MediaQueryList` listener watches system preferences
-- All components react to mode changes via context
-- No per-component observers (performance optimization)
+- `.dark` class on `<html>` triggers CSS variable updates
+- No JavaScript observers needed
+- CSS variables automatically resolve to correct values
+- Components update instantly when mode changes
 
 ### Manual Theme Toggle
 
@@ -291,16 +296,16 @@ The sidebar provides a button to cycle through:
 
 If components don't update when theme changes:
 
-1. Check Audio UI context is updating:
+1. Check CSS variable is set:
 
    ```typescript
-   const { color } = useAudioUiTheme();
+   const color = getComputedStyle(document.documentElement).getPropertyValue("--audioui-primary-color");
    console.log(color);
    ```
 
-2. Verify components use `useThemableProps` correctly
+2. Verify components read CSS variables correctly
 
-3. Check that `ThemeConnector` is syncing state properly
+3. Check that `ThemeInitializer` is setting initial values properly
 
 ### Color Not Applying
 

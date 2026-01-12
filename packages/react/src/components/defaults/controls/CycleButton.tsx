@@ -11,11 +11,10 @@ import classNames from "classnames";
 import DiscreteControl from "@/primitives/controls/DiscreteControl";
 import KnobView from "./KnobView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, AudioControlEvent, ThemableProps } from "@/types";
-import { useThemableProps } from "@/defaults/AudioUiProvider";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { useDiscreteParameterResolution } from "@/hooks/useDiscreteParameterResolution";
-import { clampNormalized, DiscreteParameter } from "@cutoff/audio-ui-core";
-import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
+import { DiscreteParameter, DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
+import { useThemableProps } from "@/hooks/useThemableProps";
 
 const CONTENT_WRAPPER_STYLE: React.CSSProperties = {
     width: "100%",
@@ -118,12 +117,16 @@ function CycleButton({
     style,
     children,
 }: CycleButtonProps) {
-    const clampedRoundness = roundness !== undefined ? clampNormalized(roundness) : undefined;
-    const clampedThickness = clampNormalized(thickness);
-    const { resolvedColor, resolvedRoundness } = useThemableProps(
-        { color, roundness: clampedRoundness },
-        { color: undefined, roundness: DEFAULT_ROUNDNESS }
-    );
+    const {
+        style: themableStyle,
+        clampedRoundness,
+        clampedThickness,
+    } = useThemableProps({
+        color,
+        roundness,
+        thickness,
+        style,
+    });
 
     // Get visualContentMap and derivedParameter for content rendering.
     // Note: DiscreteControl also calls useDiscreteParameterResolution internally for parameter resolution,
@@ -186,7 +189,7 @@ function CycleButton({
             labelAlign={labelAlign}
             labelOverflow={labelOverflow}
             className={classNames(sizeClassName, className)}
-            style={{ ...sizeStyle, ...style }}
+            style={{ ...sizeStyle, ...themableStyle }}
             onClick={onClick}
             onMouseDown={onMouseDown}
             onMouseUp={onMouseUp}
@@ -196,8 +199,8 @@ function CycleButton({
             viewProps={{
                 bipolar: false,
                 thickness: clampedThickness,
-                roundness: resolvedRoundness ?? DEFAULT_ROUNDNESS,
-                color: resolvedColor,
+                roundness: clampedRoundness ?? DEFAULT_ROUNDNESS,
+                color: color ?? "var(--audioui-primary-color)",
             }}
             htmlOverlay={<div style={CONTENT_WRAPPER_STYLE}>{content}</div>}
         >

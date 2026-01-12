@@ -7,7 +7,6 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { generateColorVariants, getAdaptiveDefaultColor } from "@cutoff/audio-ui-core";
 import { ControlComponent, KnobVariant } from "@/types";
 import { translateKnobRoundness, translateKnobThickness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
@@ -81,7 +80,7 @@ function KnobView({
     roundness = DEFAULT_ROUNDNESS,
     openness = 90,
     rotation = 0,
-    color,
+    color: _color, // Prefixed with _ to indicate intentionally unused (kept for API compatibility)
     className,
     svgOverlayRotary = false,
     svgOverlay,
@@ -101,14 +100,9 @@ function KnobView({
         return translateKnobRoundness(roundness) !== 0;
     }, [roundness]);
 
-    // Generate color variants
-    const colorVariants = useMemo(
-        () => generateColorVariants(color ?? getAdaptiveDefaultColor(), "transparency"),
-        [color]
-    );
-
     // Reusable ValueRing element for value indication
     // Note: Not memoized since normalizedValue changes frequently during interactions
+    // Use CSS variables for colors - CSS handles variant generation via color-mix
     const valueRing = (
         <ValueRing
             cx={50}
@@ -120,8 +114,8 @@ function KnobView({
             roundness={isRound}
             openness={openness}
             rotation={rotation}
-            fgArcStyle={{ stroke: colorVariants.primary }}
-            bgArcStyle={{ stroke: colorVariants.primary50 }}
+            fgArcStyle={{ stroke: "var(--audioui-primary-color)" }}
+            bgArcStyle={{ stroke: "var(--audioui-primary-50)" }}
         />
     );
 
@@ -140,7 +134,7 @@ function KnobView({
                         openness={openness}
                         rotation={rotation}
                     >
-                        <circle cx="50%" cy="50%" r="50%" fill="#4A4D50" />
+                        <circle cx="50%" cy="50%" r="50%" fill="var(--audioui-knob-cap-fill, #4a4d50)" />
                         <line
                             x1="50%"
                             y1="15%"
@@ -190,7 +184,7 @@ function KnobView({
                         openness={openness}
                         rotation={rotation}
                     >
-                        <circle cx="50%" cy="50%" r="50%" fill="#4A4D50" />
+                        <circle cx="50%" cy="50%" r="50%" fill="var(--audioui-knob-cap-fill, #4a4d50)" />
                         <line
                             x1="50%"
                             y1="15%"

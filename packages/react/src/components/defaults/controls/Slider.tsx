@@ -8,13 +8,12 @@
 
 import React from "react";
 import classNames from "classnames";
-import { useThemableProps } from "@/defaults/AudioUiProvider";
 import { VerticalSliderView, HorizontalSliderView } from "./SliderView";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps, ValueLabelMode } from "@/types";
-import { clampNormalized } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
+import { useThemableProps } from "@/hooks/useThemableProps";
 
 /**
  * Props for the Slider component (built-in control with theming support)
@@ -47,7 +46,7 @@ export type SliderProps = ContinuousControlProps &
  * - Configurable orientation (horizontal or vertical)
  * - Bipolar mode support (centered at zero, grows in both directions)
  * - Customizable thickness and roundness
- * - Full theming support via AudioUiProvider
+ * - Full theming support via CSS variables
  * - Adaptive sizing or fixed size variants
  * - Supports drag, wheel, and keyboard interactions
  * - Custom value formatting
@@ -111,12 +110,16 @@ function Slider({
     className,
     style,
 }: SliderProps) {
-    const clampedRoundness = roundness !== undefined ? clampNormalized(roundness) : undefined;
-    const clampedThickness = clampNormalized(thickness);
-    const { resolvedColor, resolvedRoundness } = useThemableProps(
-        { color, roundness: clampedRoundness },
-        { color: undefined, roundness: DEFAULT_ROUNDNESS }
-    );
+    const {
+        style: themableStyle,
+        clampedRoundness,
+        clampedThickness,
+    } = useThemableProps({
+        color,
+        roundness,
+        thickness,
+        style,
+    });
 
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "slider", orientation);
 
@@ -139,7 +142,7 @@ function Slider({
             labelAlign={labelAlign}
             labelOverflow={labelOverflow}
             className={mergedClassName}
-            style={{ ...sizeStyle, ...style }}
+            style={{ ...sizeStyle, ...themableStyle }}
             onChange={onChange}
             paramId={paramId}
             onClick={onClick}
@@ -157,9 +160,9 @@ function Slider({
             valueAsLabel={valueAsLabel}
             view={ViewComponent}
             viewProps={{
-                color: resolvedColor,
+                color: color ?? "var(--audioui-primary-color)",
                 thickness: clampedThickness,
-                roundness: resolvedRoundness ?? DEFAULT_ROUNDNESS,
+                roundness: clampedRoundness ?? DEFAULT_ROUNDNESS,
                 bipolar: bipolar,
             }}
         />
