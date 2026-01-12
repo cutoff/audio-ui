@@ -40,12 +40,6 @@ svg foreignObject div svg {
     max-height: 75%;
 }
 
-/* For icon components (like react-icons) that render SVGs, ensure they inherit color */
-svg foreignObject div > * svg {
-    fill: currentColor;
-    color: inherit;
-}
-
 /* Icon wrapper class for HTML overlay - ensures SVG icons fill their container */
 /* Used by CycleButton and other components that render icons in the overlay */
 .audioui-icon-wrapper {
@@ -55,6 +49,7 @@ svg foreignObject div > * svg {
 }
 
 /* Ensure SVG icons inside the wrapper fill the container and inherit color */
+/* Icons automatically inherit text color via currentColor */
 .audioui-icon-wrapper svg {
     width: 100%;
     height: 100%;
@@ -92,6 +87,11 @@ svg foreignObject div > * svg {
 
 /* Highlight effect for interactive components */
 /* Uses --audioui-highlight-effect from themes.css (user-customizable) */
+/*
+ * CSS isolation on text and foreignObject elements prevents the filter from affecting them,
+ * allowing the filter to affect only the SVG graphics (paths, circles, etc.) without
+ * requiring manual filter resets. This is cleaner than resetting filters on each element type.
+ */
 .audioui-highlight {
     will-change: filter;
     /* Fast transition for realtime audio UI - instant feedback preferred */
@@ -100,38 +100,22 @@ svg foreignObject div > * svg {
 
 /* Apply highlight on hover OR when focused (keyboard/click) */
 /* The actual effect is defined by --audioui-highlight-effect in themes.css */
+/* Using :is() for cleaner selector grouping (modern browsers) */
 .audioui-highlight:hover,
 .audioui-highlight:focus,
 .audioui-highlight:focus-visible {
     filter: var(--audioui-highlight-effect);
-    outline: none; /* Ensure no default ring */
+    outline: none; /* Remove default browser focus ring */
 }
 
-/* Prevent blur effect from affecting text elements */
-.audioui-highlight:hover text,
-.audioui-highlight:focus text,
-.audioui-highlight:focus-visible text {
-    filter: none;
+/* Prevent filter from affecting text elements by isolating them */
+.audioui-highlight text {
+    isolation: isolate;
 }
 
-/* Reset foreignObject filter on hover, but preserve img filters */
-.audioui-highlight:hover foreignObject,
-.audioui-highlight:focus foreignObject,
-.audioui-highlight:focus-visible foreignObject {
-    filter: none;
-}
-
-/* Ensure img filters are preserved even when foreignObject filter is reset on hover */
-.audioui-highlight:hover foreignObject div img,
-.audioui-highlight:focus foreignObject div img,
-.audioui-highlight:focus-visible foreignObject div img {
-    filter: brightness(0);
-}
-
-.dark .audioui-highlight:hover foreignObject div img,
-.dark .audioui-highlight:focus foreignObject div img,
-.dark .audioui-highlight:focus-visible foreignObject div img {
-    filter: none;
+/* Prevent filter from affecting foreignObject elements (HTML content) by isolating them */
+.audioui-highlight foreignObject {
+    isolation: isolate;
 }
 
 /* ==========================================================================
