@@ -38,7 +38,9 @@ function generateCodeSnippet(
     label: string,
     roundness: number | undefined,
     thickness: number | undefined,
-    color: string | undefined
+    color: string | undefined,
+    openness: number | undefined,
+    rotation: number | undefined
 ): string {
     let props = `value={${value}} label='${label}'`;
 
@@ -52,6 +54,14 @@ function generateCodeSnippet(
 
     if (color !== undefined) {
         props += ` color='${color}'`;
+    }
+
+    if (openness !== undefined) {
+        props += ` openness={${openness}}`;
+    }
+
+    if (rotation !== undefined) {
+        props += ` rotation={${rotation}}`;
     }
 
     return `<CycleButton ${props}>
@@ -68,6 +78,8 @@ type CycleButtonComponentProps = {
     label?: string;
     roundness?: number;
     thickness?: number;
+    openness?: number;
+    rotation?: number;
     adaptiveSize?: boolean;
     style?: React.CSSProperties;
     className?: string;
@@ -82,6 +94,8 @@ function CycleButtonComponent({
     label,
     roundness,
     thickness,
+    openness,
+    rotation,
     adaptiveSize,
     onChange,
     onClick,
@@ -103,6 +117,8 @@ function CycleButtonComponent({
             color={color}
             roundness={roundness}
             thickness={thickness}
+            openness={openness}
+            rotation={rotation}
         >
             {sampleOptions}
         </CycleButton>
@@ -114,6 +130,8 @@ export default function CycleButtonDemoPage() {
     const [label, setLabel] = useState("Waveform");
     const [roundness, setRoundness] = useState<number | undefined>(undefined);
     const [thickness, setThickness] = useState<number | undefined>(undefined);
+    const [openness, setOpenness] = useState<number | undefined>(undefined);
+    const [rotation, setRotation] = useState<number | undefined>(undefined);
     const [color, setColor] = useState<string | undefined>(undefined); // Allow undefined to use theme values
 
     const handleExampleClick = (): void => {
@@ -121,6 +139,8 @@ export default function CycleButtonDemoPage() {
         setLabel("Waveform");
         setRoundness(undefined); // Use theme roundness
         setThickness(undefined); // Use theme thickness
+        setOpenness(undefined); // Use default openness
+        setRotation(undefined); // Use default rotation
         setColor(undefined); // Use theme color
     };
 
@@ -160,6 +180,37 @@ export default function CycleButtonDemoPage() {
                 }}
             />
         </div>,
+        <div key="openness" className="grid gap-2">
+            <Label htmlFor="opennessProp">Openness (0-360 degrees)</Label>
+            <Input
+                id="opennessProp"
+                type="number"
+                min="0"
+                max="360"
+                step="1"
+                value={openness !== undefined ? openness : ""}
+                onChange={(e) => {
+                    const value =
+                        e.target.value === "" ? undefined : Math.max(0, Math.min(360, Number(e.target.value)));
+                    setOpenness(value);
+                }}
+                placeholder="Default (90)"
+            />
+        </div>,
+        <div key="rotation" className="grid gap-2">
+            <Label htmlFor="rotationProp">Rotation (degrees)</Label>
+            <Input
+                id="rotationProp"
+                type="number"
+                step="1"
+                value={rotation !== undefined ? rotation : ""}
+                onChange={(e) => {
+                    const value = e.target.value === "" ? undefined : Number(e.target.value);
+                    setRotation(value);
+                }}
+                placeholder="Default (0)"
+            />
+        </div>,
         <div key="color" className="grid gap-2">
             <ColorPickerField id="colorProp" label="Color" value={color} onChange={setColor} />
         </div>,
@@ -171,12 +222,14 @@ export default function CycleButtonDemoPage() {
         </CycleButton>,
     ];
 
-    const codeString = generateCodeSnippet(value, label, roundness, thickness, color);
+    const codeString = generateCodeSnippet(value, label, roundness, thickness, color, openness, rotation);
     const componentProps = {
         value,
         label,
         roundness,
         thickness,
+        openness,
+        rotation,
         color,
     };
 

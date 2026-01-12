@@ -16,6 +16,16 @@ import { useDiscreteParameterResolution } from "@/hooks/useDiscreteParameterReso
 import { DEFAULT_ROUNDNESS, CLASSNAMES } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "@/hooks/useThemableProps";
 
+/**
+ * Default openness for knob ring in degrees (matches ValueRing default)
+ */
+const DEFAULT_OPENNESS = 90;
+
+/**
+ * Default rotation angle offset in degrees (matches ValueRing default)
+ */
+const DEFAULT_ROTATION = 0;
+
 const CONTENT_WRAPPER_STYLE: React.CSSProperties = {
     width: "100%",
     height: "100%",
@@ -44,6 +54,14 @@ export type CycleButtonProps = DiscreteControlProps &
         renderOption?: (option: { value: string | number; label: string }) => React.ReactNode;
         /** Thickness of the stroke (normalized 0.0-1.0, maps to 1-20). Used by rotary variant. */
         thickness?: number;
+        /** Openness of the ring in degrees (value between 0-360º; 0º: closed; 90º: 3/4 open; 180º: half-circle;)
+         * @default 90
+         */
+        openness?: number;
+        /** Optional rotation angle offset in degrees
+         * @default 0
+         */
+        rotation?: number;
     };
 
 /**
@@ -117,6 +135,8 @@ function CycleButton({
     color,
     roundness,
     thickness = 0.4,
+    openness = DEFAULT_OPENNESS,
+    rotation = DEFAULT_ROTATION,
     parameter,
     paramId,
     options,
@@ -220,6 +240,8 @@ function CycleButton({
                 bipolar: false,
                 thickness: clampedThickness,
                 roundness: clampedRoundness ?? DEFAULT_ROUNDNESS,
+                openness: openness,
+                rotation: rotation,
                 color: color ?? "var(--audioui-primary-color)",
             }}
             htmlOverlay={<div style={CONTENT_WRAPPER_STYLE}>{content}</div>}
