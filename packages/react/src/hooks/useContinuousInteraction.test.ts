@@ -27,8 +27,8 @@ describe("useContinuousInteraction", () => {
         expect(result.current.role).toBe("slider");
         expect(result.current.tabIndex).toBe(0);
         expect(result.current["aria-disabled"]).toBe(false);
-        // Default direction is "both", which gives "move" cursor
-        expect(result.current.style?.cursor).toBe("move");
+        // Default direction is "both", which uses bidirectional cursor CSS variable
+        expect(result.current.style?.cursor).toBe("var(--audioui-cursor-bidirectional)");
     });
 
     it("handles disabled state correctly", () => {
@@ -36,7 +36,7 @@ describe("useContinuousInteraction", () => {
 
         expect(result.current.tabIndex).toBe(-1);
         expect(result.current["aria-disabled"]).toBe(true);
-        expect(result.current.style?.cursor).toBe("not-allowed");
+        expect(result.current.style?.cursor).toBe("var(--audioui-cursor-disabled)");
 
         // Attempt interactions
         act(() => {
@@ -54,14 +54,14 @@ describe("useContinuousInteraction", () => {
     it("handles non-editable state correctly (no onChange)", () => {
         const { result } = renderHook(() => useContinuousInteraction({ adjustValue, editable: false }));
 
-        expect(result.current.style?.cursor).toBe("default");
+        expect(result.current.style?.cursor).toBe("var(--audioui-cursor-noneditable)");
     });
 
     it("handles editable state correctly (with onChange)", () => {
         const { result } = renderHook(() => useContinuousInteraction({ adjustValue, editable: true }));
 
-        // Default direction is "both", which gives "move" cursor
-        expect(result.current.style?.cursor).toBe("move");
+        // Default direction is "both", which uses bidirectional cursor CSS variable
+        expect(result.current.style?.cursor).toBe("var(--audioui-cursor-bidirectional)");
     });
 
     describe("Drag Interaction", () => {
@@ -76,8 +76,8 @@ describe("useContinuousInteraction", () => {
 
             // Verify global state changes
             expect(document.body.style.userSelect).toBe("none");
-            // Default direction is "both", which gives "move" cursor
-            expect(document.body.style.cursor).toBe("move");
+            // Default direction is "both", which uses bidirectional cursor CSS variable
+            expect(document.body.style.cursor).toBe("var(--audioui-cursor-bidirectional)");
 
             // 2. Mouse Move (Global)
             // Move UP by 10 pixels.
@@ -113,7 +113,7 @@ describe("useContinuousInteraction", () => {
                 result.current.onMouseDown({ clientX: 100, clientY: 100 });
             });
 
-            expect(document.body.style.cursor).toBe("ew-resize");
+            expect(document.body.style.cursor).toBe("var(--audioui-cursor-horizontal)");
 
             // Move RIGHT by 10 pixels
             // Logic: delta = currentX - startX = 110 - 100 = 10

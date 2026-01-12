@@ -201,7 +201,6 @@ export default function FilmStripBooleanDemoPage() {
                 imageHref={SWITCH_METAL_IMAGE}
                 invertValue={true}
                 size="large"
-                style={{ cursor: "pointer" }}
                 onClick={() => handleExampleClick(0)}
             />,
             <FilmStripBooleanControl
@@ -214,7 +213,6 @@ export default function FilmStripBooleanDemoPage() {
                 frameCount={2}
                 imageHref={BIG_BUTTON_IMAGE}
                 size="large"
-                style={{ cursor: "pointer" }}
                 onClick={() => handleExampleClick(1)}
             />,
             <FilmStripBooleanControl
@@ -228,7 +226,6 @@ export default function FilmStripBooleanDemoPage() {
                 imageHref={POWER_SWITCH_IMAGE}
                 invertValue={true}
                 size="large"
-                style={{ cursor: "pointer" }}
                 onClick={() => handleExampleClick(2)}
             />,
         ],

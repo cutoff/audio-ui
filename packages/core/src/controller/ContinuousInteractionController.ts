@@ -5,7 +5,6 @@
  */
 
 import { InteractionDirection, InteractionMode } from "../types";
-import { CIRCULAR_CURSOR } from "../constants/cursors";
 
 export interface ContinuousInteractionConfig {
     /**
@@ -141,10 +140,12 @@ export class ContinuousInteractionController {
 
         document.body.style.userSelect = "none";
 
-        let cursor = "ns-resize";
-        if (this.config.direction === "horizontal") cursor = "ew-resize";
-        if (this.config.direction === "both") cursor = "move";
-        if (this.config.direction === "circular") cursor = CIRCULAR_CURSOR;
+        // Cursor selection based on interaction direction - uses CSS variables for customization
+        // The logic (when to show which cursor) is fixed, but cursor types are customizable via CSS
+        let cursor = "var(--audioui-cursor-vertical)";
+        if (this.config.direction === "horizontal") cursor = "var(--audioui-cursor-horizontal)";
+        if (this.config.direction === "both") cursor = "var(--audioui-cursor-bidirectional)";
+        if (this.config.direction === "circular") cursor = "var(--audioui-cursor-circular)";
 
         document.body.style.cursor = cursor;
 

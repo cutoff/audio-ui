@@ -139,10 +139,11 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
         return onChange || onClick ? CLASSNAMES.highlight : "";
     }, [onChange, onClick]);
 
-    // Add pointer cursor when interactive (onChange or onClick)
+    // Add clickable cursor when interactive (onChange or onClick)
+    // Uses CSS variable for customizable cursor type
     const svgStyle = useMemo(
         () => ({
-            ...(onClick || onChange ? { cursor: "pointer" as const } : {}),
+            ...(onClick || onChange ? { cursor: "var(--audioui-cursor-clickable)" as const } : {}),
         }),
         [onClick, onChange]
     );

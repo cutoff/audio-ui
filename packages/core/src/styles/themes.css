@@ -44,6 +44,20 @@
         );
     --audioui-highlight-transition-duration: 50ms;
 
+    /* Cursor styles for interactive components - users can customize cursor types */
+    /* Variables are named after interaction functionality, not cursor type */
+    /* Default cursor values match current implementation; customize for different visual styles */
+    --audioui-cursor-clickable: pointer; /* Clickable controls (Button, CycleButton, click-only controls) */
+    --audioui-cursor-bidirectional: move; /* Continuous controls with direction="both" */
+    --audioui-cursor-horizontal: ew-resize; /* Horizontal drag (horizontal sliders, horizontal knobs) */
+    --audioui-cursor-vertical: ns-resize; /* Vertical drag (vertical sliders, wheel-only controls) */
+    --audioui-cursor-circular:
+        url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxMCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==")
+            16 16,
+        move; /* Circular drag (knobs with direction="circular") */
+    --audioui-cursor-noneditable: default; /* Non-editable controls */
+    --audioui-cursor-disabled: not-allowed; /* Disabled controls */
+
     /* Classic Piano Key Colors */
     --audioui-keys-ivory: hsl(40, 20%, 95%); /* Warm off-white color for classic white keys */
     --audioui-keys-ivory-stroke: hsl(40, 20%, 85%); /* Slightly darker for stroke contrast */

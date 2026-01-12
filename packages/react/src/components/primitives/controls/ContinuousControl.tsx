@@ -180,11 +180,12 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         return onChange || onClick ? CLASSNAMES.highlight : "";
     }, [onChange, onClick]);
 
-    // Add pointer cursor when clickable but not draggable (onClick but no onChange)
+    // Add clickable cursor when clickable but not draggable (onClick but no onChange)
+    // Uses CSS variable for customizable cursor type
     const svgStyle = {
         ...(interactiveProps.style ?? {}),
         // Override cursor for click-only controls
-        ...(onClick && !onChange ? { cursor: "pointer" as const } : {}),
+        ...(onClick && !onChange ? { cursor: "var(--audioui-cursor-clickable)" as const } : {}),
     };
 
     return (

@@ -76,14 +76,7 @@ function FilmstripWrapper({
     frameCount = SAMPLE_FRAMES,
 }: FilmstripWrapperProps) {
     return (
-        <div
-            className={`w-full h-full relative ${className || ""}`}
-            style={{
-                ...style,
-                cursor: onClick ? "pointer" : "default",
-            }}
-            onClick={onClick}
-        >
+        <div className={`w-full h-full relative ${className || ""}`} style={style} onClick={onClick}>
             <svg width="100%" height="100%" viewBox="0 0 100 100" style={{ display: "block" }}>
                 {/*
                   FilmstripImage primitive

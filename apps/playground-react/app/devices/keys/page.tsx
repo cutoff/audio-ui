@@ -316,7 +316,7 @@ export default function KeysPage() {
                         <h2 className="text-xl md:text-2xl font-medium mb-4 md:mb-6">Examples</h2>
                         <div className="flex flex-wrap gap-4 md:gap-8 justify-center md:justify-start">
                             <div className="flex flex-col items-center gap-2">
-                                <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(0)}>
+                                <div onClick={() => handleExampleClick(0)}>
                                     <Keys
                                         nbKeys={61}
                                         startKey="C"
@@ -326,13 +326,12 @@ export default function KeysPage() {
                                         roundness={undefined}
                                         size="large"
                                         adaptiveSize={false}
-                                        style={{ cursor: "pointer" }}
                                     />
                                 </div>
                                 <span className="text-xs text-muted-foreground text-center">Default</span>
                             </div>
                             <div className="flex flex-col items-center gap-2">
-                                <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(1)}>
+                                <div onClick={() => handleExampleClick(1)}>
                                     <Keys
                                         nbKeys={25}
                                         startKey="C"
@@ -341,13 +340,12 @@ export default function KeysPage() {
                                         color={undefined}
                                         size="large"
                                         adaptiveSize={false}
-                                        style={{ cursor: "pointer" }}
                                     />
                                 </div>
                                 <span className="text-xs text-muted-foreground text-center">Classic Style</span>
                             </div>
                             <div className="flex flex-col items-center gap-2">
-                                <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(2)}>
+                                <div onClick={() => handleExampleClick(2)}>
                                     <Keys
                                         nbKeys={25}
                                         startKey="C"
@@ -356,13 +354,12 @@ export default function KeysPage() {
                                         color="#ff3366"
                                         size="large"
                                         adaptiveSize={false}
-                                        style={{ cursor: "pointer" }}
                                     />
                                 </div>
                                 <span className="text-xs text-muted-foreground text-center">Classic Inverted</span>
                             </div>
                             <div className="flex flex-col items-center gap-2">
-                                <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(3)}>
+                                <div onClick={() => handleExampleClick(3)}>
                                     <Keys
                                         nbKeys={25}
                                         startKey="C"
@@ -372,13 +369,12 @@ export default function KeysPage() {
                                         roundness={0.3}
                                         size="large"
                                         adaptiveSize={false}
-                                        style={{ cursor: "pointer" }}
                                     />
                                 </div>
                                 <span className="text-xs text-muted-foreground text-center">With Roundness</span>
                             </div>
                             <div className="flex flex-col items-center gap-2">
-                                <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(4)}>
+                                <div onClick={() => handleExampleClick(4)}>
                                     <Keys
                                         nbKeys={37}
                                         startKey="C"
@@ -387,13 +383,12 @@ export default function KeysPage() {
                                         color="#9966ff"
                                         size="large"
                                         adaptiveSize={false}
-                                        style={{ cursor: "pointer" }}
                                     />
                                 </div>
                                 <span className="text-xs text-muted-foreground text-center">Scale (C Major)</span>
                             </div>
                             <div className="flex flex-col items-center gap-2">
-                                <div style={{ cursor: "pointer" }} onClick={() => handleExampleClick(5)}>
+                                <div onClick={() => handleExampleClick(5)}>
                                     <Keys
                                         nbKeys={13}
                                         startKey="C"
@@ -402,7 +397,6 @@ export default function KeysPage() {
                                         color="#ff9933"
                                         size="large"
                                         adaptiveSize={false}
-                                        style={{ cursor: "pointer" }}
                                     />
                                 </div>
                                 <span className="text-xs text-muted-foreground text-center">Small (MIDI Notes)</span>

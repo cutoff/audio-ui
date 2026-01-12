@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useMemo, useRef } from "react";
-import { ContinuousInteractionController, ContinuousInteractionConfig, CIRCULAR_CURSOR } from "@cutoff/audio-ui-core";
+import { ContinuousInteractionController, ContinuousInteractionConfig } from "@cutoff/audio-ui-core";
 
 export type UseContinuousInteractionProps = Omit<ContinuousInteractionConfig, "adjustValue"> & {
     adjustValue: (delta: number, sensitivity?: number) => void;
@@ -43,6 +43,10 @@ export interface ContinuousInteractionHandlers {
  * event handlers that can be attached directly to SVG elements. It handles focus
  * management, accessibility attributes, and cursor styling automatically.
  *
+ * Cursor types are customizable via CSS variables in themes.css (e.g., `--audioui-cursor-clickable`,
+ * `--audioui-cursor-bidirectional`). The cursor selection logic (which cursor to show when) is
+ * fixed based on interaction state, but the actual cursor values are customizable.
+ *
  * @param adjustValue Function to adjust the value based on a delta. Receives (delta, sensitivity).
  * @param keyboardStep Step size for keyboard interaction (normalized 0..1, default: 0.05)
  * @param interactionMode Interaction mode: "drag", "wheel", or "both" (default: "both")
@@ -50,7 +54,7 @@ export interface ContinuousInteractionHandlers {
  * @param sensitivity Sensitivity of the control (default: 0.005). Higher = more sensitive.
  * @param wheelSensitivity Optional separate sensitivity for wheel events. Defaults to sensitivity / 4.
  * @param disabled Whether the control is disabled (default: false)
- * @param editable Whether the control is editable (default: true). When false, cursor changes to "default".
+ * @param editable Whether the control is editable (default: true). When false, uses `--audioui-cursor-noneditable`.
  * @param onDragStart Callback when drag interaction starts
  * @param onDragEnd Callback when drag interaction ends
  * @param onMouseDown Optional user-provided mouse down handler (composed with hook handler)
@@ -178,21 +182,23 @@ export function useContinuousInteraction({
         };
     }, [userOnMouseDown, userOnTouchStart, userOnWheel, userOnKeyDown]);
 
+    // Cursor selection based on interaction state - uses CSS variables for customization
+    // The logic (when to show which cursor) is fixed, but cursor types are customizable via CSS
     const cursor = disabled
-        ? "not-allowed"
+        ? "var(--audioui-cursor-disabled)"
         : !editable
-          ? "default"
+          ? "var(--audioui-cursor-noneditable)"
           : interactionMode === "wheel"
-            ? "ns-resize"
+            ? "var(--audioui-cursor-vertical)"
             : direction === "horizontal"
-              ? "ew-resize"
+              ? "var(--audioui-cursor-horizontal)"
               : direction === "vertical"
-                ? "ns-resize"
+                ? "var(--audioui-cursor-vertical)"
                 : direction === "both"
-                  ? "move"
+                  ? "var(--audioui-cursor-bidirectional)"
                   : direction === "circular"
-                    ? CIRCULAR_CURSOR
-                    : "pointer";
+                    ? "var(--audioui-cursor-circular)"
+                    : "var(--audioui-cursor-clickable)";
 
     return {
         ...handlers,

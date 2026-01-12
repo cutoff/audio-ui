@@ -425,7 +425,6 @@ export default function SliderPage({ orientation }: SliderPageProps) {
     const examples = [
         <div key="0" className={orientation === "vertical" ? "h-64" : "w-64"}>
             <Slider
-                style={{ cursor: "pointer" }}
                 min={0}
                 max={100}
                 step={1}
@@ -438,7 +437,6 @@ export default function SliderPage({ orientation }: SliderPageProps) {
         </div>,
         <div key="1" className={orientation === "vertical" ? "h-64" : "w-64"}>
             <Slider
-                style={{ cursor: "pointer" }}
                 min={0}
                 max={100}
                 step={1}
@@ -469,7 +467,6 @@ export default function SliderPage({ orientation }: SliderPageProps) {
         </div>,
         <div key="3" className={orientation === "vertical" ? "h-64" : "w-64"}>
             <Slider
-                style={{ cursor: "pointer" }}
                 min={0}
                 max={127}
                 step={1}
@@ -499,7 +496,6 @@ export default function SliderPage({ orientation }: SliderPageProps) {
         </div>,
         <div key="5" className={orientation === "vertical" ? "h-64" : "w-64"}>
             <Slider
-                style={{ cursor: "pointer" }}
                 min={0}
                 max={2000}
                 step={10}

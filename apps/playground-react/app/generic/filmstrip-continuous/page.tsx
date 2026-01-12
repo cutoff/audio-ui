@@ -411,7 +411,6 @@ export default function FilmStripContinuousDemoPage() {
                 valueAsLabel="interactive"
                 unit="VU"
                 size="large"
-                style={{ cursor: "pointer" }}
                 onClick={() => handleExampleClick(0)}
             />,
             <FilmStripContinuousControl
@@ -427,7 +426,6 @@ export default function FilmStripContinuousDemoPage() {
                 interactionDirection="circular"
                 valueAsLabel="interactive"
                 size="large"
-                style={{ cursor: "pointer" }}
                 onClick={() => handleExampleClick(1)}
             />,
             <FilmStripContinuousControl
@@ -442,7 +440,6 @@ export default function FilmStripContinuousDemoPage() {
                 imageHref={ABS_IMAGE}
                 interactionDirection="circular"
                 size="large"
-                style={{ cursor: "pointer" }}
                 onClick={() => handleExampleClick(2)}
             />,
         ],

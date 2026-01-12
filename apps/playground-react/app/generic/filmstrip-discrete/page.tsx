@@ -225,7 +225,6 @@ export default function FilmStripDiscreteDemoPage() {
                 frameCount={48}
                 imageHref={VU3_IMAGE}
                 size="large"
-                style={{ cursor: "pointer" }}
                 onClick={() => handleExampleClick(0)}
             >
                 {vuOptions.map((opt) => (
@@ -243,7 +242,6 @@ export default function FilmStripDiscreteDemoPage() {
                 frameCount={31}
                 imageHref={GUITAR_IMAGE}
                 size="large"
-                style={{ cursor: "pointer" }}
                 onClick={() => handleExampleClick(1)}
             >
                 {guitarOptions.map((opt) => (
@@ -261,7 +259,6 @@ export default function FilmStripDiscreteDemoPage() {
                 frameCount={200}
                 imageHref={ABS_IMAGE}
                 size="large"
-                style={{ cursor: "pointer" }}
                 onClick={() => handleExampleClick(2)}
             >
                 {absOptions.map((opt) => (

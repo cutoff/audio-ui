@@ -197,11 +197,12 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
         return onChange || onClick ? CLASSNAMES.highlight : "";
     }, [onChange, onClick]);
 
-    // Add pointer cursor when interactive (onChange or onClick)
+    // Add clickable cursor when interactive (onChange or onClick)
+    // Uses CSS variable for customizable cursor type
     // Add touchAction: "none" to prevent default touch behaviors (scrolling/zooming)
     const svgStyle = useMemo(
         () => ({
-            ...(onClick || onChange ? { cursor: "pointer" as const } : {}),
+            ...(onClick || onChange ? { cursor: "var(--audioui-cursor-clickable)" as const } : {}),
             touchAction: "none" as const,
         }),
         [onClick, onChange]

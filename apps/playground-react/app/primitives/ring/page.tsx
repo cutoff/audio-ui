@@ -78,7 +78,6 @@ function RingWrapper({
             style={{
                 ...style,
                 ...(adaptiveSize ? {} : { width: sizePx, height: sizePx }),
-                cursor: onClick ? "pointer" : "default",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
