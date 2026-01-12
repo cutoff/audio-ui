@@ -10,16 +10,10 @@ import React, { useMemo } from "react";
 import classNames from "classnames";
 import DiscreteControl from "@/primitives/controls/DiscreteControl";
 import KnobView from "./KnobView";
-import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, AudioControlEvent, ThemableProps } from "@/types";
+import { AdaptiveBoxProps, AdaptiveSizeProps, DiscreteControlProps, ThemableProps } from "@/types";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { useDiscreteParameterResolution } from "@/hooks/useDiscreteParameterResolution";
-import {
-    DiscreteParameter,
-    DiscreteOption,
-    DEFAULT_ROUNDNESS,
-    CLASSNAMES,
-    MidiResolution,
-} from "@cutoff/audio-ui-core";
+import { DEFAULT_ROUNDNESS, CLASSNAMES } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "@/hooks/useThemableProps";
 
 const CONTENT_WRAPPER_STYLE: React.CSSProperties = {
@@ -42,46 +36,14 @@ const ICON_WRAPPER_STYLE: React.CSSProperties = {
 /**
  * Props for the CycleButton component
  */
-export type CycleButtonProps = AdaptiveSizeProps &
+export type CycleButtonProps = DiscreteControlProps &
+    AdaptiveSizeProps &
     AdaptiveBoxProps &
-    BaseProps &
     ThemableProps & {
-        /** Label displayed below the component */
-        label?: string;
-        /** Current value of the component (Controlled mode) */
-        value?: string | number;
-        /** Handler for value changes */
-        onChange?: (event: AudioControlEvent<string | number>) => void;
-        /** Default value of the component (Uncontrolled mode) */
-        defaultValue?: string | number;
-        /** Option definitions for the parameter model (Ad-Hoc mode)
-         *
-         * **Parameter Model Only**: This prop defines the parameter structure (value, label, midiValue).
-         * It does NOT provide visual content - use `children` (OptionView components) for that.
-         */
-        options?: DiscreteOption[];
-        /** Child elements (OptionView components) for visual content mapping
-         *
-         * **Visual Content Only**: Children provide ReactNodes for rendering (icons, text, custom components).
-         * They do NOT define the parameter model - use `options` prop or `parameter` prop for that.
-         */
-        children?: React.ReactNode;
-        /** Identifier for the parameter this control represents */
-        paramId?: string;
-        /** Audio Parameter definition (Strict Model Mode) */
-        parameter?: DiscreteParameter;
         /** Custom renderer for options (used when parameter is provided but no children map exists) */
         renderOption?: (option: { value: string | number; label: string }) => React.ReactNode;
         /** Thickness of the stroke (normalized 0.0-1.0, maps to 1-20). Used by rotary variant. */
         thickness?: number;
-        /** MIDI resolution in bits (ad-hoc mode, ignored if parameter provided)
-         * @default 7
-         */
-        midiResolution?: MidiResolution;
-        /** MIDI mapping strategy (ad-hoc mode, ignored if parameter provided)
-         * @default "spread"
-         */
-        midiMapping?: "spread" | "sequential" | "custom";
     };
 
 /**
