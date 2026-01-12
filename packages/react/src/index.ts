@@ -4,7 +4,7 @@
  * See LICENSE.md for details.
  */
 
-export { default as Option } from "./components/primitives/controls/Option";
+export { default as OptionView } from "./components/primitives/controls/OptionView";
 
 export { default as Button } from "./components/defaults/controls/Button";
 export { default as Knob } from "./components/defaults/controls/Knob";
@@ -66,7 +66,7 @@ export type { ThemeConfig } from "./utils/theme";
 
 // Also export types for consuming applications
 export type { CycleButtonProps } from "./components/defaults/controls/CycleButton";
-export type { OptionProps } from "./components/primitives/controls/Option";
+export type { OptionViewProps } from "./components/primitives/controls/OptionView";
 export type { KnobProps } from "./components/defaults/controls/Knob";
 export type { SliderProps } from "./components/defaults/controls/Slider";
 export type { ButtonProps } from "./components/defaults/controls/Button";

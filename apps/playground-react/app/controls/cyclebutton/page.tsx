@@ -7,7 +7,7 @@
 "use client";
 
 import { useState } from "react";
-import { CycleButton, CycleButtonProps, Option, AudioControlEvent } from "@cutoff/audio-ui-react";
+import { CycleButton, CycleButtonProps, OptionView, AudioControlEvent } from "@cutoff/audio-ui-react";
 
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
@@ -16,21 +16,21 @@ import { ColorPickerField } from "@/components/ColorPickerField";
 import { SawWaveIcon, SineWaveIcon, SquareWaveIcon, TriangleWaveIcon } from "@/components/wave-icons";
 
 const sampleOptions = [
-    <Option key={0} value={0} label="Sine">
+    <OptionView key={0} value={0} label="Sine">
         <SineWaveIcon />
-    </Option>,
-    <Option key={1} value={1} label="Triangle">
+    </OptionView>,
+    <OptionView key={1} value={1} label="Triangle">
         <TriangleWaveIcon />
-    </Option>,
-    <Option key={2} value={2} label="Square">
+    </OptionView>,
+    <OptionView key={2} value={2} label="Square">
         <SquareWaveIcon />
-    </Option>,
-    <Option key={3} value={3} label="Saw">
+    </OptionView>,
+    <OptionView key={3} value={3} label="Saw">
         <SawWaveIcon />
-    </Option>,
-    <Option key={4} value={4} label="Other">
+    </OptionView>,
+    <OptionView key={4} value={4} label="Other">
         Oth
-    </Option>,
+    </OptionView>,
 ];
 
 function generateCodeSnippet(
@@ -55,11 +55,11 @@ function generateCodeSnippet(
     }
 
     return `<CycleButton ${props}>
-    <Option value={0} label="Sine"><SineWaveIcon /></Option>
-    <Option value={1} label="Triangle"><TriangleWaveIcon /></Option>
-    <Option value={2} label="Square"><SquareWaveIcon /></Option>
-    <Option value={3} label="Saw"><SawWaveIcon /></Option>
-    <Option value={4} label="Other">Oth</Option>
+    <OptionView value={0} label="Sine"><SineWaveIcon /></OptionView>
+    <OptionView value={1} label="Triangle"><TriangleWaveIcon /></OptionView>
+    <OptionView value={2} label="Square"><SquareWaveIcon /></OptionView>
+    <OptionView value={3} label="Saw"><SawWaveIcon /></OptionView>
+    <OptionView value={4} label="Other">Oth</OptionView>
 </CycleButton>`;
 }
 

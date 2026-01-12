@@ -83,6 +83,21 @@ export const ExpScale: ScaleFunction = {
 
 export type ScaleType = ScaleFunction | "linear" | "log" | "exp";
 
+/**
+ * Definition for a single option in a discrete parameter.
+ *
+ * This type represents the parameter model definition (value, label, MIDI mapping).
+ * It is separate from visual content, which is provided via React children in components.
+ */
+export interface DiscreteOption {
+    /** The value associated with this option */
+    value: number | string;
+    /** The label for this option (used for display, accessibility, and parameter model) */
+    label: string;
+    /** Optional explicit MIDI value for custom mapping strategy */
+    midiValue?: number;
+}
+
 interface BaseAudioParameter {
     id: string;
     name: string; // 'title' in MIDI 2.0 PE
@@ -114,11 +129,8 @@ export interface BooleanParameter extends BaseAudioParameter {
 export interface DiscreteParameter extends BaseAudioParameter {
     type: "discrete";
     defaultValue?: number | string;
-    options: Array<{
-        value: number | string;
-        label: string;
-        midiValue?: number;
-    }>;
+    /** Array of option definitions (parameter model) */
+    options: DiscreteOption[];
 
     midiMapping?: "spread" | "sequential" | "custom";
 }

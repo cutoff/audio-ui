@@ -8,19 +8,19 @@ import React from "react";
 import { describe, it, expect } from "vitest";
 import { renderHook } from "@testing-library/react";
 import { useDiscreteParameterResolution } from "./useDiscreteParameterResolution";
-import Option from "../components/primitives/controls/Option";
+import OptionView from "../components/primitives/controls/OptionView";
 import { DiscreteParameter } from "@cutoff/audio-ui-core";
 
 describe("useDiscreteParameterResolution", () => {
     describe("Ad-Hoc Mode (Children only)", () => {
-        it("infers parameter options from Option children", () => {
+        it("infers parameter options from OptionView children", () => {
             const children = [
-                <Option key="1" value="a" label="Option A">
+                <OptionView key="1" value="a" label="Option A">
                     A
-                </Option>,
-                <Option key="2" value="b" label="Option B">
+                </OptionView>,
+                <OptionView key="2" value="b" label="Option B">
                     B
-                </Option>,
+                </OptionView>,
             ];
 
             const { result } = renderHook(() => useDiscreteParameterResolution({ children, paramId: "test-param" }));
@@ -43,12 +43,12 @@ describe("useDiscreteParameterResolution", () => {
 
         it("infers labels from children text if label prop missing", () => {
             const children = [
-                <Option key="1" value={0}>
+                <OptionView key="1" value={0}>
                     Zero
-                </Option>,
-                <Option key="2" value={1}>
+                </OptionView>,
+                <OptionView key="2" value={1}>
                     One
-                </Option>,
+                </OptionView>,
             ];
 
             const { result } = renderHook(() => useDiscreteParameterResolution({ children }));
@@ -59,7 +59,7 @@ describe("useDiscreteParameterResolution", () => {
         });
 
         it("falls back to stringified value if no label or text content", () => {
-            const children = [<Option key="1" value={10} />];
+            const children = [<OptionView key="1" value={10} />];
 
             const { result } = renderHook(() => useDiscreteParameterResolution({ children }));
             expect(result.current.derivedParameter.options[0].label).toBe("10");
@@ -67,12 +67,12 @@ describe("useDiscreteParameterResolution", () => {
 
         it("respects provided defaultValue", () => {
             const children = [
-                <Option key="1" value="a">
+                <OptionView key="1" value="a">
                     A
-                </Option>,
-                <Option key="2" value="b">
+                </OptionView>,
+                <OptionView key="2" value="b">
                     B
-                </Option>,
+                </OptionView>,
             ];
 
             const { result } = renderHook(() => useDiscreteParameterResolution({ children, defaultValue: "b" }));
@@ -90,12 +90,12 @@ describe("useDiscreteParameterResolution", () => {
 
         it("filters out invalid children", () => {
             const children = [
-                <Option key="1" value="a">
+                <OptionView key="1" value="a">
                     A
-                </Option>,
+                </OptionView>,
                 null,
                 false,
-                "Just Text", // Should be ignored as it's not an Option element
+                "Just Text", // Should be ignored as it's not an OptionView element
             ];
 
             const { result } = renderHook(() => useDiscreteParameterResolution({ children }));
@@ -105,7 +105,7 @@ describe("useDiscreteParameterResolution", () => {
         });
 
         it("uses index as value when value prop is missing", () => {
-            const children = [<Option key="0">First</Option>, <Option key="1">Second</Option>];
+            const children = [<OptionView key="0">First</OptionView>, <OptionView key="1">Second</OptionView>];
 
             const { result } = renderHook(() => useDiscreteParameterResolution({ children }));
 
@@ -115,9 +115,9 @@ describe("useDiscreteParameterResolution", () => {
 
         it("respects paramId and label props", () => {
             const children = [
-                <Option key="1" value="a">
+                <OptionView key="1" value="a">
                     A
-                </Option>,
+                </OptionView>,
             ];
             const { result } = renderHook(() =>
                 useDiscreteParameterResolution({
@@ -174,12 +174,12 @@ describe("useDiscreteParameterResolution", () => {
 
         it("uses parameter for model but extracts visual content from children", () => {
             const children = [
-                <Option key="1" value={1}>
+                <OptionView key="1" value={1}>
                     <span>Visual One</span>
-                </Option>,
-                <Option key="2" value={2}>
+                </OptionView>,
+                <OptionView key="2" value={2}>
                     <span>Visual Two</span>
-                </Option>,
+                </OptionView>,
             ];
 
             const { result } = renderHook(() => useDiscreteParameterResolution({ parameter: param, children }));
@@ -196,12 +196,12 @@ describe("useDiscreteParameterResolution", () => {
 
         it("matches visual content by value even if order differs", () => {
             const children = [
-                <Option key="2" value={2}>
+                <OptionView key="2" value={2}>
                     <span>Two</span>
-                </Option>,
-                <Option key="1" value={1}>
+                </OptionView>,
+                <OptionView key="1" value={1}>
                     <span>One</span>
-                </Option>,
+                </OptionView>,
             ];
 
             const { result } = renderHook(() => useDiscreteParameterResolution({ parameter: param, children }));

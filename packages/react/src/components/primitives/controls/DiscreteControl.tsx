@@ -45,24 +45,43 @@ export type DiscreteControlComponentProps<P extends object = Record<string, unkn
  * This component handles parameter resolution, value management, interaction handling,
  * and layout management for discrete controls (CycleButton, Selector, etc.).
  *
- * Supports three modes of operation:
- * 1. Ad-Hoc Mode (Children only): Model inferred from Option children.
- * 2. Strict Mode (Parameter only): Model provided via parameter prop. View via renderOption.
- * 3. Hybrid Mode (Parameter + Children): Model from parameter, View from children (matched by value).
+ * **Important: Options vs Children**
+ *
+ * - **`options` prop**: Defines the parameter model (value, label, midiValue). Used for parameter structure.
+ * - **`children` (OptionView components)**: Provides visual content (ReactNodes) for rendering. Used for display.
+ *
+ * Supports four modes of operation:
+ * 1. **Ad-Hoc Mode (Options prop)**: Model from `options` prop, visual from `children` (if provided) or default rendering
+ * 2. **Ad-Hoc Mode (Children only)**: Model inferred from OptionView children, visual from children
+ * 3. **Strict Mode (Parameter only)**: Model from `parameter` prop, visual via `renderOption` callback
+ * 4. **Hybrid Mode (Parameter + Children)**: Model from `parameter` prop, visual from children (matched by value)
  *
  * @param props - Component props including parameter configuration, view component, and layout options
  * @returns Rendered discrete control component
  *
  * @example
  * ```tsx
+ * // Ad-Hoc Mode with options prop
+ * <DiscreteControl
+ *   value="sine"
+ *   onChange={(e) => setValue(e.value)}
+ *   options={[
+ *     { value: "sine", label: "Sine Wave" },
+ *     { value: "square", label: "Square Wave" }
+ *   ]}
+ *   view={KnobView}
+ *   viewProps={{ color: "blue", thickness: 0.4 }}
+ * />
+ *
+ * // Ad-Hoc Mode with children
  * <DiscreteControl
  *   value="sine"
  *   onChange={(e) => setValue(e.value)}
  *   view={KnobView}
  *   viewProps={{ color: "blue", thickness: 0.4 }}
  * >
- *   <Option value="sine">Sine</Option>
- *   <Option value="square">Square</Option>
+ *   <OptionView value="sine">Sine</OptionView>
+ *   <OptionView value="square">Square</OptionView>
  * </DiscreteControl>
  * ```
  */
@@ -75,6 +94,7 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
         defaultValue,
         onChange,
         children,
+        options,
         label,
         paramId,
         parameter,
@@ -96,6 +116,7 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
 
     const { derivedParameter, effectiveDefaultValue } = useDiscreteParameterResolution({
         children,
+        options,
         paramId,
         parameter,
         defaultValue,

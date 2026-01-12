@@ -12,13 +12,61 @@
 
 ## Modes of Operation
 
-The component logic is designed to unify **Model** (logical parameter definition) and **View** (visual representation) through three distinct usage modes:
+The component logic is designed to unify **Model** (logical parameter definition) and **View** (visual representation) through four distinct usage modes.
 
-### 1. Ad-Hoc Mode (Children Only)
+**CRITICAL DISTINCTION: Options vs Children**
+
+- **`options` prop**: Defines the parameter model (value, label, midiValue). Used for parameter structure. This is the data definition.
+- **`children` (Option components)**: Provides visual content (ReactNodes) for rendering. Used for display. This is the visual representation.
+
+These serve different purposes and can be used together:
+
+- Use `options` when you have data-driven option definitions (e.g., from API, config file, or computed data)
+- Use `children` when you want to provide custom visual content (icons, styled text, custom components)
+- Use both: `options` for the model, `children` for visuals (matched by value)
+
+### 1. Ad-Hoc Mode (Options Prop)
+
+Designed for data-driven use cases where option definitions come from data sources.
+
+- **Input**: `options` prop (array of `DiscreteOption`). Optionally `children` for visual content.
+- **Model**: A `DiscreteParameter` is generated from the `options` prop.
+  - `options`: Uses the provided `options` prop directly.
+  - `defaultValue`: Derived from `defaultValue` prop on `CycleButton` (or first option).
+  - `label`: From `label` prop on `CycleButton`.
+- **View**: If `children` are provided, they are matched to options by value. Otherwise, uses default rendering (option labels).
+
+```tsx
+import { CycleButton, OptionView, DiscreteOption } from "@cutoff/audio-ui-react";
+
+// Options prop only (default visual rendering)
+const waveformOptions: DiscreteOption[] = [
+  { value: "sine", label: "Sine Wave", midiValue: 0 },
+  { value: "square", label: "Square Wave", midiValue: 1 },
+  { value: "sawtooth", label: "Sawtooth Wave", midiValue: 2 },
+];
+
+<CycleButton options={waveformOptions} defaultValue="sine" label="Waveform" />;
+
+// Options prop + children (custom visuals)
+<CycleButton options={waveformOptions} defaultValue="sine" label="Waveform">
+  <OptionView value="sine">
+    <SineIcon />
+  </OptionView>
+  <OptionView value="square">
+    <SquareIcon />
+  </OptionView>
+  <OptionView value="sawtooth">
+    <SawIcon />
+  </OptionView>
+</CycleButton>;
+```
+
+### 2. Ad-Hoc Mode (Children Only)
 
 Designed for simple use cases where the component infers the data model directly from the UI markup.
 
-- **Input**: `Option` children only. No `parameter` prop.
+- **Input**: `OptionView` children only. No `parameter` or `options` prop.
 - **Model**: A `DiscreteParameter` is generated automatically.
   - `options`: Derived from children.
   - `defaultValue`: Derived from `defaultValue` prop on `CycleButton` (or first option).
@@ -26,19 +74,19 @@ Designed for simple use cases where the component infers the data model directly
 - **View**: Mapped directly from `children`.
 
 ```tsx
-import { CycleButton, Option } from "@cutoff/audio-ui-react";
+import { CycleButton, OptionView } from "@cutoff/audio-ui-react";
 
 <CycleButton defaultValue="sine" label="Waveform">
-  <Option value="sine">Sine</Option>
-  <Option value="square">Square</Option>
+  <OptionView value="sine">Sine</OptionView>
+  <OptionView value="square">Square</OptionView>
 </CycleButton>;
 ```
 
-### 2. Strict Mode (Parameter Only)
+### 3. Strict Mode (Parameter Only)
 
 Designed for data-driven applications where the model is defined externally.
 
-- **Input**: `parameter` prop (DiscreteParameter). No children.
+- **Input**: `parameter` prop (DiscreteParameter). No children or options.
 - **Model**: Uses the provided `parameter` as the single source of truth.
 - **View**: Uses `renderOption` prop (if provided) or falls back to `parameter.options[i].label`.
 
@@ -46,33 +94,35 @@ Designed for data-driven applications where the model is defined externally.
 <CycleButton parameter={waveformParam} renderOption={(opt) => <Icon name={opt.label} />} />
 ```
 
-### 3. Hybrid Mode (Parameter + Children)
+### 4. Hybrid Mode (Parameter + Children)
 
 Designed for cases where you have a strict model but want to declare custom visuals (like icons) via JSX.
 
-- **Input**: `parameter` prop AND `Option` children.
+- **Input**: `parameter` prop AND `OptionView` children.
 - **Model**: Uses the provided `parameter` (Strict). The `value` and `label` props on children are ignored for the model, but used for matching.
 - **View**: Visual content is looked up in the children by matching `value`.
 
 ```tsx
-import { CycleButton, Option } from "@cutoff/audio-ui-react";
+import { CycleButton, OptionView } from "@cutoff/audio-ui-react";
 
 <CycleButton parameter={waveformParam}>
-  <Option value="sine">
+  <OptionView value="sine">
     <SineIcon />
-  </Option>
-  <Option value="square">
+  </OptionView>
+  <OptionView value="square">
     <SquareIcon />
-  </Option>
+  </OptionView>
 </CycleButton>;
 ```
 
-## Option Component Specification
+## OptionView Component Specification
 
-The `Option` component serves two purposes depending on the mode:
+The `OptionView` component serves different purposes depending on the mode:
 
-1.  **Visual Mapping**: "For Value X, render ReactNode Y".
-2.  **Model Inference** (Ad-hoc only): "Create an option with Value X and Label Z".
+1.  **Visual Mapping** (All modes with children): "For Value X, render ReactNode Y".
+2.  **Model Inference** (Ad-hoc children-only mode): "Create an option with Value X and Label Z".
+
+**Important**: When `options` prop is provided, `OptionView` children are used ONLY for visual content. The parameter model comes from the `options` prop.
 
 ### Props
 

@@ -8,7 +8,7 @@
 
 import React from "react";
 
-export type OptionProps = {
+export type OptionViewProps = {
     /** Value associated with this option */
     value?: string | number;
     /** Child content (Visual representation) */
@@ -17,6 +17,6 @@ export type OptionProps = {
     label?: string;
 };
 
-export default function Option(_props: OptionProps) {
+export default function OptionView(_props: OptionViewProps) {
     return null; // This component is never rendered directly
 }

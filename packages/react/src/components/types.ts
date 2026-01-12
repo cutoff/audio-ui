@@ -9,6 +9,7 @@ import {
     ContinuousParameter,
     BooleanParameter,
     DiscreteParameter,
+    DiscreteOption,
     ScaleType,
     AudioParameter,
     MidiResolution,
@@ -308,10 +309,21 @@ export type ContinuousControlProps = BaseProps &
  * Built-in controls (CycleButton) combine this with AdaptiveSizeProps
  * so only high-level components handle size and stretch.
  *
- * Supports three modes:
- * 1. Ad-Hoc Mode (Children only): Model inferred from Option children.
- * 2. Strict Mode (Parameter only): Model provided via parameter prop. View via renderOption.
- * 3. Hybrid Mode (Parameter + Children): Model from parameter, View from children (matched by value).
+ * **Important: Options vs Children**
+ *
+ * - **`options` prop**: Defines the parameter model (value, label, midiValue). Used for parameter structure.
+ * - **`children` (Option components)**: Provides visual content (ReactNodes) for rendering. Used for display.
+ *
+ * These serve different purposes and can be used together:
+ * - Use `options` when you have data-driven option definitions
+ * - Use `children` when you want to provide custom visual content (icons, styled text, etc.)
+ * - Use both: `options` for the model, `children` for visuals (matched by value)
+ *
+ * Supports four modes:
+ * 1. **Ad-Hoc Mode (Options prop)**: Model from `options` prop, visual from `children` (if provided) or default rendering
+ * 2. **Ad-Hoc Mode (Children only)**: Model inferred from OptionView children, visual from children
+ * 3. **Strict Mode (Parameter only)**: Model from `parameter` prop, visual via `renderOption` callback
+ * 4. **Hybrid Mode (Parameter + Children)**: Model from `parameter` prop, visual from children (matched by value)
  *
  * When `parameter` is provided, it takes precedence over ad-hoc props.
  */
@@ -339,7 +351,25 @@ export type DiscreteControlProps = BaseProps & {
      */
     parameter?: DiscreteParameter;
 
-    /** Child elements (Option components) for Ad-Hoc or Hybrid mode */
+    /** Option definitions for the parameter model (Ad-Hoc mode)
+     *
+     * **Parameter Model Only**: This prop defines the parameter structure (value, label, midiValue).
+     * It does NOT provide visual content - use `children` (OptionView components) for that.
+     *
+     * When both `options` and `children` are provided:
+     * - `options` defines the parameter model
+     * - `children` provide visual content (matched by value)
+     */
+    options?: DiscreteOption[];
+
+    /** Child elements (OptionView components) for visual content mapping (Hybrid/Ad-Hoc mode)
+     *
+     * **Visual Content Only**: Children provide ReactNodes for rendering (icons, text, custom components).
+     * They do NOT define the parameter model - use `options` prop or `parameter` prop for that.
+     *
+     * When both `options` and `children` are provided, children are matched to options by value
+     * to create the visual content map.
+     */
     children?: React.ReactNode;
 
     /** MIDI resolution in bits (ad-hoc mode, ignored if parameter provided)

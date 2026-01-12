@@ -5,12 +5,29 @@
  */
 
 import React, { useMemo } from "react";
-import { DiscreteParameter, MidiResolution } from "@cutoff/audio-ui-core";
-import { OptionProps } from "@/primitives/controls/Option";
+import { DiscreteParameter, DiscreteOption, MidiResolution } from "@cutoff/audio-ui-core";
+import { OptionViewProps } from "@/primitives/controls/OptionView";
 
 export interface UseDiscreteParameterResolutionProps {
-    /** Child elements (Option components) to parse in Ad-Hoc or Hybrid mode */
+    /** Child elements (OptionView components) for visual content mapping (Hybrid mode)
+     *
+     * **Visual Content Only**: Children provide ReactNodes for rendering (icons, text, custom components).
+     * They do NOT define the parameter model - use `options` prop or `parameter` prop for that.
+     *
+     * When both `options` and `children` are provided, children are matched to options by value
+     * to create the visual content map.
+     */
     children?: React.ReactNode;
+    /** Option definitions for the parameter model (Ad-Hoc mode)
+     *
+     * **Parameter Model Only**: This prop defines the parameter structure (value, label, midiValue).
+     * It does NOT provide visual content - use `children` (OptionView components) for that.
+     *
+     * When both `options` and `children` are provided:
+     * - `options` defines the parameter model
+     * - `children` provide visual content (matched by value)
+     */
+    options?: DiscreteOption[];
     /** Identifier for the parameter (used in Ad-Hoc mode) */
     paramId?: string;
     /** The parameter definition (Strict or Hybrid mode) */
@@ -41,13 +58,25 @@ export interface UseDiscreteParameterResolutionResult {
 /**
  * Hook to resolve a DiscreteParameter and visual content from props and/or children.
  *
- * Supports three modes of operation:
- * 1. Ad-Hoc Mode (Children only): Model inferred from Option children.
- * 2. Strict Mode (Parameter only): Model provided via parameter prop. View via renderOption.
- * 3. Hybrid Mode (Parameter + Children): Model from parameter, View from children (matched by value).
+ * **Important: Options vs Children**
+ *
+ * - **`options` prop**: Defines the parameter model (value, label, midiValue). Used for parameter structure.
+ * - **`children` (OptionView components)**: Provides visual content (ReactNodes) for rendering. Used for display.
+ *
+ * These serve different purposes and can be used together:
+ * - Use `options` when you have data-driven option definitions
+ * - Use `children` when you want to provide custom visual content (icons, styled text, etc.)
+ * - Use both: `options` for the model, `children` for visuals (matched by value)
+ *
+ * Supports four modes of operation:
+ * 1. **Ad-Hoc Mode (Options prop)**: Model from `options` prop, visual from `children` (if provided) or default rendering
+ * 2. **Ad-Hoc Mode (Children only)**: Model inferred from OptionView children, visual from children
+ * 3. **Strict Mode (Parameter only)**: Model from `parameter` prop, visual via `renderOption` callback
+ * 4. **Hybrid Mode (Parameter + Children)**: Model from `parameter` prop, visual from children (matched by value)
  *
  * @param props - Configuration object for discrete parameter resolution
- * @param props.children - Child elements (Option components) to parse in Ad-Hoc or Hybrid mode
+ * @param props.options - Option definitions for parameter model (Ad-Hoc mode). Takes precedence over children for model.
+ * @param props.children - Child elements (OptionView components) for visual content mapping (Hybrid/Ad-Hoc mode)
  * @param props.paramId - Identifier for the parameter (used in Ad-Hoc mode)
  * @param props.parameter - The parameter definition (Strict or Hybrid mode)
  * @param props.defaultValue - Default value (Ad-Hoc mode) or override for parameter default
@@ -58,11 +87,33 @@ export interface UseDiscreteParameterResolutionResult {
  *
  * @example
  * ```tsx
- * // Ad-Hoc Mode
- * const { derivedParameter, visualContentMap, effectiveDefaultValue } = useDiscreteParameterResolution({
+ * // Ad-Hoc Mode with options prop (data-driven)
+ * const { derivedParameter } = useDiscreteParameterResolution({
+ *   options: [
+ *     { value: "sine", label: "Sine Wave" },
+ *     { value: "square", label: "Square Wave" }
+ *   ],
+ *   paramId: "waveform"
+ * });
+ *
+ * // Ad-Hoc Mode with children (visual content)
+ * const { derivedParameter, visualContentMap } = useDiscreteParameterResolution({
  *   children: [
- *     <Option value="sine">Sine</Option>,
- *     <Option value="square">Square</Option>
+ *     <OptionView value="sine"><SineIcon /></OptionView>,
+ *     <OptionView value="square"><SquareIcon /></OptionView>
+ *   ],
+ *   paramId: "waveform"
+ * });
+ *
+ * // Hybrid: options for model, children for visuals
+ * const { derivedParameter, visualContentMap } = useDiscreteParameterResolution({
+ *   options: [
+ *     { value: "sine", label: "Sine Wave", midiValue: 0 },
+ *     { value: "square", label: "Square Wave", midiValue: 1 }
+ *   ],
+ *   children: [
+ *     <OptionView value="sine"><SineIcon /></OptionView>,
+ *     <OptionView value="square"><SquareIcon /></OptionView>
  *   ],
  *   paramId: "waveform"
  * });
@@ -76,6 +127,7 @@ export interface UseDiscreteParameterResolutionResult {
  */
 export function useDiscreteParameterResolution({
     children,
+    options,
     paramId,
     parameter,
     defaultValue,
@@ -84,21 +136,12 @@ export function useDiscreteParameterResolution({
     midiMapping = "spread",
 }: UseDiscreteParameterResolutionProps): UseDiscreteParameterResolutionResult {
     return useMemo(() => {
-        // Build visual content map from children
+        // Build visual content map from children (always extract visual content if children provided)
         const optionEls = React.Children.toArray(children).filter(
             React.isValidElement
-        ) as React.ReactElement<OptionProps>[];
+        ) as React.ReactElement<OptionViewProps>[];
 
         const visualContentMap = new Map<string | number, React.ReactNode>();
-
-        // Extract label for parameter model
-        const getLabel = (child: React.ReactElement<OptionProps>, val: string | number): string => {
-            if (child.props.label) return child.props.label;
-            if (typeof child.props.children === "string") return child.props.children;
-            if (typeof child.props.children === "number") return String(child.props.children);
-            // Fallback for icons/elements: use the value key as string
-            return String(val);
-        };
 
         optionEls.forEach((child, index) => {
             const val = child.props.value !== undefined ? child.props.value : index;
@@ -118,20 +161,8 @@ export function useDiscreteParameterResolution({
                 defaultValue !== undefined
                     ? defaultValue
                     : (parameter.defaultValue ?? parameter.options[0]?.value ?? "");
-        } else {
-            // Ad-hoc mode: infer parameter from children
-            const options = optionEls.map((child, index) => {
-                const val = child.props.value !== undefined ? child.props.value : index;
-                return {
-                    value: val,
-                    label: getLabel(child, val),
-                };
-            });
-
-            if (options.length === 0) {
-                options.push({ value: 0, label: "None" });
-            }
-
+        } else if (options && options.length > 0) {
+            // Ad-hoc mode with options prop: use options for parameter model
             effectiveDefaultValue = defaultValue !== undefined ? defaultValue : options[0].value;
 
             param = {
@@ -143,6 +174,39 @@ export function useDiscreteParameterResolution({
                 midiResolution,
                 midiMapping,
             };
+        } else {
+            // Ad-hoc mode with children only: infer parameter model from children
+            const getLabel = (child: React.ReactElement<OptionViewProps>, val: string | number): string => {
+                if (child.props.label) return child.props.label;
+                if (typeof child.props.children === "string") return child.props.children;
+                if (typeof child.props.children === "number") return String(child.props.children);
+                // Fallback for icons/elements: use the value key as string
+                return String(val);
+            };
+
+            const inferredOptions = optionEls.map((child, index) => {
+                const val = child.props.value !== undefined ? child.props.value : index;
+                return {
+                    value: val,
+                    label: getLabel(child, val),
+                };
+            });
+
+            if (inferredOptions.length === 0) {
+                inferredOptions.push({ value: 0, label: "None" });
+            }
+
+            effectiveDefaultValue = defaultValue !== undefined ? defaultValue : inferredOptions[0].value;
+
+            param = {
+                id: paramId ?? "adhoc-discrete",
+                type: "discrete",
+                name: label || "",
+                options: inferredOptions,
+                defaultValue: effectiveDefaultValue,
+                midiResolution,
+                midiMapping,
+            };
         }
 
         return {
@@ -150,5 +214,5 @@ export function useDiscreteParameterResolution({
             visualContentMap: visualContentMap,
             effectiveDefaultValue,
         };
-    }, [parameter, children, label, paramId, defaultValue, midiResolution, midiMapping]);
+    }, [parameter, options, children, label, paramId, defaultValue, midiResolution, midiMapping]);
 }

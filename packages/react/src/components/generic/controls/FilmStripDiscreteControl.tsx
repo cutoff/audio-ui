@@ -38,7 +38,7 @@ export type FilmStripDiscreteControlProps = DiscreteControlProps &
  * The frame displayed is determined by mapping the current value to a frame index.
  *
  * Supports three modes of operation:
- * 1. Ad-Hoc Mode (Children only): Model inferred from Option children.
+ * 1. Ad-Hoc Mode (Children only): Model inferred from OptionView children.
  * 2. Strict Mode (Parameter only): Model provided via parameter prop. View via renderOption.
  * 3. Hybrid Mode (Parameter + Children): Model from parameter, View from children (matched by value).
  *
@@ -84,6 +84,7 @@ function FilmStripDiscreteControl({
     frameRotation = 0,
     parameter,
     paramId,
+    options,
     midiResolution,
     midiMapping,
     children,
@@ -122,6 +123,7 @@ function FilmStripDiscreteControl({
             label={label}
             paramId={paramId}
             parameter={parameter}
+            options={options}
             midiResolution={midiResolution}
             midiMapping={midiMapping}
             displayMode={displayMode}

@@ -13,7 +13,13 @@ import KnobView from "./KnobView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, AudioControlEvent, ThemableProps } from "@/types";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { useDiscreteParameterResolution } from "@/hooks/useDiscreteParameterResolution";
-import { DiscreteParameter, DEFAULT_ROUNDNESS, CLASSNAMES, MidiResolution } from "@cutoff/audio-ui-core";
+import {
+    DiscreteParameter,
+    DiscreteOption,
+    DEFAULT_ROUNDNESS,
+    CLASSNAMES,
+    MidiResolution,
+} from "@cutoff/audio-ui-core";
 import { useThemableProps } from "@/hooks/useThemableProps";
 
 const CONTENT_WRAPPER_STYLE: React.CSSProperties = {
@@ -48,7 +54,17 @@ export type CycleButtonProps = AdaptiveSizeProps &
         onChange?: (event: AudioControlEvent<string | number>) => void;
         /** Default value of the component (Uncontrolled mode) */
         defaultValue?: string | number;
-        /** Child elements (Option components) */
+        /** Option definitions for the parameter model (Ad-Hoc mode)
+         *
+         * **Parameter Model Only**: This prop defines the parameter structure (value, label, midiValue).
+         * It does NOT provide visual content - use `children` (OptionView components) for that.
+         */
+        options?: DiscreteOption[];
+        /** Child elements (OptionView components) for visual content mapping
+         *
+         * **Visual Content Only**: Children provide ReactNodes for rendering (icons, text, custom components).
+         * They do NOT define the parameter model - use `options` prop or `parameter` prop for that.
+         */
         children?: React.ReactNode;
         /** Identifier for the parameter this control represents */
         paramId?: string;
@@ -74,21 +90,46 @@ export type CycleButtonProps = AdaptiveSizeProps &
  * This control supports discrete interaction only (click to cycle, keyboard to step).
  * It does not support continuous interaction (drag/wheel).
  *
+ * **Important: Options vs Children**
+ *
+ * - **`options` prop**: Defines the parameter model (value, label, midiValue). Used for parameter structure.
+ * - **`children` (OptionView components)**: Provides visual content (ReactNodes) for rendering. Used for display.
+ *
  * Supports multiple visual variants (rotary knob-style, LED indicators, etc.) and
- * three modes of operation:
- * 1. Ad-Hoc Mode (Children only): Model inferred from Option children.
- * 2. Strict Mode (Parameter only): Model provided via parameter prop. View via renderOption.
- * 3. Hybrid Mode (Parameter + Children): Model from parameter, View from children (matched by value).
+ * four modes of operation:
+ * 1. **Ad-Hoc Mode (Options prop)**: Model from `options` prop, visual from `children` (if provided) or default rendering
+ * 2. **Ad-Hoc Mode (Children only)**: Model inferred from OptionView children, visual from children
+ * 3. **Strict Mode (Parameter only)**: Model from `parameter` prop, visual via `renderOption` callback
+ * 4. **Hybrid Mode (Parameter + Children)**: Model from `parameter` prop, visual from children (matched by value)
  *
  * @param props - Component props
  * @returns Rendered CycleButton component
  *
  * @example
  * ```tsx
- * // Ad-Hoc Mode
+ * // Ad-Hoc Mode with options prop (data-driven)
+ * <CycleButton
+ *   options={[
+ *     { value: "sine", label: "Sine Wave" },
+ *     { value: "square", label: "Square Wave" }
+ *   ]}
+ * />
+ *
+ * // Ad-Hoc Mode with children (visual content)
  * <CycleButton defaultValue="sine" label="Waveform">
- *   <Option value="sine">Sine</Option>
- *   <Option value="square">Square</Option>
+ *   <OptionView value="sine"><SineIcon /></OptionView>
+ *   <OptionView value="square"><SquareIcon /></OptionView>
+ * </CycleButton>
+ *
+ * // Hybrid: options for model, children for visuals
+ * <CycleButton
+ *   options={[
+ *     { value: "sine", label: "Sine Wave", midiValue: 0 },
+ *     { value: "square", label: "Square Wave", midiValue: 1 }
+ *   ]}
+ * >
+ *   <OptionView value="sine"><SineIcon /></OptionView>
+ *   <OptionView value="square"><SquareIcon /></OptionView>
  * </CycleButton>
  *
  * // Strict Mode with custom renderer
@@ -116,6 +157,7 @@ function CycleButton({
     thickness = 0.4,
     parameter,
     paramId,
+    options,
     midiResolution,
     midiMapping,
     onClick,
@@ -144,6 +186,7 @@ function CycleButton({
     // (icons, text, or custom renderOption output) based on the current value.
     const { visualContentMap, derivedParameter, effectiveDefaultValue } = useDiscreteParameterResolution({
         children,
+        options,
         paramId,
         parameter,
         defaultValue,
@@ -195,6 +238,7 @@ function CycleButton({
             label={label}
             paramId={paramId}
             parameter={parameter}
+            options={options}
             midiResolution={midiResolution}
             midiMapping={midiMapping}
             displayMode={displayMode}

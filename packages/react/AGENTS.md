@@ -37,7 +37,7 @@
   - `generic/`: Generic components that support industry-standard control representations
     - `controls/`: Filmstrip-based controls (FilmStripContinuousControl, FilmStripDiscreteControl, FilmStripBooleanControl) that use bitmap sprite sheets (filmstrips) for visualization
   - `primitives/`: Base components for building final components, excluding theme-specific
-    - `controls/`: Control primitives (ContinuousControl, DiscreteControl, BooleanControl, Option)
+    - `controls/`: Control primitives (ContinuousControl, DiscreteControl, BooleanControl, OptionView)
     - `svg/`: SVG view primitives (ValueRing, RotaryImage, RadialImage, RadialText, FilmstripImage, etc.)
 
 ## Component Architecture: Built-in vs Generic vs Customizable
@@ -170,6 +170,18 @@ The library provides generic control components that decouple behavior from visu
   - `ContinuousControl.tsx`: For continuous value controls
   - `DiscreteControl.tsx`: For discrete/enum value controls
   - `BooleanControl.tsx`: For boolean (on/off) controls
+- **DiscreteControl: Options vs Children (CRITICAL DISTINCTION)**:
+  - **`options` prop**: Defines the parameter model (value, label, midiValue). Used for parameter structure. This is the data definition.
+  - **`children` (OptionView components)**: Provides visual content (ReactNodes) for rendering. Used for display. This is the visual representation.
+  - **These serve different purposes and can be used together**:
+    - Use `options` when you have data-driven option definitions (e.g., from API, config file, or computed data)
+    - Use `children` when you want to provide custom visual content (icons, styled text, custom components)
+    - Use both: `options` for the model, `children` for visuals (matched by value)
+  - **Modes of Operation**:
+    1. **Ad-Hoc Mode (Options prop)**: Model from `options` prop, visual from `children` (if provided) or default rendering
+    2. **Ad-Hoc Mode (Children only)**: Model inferred from OptionView children, visual from children
+    3. **Strict Mode (Parameter only)**: Model from `parameter` prop, visual via `renderOption` callback
+    4. **Hybrid Mode (Parameter + Children)**: Model from `parameter` prop, visual from children (matched by value)
 - **Contract**: The view component must implement `ControlComponentView` interface, defining:
   - `viewBox`: Dimensions for the SVG (required)
   - `labelHeightUnits`: Label height in viewBox units (optional, defaults to 20)
@@ -256,6 +268,18 @@ The library provides filmstrip-based controls that support the widely-used indus
 - **Discrete-Only Control**: CycleButton is a discrete interaction control only. It does not support continuous interaction (drag/wheel). All interactions result in discrete step changes.
 - **Visual Variants**: Designed to support multiple visual variants (rotary knob-style, LED indicators, etc.). The current implementation uses a rotary knob-style visual, but the architecture supports other variants.
 - **Icon Theming**: Uses inline SVG components with `fill="currentColor"` to inherit text color automatically. Library CSS applies `fill: currentColor` to all inline SVGs within content. Third-party icon libraries (e.g., react-icons) work seamlessly.
+- **Options vs Children (CRITICAL DISTINCTION)**:
+  - **`options` prop**: Defines the parameter model (value, label, midiValue). Used for parameter structure. This is the data definition.
+  - **`children` (OptionView components)**: Provides visual content (ReactNodes) for rendering. Used for display. This is the visual representation.
+  - **These serve different purposes and can be used together**:
+    - Use `options` when you have data-driven option definitions (e.g., from API, config file, or computed data)
+    - Use `children` when you want to provide custom visual content (icons, styled text, custom components)
+    - Use both: `options` for the model, `children` for visuals (matched by value)
+  - **Modes of Operation**:
+    1. **Ad-Hoc Mode (Options prop)**: Model from `options` prop, visual from `children` (if provided) or default rendering
+    2. **Ad-Hoc Mode (Children only)**: Model inferred from OptionView children, visual from children
+    3. **Strict Mode (Parameter only)**: Model from `parameter` prop, visual via `renderOption` callback
+    4. **Hybrid Mode (Parameter + Children)**: Model from `parameter` prop, visual from children (matched by value)
 - **Interaction Methods**:
   - **Click**: Cycles to next value (same as Space key, wraps to first when reaching end)
   - **Space Key**: Cycles to next value (wraps to first when reaching end)

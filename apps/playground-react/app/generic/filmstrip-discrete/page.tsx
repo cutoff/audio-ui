@@ -10,7 +10,7 @@ import { useState, useMemo } from "react";
 import {
     FilmStripDiscreteControl,
     FilmStripDiscreteControlProps,
-    Option,
+    OptionView,
     AudioControlEvent,
 } from "@cutoff/audio-ui-react";
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
@@ -62,7 +62,9 @@ function generateCodeSnippet(
     label: string,
     options: Array<{ value: string | number; label: string }>
 ): string {
-    const optionsCode = options.map((opt) => `    <Option value="${opt.value}">${opt.label}</Option>`).join("\n");
+    const optionsCode = options
+        .map((opt) => `    <OptionView value="${opt.value}">${opt.label}</OptionView>`)
+        .join("\n");
     let props = `value="${value}" label="${label}"`;
     props += `\n  frameWidth={${frameWidth}} frameHeight={${frameHeight}} frameCount={${frameCount}}`;
     props += `\n  imageHref="${imageHref}"`;
@@ -134,7 +136,7 @@ export default function FilmStripDiscreteDemoPage() {
             orientation,
             frameRotation,
             onChange: (e: AudioControlEvent<string | number>) => setValue(e.value),
-            children: options.map((opt) => <Option key={opt.value} value={opt.value} />),
+            children: options.map((opt) => <OptionView key={opt.value} value={opt.value} />),
         }),
         [value, label, frameWidth, frameHeight, frameCount, imageHref, orientation, frameRotation, options]
     );
@@ -228,9 +230,9 @@ export default function FilmStripDiscreteDemoPage() {
                 onClick={() => handleExampleClick(0)}
             >
                 {vuOptions.map((opt) => (
-                    <Option key={opt.value} value={opt.value}>
+                    <OptionView key={opt.value} value={opt.value}>
                         {opt.label}
-                    </Option>
+                    </OptionView>
                 ))}
             </FilmStripDiscreteControl>,
             <FilmStripDiscreteControl
@@ -245,9 +247,9 @@ export default function FilmStripDiscreteDemoPage() {
                 onClick={() => handleExampleClick(1)}
             >
                 {guitarOptions.map((opt) => (
-                    <Option key={opt.value} value={opt.value}>
+                    <OptionView key={opt.value} value={opt.value}>
                         {opt.label}
-                    </Option>
+                    </OptionView>
                 ))}
             </FilmStripDiscreteControl>,
             <FilmStripDiscreteControl
@@ -262,9 +264,9 @@ export default function FilmStripDiscreteDemoPage() {
                 onClick={() => handleExampleClick(2)}
             >
                 {absOptions.map((opt) => (
-                    <Option key={opt.value} value={opt.value}>
+                    <OptionView key={opt.value} value={opt.value}>
                         {opt.label}
-                    </Option>
+                    </OptionView>
                 ))}
             </FilmStripDiscreteControl>,
         ],

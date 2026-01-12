@@ -6,24 +6,24 @@
 
 "use client";
 
-import { Button, Knob, CycleButton, Slider, Keys, Option, SizeType } from "@cutoff/audio-ui-react";
+import { Button, Knob, CycleButton, Slider, Keys, OptionView, SizeType } from "@cutoff/audio-ui-react";
 import { SawWaveIcon, SineWaveIcon, SquareWaveIcon, TriangleWaveIcon } from "@/components/wave-icons";
 
 const sizeTypes: SizeType[] = ["xsmall", "small", "normal", "large", "xlarge"];
 
 const sampleOptions = [
-    <Option key={0} value={0}>
+    <OptionView key={0} value={0}>
         <SineWaveIcon />
-    </Option>,
-    <Option key={1} value={1}>
+    </OptionView>,
+    <OptionView key={1} value={1}>
         <TriangleWaveIcon />
-    </Option>,
-    <Option key={2} value={2}>
+    </OptionView>,
+    <OptionView key={2} value={2}>
         <SquareWaveIcon />
-    </Option>,
-    <Option key={3} value={3}>
+    </OptionView>,
+    <OptionView key={3} value={3}>
         <SawWaveIcon />
-    </Option>,
+    </OptionView>,
 ];
 
 export default function SizingPage() {
