@@ -32,6 +32,18 @@
     --audioui-primary-50: color-mix(in srgb, var(--audioui-primary-color) 50%, transparent);
     --audioui-primary-20: color-mix(in srgb, var(--audioui-primary-color) 20%, transparent);
 
+    /* Text and typography */
+    --audioui-text-color: var(--audioui-nearblack);
+    --audioui-default-font-size: 14px;
+
+    /* Interactive highlight effect - users can customize or disable entirely */
+    /* Set to 'none' to disable, or any valid CSS filter value for custom effects */
+    --audioui-highlight-effect: brightness(1.15) contrast(1.05)
+        drop-shadow(
+            0 0 0.5em color-mix(in srgb, var(--audioui-primary-color, var(--audioui-text-color)) 35%, transparent)
+        );
+    --audioui-highlight-transition-duration: 50ms;
+
     /* Classic Piano Key Colors */
     --audioui-keys-ivory: hsl(40, 20%, 95%); /* Warm off-white color for classic white keys */
     --audioui-keys-ivory-stroke: hsl(40, 20%, 85%); /* Slightly darker for stroke contrast */
@@ -124,6 +136,9 @@
     --audioui-theme-green: hsl(160, 98%, 37%);
     --audioui-theme-purple: hsl(252, 100%, 67%);
     --audioui-theme-yellow: hsl(50, 100%, 50%);
+
+    /* Text color for dark mode */
+    --audioui-text-color: var(--audioui-nearwhite);
 
     /* Other component style customization */
     --audioui-knob-cap-fill: #4a4d50;

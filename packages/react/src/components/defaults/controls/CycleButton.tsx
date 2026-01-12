@@ -13,7 +13,7 @@ import KnobView from "./KnobView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, AudioControlEvent, ThemableProps } from "@/types";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { useDiscreteParameterResolution } from "@/hooks/useDiscreteParameterResolution";
-import { DiscreteParameter, DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
+import { DiscreteParameter, DEFAULT_ROUNDNESS, CLASSNAMES } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "@/hooks/useThemableProps";
 
 const CONTENT_WRAPPER_STYLE: React.CSSProperties = {
@@ -155,7 +155,7 @@ function CycleButton({
             }
 
             return (
-                <div className="audioui-icon-wrapper" style={ICON_WRAPPER_STYLE}>
+                <div className={CLASSNAMES.iconWrapper} style={ICON_WRAPPER_STYLE}>
                     {node}
                 </div>
             );

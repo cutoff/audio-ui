@@ -16,6 +16,8 @@ export const CLASSNAMES = {
     container: "audioui-component-container",
     /** Highlight class used for interactive states */
     highlight: "audioui-highlight",
+    /** Icon wrapper class for HTML overlay - ensures SVG icons fill their container */
+    iconWrapper: "audioui-icon-wrapper",
 } as const;
 
 export type AudioUiClassName = (typeof CLASSNAMES)[keyof typeof CLASSNAMES];

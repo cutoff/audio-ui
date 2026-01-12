@@ -6,23 +6,23 @@
 
 @import url("themes.css");
 
-:root {
-    --audioui-text-color: hsl(0, 0%, 10%);
-    --audioui-default-font-size: 14px;
-    /* --audioui-primary-color is optional - users can set it if they want to use utility classes */
-}
+/* ==========================================================================
+   Base Element Styles
+   ========================================================================== */
 
-/* Dark mode text color */
-.dark {
-    --audioui-text-color: hsl(0, 0%, 96%);
-}
-
-textarea input {
+/* Form input elements - inherit theme text color and font size */
+textarea,
+input {
     color: var(--audioui-text-color);
     background-color: transparent;
     font-size: var(--audioui-default-font-size);
 }
 
+/* ==========================================================================
+   SVG and Icon Styles
+   ========================================================================== */
+
+/* Prevent text selection in SVG content */
 svg text,
 svg foreignObject div {
     -webkit-user-select: none;
@@ -62,41 +62,48 @@ svg foreignObject div > * svg {
     color: inherit;
 }
 
+/* ==========================================================================
+   Component Base Classes
+   ========================================================================== */
+
+/* Root class for all AudioUI components */
 .audioui {
     -webkit-user-select: none;
     user-select: none;
     cursor: default;
 }
 
+/* Container helper class for components that manage their own SVG sizing */
 .audioui-component-container {
     height: auto;
     max-width: 100%;
     max-height: 100%;
 }
 
-/* Accessibility Focus Styles */
+/* Remove default outline from SVG elements */
 .audioui-component-container svg {
     height: auto;
-    outline: none; /* Remove default outline */
+    outline: none;
 }
 
+/* ==========================================================================
+   Interactive States and Accessibility
+   ========================================================================== */
+
+/* Highlight effect for interactive components */
+/* Uses --audioui-highlight-effect from themes.css (user-customizable) */
 .audioui-highlight {
     will-change: filter;
     /* Fast transition for realtime audio UI - instant feedback preferred */
-    transition: filter 50ms linear;
+    transition: filter var(--audioui-highlight-transition-duration) linear;
 }
 
 /* Apply highlight on hover OR when focused (keyboard/click) */
+/* The actual effect is defined by --audioui-highlight-effect in themes.css */
 .audioui-highlight:hover,
 .audioui-highlight:focus,
 .audioui-highlight:focus-visible {
-    /* Optimized hover effect for edition mode */
-    /* Brightness and contrast boost for better visibility */
-    filter: brightness(1.15) contrast(1.05)
-        /* Subtle glow using primary color if available, otherwise adaptive text color */
-        drop-shadow(
-            0 0 0.5em color-mix(in srgb, var(--audioui-primary-color, var(--audioui-text-color)) 35%, transparent)
-        );
+    filter: var(--audioui-highlight-effect);
     outline: none; /* Ensure no default ring */
 }
 
@@ -127,6 +134,10 @@ svg foreignObject div > * svg {
     filter: none;
 }
 
+/* ==========================================================================
+   Color Utility Classes
+   ========================================================================== */
+
 /* Base utility classes - only work if --audioui-primary-color is set by user */
 .audioui-stroke-primary {
     stroke: var(--audioui-primary-color);
@@ -144,17 +155,19 @@ svg foreignObject div > * svg {
     fill: transparent;
 }
 
-/* Border utilities */
 .audioui-border-primary {
     border-color: var(--audioui-primary-color);
 }
 
-/* Text color utilities */
 .audioui-text-primary {
     color: var(--audioui-primary-color);
 }
 
-/* Size utility classes - Square components (Button, Knob, CycleButton) */
+/* ==========================================================================
+   Size Utility Classes
+   ========================================================================== */
+
+/* Square components (Button, Knob, CycleButton) - 1x1 aspect ratio */
 .audioui-size-square-xsmall {
     width: var(--audioui-size-square-xsmall);
     height: var(--audioui-size-square-xsmall);
@@ -180,7 +193,7 @@ svg foreignObject div > * svg {
     height: var(--audioui-size-square-xlarge);
 }
 
-/* Size utility classes - Horizontal Slider (1x2) */
+/* Horizontal Slider (1x2 aspect ratio - width > height) */
 .audioui-size-hslider-xsmall {
     width: var(--audioui-size-hslider-width-xsmall);
     height: var(--audioui-size-hslider-height-xsmall);
@@ -206,7 +219,7 @@ svg foreignObject div > * svg {
     height: var(--audioui-size-hslider-height-xlarge);
 }
 
-/* Size utility classes - Vertical Slider (2x1) */
+/* Vertical Slider (2x1 aspect ratio - height > width) */
 .audioui-size-vslider-xsmall {
     width: var(--audioui-size-vslider-width-xsmall);
     height: var(--audioui-size-vslider-height-xsmall);
@@ -232,7 +245,7 @@ svg foreignObject div > * svg {
     height: var(--audioui-size-vslider-height-xlarge);
 }
 
-/* Size utility classes - Keys (1x5) */
+/* Keys (1x5 aspect ratio - width > height) */
 .audioui-size-keys-xsmall {
     width: var(--audioui-size-keys-width-xsmall);
     height: var(--audioui-size-keys-height-xsmall);
