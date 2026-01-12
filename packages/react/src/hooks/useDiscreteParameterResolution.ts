@@ -5,7 +5,7 @@
  */
 
 import React, { useMemo } from "react";
-import { DiscreteParameter } from "@cutoff/audio-ui-core";
+import { DiscreteParameter, MidiResolution } from "@cutoff/audio-ui-core";
 import { OptionProps } from "@/primitives/controls/Option";
 
 export interface UseDiscreteParameterResolutionProps {
@@ -19,6 +19,14 @@ export interface UseDiscreteParameterResolutionProps {
     defaultValue?: string | number;
     /** Label for the parameter (Ad-Hoc mode) */
     label?: string;
+    /** MIDI resolution in bits (Ad-Hoc mode)
+     * @default 7
+     */
+    midiResolution?: MidiResolution;
+    /** MIDI mapping strategy (Ad-Hoc mode)
+     * @default "spread"
+     */
+    midiMapping?: "spread" | "sequential" | "custom";
 }
 
 export interface UseDiscreteParameterResolutionResult {
@@ -44,6 +52,8 @@ export interface UseDiscreteParameterResolutionResult {
  * @param props.parameter - The parameter definition (Strict or Hybrid mode)
  * @param props.defaultValue - Default value (Ad-Hoc mode) or override for parameter default
  * @param props.label - Label for the parameter (Ad-Hoc mode)
+ * @param props.midiResolution - MIDI resolution in bits (Ad-Hoc mode, default: 7)
+ * @param props.midiMapping - MIDI mapping strategy (Ad-Hoc mode, default: "spread")
  * @returns Object containing the resolved DiscreteParameter, visual content map, and effective default value
  *
  * @example
@@ -70,6 +80,8 @@ export function useDiscreteParameterResolution({
     parameter,
     defaultValue,
     label,
+    midiResolution = 7,
+    midiMapping = "spread",
 }: UseDiscreteParameterResolutionProps): UseDiscreteParameterResolutionResult {
     return useMemo(() => {
         // Build visual content map from children
@@ -128,8 +140,8 @@ export function useDiscreteParameterResolution({
                 name: label || "",
                 options,
                 defaultValue: effectiveDefaultValue,
-                midiResolution: 7,
-                midiMapping: "spread",
+                midiResolution,
+                midiMapping,
             };
         }
 
@@ -138,5 +150,5 @@ export function useDiscreteParameterResolution({
             visualContentMap: visualContentMap,
             effectiveDefaultValue,
         };
-    }, [parameter, children, label, paramId, defaultValue]);
+    }, [parameter, children, label, paramId, defaultValue, midiResolution, midiMapping]);
 }

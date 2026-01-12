@@ -85,6 +85,8 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         scale,
         valueFormatter,
         valueAsLabel = "labelOnly",
+        midiResolution,
+        defaultValue,
     } = props;
 
     const bipolar = props.bipolar ?? false;
@@ -98,6 +100,8 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         bipolar,
         unit,
         scale,
+        midiResolution,
+        defaultValue,
     });
 
     // Interaction state for valueAsLabel="interactive"

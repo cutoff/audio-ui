@@ -74,6 +74,7 @@ function Button({
     labelOverflow,
     parameter,
     paramId,
+    midiResolution,
     color,
     roundness,
     onClick,
@@ -107,6 +108,7 @@ function Button({
             parameter={parameter}
             paramId={paramId}
             latch={latch}
+            midiResolution={midiResolution}
             onClick={onClick}
             onMouseDown={onMouseDown}
             onMouseUp={onMouseUp}

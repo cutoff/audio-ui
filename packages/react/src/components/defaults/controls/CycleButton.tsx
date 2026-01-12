@@ -13,7 +13,7 @@ import KnobView from "./KnobView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, AudioControlEvent, ThemableProps } from "@/types";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { useDiscreteParameterResolution } from "@/hooks/useDiscreteParameterResolution";
-import { DiscreteParameter, DEFAULT_ROUNDNESS, CLASSNAMES } from "@cutoff/audio-ui-core";
+import { DiscreteParameter, DEFAULT_ROUNDNESS, CLASSNAMES, MidiResolution } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "@/hooks/useThemableProps";
 
 const CONTENT_WRAPPER_STYLE: React.CSSProperties = {
@@ -58,6 +58,14 @@ export type CycleButtonProps = AdaptiveSizeProps &
         renderOption?: (option: { value: string | number; label: string }) => React.ReactNode;
         /** Thickness of the stroke (normalized 0.0-1.0, maps to 1-20). Used by rotary variant. */
         thickness?: number;
+        /** MIDI resolution in bits (ad-hoc mode, ignored if parameter provided)
+         * @default 7
+         */
+        midiResolution?: MidiResolution;
+        /** MIDI mapping strategy (ad-hoc mode, ignored if parameter provided)
+         * @default "spread"
+         */
+        midiMapping?: "spread" | "sequential" | "custom";
     };
 
 /**
@@ -108,6 +116,8 @@ function CycleButton({
     thickness = 0.4,
     parameter,
     paramId,
+    midiResolution,
+    midiMapping,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -138,6 +148,8 @@ function CycleButton({
         parameter,
         defaultValue,
         label,
+        midiResolution,
+        midiMapping,
     });
 
     const effectiveValue = value !== undefined ? value : effectiveDefaultValue;
@@ -183,6 +195,8 @@ function CycleButton({
             label={label}
             paramId={paramId}
             parameter={parameter}
+            midiResolution={midiResolution}
+            midiMapping={midiMapping}
             displayMode={displayMode}
             labelMode={labelMode}
             labelPosition={labelPosition}

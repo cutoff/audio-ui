@@ -11,6 +11,7 @@ import {
     DiscreteParameter,
     ScaleType,
     AudioParameter,
+    MidiResolution,
 } from "@cutoff/audio-ui-core";
 
 // Re-export types from core
@@ -290,6 +291,14 @@ export type ContinuousControlProps = BaseProps &
          * @default 1 (or calculated based on range)
          */
         step?: number;
+
+        /** MIDI resolution in bits (ad-hoc mode, ignored if parameter provided)
+         * @default 32
+         */
+        midiResolution?: MidiResolution;
+
+        /** Default value for the parameter (ad-hoc mode, ignored if parameter provided) */
+        defaultValue?: number;
     };
 
 /**
@@ -332,6 +341,16 @@ export type DiscreteControlProps = BaseProps & {
 
     /** Child elements (Option components) for Ad-Hoc or Hybrid mode */
     children?: React.ReactNode;
+
+    /** MIDI resolution in bits (ad-hoc mode, ignored if parameter provided)
+     * @default 7
+     */
+    midiResolution?: MidiResolution;
+
+    /** MIDI mapping strategy (ad-hoc mode, ignored if parameter provided)
+     * @default "spread"
+     */
+    midiMapping?: "spread" | "sequential" | "custom";
 };
 
 /**
@@ -373,6 +392,11 @@ export type BooleanControlProps = BaseProps & {
      * @default false
      */
     latch?: boolean;
+
+    /** MIDI resolution in bits (ad-hoc mode, ignored if parameter provided)
+     * @default 7
+     */
+    midiResolution?: MidiResolution;
 };
 
 // --- GENERIC CONTRACTS ---

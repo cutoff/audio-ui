@@ -88,6 +88,7 @@ function FilmStripBooleanControl({
     invertValue = false,
     parameter,
     paramId,
+    midiResolution,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -129,6 +130,7 @@ function FilmStripBooleanControl({
             parameter={parameter}
             paramId={paramId}
             latch={latch}
+            midiResolution={midiResolution}
             onClick={onClick}
             onMouseDown={onMouseDown}
             onMouseUp={onMouseUp}

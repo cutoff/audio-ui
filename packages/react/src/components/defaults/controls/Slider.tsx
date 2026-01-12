@@ -102,6 +102,8 @@ function Slider({
     interactionDirection,
     interactionSensitivity,
     valueAsLabel = "labelOnly",
+    midiResolution,
+    defaultValue,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -153,6 +155,8 @@ function Slider({
             parameter={parameter}
             unit={unit}
             scale={scale}
+            midiResolution={midiResolution}
+            defaultValue={defaultValue}
             interactionMode={interactionMode}
             interactionDirection={interactionDirection}
             interactionSensitivity={interactionSensitivity}

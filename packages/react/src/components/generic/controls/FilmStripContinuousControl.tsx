@@ -122,6 +122,8 @@ function FilmStripContinuousControl({
     interactionDirection,
     interactionSensitivity,
     valueAsLabel = "labelOnly",
+    midiResolution,
+    defaultValue,
     invertValue = false,
     onClick,
     onMouseDown,
@@ -184,6 +186,8 @@ function FilmStripContinuousControl({
             parameter={parameter}
             unit={unit}
             scale={scale}
+            midiResolution={midiResolution}
+            defaultValue={defaultValue}
             interactionMode={interactionMode}
             interactionDirection={interactionDirection}
             interactionSensitivity={interactionSensitivity}

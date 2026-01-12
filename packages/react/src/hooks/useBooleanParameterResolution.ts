@@ -5,7 +5,7 @@
  */
 
 import { useMemo } from "react";
-import { BooleanParameter, AudioParameterFactory } from "@cutoff/audio-ui-core";
+import { BooleanParameter, AudioParameterFactory, MidiResolution } from "@cutoff/audio-ui-core";
 
 export interface UseBooleanParameterResolutionProps {
     /** The parameter definition (Strict mode) */
@@ -16,6 +16,10 @@ export interface UseBooleanParameterResolutionProps {
     label?: string;
     /** Whether the button should latch (toggle between states) or momentary (only active while pressed) (Ad-Hoc mode) */
     latch?: boolean;
+    /** MIDI resolution in bits (Ad-Hoc mode)
+     * @default 7
+     */
+    midiResolution?: MidiResolution;
 }
 
 export interface UseBooleanParameterResolutionResult {
@@ -37,6 +41,7 @@ export interface UseBooleanParameterResolutionResult {
  * @param props.paramId - Identifier for the parameter (used in Ad-Hoc mode)
  * @param props.label - Label for the parameter (Ad-Hoc mode)
  * @param props.latch - Whether the button should latch (toggle) or be momentary (Ad-Hoc mode)
+ * @param props.midiResolution - MIDI resolution in bits (Ad-Hoc mode, default: 7)
  * @returns Object containing the resolved BooleanParameter
  *
  * @example
@@ -59,6 +64,7 @@ export function useBooleanParameterResolution({
     paramId,
     label,
     latch,
+    midiResolution = 7,
 }: UseBooleanParameterResolutionProps): UseBooleanParameterResolutionResult {
     return useMemo(() => {
         let derivedParameter: BooleanParameter;
@@ -76,10 +82,17 @@ export function useBooleanParameterResolution({
                     id: paramId,
                 };
             }
+            // Override midiResolution if provided
+            if (midiResolution !== undefined) {
+                derivedParameter = {
+                    ...derivedParameter,
+                    midiResolution,
+                };
+            }
         }
 
         return {
             derivedParameter,
         };
-    }, [parameter, paramId, label, latch]);
+    }, [parameter, paramId, label, latch, midiResolution]);
 }

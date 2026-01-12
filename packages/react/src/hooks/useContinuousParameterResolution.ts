@@ -5,7 +5,7 @@
  */
 
 import { useMemo } from "react";
-import { ContinuousParameter, AudioParameterFactory, ScaleType } from "@cutoff/audio-ui-core";
+import { ContinuousParameter, AudioParameterFactory, ScaleType, MidiResolution } from "@cutoff/audio-ui-core";
 
 export interface UseContinuousParameterResolutionProps {
     /** The parameter definition (Strict mode) */
@@ -26,6 +26,12 @@ export interface UseContinuousParameterResolutionProps {
     unit?: string;
     /** Scale function or shortcut for the parameter (Ad-Hoc mode) */
     scale?: ScaleType;
+    /** MIDI resolution in bits (Ad-Hoc mode)
+     * @default 32
+     */
+    midiResolution?: MidiResolution;
+    /** Default value for the parameter (Ad-Hoc mode) */
+    defaultValue?: number;
 }
 
 export interface UseContinuousParameterResolutionResult {
@@ -52,6 +58,8 @@ export interface UseContinuousParameterResolutionResult {
  * @param props.bipolar - Whether the parameter operates in bipolar mode (Ad-Hoc mode)
  * @param props.unit - Unit suffix for the value (Ad-Hoc mode, e.g. "dB", "Hz")
  * @param props.scale - Scale function or shortcut for the parameter (Ad-Hoc mode)
+ * @param props.midiResolution - MIDI resolution in bits (Ad-Hoc mode, default: 32)
+ * @param props.defaultValue - Default value for the parameter (Ad-Hoc mode)
  * @returns Object containing the resolved ContinuousParameter
  *
  * @example
@@ -82,6 +90,8 @@ export function useContinuousParameterResolution({
     bipolar,
     unit,
     scale,
+    midiResolution = 32,
+    defaultValue,
 }: UseContinuousParameterResolutionProps): UseContinuousParameterResolutionResult {
     return useMemo(() => {
         let derivedParameter: ContinuousParameter;
@@ -100,11 +110,13 @@ export function useContinuousParameterResolution({
                 bipolar,
                 unit,
                 scale,
+                midiResolution,
+                defaultValue,
             });
         }
 
         return {
             derivedParameter,
         };
-    }, [parameter, paramId, label, min, max, step, bipolar, unit, scale]);
+    }, [parameter, paramId, label, min, max, step, bipolar, unit, scale, midiResolution, defaultValue]);
 }

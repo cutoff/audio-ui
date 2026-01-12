@@ -18,3 +18,9 @@ export type InteractionMode = "drag" | "wheel" | "both";
  * Interaction directions for controls
  */
 export type InteractionDirection = "vertical" | "horizontal" | "circular" | "both";
+
+/**
+ * MIDI resolution in bits
+ * Supported values: 7, 8, 14, 16, 32, 64
+ */
+export type MidiResolution = 7 | 8 | 14 | 16 | 32 | 64;

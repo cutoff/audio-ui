@@ -90,6 +90,8 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
         onMouseUp,
         onMouseEnter,
         onMouseLeave,
+        midiResolution,
+        midiMapping,
     } = props;
 
     const { derivedParameter, effectiveDefaultValue } = useDiscreteParameterResolution({
@@ -98,6 +100,8 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
         parameter,
         defaultValue,
         label,
+        midiResolution,
+        midiMapping,
     });
 
     const effectiveValue = value !== undefined ? value : effectiveDefaultValue;

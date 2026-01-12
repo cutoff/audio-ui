@@ -104,6 +104,7 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
         onMouseUp,
         onMouseEnter,
         onMouseLeave,
+        midiResolution,
     } = props;
 
     const { derivedParameter } = useBooleanParameterResolution({
@@ -111,6 +112,7 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
         paramId,
         label,
         latch,
+        midiResolution,
     });
 
     const { normalizedValue, converter } = useAudioParameter(value, onChange, derivedParameter);

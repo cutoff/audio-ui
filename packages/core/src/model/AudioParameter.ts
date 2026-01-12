@@ -4,6 +4,8 @@
  * See LICENSE.md for details.
  */
 
+import type { MidiResolution } from "../types";
+
 export type AudioParameterType = "continuous" | "boolean" | "discrete";
 
 /**
@@ -88,7 +90,7 @@ interface BaseAudioParameter {
 
     // The physical MIDI resolution (7, 14 bits, etc.)
     // Default: 32 (High resolution for internal precision)
-    midiResolution?: 7 | 8 | 14 | 16 | 32 | 64;
+    midiResolution?: MidiResolution;
 }
 
 export interface ContinuousParameter extends BaseAudioParameter {
@@ -535,7 +537,7 @@ export interface ContinuousControlConfig {
     unit?: string;
     defaultValue?: number;
     scale?: ScaleType;
-    midiResolution?: BaseAudioParameter["midiResolution"];
+    midiResolution?: MidiResolution;
 }
 
 /**

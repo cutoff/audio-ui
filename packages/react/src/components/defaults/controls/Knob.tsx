@@ -137,6 +137,8 @@ function Knob({
     rotaryOverlay: svgOverlayRotary = false,
     children: svgOverlay,
     valueAsLabel = "labelOnly",
+    midiResolution,
+    defaultValue,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -166,6 +168,8 @@ function Knob({
         bipolar,
         unit,
         scale,
+        midiResolution,
+        defaultValue,
     });
 
     const { formattedValue } = useAudioParameter(value, onChange, parameterDef, valueFormatter);

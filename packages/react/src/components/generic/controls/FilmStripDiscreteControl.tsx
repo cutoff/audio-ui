@@ -84,6 +84,8 @@ function FilmStripDiscreteControl({
     frameRotation = 0,
     parameter,
     paramId,
+    midiResolution,
+    midiMapping,
     children,
     onClick,
     onMouseDown,
@@ -120,6 +122,8 @@ function FilmStripDiscreteControl({
             label={label}
             paramId={paramId}
             parameter={parameter}
+            midiResolution={midiResolution}
+            midiMapping={midiMapping}
             displayMode={displayMode}
             labelMode={labelMode}
             labelPosition={labelPosition}
