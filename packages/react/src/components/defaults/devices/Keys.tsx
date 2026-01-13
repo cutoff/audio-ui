@@ -222,11 +222,9 @@ function Keys({
     }, [validNbKeys, startKey]);
 
     // Build CSS variables from props (if provided)
-    // Note: Keys doesn't use thickness, so we pass undefined
     const { style: themableStyle, clampedRoundness } = useThemableProps({
         color,
         roundness,
-        thickness: undefined,
         style,
     });
 

@@ -12,7 +12,7 @@ import { VerticalSliderView, HorizontalSliderView } from "./SliderView";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps, ValueLabelMode } from "@/types";
-import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
+import { DEFAULT_ROUNDNESS, clampNormalized } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "@/hooks/useThemableProps";
 
 /**
@@ -115,13 +115,14 @@ function Slider({
     const {
         style: themableStyle,
         clampedRoundness,
-        clampedThickness,
     } = useThemableProps({
         color,
         roundness,
-        thickness,
         style,
     });
+
+    // Clamp thickness if provided
+    const clampedThickness = thickness !== undefined ? clampNormalized(thickness) : undefined;
 
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "slider", orientation);
 

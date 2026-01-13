@@ -13,7 +13,7 @@ import KnobView from "./KnobView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, DiscreteControlProps, ThemableProps } from "@/types";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { useDiscreteParameterResolution } from "@/hooks/useDiscreteParameterResolution";
-import { DEFAULT_ROUNDNESS, CLASSNAMES } from "@cutoff/audio-ui-core";
+import { DEFAULT_ROUNDNESS, CLASSNAMES, clampNormalized } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "@/hooks/useThemableProps";
 
 /**
@@ -154,13 +154,14 @@ function CycleButton({
     const {
         style: themableStyle,
         clampedRoundness,
-        clampedThickness,
     } = useThemableProps({
         color,
         roundness,
-        thickness,
         style,
     });
+
+    // Clamp thickness if provided
+    const clampedThickness = thickness !== undefined ? clampNormalized(thickness) : undefined;
 
     // Get visualContentMap and derivedParameter for content rendering.
     // Note: DiscreteControl also calls useDiscreteParameterResolution internally for parameter resolution,

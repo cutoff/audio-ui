@@ -18,7 +18,7 @@ import {
     KnobVariant,
     ValueLabelMode,
 } from "@/types";
-import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
+import { DEFAULT_ROUNDNESS, clampNormalized } from "@cutoff/audio-ui-core";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { useContinuousParameterResolution } from "@/hooks/useContinuousParameterResolution";
@@ -150,13 +150,14 @@ function Knob({
     const {
         style: themableStyle,
         clampedRoundness,
-        clampedThickness,
     } = useThemableProps({
         color,
         roundness,
-        thickness,
         style,
     });
+
+    // Clamp thickness if provided
+    const clampedThickness = thickness !== undefined ? clampNormalized(thickness) : undefined;
 
     const { derivedParameter: parameterDef } = useContinuousParameterResolution({
         parameter,

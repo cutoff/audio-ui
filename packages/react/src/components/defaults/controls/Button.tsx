@@ -88,7 +88,6 @@ function Button({
     const { style: themableStyle, clampedRoundness } = useThemableProps({
         color,
         roundness,
-        thickness: undefined,
         style,
     });
     const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "button");

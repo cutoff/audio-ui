@@ -15,8 +15,6 @@ export interface UseThemablePropsOptions {
     color?: string;
     /** Roundness for component corners/caps (normalized 0.0-1.0) */
     roundness?: number;
-    /** Thickness for component strokes/widths (normalized 0.0-1.0) */
-    thickness?: number;
     /** User-provided style object (takes precedence over generated CSS variables) */
     style?: React.CSSProperties;
 }
@@ -29,16 +27,14 @@ export interface UseThemablePropsResult {
     style: React.CSSProperties;
     /** Clamped roundness value (undefined if not provided) */
     clampedRoundness?: number;
-    /** Clamped thickness value (undefined if not provided) */
-    clampedThickness?: number;
 }
 
 /**
  * Hook that encapsulates CSS variable computation for themable components.
  *
  * This hook handles:
- * - Clamping normalized values (roundness, thickness) to valid ranges
- * - Generating CSS variables from themable props
+ * - Clamping normalized roundness values to valid ranges
+ * - Generating CSS variables from themable props (color, roundness)
  * - Computing color variants (primary-50, primary-20) when color is provided
  * - Merging with user-provided style (user style takes precedence)
  *
@@ -46,16 +42,15 @@ export interface UseThemablePropsResult {
  * along with clamped values that can be used for viewProps.
  * CSS variables are set on the element, allowing child components to read them via `var(--audioui-*)`.
  *
- * @param options - Configuration object with color, roundness, thickness, and style
- * @returns Object containing style and clamped values
+ * @param options - Configuration object with color, roundness, and style
+ * @returns Object containing style and clamped roundness value
  *
  * @example
  * ```tsx
- * function MyComponent({ color, roundness, thickness, style }: ThemableProps & BaseProps) {
- *   const { style: themableStyle, clampedRoundness, clampedThickness } = useThemableProps({
+ * function MyComponent({ color, roundness, style }: ThemableProps & BaseProps) {
+ *   const { style: themableStyle, clampedRoundness } = useThemableProps({
  *     color,
  *     roundness,
- *     thickness,
  *     style,
  *   });
  *
@@ -71,13 +66,11 @@ export interface UseThemablePropsResult {
 export function useThemableProps({
     color,
     roundness,
-    thickness,
     style,
 }: UseThemablePropsOptions): UseThemablePropsResult {
     return useMemo(() => {
         const vars: Record<string, string> = {};
         let clampedRoundness: number | undefined;
-        let clampedThickness: number | undefined;
 
         // Handle roundness - clamp and store for return
         if (roundness !== undefined) {
@@ -93,17 +86,10 @@ export function useThemableProps({
             vars["--audioui-primary-20"] = generateTransparencyVariant(color, 20);
         }
 
-        // Handle thickness - clamp and store for return
-        if (thickness !== undefined) {
-            clampedThickness = clampNormalized(thickness);
-            vars["--audioui-thickness-base"] = clampedThickness.toString();
-        }
-
         // Merge CSS variables with user style (user style takes precedence)
         return {
             style: { ...vars, ...style } as React.CSSProperties,
             clampedRoundness,
-            clampedThickness,
         };
-    }, [color, roundness, thickness, style]);
+    }, [color, roundness, style]);
 }
