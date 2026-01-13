@@ -24,8 +24,8 @@ export type SliderViewProps = {
     orientation?: "horizontal" | "vertical";
     /** Thickness of the slider (normalized 0.0-1.0, maps to 1-50) */
     thickness?: number;
-    /** Corner roundness (normalized 0.0-1.0, maps to 0-20) */
-    roundness?: number;
+    /** Corner roundness (normalized 0.0-1.0, maps to 0-20, or CSS variable string) */
+    roundness?: number | string;
     /** Color prop (kept for API compatibility, but colors are read from CSS variables) */
     color?: string;
     /** Additional CSS class name */
@@ -94,9 +94,16 @@ function SliderView({
         return computeFilledZone(mainZone, normalizedValue, 0, 1, normalizedCenter, orientation === "horizontal");
     }, [normalizedValue, bipolar, mainZone, orientation]);
 
-    // Translate normalized roundness to legacy range (0-20) and calculate corner radius
+    // Translate normalized roundness to legacy range (0-20) and calculate corner radius or use CSS variable
+    // When roundness is a CSS variable string (from theme), pass it directly to SVG rx/ry attributes.
+    // When roundness is a number, translate it to the legacy pixel range.
     const cornerRadius = useMemo(() => {
-        const legacyRoundness = translateSliderRoundness(roundness);
+        if (typeof roundness === "string") {
+            // CSS variable - pass directly to SVG (browser will resolve it)
+            return roundness;
+        }
+        // Numeric value - translate to legacy pixel range (0-20)
+        const legacyRoundness = translateSliderRoundness(roundness ?? DEFAULT_ROUNDNESS);
 
         // If roundness is 0, use square corners
         if (legacyRoundness === 0) {

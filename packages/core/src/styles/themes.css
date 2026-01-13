@@ -70,9 +70,16 @@
 
     /* Component-specific roundness (calculated from base) */
     --audioui-roundness-button: calc(var(--audioui-roundness-base) * 50px);
-    --audioui-roundness-knob: var(--audioui-roundness-base); /* Used as boolean in JS */
+    --audioui-roundness-knob: var(--audioui-roundness-base); /* Used as boolean in JS or linecap in CSS */
     --audioui-roundness-slider: calc(var(--audioui-roundness-base) * 20px);
     --audioui-roundness-keys: calc(var(--audioui-roundness-base) * 12px);
+
+    /* Derived Internal Variables - Not intended for direct customization */
+    /* These variables are automatically managed by the roundness attribute via theme setters and hooks */
+    --audioui-linecap-base: round; /* Inferred: 0.0 -> square, >0.0 -> round */
+    --audioui-linecap-knob: var(--audioui-linecap-base);
+    --audioui-linecap-slider: var(--audioui-linecap-base);
+    --audioui-linecap-button: var(--audioui-linecap-base);
 
     /* Component-specific thickness (calculated from base) */
     --audioui-thickness-knob: calc(1px + var(--audioui-thickness-base) * 19px);

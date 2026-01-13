@@ -30,18 +30,25 @@ export function setThemeColor(color: string): void {
  * Updates the CSS variable `--audioui-roundness-base` on the document root.
  * Component-specific roundness values are automatically calculated from this base value.
  *
+ * This function also updates the `--audioui-linecap-base` helper variable:
+ * - value = 0.0 results in "square"
+ * - value > 0.0 results in "round"
+ *
  * @param value - Normalized roundness value between 0.0 and 1.0
  *
  * @example
  * ```ts
- * setThemeRoundness(0.3); // 30% roundness
- * setThemeRoundness(0.0); // Square corners
- * setThemeRoundness(1.0); // Maximum roundness
+ * setThemeRoundness(0.3); // 30% roundness, linecap: round
+ * setThemeRoundness(0.0); // Square corners, linecap: square
+ * setThemeRoundness(1.0); // Maximum roundness, linecap: round
  * ```
  */
 export function setThemeRoundness(value: number): void {
     if (typeof document !== "undefined") {
         document.documentElement.style.setProperty("--audioui-roundness-base", value.toString());
+        // Automatically infer linecap from roundness: 0 = square, >0 = round
+        const linecap = value === 0 ? "square" : "round";
+        document.documentElement.style.setProperty("--audioui-linecap-base", linecap);
     }
 }
 

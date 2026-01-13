@@ -23,8 +23,8 @@ export type ValueRingProps = {
     bipolar?: boolean;
     /** Thickness of the knob's stroke (1-20 pixels) */
     thickness?: number;
-    /** Roundness for stroke linecap (false = square, true = round) */
-    roundness?: boolean;
+    /** Roundness for stroke linecap (false = square, true = round, or CSS variable string) */
+    roundness?: boolean | string;
     /** Openness of the ring in degrees (value between 0-360º; 0º: closed; 90º: 3/4 open; 180º: half-circle;) */
     openness?: number;
     /** Optional rotation angle offset in degrees (default 0) */
@@ -66,7 +66,12 @@ function ValueRing({
         positions
     );
 
-    const strokeLinecap = roundness ? "round" : "square";
+    const strokeLinecap = useMemo(() => {
+        if (typeof roundness === "string") {
+            return roundness;
+        }
+        return roundness ? "round" : "square";
+    }, [roundness]);
 
     // Calculate actual radius to make stroke expand inward from the outer edge
     // SVG strokes are centered on the path by default, so a stroke of thickness N

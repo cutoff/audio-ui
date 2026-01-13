@@ -26,8 +26,8 @@ export type KnobViewProps = {
     variant?: KnobVariant;
     /** Thickness of the knob's stroke (normalized 0.0-1.0, maps to 1-20) */
     thickness?: number;
-    /** Roundness for stroke linecap (normalized 0.0-1.0, 0.0 = square, >0.0 = round) */
-    roundness?: number;
+    /** Roundness for stroke linecap (normalized 0.0-1.0, 0.0 = square, >0.0 = round, or CSS variable string) */
+    roundness?: number | string;
     /** Openness of the ring in degrees (value between 0-360º; 0º: closed; 90º: 3/4 open; 180º: half-circle;) */
     openness?: number;
     /** Optional rotation angle offset in degrees */
@@ -77,7 +77,7 @@ function KnobView({
     bipolar = false,
     variant = "abstract",
     thickness,
-    roundness = DEFAULT_ROUNDNESS,
+    roundness,
     openness = 90,
     rotation = 0,
     color: _color, // Prefixed with _ to indicate intentionally unused (kept for API compatibility)
@@ -95,9 +95,22 @@ function KnobView({
         return translateKnobThickness(effectiveThickness);
     }, [effectiveThickness]);
 
-    // Translate normalized roundness to boolean (0 = square, >0 = round)
-    const isRound = useMemo(() => {
-        return translateKnobRoundness(roundness) !== 0;
+    // Translate normalized roundness to stroke-linecap value
+    // When roundness is a CSS variable (from theme), use the corresponding linecap variable
+    // which is automatically managed by the theme system based on the roundness value.
+    // When roundness is a number, infer linecap: 0.0 = square, >0.0 = round
+    const strokeLinecap = useMemo(() => {
+        if (typeof roundness === "string") {
+            // If it's a CSS variable for roundness, use the corresponding linecap variable
+            // The linecap variable is automatically set by useThemableProps or setThemeRoundness
+            // based on whether roundness is 0.0 (square) or >0.0 (round)
+            if (roundness === "var(--audioui-roundness-knob)") {
+                return "var(--audioui-linecap-knob)";
+            }
+            return "round"; // Fallback for other CSS variable strings
+        }
+        // For numeric roundness, infer linecap: 0 = square, >0 = round
+        return translateKnobRoundness(roundness ?? DEFAULT_ROUNDNESS) !== 0 ? "round" : "square";
     }, [roundness]);
 
     // Reusable ValueRing element for value indication
@@ -111,7 +124,7 @@ function KnobView({
             normalizedValue={normalizedValue}
             bipolar={bipolar}
             thickness={pixelThickness}
-            roundness={isRound}
+            roundness={strokeLinecap}
             openness={openness}
             rotation={rotation}
             fgArcStyle={{ stroke: "var(--audioui-primary-color)" }}
@@ -120,6 +133,7 @@ function KnobView({
     );
 
     // Render variant-specific content
+    const finalLinecap = typeof strokeLinecap === "string" ? strokeLinecap : (strokeLinecap as "round" | "square");
     switch (variant) {
         case "plainCap":
             return (
@@ -142,7 +156,8 @@ function KnobView({
                             y2="5%"
                             stroke="var(--audioui-nearwhite)"
                             strokeWidth={(50 - pixelThickness - 6) * 0.1}
-                            strokeLinecap={isRound ? "round" : "square"}
+                            // @ts-expect-error - strokeLinecap accepts CSS variables (strings) but React types are strict
+                            strokeLinecap={finalLinecap}
                         />
                     </RotaryImage>
                 </g>
@@ -192,7 +207,8 @@ function KnobView({
                             y2="5%"
                             stroke="var(--audioui-nearwhite)"
                             strokeWidth={(50 - pixelThickness - 6) * 0.1}
-                            strokeLinecap={isRound ? "round" : "square"}
+                            // @ts-expect-error - strokeLinecap accepts CSS variables (strings) but React types are strict
+                            strokeLinecap={finalLinecap}
                         />
                     </RotaryImage>
                     {/* Icon overlay */}

@@ -17,7 +17,7 @@ export type RingArcProps = {
     cy: number;
     radius: number;
     thickness: number;
-    strokeLinecap: "round" | "square" | "butt";
+    strokeLinecap: "round" | "square" | "butt" | string;
 };
 
 /**
@@ -44,6 +44,7 @@ function RingArc({ startAngle, endAngle, style, cx, cy, radius, thickness, strok
                 r={radius}
                 fill="none"
                 strokeWidth={thickness}
+                // @ts-expect-error - strokeLinecap accepts CSS variables (strings) but React types are strict
                 strokeLinecap={strokeLinecap}
                 style={style}
             />
@@ -52,7 +53,16 @@ function RingArc({ startAngle, endAngle, style, cx, cy, radius, thickness, strok
 
     if (!path) return null;
 
-    return <path d={path} fill="none" strokeWidth={thickness} strokeLinecap={strokeLinecap} style={style} />;
+    return (
+        <path
+            d={path}
+            fill="none"
+            strokeWidth={thickness}
+            // @ts-expect-error - strokeLinecap accepts CSS variables (strings) but React types are strict
+            strokeLinecap={strokeLinecap}
+            style={style}
+        />
+    );
 }
 
 export default React.memo(RingArc);

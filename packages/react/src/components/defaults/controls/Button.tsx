@@ -8,7 +8,6 @@
 
 import React from "react";
 import classNames from "classnames";
-import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BooleanControlProps, ThemableProps } from "@/types";
 import ButtonView from "./ButtonView";
 import BooleanControl from "@/primitives/controls/BooleanControl";
@@ -85,7 +84,7 @@ function Button({
     className,
     style,
 }: ButtonProps) {
-    const { style: themableStyle, clampedRoundness } = useThemableProps({
+    const { style: themableStyle } = useThemableProps({
         color,
         roundness,
         style,
@@ -116,7 +115,7 @@ function Button({
             view={ButtonView}
             viewProps={{
                 threshold: 0.5,
-                roundness: clampedRoundness ?? DEFAULT_ROUNDNESS,
+                roundness: roundness ?? "var(--audioui-roundness-button)",
                 color: color ?? "var(--audioui-primary-color)",
             }}
         />

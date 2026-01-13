@@ -26,7 +26,6 @@ import "@cutoff/audio-ui-core/styles.css";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import { CSS_VARS } from "@cutoff/audio-ui-core";
 import { translateKeybedRoundness } from "@cutoff/audio-ui-core";
-import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 
 /**
  * Type definition for note names (C to B)
@@ -222,18 +221,28 @@ function Keys({
     }, [validNbKeys, startKey]);
 
     // Build CSS variables from props (if provided)
-    const { style: themableStyle, clampedRoundness } = useThemableProps({
+    const { style: themableStyle } = useThemableProps({
         color,
         roundness,
         style,
     });
 
-    // Translate normalized roundness to legacy range (0-12)
-    // Use clamped value from hook, or default if not provided
-    const legacyRoundness = useMemo(() => {
-        const normalized = clampedRoundness ?? DEFAULT_ROUNDNESS;
-        return translateKeybedRoundness(normalized);
-    }, [clampedRoundness]);
+    // Translate normalized roundness to legacy range (0-12) or use CSS variable
+    // When roundness is a CSS variable string (from theme), pass it directly to SVG rx attributes.
+    // When roundness is undefined, fallback to theme CSS variable.
+    // When roundness is a number, translate it to the legacy pixel range.
+    const cornerRadius = useMemo(() => {
+        if (typeof roundness === "string") {
+            // CSS variable - pass directly to SVG (browser will resolve it)
+            return roundness;
+        }
+        if (roundness === undefined) {
+            // No prop provided - use theme default via CSS variable
+            return "var(--audioui-roundness-keys)";
+        }
+        // Numeric value - translate to legacy pixel range (0-12)
+        return translateKeybedRoundness(roundness);
+    }, [roundness]);
 
     // Generate color variants using the centralized utility
     // Used for theme mode rendering and for active keys in classic modes
@@ -351,11 +360,11 @@ function Keys({
                     y={halfInnerStrokeWidth}
                     width={whiteWidth}
                     height={whiteHeight}
-                    rx={legacyRoundness}
+                    rx={cornerRadius}
                 />
             );
         });
-    }, [keybedDimensions, octaveShift, isNoteActive, legacyRoundness, colorVariants, keyColors, keyStyle, startKey]);
+    }, [keybedDimensions, octaveShift, isNoteActive, cornerRadius, colorVariants, keyColors, keyStyle, startKey]);
 
     // Memoize black keys rendering
     const renderBlackKeys = useMemo(() => {
@@ -437,7 +446,7 @@ function Keys({
                     y={halfInnerStrokeWidth}
                     width={blackWidth}
                     height={blackHeight}
-                    rx={legacyRoundness}
+                    rx={cornerRadius}
                 />
             );
         }).filter(Boolean);
@@ -446,7 +455,7 @@ function Keys({
         octaveShift,
         isNoteActive,
         correctBlackPass,
-        legacyRoundness,
+        cornerRadius,
         colorVariants,
         keyColors,
         keyStyle,

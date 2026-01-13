@@ -19,8 +19,8 @@ export type ButtonViewProps = {
     normalizedValue: number;
     /** Threshold for determining "on" state (default 0.5) */
     threshold?: number;
-    /** Corner roundness (normalized 0.0-1.0, maps to 0-50) */
-    roundness?: number;
+    /** Corner roundness (normalized 0.0-1.0, maps to 0-50, or CSS variable string) */
+    roundness?: number | string;
     /** Color prop (kept for API compatibility, but colors are read from CSS variables) */
     color: string;
     /** Additional CSS class name */
@@ -43,16 +43,23 @@ export type ButtonViewProps = {
 function ButtonView({
     normalizedValue,
     threshold = 0.5,
-    roundness = DEFAULT_ROUNDNESS,
+    roundness,
     color: _color, // Prefixed with _ to indicate intentionally unused (kept for API compatibility)
     className,
 }: ButtonViewProps): JSX.Element {
     // Determine if button is "on" based on threshold
     const isOn = useMemo(() => normalizedValue > threshold, [normalizedValue, threshold]);
 
-    // Translate normalized roundness to legacy range (0-50)
+    // Translate normalized roundness to legacy range (0-50) or use CSS variable
+    // When roundness is a CSS variable string (from theme), pass it directly to SVG rx/ry attributes.
+    // When roundness is a number, translate it to the legacy pixel range.
     const cornerRadius = useMemo(() => {
-        return translateButtonRoundness(roundness);
+        if (typeof roundness === "string") {
+            // CSS variable - pass directly to SVG (browser will resolve it)
+            return roundness;
+        }
+        // Numeric value - translate to legacy pixel range (0-50)
+        return translateButtonRoundness(roundness ?? DEFAULT_ROUNDNESS);
     }, [roundness]);
 
     // Use CSS variables for colors - CSS handles variant generation via color-mix

@@ -151,10 +151,7 @@ function CycleButton({
     style,
     children,
 }: CycleButtonProps) {
-    const {
-        style: themableStyle,
-        clampedRoundness,
-    } = useThemableProps({
+    const { style: themableStyle, clampedRoundness } = useThemableProps({
         color,
         roundness,
         style,
