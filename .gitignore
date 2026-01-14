@@ -32,11 +32,11 @@ yarn-debug.log*
 yarn-error.log*
 
 # links
-links/
+/links/
 
 SPECIFICATIONS.md
 
 vite.config.ts.timestamp-*
 vitest.config.ts.timestamp-*
 
-docs/internal
+/docs/internal
