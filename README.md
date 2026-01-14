@@ -1,4 +1,4 @@
-# AudioUI
+# AudioUI by Cutoff
 
 AudioUI is a professional, open-source React component library for building high-performance user interfaces for audio and MIDI applications. It provides a meticulously crafted set of components designed to meet the demanding needs of music software, digital audio workstations (DAWs), audio plugins with a web UI, and other audio-centric web applications.
 
@@ -41,7 +41,7 @@ This monorepo contains the following packages:
 | `@cutoff/audio-ui-core` (`packages/core`)    | Framework-agnostic core package. Contains all business logic, models, controllers, utilities, and styles that are independent of any UI framework. Can be used by any framework implementation (React, Solid, Vue, etc.) or in non-framework contexts. |
 | `playground-react` (`apps/playground-react`) | A [Next.js](https://nextjs.org/) app for developing and testing components.                                                                                                                                                                            |
 
-**Architecture Note**: The library is designed with a clear separation between framework-agnostic core logic (`packages/core/`) and framework-specific implementations (`packages/react/`). This architecture allows for future implementations in other frameworks (e.g., `packages/solid/` for SolidJS) that would share the same core logic.
+**Architecture Note**: The library is designed with a clear separation between framework-agnostic core logic (`packages/core/`) and framework-specific implementations (`packages/react/`). The framework-agnostic architecture enables potential implementations for other frameworks that would share the same core logic.
 
 ## Getting Started
 
@@ -111,12 +111,12 @@ This command will start the Next.js playground application, which is used to dev
 
 ## Licensing
 
-AudioUI is a dual-licensed project.
+AudioUI by Cutoff is a dual-licensed project.
 
 - **Open Source (GPL-3.0):** You may use this library for free in open-source projects under the terms of the GNU General Public License v3.0.
 - **Commercial License:** For use in proprietary, closed-source applications, you must purchase a commercial license. This license removes the copyleft restrictions of the GPL and includes professional support.
 
-Commercial licenses are available at **[https://audioui.dev](https://audioui.dev)**.
+Commercial licenses are available at **[https://cutoff.dev](https://cutoff.dev)**.
 
 For full details, please see the [LICENSE.md](license-telf/LICENSE.md) file and the documents within the [license-telf](license-telf/) directory.
 

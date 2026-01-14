@@ -23,7 +23,7 @@ The project employs a dual-licensing strategy to support both open-source and co
   - Removes the copyleft restrictions of the GPL-3.0.
   - Grants the right to use the library in commercial products without disclosing the source code.
   - Includes a Service Level Agreement (SLA) for professional support.
-- **Acquisition**: Commercial licenses can be acquired at **[https://audioui.dev](https://audioui.dev)**.
+- **Acquisition**: Commercial licenses can be acquired at **[https://cutoff.dev](https://cutoff.dev)**.
 
 ## 2. Legal Document Structure
 
@@ -47,7 +47,7 @@ The complete legal framework is located in the `/license` directory at the root 
 ### 3.2. `README.md` Files
 
 - The root `README.md` and the `packages/react/README.md` must clearly explain the dual-licensing model.
-- They must include a direct link for purchasing the commercial license: `https://audioui.dev`.
+- They must include a direct link for purchasing the commercial license: `https://cutoff.dev`.
 
 ### 3.3. `LICENSE.md` Files
 

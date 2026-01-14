@@ -211,10 +211,9 @@ function ControlSurfacePage() {
                                 </div>
 
                                 {/* Fader */}
-                                {/* WORKAROUND: Override height to achieve 1:3 aspect ratio (width:height) for faders.
-                                    The size system uses 1:2 ratio for general-purpose sliders, but faders need the
-                                    taller 1:3 ratio. This inline style override will be removed once a proper fader
-                                    component or aspect ratio prop is introduced. */}
+                                {/* Override height to achieve 1:3 aspect ratio (width:height) for faders.
+                                    The size system uses 1:2 ratio for general-purpose sliders, but faders require
+                                    the taller 1:3 ratio. This inline style override provides the correct aspect ratio. */}
                                 <div className="flex flex-1 items-stretch min-h-0">
                                     <div className="flex-1 flex items-center justify-center">
                                         <AudioSlider
@@ -287,7 +286,7 @@ function ControlSurfacePage() {
                                 />
                             </div>
 
-                            {/* WORKAROUND: Override height to achieve 1:3 aspect ratio (width:height) for faders.
+                            {/* Override height to achieve 1:3 aspect ratio (width:height) for faders.
                                 See channel fader comment above for details. */}
                             <div className="flex flex-1 items-stretch min-h-0">
                                 <div className="flex-1 flex items-center justify-center">
@@ -315,7 +314,7 @@ function ControlSurfacePage() {
                                     latch={true}
                                     value={false}
                                     onChange={() => {
-                                        // no-op, just shows the visual style
+                                        // Visual demonstration only
                                     }}
                                     label="Rec"
                                 />

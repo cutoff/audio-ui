@@ -80,7 +80,7 @@ export interface AdaptiveBoxProps extends PropsWithChildren {
     viewBoxHeight: number;
     minWidth?: number;
     minHeight?: number;
-    debug?: boolean; // controls dev visuals (scaler border, svg background). Defaults to false
+    debug?: boolean; // Enables visual debugging aids (scaler border, svg background). Defaults to false
 }
 
 /**

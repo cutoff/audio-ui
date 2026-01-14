@@ -74,7 +74,7 @@ These are the fundamental requirements that define the color system. **These mus
 
 - **Idiomatic and Clean**: The system should feel natural to CSS developers
 - **Performance First**: Optimized for realtime, high-performance, low-latency audio UIs
-- **No Backward Compatibility**: The project was never released, so focus on the best solution
+- **No Backward Compatibility**: The project is in Developer Preview phase, so focus on the best solution
 
 ### Implementation Notes
 

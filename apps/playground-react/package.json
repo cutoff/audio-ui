@@ -5,7 +5,7 @@
     "version": "1.0.0-dp.1",
     "author": "Renaud Denis <mail@renauddenis.com> (https://renauddenis.com)",
     "license": "GPL-3.0-only",
-    "homepage": "https://audioui.dev",
+    "homepage": "https://cutoff.dev",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/cutoff/audio-ui.git",

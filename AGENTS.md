@@ -62,14 +62,14 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
   - **Reason:** Library components are interactive (knobs, sliders) and rely on client-side hooks and browser events. This ensures they work in any host application (CSR, SSR, SSG).
 
 - **`apps/playground-react` (Playground Application):** **Server Components by default; Client Components for interactivity.**
-  - **Purpose:** Internal playground for rapid iteration, visual validation, and manual testing. Not the final documentation site.
+  - **Purpose:** Playground application for component development, visual validation, and manual testing. Not the final documentation site.
   - **Rule:** Pages (`app/**/page.tsx`) should be Server Components (default, no directive). They are pre-rendered at build time (SSG) for performance.
   - **Implementation:** To show interactive demos, import the library's Client Components into the Server Component pages. Next.js will handle the client-side hydration automatically. Pages that require hooks for demo controls (e.g., state for knobs) must use the `"use client";` directive.
 
 ## Documentation Strategy (Web Monorepo)
 
 - Final public documentation lives in a separate website monorepo (Next.js) with MDX-based, developer-oriented docs that embed live components.
-- This repo's `apps/playground-react` is a playground, not the docs source. Keep playground focused on iteration and testing; mirror finalized examples into the docs site when stable.
+- This repo's `apps/playground-react` is a playground application for component development and testing. Finalized examples are mirrored into the documentation site when stable.
 
 ## Project Structure
 
@@ -205,7 +205,6 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - No Provider needed - pure CSS variable-based theming
 - **Comprehensive Documentation**: See `packages/react/docs/color-system.md` for complete color system architecture, and `apps/playground-react/docs/color-integration.md` for playground integration details
 - **Styling System Guidelines**: See `agents/audioui-styling-system.md` for complete styling conventions, naming patterns, constants usage, and Stylelint enforcement
-- **Performance Guidelines**: See `docs/internal/PERFORMANCE.md` for centralized performance findings, optimization best practices (SVG geometry vs CSS, memoization strategy, event handling), and benchmarking procedures.
 
 ## Size System
 

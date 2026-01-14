@@ -1,7 +1,7 @@
 {
     "name": "@cutoff/audio-ui-core",
     "version": "1.0.0-dp.1",
-    "description": "Core logic and models for AudioUI",
+    "description": "Core logic and models for AudioUI by Cutoff",
     "author": "Renaud Denis <mail@renauddenis.com> (https://renauddenis.com)",
     "license": "GPL-3.0-only",
     "type": "module",

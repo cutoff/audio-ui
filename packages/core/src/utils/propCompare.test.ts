@@ -173,7 +173,7 @@ describe("createPropComparator", () => {
             // So if nextProps has extra keys, they're not checked
             // This is expected behavior - shallow comparison only checks prevProps keys
             // To detect missing props, we'd need to check both objects' keys
-            // For now, this test verifies current behavior
+            // This test verifies the current behavior
             expect(compare(prevProps, nextProps)).toBe(true);
         });
 
