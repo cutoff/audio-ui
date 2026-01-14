@@ -113,10 +113,10 @@ export default {
                 "caret-blink": "caret-blink 1.25s ease-out infinite",
             },
             height: {
-                screen: "100dvh", // Use dynamic viewport height for mobile/tablet compatibility
+                screen: "100dvh",
             },
             minHeight: {
-                screen: "100dvh", // Use dynamic viewport height for mobile/tablet compatibility
+                screen: "100dvh",
             },
         },
     },

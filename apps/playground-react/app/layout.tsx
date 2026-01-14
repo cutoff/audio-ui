@@ -8,7 +8,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/app/providers";
-import SideBar from "@/components/SideBar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { BreadcrumbNav } from "@/components/breadcrumb-nav";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 
 const sansFont = Geist({
@@ -42,13 +44,20 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning>
             <body className={`${sansFont.variable} ${monoFont.variable} ${interFont.variable} font-sans antialiased`}>
                 <Providers>
-                    <div className="flex flex-col md:flex-row min-h-screen">
-                        {/* SideBar will be client-side rendered */}
-                        <SideBar />
-                        <div className="flex-1 pt-16 md:pt-0">{children}</div>
-                    </div>
+                    <SidebarProvider>
+                        <AppSidebar />
+                        <SidebarInset>
+                            <header className="flex h-16 shrink-0 items-center gap-2 px-4">
+                                <div className="flex items-center gap-2">
+                                    <SidebarTrigger className="-ml-1" />
+                                    <BreadcrumbNav />
+                                </div>
+                            </header>
+                            <div className="flex-1">{children}</div>
+                        </SidebarInset>
+                    </SidebarProvider>
                     <Toaster />
-                </Providers>{" "}
+                </Providers>
             </body>
         </html>
     );
