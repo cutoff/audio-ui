@@ -17,23 +17,14 @@ function copyCSSPlugin() {
             const srcStylesDir = resolve(__dirname, "src/styles");
             const distStylesDir = resolve(__dirname, "dist/styles");
             await mkdir(distStylesDir, { recursive: true });
-            await copyFile(
-                resolve(srcStylesDir, "styles.css"),
-                resolve(distStylesDir, "styles.css")
-            );
-            await copyFile(
-                resolve(srcStylesDir, "themes.css"),
-                resolve(distStylesDir, "themes.css")
-            );
+            await copyFile(resolve(srcStylesDir, "styles.css"), resolve(distStylesDir, "styles.css"));
+            await copyFile(resolve(srcStylesDir, "themes.css"), resolve(distStylesDir, "themes.css"));
         },
     };
 }
 
 export default defineConfig({
-    plugins: [
-        dts({ include: ["src"] }),
-        copyCSSPlugin(),
-    ],
+    plugins: [dts({ include: ["src"] }), copyCSSPlugin()],
     build: {
         lib: {
             entry: resolve(__dirname, "src/index.ts"),

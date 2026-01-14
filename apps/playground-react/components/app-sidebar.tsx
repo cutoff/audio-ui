@@ -14,6 +14,7 @@ import { Command, Sliders, Keyboard, Layers, Box, Layout, Sparkles } from "lucid
 import { NavMain } from "@/components/nav-main";
 import { NavExamples } from "@/components/nav-examples";
 import { NavSettings } from "@/components/nav-settings";
+import { NavVersion } from "@/components/nav-version";
 import {
     Sidebar,
     SidebarContent,
@@ -208,6 +209,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarContent>
             <SidebarFooter>
                 <NavSettings />
+                <NavVersion />
             </SidebarFooter>
         </Sidebar>
     );
