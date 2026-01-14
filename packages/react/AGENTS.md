@@ -12,7 +12,7 @@
 
 - **Framework-Agnostic Core**: `packages/core/` contains all business logic, models, controllers, utilities, and styles that are independent of any UI framework. It has zero framework dependencies and can be used by any framework implementation.
 - **React Implementation**: This package (`packages/react/`) provides React components, hooks, and React-specific adapters that wrap the framework-agnostic core logic from `@cutoff/audio-ui-core`.
-- **Future Implementations**: The architecture supports additional framework-specific packages (e.g., `packages/solid/` for SolidJS). Each would depend on `@cutoff/audio-ui-core` and provide framework-specific components following the same pattern.
+- **Framework-Agnostic Architecture**: The core package is designed to be framework-agnostic, enabling potential implementations for other frameworks. Any future framework-specific packages would follow the same architectural pattern: depend on `@cutoff/audio-ui-core` and provide framework-specific components and adapters.
 
 **Key Pattern**: React components use core's `InteractionController`, models, and utilities, but add React-specific rendering via hooks (`useInteractiveControl`, `useAudioParameter`) and React components.
 
@@ -23,7 +23,7 @@
 | Scripts             | `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm link`, `pnpm lint:css`                                                                                                                                                                                                                                                                               |
 | Env Vars            | None                                                                                                                                                                                                                                                                                                                                                    |
 | Component Structure | Props with JSDoc; default params; function ComponentName() {}; arrow functions for handlers; SVG for graphics                                                                                                                                                                                                                                           |
-| Exports             | All from src/index.ts: Components (Button, Knob, Slider, Keybed, AdaptiveBox, ContinuousControl, FilmStripContinuousControl, FilmStripDiscreteControl, FilmStripBooleanControl, etc.), Theme utilities (setThemeColor, setThemeRoundness, etc.), Types (including ControlComponent, ControlComponentView), Utils (formatters, note utils), Theme colors |
+| Exports             | All from src/index.ts: Components (Button, Knob, Slider, Keys, AdaptiveBox, ContinuousControl, FilmStripContinuousControl, FilmStripDiscreteControl, FilmStripBooleanControl, etc.), Theme utilities (setThemeColor, setThemeRoundness, etc.), Types (including ControlComponent, ControlComponentView), Utils (formatters, note utils), Theme colors |
 | Testing             | Vitest; .test.tsx alongside; mock deps; React 18 compat                                                                                                                                                                                                                                                                                                 |
 | Build               | Vite; generates dist/index.js, index.d.ts, style.css; ES modules                                                                                                                                                                                                                                                                                        |
 | Path Aliases        | Use `@/primitives/*`, `@/hooks/*`, `@/defaults/*`, `@/utils/*`, `@/types` instead of relative paths (configured in tsconfig.json and vite.config.ts)                                                                                                                                                                                                    |
@@ -33,7 +33,7 @@
 - `src/components/`: Component .tsx with .test.tsx
   - `defaults/`: Default/built-in components
     - `controls/`: Interactive controls (Button, Knob, Slider, CycleButton) and their SVG views (ButtonView, KnobView, SliderView). Knob and Slider use ContinuousControl internally.
-    - `devices/`: Device components (Keybed)
+    - `devices/`: Device components (Keys)
   - `generic/`: Generic components that support industry-standard control representations
     - `controls/`: Filmstrip-based controls (FilmStripContinuousControl, FilmStripDiscreteControl, FilmStripBooleanControl) that use bitmap sprite sheets (filmstrips) for visualization
   - `primitives/`: Base components for building final components, excluding theme-specific
@@ -54,7 +54,7 @@
 **Generic Controls** (`src/components/generic/controls/`):
 
 - Filmstrip-based controls (FilmStripContinuousControl, FilmStripDiscreteControl, FilmStripBooleanControl)
-- Support the widely-used industry standard for control representation: bitmap sprite sheets (filmstrips)
+- Support the widely-used current industry standard for control representation: bitmap sprite sheets (filmstrips)
 - While based on bitmap images (more constrained than SVG), these components provide full access to:
   - Complete layout system (AdaptiveBox with all sizing, alignment, and label modes)
   - Full parameter model (AudioParameter with min/max, scaling, units, formatting)
@@ -141,9 +141,9 @@ Technical documentation is located in `docs/`:
 
 - **`docs/color-system.md`**: Complete color system architecture documentation. Covers axioms & requirements, CSS theme variables, color utilities, component color resolution hierarchy, CSS variable-based theming system, theme utility functions (`setThemeColor`, `setThemeRoundness`, etc.), predefined theme colors, usage examples, and performance optimizations.
 
-- **`docs/color-property-examples.md`**: Practical examples of using the `color` property with components. Includes basic usage, color animation, combining with other properties, dynamic colors, and component-specific color handling (Keybed luminosity variants).
+- **`docs/color-property-examples.md`**: Practical examples of using the `color` property with components. Includes basic usage, color animation, combining with other properties, dynamic colors, and component-specific color handling (Keys luminosity variants).
 
-- **`docs/keybed-middle-c-positions.md`**: Specifications for middle C positions on physical MIDI keyboards. Documents standard layouts for common keyboard sizes (25-88 keys), MIDI note numbering conventions, visual representations, and transposition considerations.
+- **`docs/keys-middle-c-positions.md`**: Specifications for middle C positions on physical MIDI keyboards. Documents standard layouts for common keyboard sizes (25-88 keys), MIDI note numbering conventions, visual representations, and transposition considerations.
 
 - **`docs/interaction-system.md`**: Complete interaction system architecture documentation. Covers the `useInteractiveControl` hook, interaction modes, sensitivity tuning, input methods (drag/touch, wheel, keyboard), focus management, accessibility, performance considerations, and component-specific behavior. **Essential reference for understanding how all interactive controls handle user input.**
 
@@ -154,7 +154,7 @@ Technical documentation is located in `docs/`:
 - Working with AdaptiveBox component (layout, sizing, alignment)
 - Implementing or modifying color theming
 - Using color properties in components
-- Working with Keybed component (MIDI note positioning)
+- Working with Keys component (MIDI note positioning)
 - **Implementing or modifying interactive controls (drag, wheel, keyboard interactions)**
 - **Tuning sensitivity or interaction behavior**
 - **Working with component sizing, size prop, or customizing the size system**
@@ -197,11 +197,11 @@ The library provides generic control components that decouple behavior from visu
 
 ### Filmstrip-Based Controls (Generic Components)
 
-The library provides filmstrip-based controls that support the widely-used industry standard for control representation: bitmap sprite sheets (filmstrips). These components are located in `src/components/generic/controls/`.
+The library provides filmstrip-based controls that support the widely-used current industry standard for control representation: bitmap sprite sheets (filmstrips). These components are located in `src/components/generic/controls/`.
 
-**Industry Standard Support**:
+**Current Industry Standard Support**:
 
-- Filmstrips (bitmap sprite sheets) are a widely-used standard in the audio/MIDI industry for representing control states
+- Filmstrips (bitmap sprite sheets) are the current widely-used standard in the audio/MIDI industry for representing control states
 - Each frame in the sprite sheet represents a different control state (value, position, on/off, etc.)
 - This approach is commonly used in professional audio software and hardware interfaces
 

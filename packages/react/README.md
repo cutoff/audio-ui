@@ -31,15 +31,17 @@ pnpm build
 packages/react/
 ├── src/
 │   ├── components/      # React components
-│   │   ├── defaults/    # Default/built-in components and theme system
-│   │   │   ├── controls/  # Interactive controls (Button, Knob, Slider, etc.) and SVG views
-│   │   │   ├── devices/   # Device components (Keybed)
-│   │   │   └── AudioUiProvider.tsx  # Default theme system provider
+│   │   ├── defaults/    # Default/built-in components
+│   │   │   ├── controls/  # Interactive controls (Button, Knob, Slider, CycleButton) and SVG views
+│   │   │   └── devices/   # Device components (Keys)
+│   │   ├── generic/     # Generic components (FilmStrip controls, Image-based controls)
+│   │   │   └── controls/  # Filmstrip and image-based control implementations
 │   │   ├── primitives/  # Base components for building final components
-│   │   │   ├── controls/  # Control primitives (ContinuousControl, Option)
-│   │   │   └── svg/       # SVG view primitives (ValueRing, RotaryImage, etc.)
+│   │   │   ├── controls/  # Control primitives (ContinuousControl, DiscreteControl, BooleanControl, OptionView)
+│   │   │   └── svg/       # SVG view primitives (ValueRing, RotaryImage, RadialImage, etc.)
 │   │   └── types.ts      # Shared type definitions
-│   ├── hooks/           # Hooks wrapping core logic (useContinuousInteraction, useAudioParameter)
+│   ├── hooks/           # Hooks wrapping core logic (useContinuousInteraction, useAudioParameter, etc.)
+│   ├── utils/           # Utility functions (theme utilities)
 │   └── index.ts         # Main exports
 ├── dist/                # Built output (generated)
 ├── docs/                # Technical documentation
@@ -114,7 +116,11 @@ If you encounter version conflicts:
 
 ### Adding New Components
 
-1. Create component file in `src/components/defaults/controls/` (for built-in controls) or `src/components/primitives/` (for primitives)
+1. Create component file in:
+   - `src/components/defaults/controls/` (for built-in controls with theming)
+   - `src/components/generic/controls/` (for generic components like filmstrip/image-based)
+   - `src/components/primitives/controls/` (for control primitives)
+   - `src/components/primitives/svg/` (for SVG view primitives)
 2. Export from `src/index.ts`
 3. Add demo page in `apps/playground-react/app/controls/[component-name]/page.tsx` (or appropriate category)
 4. Build and test: `pnpm build && pnpm typecheck`
@@ -165,7 +171,14 @@ Technical documentation is located in `docs/`:
 - **`docs/adaptive-box-layout.md`**: AdaptiveBox layout system specification
 - **`docs/color-system.md`**: Complete color system architecture
 - **`docs/color-property-examples.md`**: Practical color property usage examples
-- **`docs/keybed-middle-c-positions.md`**: MIDI keyboard positioning specifications
+- **`docs/cycle-button-architecture.md`**: CycleButton component architecture and design
+- **`docs/interaction-system.md`**: Complete interaction system architecture (drag, wheel, keyboard)
+- **`docs/keys-middle-c-positions.md`**: MIDI keyboard positioning specifications
+- **`docs/parameter-specs.md`**: Audio parameter specification and tripartite value system
+- **`docs/size-system.md`**: Component sizing system architecture
+- **`docs/svg-view-primitives.md`**: SVG view primitives for building custom controls
+- **`docs/text-rendering-strategy.md`**: Text rendering and measurement strategies
+- **`docs/webkit-foreignobject-issues.md`**: WebKit foreignObject compatibility notes
 
 ## Common Development Tasks
 

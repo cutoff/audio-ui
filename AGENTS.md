@@ -4,7 +4,7 @@
  See LICENSE.md for details.
 -->
 
-**Version**: 2.0 | **Meta**: React component library for audio and MIDI applications (never released); monorepo structure with library and playground-app.
+**Version**: 2.0 | **Meta**: React component library for audio and MIDI applications (Developer Preview); monorepo structure with library and playground-app.
 
 **IMPORTANT: Documentation File Structure**
 
@@ -13,11 +13,9 @@
 - Always edit AGENTS.md directly. Never attempt to modify CLAUDE.md or GEMINI.md as they are just symbolic links.
 - Any changes made to AGENTS.md will automatically be reflected in CLAUDE.md and GEMINI.md.
 
-**IMPORTANT: This library has never been released.**
-
 **CRITICAL: No Backward Compatibility Required**
 
-**This project is in active development and has never been released. Backward compatibility is NOT a concern at this stage.**
+**This project is in Developer Preview phase. Backward compatibility is NOT a concern at this stage.**
 
 - **Do NOT maintain backward compatibility** - feel free to make breaking changes to improve the architecture
 - **Do NOT write migration guides** - there are no existing users to migrate
@@ -40,7 +38,7 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 
 | Category            | Rule/Details                                                                                                                                                                                                                                                                                        |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Architecture        | **CRITICAL**: `packages/core/` is framework-agnostic (pure TypeScript, no framework deps). `packages/react/` is the React implementation that wraps core. Future framework packages (e.g., `packages/solid/`) would follow the same pattern: depend on core, provide framework-specific components. |
+| Architecture        | **CRITICAL**: `packages/core/` is framework-agnostic (pure TypeScript, no framework deps). `packages/react/` is the React implementation that wraps core. The architecture supports potential future framework implementations following the same pattern: depend on core, provide framework-specific components. |
 | Git Operations      | **Do NOT commit changes automatically.** Always ask for user confirmation before running `git commit`, `git merge`, `git reset`, or modifying git history.                                                                                                                                          |
 | Documentation Style | **Write in present tense, declarative statements.** Avoid evolution phrasing: "now", "recently", "changed", "updated", "moved", "introduced", "added", "removed". Focus on current state, not history. Example: "Knob uses ContinuousControl" not "Knob now uses ContinuousControl".                |
 | Performance Mandate | **Critical Priority.** Audio apps have heavy runtime constraints (e.g., avoiding UI stutters, ensuring low-latency response). Prioritize performance in all decisions: minimal re-renders, no JS for layout/sizing, efficient event handling.                                                       |
@@ -89,14 +87,11 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 - `packages/react/`: **React Implementation Package**; React-specific component library that depends on `@cutoff/audio-ui-core`.
   - **Purpose**: Provides React components, hooks, and React-specific adapters that wrap the framework-agnostic core logic.
   - **Architecture**: React components use core's `InteractionController`, models, and utilities, but add React-specific rendering and hooks.
-  - `src/components/`: React View Components (Button, Knob, Slider, Keybed, etc.).
+  - `src/components/`: React View Components (Button, Knob, Slider, Keys, etc.).
   - `src/hooks/`: React adapters for Core logic (`useAudioParameter`, `useContinuousInteraction`).
   - `src/index.ts`: Re-exports core primitives alongside React components.
 
-- **Future Framework Implementations**: The architecture supports additional framework-specific packages (e.g., `packages/solid/` for SolidJS, `packages/vue/` for Vue, etc.). Each would:
-  - Depend on `@cutoff/audio-ui-core` for shared logic
-  - Provide framework-specific components and adapters
-  - Follow the same architectural pattern as `packages/react/`
+- **Framework-Agnostic Architecture**: The core package (`packages/core/`) is designed to be framework-agnostic, enabling potential implementations for other frameworks. Any future framework-specific packages would follow the same architectural pattern: depend on `@cutoff/audio-ui-core` for shared logic and provide framework-specific components and adapters.
 
 - `apps/playground-react/`: Next.js playground; showcases components; app/components for pages (inferred)
 - `agents/`: Shared conventions (coding-conventions-2.0.md, typescript-guidelines-2.0.md, react-conventions-2.0.md, documentation-standards-2.0.md, coding-agent-commands-1.0.md)
@@ -146,10 +141,6 @@ When TypeScript errors occur related to React types:
 
 Do not fix unrelated TS errors; many known and ignored; focus on current task.
 
-## Strategic Roadmap
-
-**Primary Directive:** The project's strategic direction, priorities, and release plan are defined in `docs/internal/ROADMAP.md`. All tasks and development efforts must align with the goals and milestones outlined in this document. Consult it at the beginning of any session to understand the current priorities.
-
 ## AdaptiveBox Component
 
 - CSS/SVG-based layout system for SVG controls with labels
@@ -164,7 +155,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - **Core Architecture**: Interaction logic is centralized in `packages/core/src/controller/ContinuousInteractionController.ts` (pure TS class).
 - **React Adapter**: `useContinuousInteraction` hook in `packages/react` wraps `ContinuousInteractionController` to bind it to React events.
 - **Generic Control Architecture**: `Knob` and `Slider` are implemented using `ContinuousControl`, a generic component that decouples behavior (AudioParameter, interaction logic) from visualization (SVG rendering). This architecture allows easy customization by providing custom view components that implement the `ControlComponentView` contract.
-- **Filmstrip-Based Controls**: The library provides filmstrip-based controls (`FilmStripContinuousControl`, `FilmStripDiscreteControl`, `FilmStripBooleanControl`) that support the widely-used industry standard for control representation: bitmap sprite sheets (filmstrips). While bitmap-based visualization is more constrained than SVG, these components provide full access to all library features: complete layout system (AdaptiveBox), full parameter model (AudioParameter), complete interaction system (drag/wheel/keyboard), and all accessibility features. Filmstrip controls do not support themable props (color, roundness, thickness) as visuals are determined by the image content.
+- **Filmstrip-Based Controls**: The library provides filmstrip-based controls (`FilmStripContinuousControl`, `FilmStripDiscreteControl`, `FilmStripBooleanControl`) that support the widely-used current industry standard for control representation: bitmap sprite sheets (filmstrips). While bitmap-based visualization is more constrained than SVG, these components provide full access to all library features: complete layout system (AdaptiveBox), full parameter model (AudioParameter), complete interaction system (drag/wheel/keyboard), and all accessibility features. Filmstrip controls do not support themable props (color, roundness, thickness) as visuals are determined by the image content.
 - **Unified Interaction Hooks**:
   - Continuous controls (Knob, Slider) use `useContinuousInteraction` hook.
   - Boolean controls (Button) use `useBooleanInteraction` hook.
@@ -223,7 +214,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - Button, Knob, CycleButton: 1x1 (square)
 - Horizontal Slider: 1x2 (width:height) - width > height
 - Vertical Slider: 2x1 (width:height) - height > width
-- Keybed: 1x5 (width:height) - width > height
+- Keys: 1x5 (width:height) - width > height
 - **Implementation**: Size defined via CSS variables in `packages/core/src/styles/themes.css`; size classes in `packages/core/src/styles/styles.css` for semantic purposes; inline styles (CSS variable references) override AdaptiveBox's default 100% sizing
 - **Size Props**:
   - `size`: `"xsmall" | "small" | "normal" | "large" | "xlarge"` (default `"normal"`)

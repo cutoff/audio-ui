@@ -25,7 +25,7 @@ import {
 import "@cutoff/audio-ui-core/styles.css";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import { CSS_VARS } from "@cutoff/audio-ui-core";
-import { translateKeybedRoundness } from "@cutoff/audio-ui-core";
+import { translateKeysRoundness } from "@cutoff/audio-ui-core";
 
 /**
  * Type definition for note names (C to B)
@@ -149,7 +149,7 @@ function Keys({
     // Ensure nbKeys is within valid range (1-128)
     const validNbKeys = Math.max(1, Math.min(128, nbKeys));
     // Memoize initial computations
-    const keybedDimensions = useMemo(() => {
+    const keysDimensions = useMemo(() => {
         const nbOctaves = Math.floor(validNbKeys / 12);
         const keyRemainder = validNbKeys % 12;
 
@@ -241,7 +241,7 @@ function Keys({
             return "var(--audioui-roundness-keys)";
         }
         // Numeric value - translate to legacy pixel range (0-12)
-        return translateKeybedRoundness(roundness);
+        return translateKeysRoundness(roundness);
     }, [roundness]);
 
     // Generate color variants using the centralized utility
@@ -307,7 +307,7 @@ function Keys({
     // Memoize white keys rendering
     const renderWhiteKeys = useMemo(() => {
         const { nbWhite, startKeyIndex, startOctave, whiteWidth, whiteHeight, innerStrokeWidth, halfInnerStrokeWidth } =
-            keybedDimensions;
+            keysDimensions;
 
         // Get the chromatic index of the start key
         const startKeyChromatic = DIATONIC_TO_CHROMATIC[startKey];
@@ -364,7 +364,7 @@ function Keys({
                 />
             );
         });
-    }, [keybedDimensions, octaveShift, isNoteActive, cornerRadius, colorVariants, keyColors, keyStyle, startKey]);
+    }, [keysDimensions, octaveShift, isNoteActive, cornerRadius, colorVariants, keyColors, keyStyle, startKey]);
 
     // Memoize black keys rendering
     const renderBlackKeys = useMemo(() => {
@@ -378,7 +378,7 @@ function Keys({
             blackHeight,
             innerStrokeWidth,
             halfInnerStrokeWidth,
-        } = keybedDimensions;
+        } = keysDimensions;
 
         // Get the chromatic index of the start key
         const startKeyChromatic = DIATONIC_TO_CHROMATIC[startKey];
@@ -451,7 +451,7 @@ function Keys({
             );
         }).filter(Boolean);
     }, [
-        keybedDimensions,
+        keysDimensions,
         octaveShift,
         isNoteActive,
         correctBlackPass,
@@ -477,8 +477,8 @@ function Keys({
             labelMode="none"
             className={componentClassNames}
             style={{ ...sizeStyle, ...themableStyle }}
-            viewBoxWidth={keybedDimensions.width + keybedDimensions.innerStrokeWidth}
-            viewBoxHeight={keybedDimensions.whiteHeight + keybedDimensions.innerStrokeWidth}
+            viewBoxWidth={keysDimensions.width + keysDimensions.innerStrokeWidth}
+            viewBoxHeight={keysDimensions.whiteHeight + keysDimensions.innerStrokeWidth}
             minWidth={40}
             minHeight={40}
         >

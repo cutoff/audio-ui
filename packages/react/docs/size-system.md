@@ -33,7 +33,7 @@ Each component type has a fixed aspect ratio that defines its shape:
 - **CycleButton**: 1x1 (square)
 - **Horizontal Slider**: 1x2 (width:height) - width > height
 - **Vertical Slider**: 2x1 (width:height) - height > width
-- **Keybed**: 1x5 (width:height) - width > height
+- **Keys**: 1x5 (width:height) - width > height
 
 ## CSS Variable Structure
 
@@ -61,9 +61,9 @@ Size dimensions are defined in `themes.css` using CSS variables:
 --audioui-size-vslider-width-{size}: var(--audioui-unit) * multiplier;
 --audioui-size-vslider-height-{size}: calc(width * 2);
 
-/* Keybed (1x5) */
---audioui-size-keybed-height-{size}: var(--audioui-unit) * multiplier;
---audioui-size-keybed-width-{size}: calc(height * 5);
+/* Keys (1x5) */
+--audioui-size-keys-height-{size}: var(--audioui-unit) * multiplier;
+--audioui-size-keys-width-{size}: calc(height * 5);
 ```
 
 ## Size Utility Classes
@@ -86,9 +86,10 @@ Size utility classes are defined in `styles.css`. They provide the dimensions fo
     height: var(--audioui-size-vslider-height-{size});
 }
 
-.audioui-size-keybed-{size} {
-    width: var(--audioui-size-keybed-width-{size});
-    height: var(--audioui-size-keybed-height-{size});
+/* Keys component sizing */
+.audioui-size-keys-{size} {
+    width: var(--audioui-size-keys-width-{size});
+    height: var(--audioui-size-keys-height-{size});
 }
 ```
 
@@ -147,7 +148,7 @@ getSizeStyleForComponent("slider", "normal", "vertical");
 
 ### Built-in Controls
 
-All built-in controls (Button, Knob, Slider, CycleButton, Keybed) implement size support:
+All built-in controls (Button, Knob, Slider, CycleButton, Keys) implement size support:
 
 1. Get size class name using utility functions
 2. Merge size class with user className (user takes precedence)

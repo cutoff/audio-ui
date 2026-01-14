@@ -48,7 +48,7 @@ export function translateButtonRoundness(normalized: number): number {
     return Math.round(clamped * 50);
 }
 
-export function translateKeybedRoundness(normalized: number): number {
+export function translateKeysRoundness(normalized: number): number {
     const clamped = clampNormalized(normalized);
     return Math.round(clamped * 12);
 }

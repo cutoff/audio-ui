@@ -256,7 +256,7 @@ function generateColorVariants(
 
 - `baseColor`: Any valid CSS color value (named color, hex, rgb, hsl, CSS variable)
 - `variant`: Method for generating variants
-  - `"luminosity"`: Adjusts brightness (darker variants) - used by Keybed
+  - `"luminosity"`: Adjusts brightness (darker variants) - used by Keys
   - `"transparency"`: Adjusts opacity (semi-transparent variants) - used by Knob, Button, Slider
 
 **Returns**:
@@ -538,8 +538,8 @@ function App() {
 <KnobView color="blue" />
 // CSS uses: var(--audioui-primary-color) and var(--audioui-primary-50)
 
-// Keybed uses luminosity variants (still computed in JS for compatibility)
-<Keybed color="blue" />
+// Keys uses luminosity variants (still computed in JS for compatibility)
+<Keys color="blue" />
 // Uses generateColorVariants() for luminosity-based variants
 ```
 
@@ -554,7 +554,7 @@ function App() {
 
 ## Component-Specific Notes
 
-### Keybed Component
+### Keys Component
 
 - **Uses luminosity variants** to prevent visual overlap between white and black keys
 - Pressed white keys use `primary` color

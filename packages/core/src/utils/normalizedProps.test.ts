@@ -12,7 +12,7 @@ import {
     translateSliderRoundness,
     translateSliderThickness,
     translateButtonRoundness,
-    translateKeybedRoundness,
+    translateKeysRoundness,
 } from "./normalizedProps";
 
 describe("normalizedProps", () => {
@@ -154,27 +154,27 @@ describe("normalizedProps", () => {
         });
     });
 
-    describe("translateKeybedRoundness", () => {
+    describe("translateKeysRoundness", () => {
         it("returns 0 for normalized 0", () => {
-            expect(translateKeybedRoundness(0)).toBe(0);
+            expect(translateKeysRoundness(0)).toBe(0);
         });
 
         it("returns 12 for normalized 1", () => {
-            expect(translateKeybedRoundness(1)).toBe(12);
+            expect(translateKeysRoundness(1)).toBe(12);
         });
 
         it("returns 6 for normalized 0.5", () => {
-            expect(translateKeybedRoundness(0.5)).toBe(6);
+            expect(translateKeysRoundness(0.5)).toBe(6);
         });
 
         it("maps linearly across the range", () => {
-            expect(translateKeybedRoundness(0.25)).toBe(3);
-            expect(translateKeybedRoundness(0.75)).toBe(9);
+            expect(translateKeysRoundness(0.25)).toBe(3);
+            expect(translateKeysRoundness(0.75)).toBe(9);
         });
 
         it("clamps values outside range", () => {
-            expect(translateKeybedRoundness(-0.1)).toBe(0);
-            expect(translateKeybedRoundness(1.1)).toBe(12);
+            expect(translateKeysRoundness(-0.1)).toBe(0);
+            expect(translateKeysRoundness(1.1)).toBe(12);
         });
     });
 });

@@ -179,9 +179,9 @@ function ThemedControls() {
 
 ## Component-Specific Color Handling
 
-### Keybed Component
+### Keys Component
 
-The Keybed component uses luminosity-based color variations instead of transparency to prevent visual overlap issues between pressed white keys and surrounding black keys. This is implemented using the `generateLuminosityVariant` function from the `colorUtils.ts` utility file.
+The Keys component uses luminosity-based color variations instead of transparency to prevent visual overlap issues between pressed white keys and surrounding black keys. This is implemented using the `generateLuminosityVariant` function from the `colorUtils.ts` utility file.
 
 When a white key is pressed, it uses the primary color, while black keys use darker variants of the same color. This ensures that there's no visual overlap between adjacent keys, providing a clearer visual representation of the pressed keys.
 

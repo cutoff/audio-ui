@@ -57,7 +57,7 @@ export type FilmStripContinuousControlProps = ContinuousControlProps &
 /**
  * A continuous control that displays frames from a filmstrip sprite sheet.
  *
- * This component supports the widely-used industry standard for control representation:
+ * This component supports the widely-used current industry standard for control representation:
  * bitmap sprite sheets (filmstrips). While bitmap-based visualization is more constrained
  * than SVG (no dynamic theming, fixed visual appearance), this component provides full
  * access to all library features:

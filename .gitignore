@@ -38,3 +38,5 @@ SPECIFICATIONS.md
 
 vite.config.ts.timestamp-*
 vitest.config.ts.timestamp-*
+
+docs/internal

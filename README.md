@@ -6,11 +6,22 @@ AudioUI is a professional, open-source React component library for building high
 
 AudioUI provides a range of components essential for building audio applications:
 
+### Built-in Controls
 - **Knob:** A versatile rotary knob for parameter control.
 - **Slider:** A linear slider for horizontal or vertical adjustments.
 - **Button:** A customizable button with styles suited for audio interfaces.
-- **Keybed:** A responsive and interactive piano keyboard.
 - **CycleButton:** A discrete control for cycling through a set of options. Supports multiple visual variants (rotary knob-style, LED indicators, etc.).
+
+### Device Components
+- **Keys:** A responsive and interactive piano keyboard.
+
+### Generic Components
+- **FilmStrip Controls:** Bitmap sprite sheet-based controls (FilmStripContinuousControl, FilmStripDiscreteControl, FilmStripBooleanControl) for industry-standard control representation.
+- **Image-Based Controls:** Image-based knobs and switches (ImageKnob, ImageRotarySwitch, ImageSwitch) for custom visual designs.
+
+### Primitives
+- **Control Primitives:** Low-level control components (ContinuousControl, DiscreteControl, BooleanControl) for building custom controls.
+- **SVG Primitives:** SVG view primitives (ValueRing, RotaryImage, RadialImage, RadialText, TickRing, LabelRing) for composing custom radial controls.
 
 ## Features
 

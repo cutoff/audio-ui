@@ -210,7 +210,7 @@ type RadialHtmlOverlayProps = {
 
 ## FilmstripImage
 
-Renders a frame from a sprite sheet (filmstrip) based on the normalized value. This is the industry-standard method for rendering complex, photorealistic knobs in audio software (VSTs, Kontakt).
+Renders a frame from a sprite sheet (filmstrip) based on the normalized value. This is the current industry-standard method for rendering complex, photorealistic knobs in audio software (VSTs, Kontakt).
 
 ### Props
 

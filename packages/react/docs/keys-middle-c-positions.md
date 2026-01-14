@@ -6,7 +6,7 @@
 
 # Middle C Positions on Physical MIDI Keyboards
 
-This document outlines the conventional positions of the middle C key (MIDI note 60, C4) on various physical MIDI keyboard sizes. This information will be used as part of the specifications for the Keybed component.
+This document outlines the conventional positions of the middle C key (MIDI note 60, C4) on various physical MIDI keyboard sizes. This information will be used as part of the specifications for the Keys component.
 
 ## MIDI Note Numbering Convention
 
@@ -123,7 +123,7 @@ For example, with a -12 semitone transposition on a 61-key keyboard, middle C wo
 
 ## Implementation Notes
 
-When implementing the Keybed component:
+When implementing the Keys component:
 
 1. The default configuration should match these standard layouts
 2. For 61-key keyboards, the default starting note should be C
