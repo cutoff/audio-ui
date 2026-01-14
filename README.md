@@ -4,6 +4,37 @@
 
 AudioUI is a professional, open-source React component library for building high-performance user interfaces for audio and MIDI applications. It provides a meticulously crafted set of components designed to meet the demanding needs of music software, digital audio workstations (DAWs), audio plugins with a web UI, and other audio-centric web applications.
 
+## Design Philosophy
+
+AudioUI is built on a few core principles designed to address the unique challenges of building audio software:
+
+- **Performance First**: Audio applications have strict performance requirements. Components are optimized for minimal re-renders and low-latency interactions to ensure the UI never stutters, even under heavy load.
+- **Hybrid Architecture**: We provide both **opinionated components** for rapid development and **non-opinionated primitives** for deep customization.
+  - _Opinionated Components_ (Knob, Slider, Button, CycleButton, Keys): Ready-to-use components with carefully designed APIs, multiple visual variants and sensible defaults, based on a thorough analysis of existing audio plugins and apps.
+  - _Non-Opinionated Components_ (Generic controls, primitives): Full customization through generic control components, SVG primitives, and base building blocks. Ideal for creating unique visual designs that match your brand or existing plugin aesthetics.
+- **Universal Access**: Designed from the ground up to be fully accessible (ARIA support, keyboard navigation) and mobile-ready (responsive, touch-optimized).
+- **Developer Experience**: Written entirely in TypeScript for type safety and provides a flexible theming system based on CSS variables.
+
+## Project Status
+
+**Developer Preview** — AudioUI is currently in active development. The core components and APIs are functional and ready for use, but the library is still evolving. During this phase:
+
+- ✅ Core components APIs (Knob, Slider, Button, CycleButton, Keys) are stable and production-ready (more visual variants are being added to cover 90% of real-life apps and plugin visuals)
+- ✅ Comprehensive audio parameters model with support for Continuous, Discrete and Boolean controls
+- ✅ Generic film strips and bitmap images components for each type of audio parameter
+- ✅ Comprehensive interaction system for each type of parameter (drag, wheel, keyboard)
+- ✅ Layout system (Adaptive Box with CSS-based sizing system or adaptive size)
+- ✅ Theming and customization system with SVG primitives and base components
+- ✅ Built-in support for dark and light mode
+- ✅ Ready for mobile devices (responsive, touch ready)
+- 🔄 Additional visual variants, components and primitives are being added
+- 🔄 Size system is being improved
+- 🔄 Documentation is being expanded
+
+**Note:** As a Developer Preview release, breaking changes may occur as we refine the API and architecture. We recommend pinning to specific versions for production use.
+
+**We're eager for community feedback before the first stable release!** Your input on APIs, features, and use cases is invaluable in shaping AudioUI. Join our [Discord server](https://discord.gg/7RB6t2xqYW) to share your thoughts, report issues, or request features.
+
 ## Core Components
 
 AudioUI provides a range of components essential for building audio applications:
@@ -28,14 +59,6 @@ AudioUI provides a range of components essential for building audio applications
 
 - **Control Primitives:** Low-level control components (ContinuousControl, DiscreteControl, BooleanControl) for building custom controls.
 - **SVG Primitives:** SVG view primitives (ValueRing, RotaryImage, RadialImage, RadialText, TickRing, LabelRing) for composing custom radial controls.
-
-## Features
-
-- **Performance First:** Built for the high demands of audio applications, with a focus on minimal re-renders and low-latency interactions.
-- **Deep Customization:** A flexible theming system built on CSS variables allows for complete control over the look and feel.
-- **Fully Accessible:** All components are designed with accessibility in mind, supporting keyboard navigation and ARIA standards.
-- **Mobile & Touch Ready:** Designed from the ground up to work flawlessly on touch devices.
-- **TypeScript Native:** Written entirely in TypeScript for a superior developer experience.
 
 ## Packages
 
@@ -122,10 +145,19 @@ AudioUI by Cutoff is a dual-licensed project.
 - **Open Source (GPL-3.0):** You may use this library for free in open-source projects under the terms of the GNU General Public License v3.0.
 - **Commercial License:** For use in proprietary, closed-source applications, you must purchase a commercial license. This license removes the copyleft restrictions of the GPL and includes professional support.
 
-Commercial licenses are available at **[https://cutoff.dev](https://cutoff.dev)**.
+Commercial licenses are available at **[cutoff.dev](https://cutoff.dev)**.
 
 For full details, please see the [LICENSE.md](license-telf/LICENSE.md) file and the documents within the [license-telf](license-telf/) directory.
 
 ## Contributing
 
 We welcome contributions to AudioUI. If you would like to contribute, please fork the repository and submit a pull request. All contributors must sign our Contributor License Agreement (CLA), which can be found in the `license-telf/` directory.
+
+## Community
+
+Join our [Discord server](https://discord.gg/7RB6t2xqYW) for:
+
+- **Support**: Get help with using AudioUI in your projects
+- **Wish List**: Share feature requests and vote on upcoming additions
+- **General Discussions**: Connect with other developers building audio applications
+- **Announcements**: Stay updated on new releases and important updates
