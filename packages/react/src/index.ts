@@ -31,6 +31,8 @@ export { default as RadialHtmlOverlay } from "./components/primitives/svg/Radial
 export type { RadialHtmlOverlayProps } from "./components/primitives/svg/RadialHtmlOverlay";
 export { default as FilmstripImage } from "./components/primitives/svg/FilmstripImage";
 export type { FilmstripImageProps } from "./components/primitives/svg/FilmstripImage";
+export { default as Image } from "./components/primitives/svg/Image";
+export type { ImageProps } from "./components/primitives/svg/Image";
 export { default as RevealingPath } from "./components/primitives/svg/RevealingPath";
 export type { RevealingPathProps } from "./components/primitives/svg/RevealingPath";
 export { default as TickRing } from "./components/primitives/svg/TickRing";

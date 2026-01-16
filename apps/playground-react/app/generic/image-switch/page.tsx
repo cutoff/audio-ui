@@ -21,13 +21,12 @@ function generateCodeSnippet(
     latch: boolean,
     frameWidth: number,
     frameHeight: number,
-    radius: number,
     imageHrefFalse: string,
     imageHrefTrue: string,
     label: string
 ): string {
     let props = `value={${value}} latch={${latch}} label="${label}"`;
-    props += `\n  frameWidth={${frameWidth}} frameHeight={${frameHeight}} radius={${radius}}`;
+    props += `\n  frameWidth={${frameWidth}} frameHeight={${frameHeight}}`;
     props += `\n  imageHrefFalse="${imageHrefFalse}" imageHrefTrue="${imageHrefTrue}"`;
     return `<ImageSwitch ${props}\n  onChange={(e) => setValue(e.value)}\n/>`;
 }
@@ -37,7 +36,6 @@ export default function ImageSwitchDemoPage() {
     const [latch, setLatch] = useState(false);
     const [frameWidth, setFrameWidth] = useState(100);
     const [frameHeight, setFrameHeight] = useState(100);
-    const [radius, setRadius] = useState(45);
     const [imageHrefFalse, setImageHrefFalse] = useState(STAR_OFF_IMAGE);
     const [imageHrefTrue, setImageHrefTrue] = useState(STAR_ON_IMAGE);
     const [label, setLabel] = useState("Meme Switch");
@@ -48,7 +46,6 @@ export default function ImageSwitchDemoPage() {
         setLatch(false);
         setFrameWidth(100);
         setFrameHeight(100);
-        setRadius(45);
         setImageHrefFalse(STAR_OFF_IMAGE);
         setImageHrefTrue(STAR_ON_IMAGE);
         setLabel("Meme Switch");
@@ -61,12 +58,11 @@ export default function ImageSwitchDemoPage() {
             label,
             frameWidth,
             frameHeight,
-            radius,
             imageHrefFalse,
             imageHrefTrue,
             onChange: (e: AudioControlEvent<boolean>) => setValue(e.value),
         }),
-        [value, latch, label, frameWidth, frameHeight, radius, imageHrefFalse, imageHrefTrue]
+        [value, latch, label, frameWidth, frameHeight, imageHrefFalse, imageHrefTrue]
     );
 
     const codeSnippet = generateCodeSnippet(
@@ -74,7 +70,6 @@ export default function ImageSwitchDemoPage() {
         latch,
         frameWidth,
         frameHeight,
-        radius,
         imageHrefFalse,
         imageHrefTrue,
         label
@@ -93,7 +88,7 @@ export default function ImageSwitchDemoPage() {
                 Latch Mode (Toggle)
             </Label>
         </div>,
-        <div key="dimensions" className="grid grid-cols-3 gap-2">
+        <div key="dimensions" className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
                 <Label>Frame Width</Label>
                 <Input type="number" value={frameWidth} onChange={(e) => setFrameWidth(Number(e.target.value))} />
@@ -101,10 +96,6 @@ export default function ImageSwitchDemoPage() {
             <div className="space-y-2">
                 <Label>Frame Height</Label>
                 <Input type="number" value={frameHeight} onChange={(e) => setFrameHeight(Number(e.target.value))} />
-            </div>
-            <div className="space-y-2">
-                <Label>Radius</Label>
-                <Input type="number" value={radius} onChange={(e) => setRadius(Number(e.target.value))} />
             </div>
         </div>,
         <div key="imageHrefFalse" className="space-y-2">
@@ -130,7 +121,6 @@ export default function ImageSwitchDemoPage() {
                 label="Meme Switch"
                 frameWidth={100}
                 frameHeight={100}
-                radius={45}
                 imageHrefFalse={STAR_OFF_IMAGE}
                 imageHrefTrue={STAR_ON_IMAGE}
                 size="large"

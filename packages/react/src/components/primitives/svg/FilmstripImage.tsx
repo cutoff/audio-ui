@@ -9,10 +9,10 @@
 import React, { CSSProperties } from "react";
 
 export type FilmstripImageProps = {
-    /** X coordinate of the center point */
-    cx: number;
-    /** Y coordinate of the center point */
-    cy: number;
+    /** X coordinate of the top-left corner (default: 0) */
+    x?: number;
+    /** Y coordinate of the top-left corner (default: 0) */
+    y?: number;
     /** Width of a SINGLE frame */
     frameWidth: number;
     /** Height of a SINGLE frame */
@@ -49,8 +49,8 @@ export type FilmstripImageProps = {
  * The filmstrip image should contain all frames stacked vertically (default) or horizontally.
  *
  * @param {FilmstripImageProps} props - Component props
- * @param {number} props.cx - X coordinate of the center point
- * @param {number} props.cy - Y coordinate of the center point
+ * @param {number} [props.x=0] - X coordinate of the top-left corner
+ * @param {number} [props.y=0] - Y coordinate of the top-left corner
  * @param {number} props.frameWidth - Width of a single frame in the filmstrip
  * @param {number} props.frameHeight - Height of a single frame in the filmstrip
  * @param {number} props.frameCount - Total number of frames in the strip
@@ -64,8 +64,8 @@ export type FilmstripImageProps = {
  * @returns {JSX.Element} SVG group element containing the filmstrip frame
  */
 function FilmstripImage({
-    cx,
-    cy,
+    x = 0,
+    y = 0,
     frameWidth,
     frameHeight,
     frameCount,
@@ -93,11 +93,15 @@ function FilmstripImage({
     const viewBoxX = orientation === "horizontal" ? frameIndex * frameWidth : 0;
     const viewBoxY = orientation === "vertical" ? frameIndex * frameHeight : 0;
 
+    // Calculate center point for rotation
+    const centerX = x + frameWidth / 2;
+    const centerY = y + frameHeight / 2;
+
     return (
-        <g className={className} style={style} transform={`rotate(${frameRotation}, ${cx}, ${cy})`}>
+        <g className={className} style={style} transform={`rotate(${frameRotation}, ${centerX}, ${centerY})`}>
             <svg
-                x={cx - frameWidth / 2}
-                y={cy - frameHeight / 2}
+                x={x}
+                y={y}
                 width={frameWidth}
                 height={frameHeight}
                 viewBox={`0 0 ${frameWidth} ${frameHeight}`}

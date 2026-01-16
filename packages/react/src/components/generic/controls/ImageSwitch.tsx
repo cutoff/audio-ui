@@ -9,7 +9,7 @@
 import React from "react";
 import classNames from "classnames";
 import BooleanControl from "@/primitives/controls/BooleanControl";
-import ImageView from "./ImageView";
+import ImageSwitchView from "./ImageSwitchView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BooleanControlProps } from "@/types";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 
@@ -21,8 +21,6 @@ export type ImageSwitchProps = {
     frameWidth: number;
     /** Height of the viewBox (determines viewBox height) */
     frameHeight: number;
-    /** Radius for the image (typically min(frameWidth, frameHeight) / 2) */
-    radius: number;
     /** URL to the image for false/off state */
     imageHrefFalse: string;
     /** URL to the image for true/on state */
@@ -67,7 +65,6 @@ export type ImageSwitchComponentProps = BooleanControlProps & AdaptiveSizeProps 
  *   latch={true}
  *   frameWidth={100}
  *   frameHeight={100}
- *   radius={45}
  *   imageHrefFalse="/star-off.png"
  *   imageHrefTrue="/star-on.png"
  * />
@@ -86,7 +83,6 @@ function ImageSwitch({
     labelAlign,
     frameWidth,
     frameHeight,
-    radius,
     imageHrefFalse,
     imageHrefTrue,
     parameter,
@@ -124,11 +120,10 @@ function ImageSwitch({
             onMouseLeave={onMouseLeave}
             viewBoxWidthUnits={frameWidth}
             viewBoxHeightUnits={frameHeight}
-            view={ImageView}
+            view={ImageSwitchView}
             viewProps={{
                 frameWidth,
                 frameHeight,
-                radius,
                 imageHrefFalse,
                 imageHrefTrue,
             }}

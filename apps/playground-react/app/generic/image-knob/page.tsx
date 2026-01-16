@@ -34,7 +34,6 @@ function generateCodeSnippet(
     bipolar: boolean,
     frameWidth: number,
     frameHeight: number,
-    radius: number,
     imageHref: string,
     rotation: number,
     openness: number,
@@ -49,7 +48,7 @@ function generateCodeSnippet(
     if (bipolar) props += ` bipolar={${bipolar}}`;
     if (step !== undefined) props += ` step={${step}}`;
     if (unit !== undefined) props += ` unit="${unit}"`;
-    props += `\n  frameWidth={${frameWidth}} frameHeight={${frameHeight}} radius={${radius}}`;
+    props += `\n  frameWidth={${frameWidth}} frameHeight={${frameHeight}}`;
     props += `\n  imageHref="${imageHref}"`;
     if (rotation !== 0) props += ` rotation={${rotation}}`;
     if (openness !== 90) props += ` openness={${openness}}`;
@@ -69,7 +68,6 @@ export default function ImageKnobDemoPage() {
     const [bipolar, setBipolar] = useState(false);
     const [frameWidth, setFrameWidth] = useState(100);
     const [frameHeight, setFrameHeight] = useState(100);
-    const [radius, setRadius] = useState(45);
     const [imageHref, setImageHref] = useState(KNOB_IMAGE);
     const [rotation, setRotation] = useState(0);
     const [openness, setOpenness] = useState(90);
@@ -91,7 +89,6 @@ export default function ImageKnobDemoPage() {
                 setBipolar(false);
                 setFrameWidth(100);
                 setFrameHeight(100);
-                setRadius(45);
                 setImageHref(KNOB_IMAGE);
                 setRotation(0);
                 setOpenness(90);
@@ -111,7 +108,6 @@ export default function ImageKnobDemoPage() {
                 setBipolar(false);
                 setFrameWidth(100);
                 setFrameHeight(100);
-                setRadius(45);
                 setImageHref(KNOB_TONE_IMAGE);
                 setRotation(0);
                 setOpenness(90);
@@ -131,7 +127,6 @@ export default function ImageKnobDemoPage() {
                 setBipolar(false);
                 setFrameWidth(100);
                 setFrameHeight(100);
-                setRadius(45);
                 setImageHref(KNOB_SELECTOR_IMAGE);
                 setRotation(0);
                 setOpenness(90);
@@ -155,7 +150,6 @@ export default function ImageKnobDemoPage() {
             label,
             frameWidth,
             frameHeight,
-            radius,
             imageHref,
             rotation,
             openness,
@@ -175,7 +169,6 @@ export default function ImageKnobDemoPage() {
             label,
             frameWidth,
             frameHeight,
-            radius,
             imageHref,
             rotation,
             openness,
@@ -195,7 +188,6 @@ export default function ImageKnobDemoPage() {
         bipolar,
         frameWidth,
         frameHeight,
-        radius,
         imageHref,
         rotation,
         openness,
@@ -242,7 +234,7 @@ export default function ImageKnobDemoPage() {
                 Bipolar
             </Label>
         </div>,
-        <div key="dimensions" className="grid grid-cols-3 gap-2">
+        <div key="dimensions" className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
                 <Label>Frame Width</Label>
                 <Input type="number" value={frameWidth} onChange={(e) => setFrameWidth(Number(e.target.value))} />
@@ -250,10 +242,6 @@ export default function ImageKnobDemoPage() {
             <div className="space-y-2">
                 <Label>Frame Height</Label>
                 <Input type="number" value={frameHeight} onChange={(e) => setFrameHeight(Number(e.target.value))} />
-            </div>
-            <div className="space-y-2">
-                <Label>Radius</Label>
-                <Input type="number" value={radius} onChange={(e) => setRadius(Number(e.target.value))} />
             </div>
         </div>,
         <div key="imageHref" className="space-y-2">
@@ -378,7 +366,6 @@ export default function ImageKnobDemoPage() {
                 label="Volume"
                 frameWidth={100}
                 frameHeight={100}
-                radius={45}
                 imageHref={KNOB_IMAGE}
                 interactionDirection="circular"
                 valueAsLabel="interactive"
@@ -394,7 +381,6 @@ export default function ImageKnobDemoPage() {
                 label="Tone"
                 frameWidth={100}
                 frameHeight={100}
-                radius={45}
                 imageHref={KNOB_TONE_IMAGE}
                 interactionDirection="circular"
                 valueAsLabel="interactive"
@@ -409,7 +395,6 @@ export default function ImageKnobDemoPage() {
                 label="Selector"
                 frameWidth={100}
                 frameHeight={100}
-                radius={45}
                 imageHref={KNOB_SELECTOR_IMAGE}
                 interactionDirection="circular"
                 size="large"

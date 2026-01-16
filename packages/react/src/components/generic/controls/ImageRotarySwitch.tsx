@@ -9,7 +9,7 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 import DiscreteControl from "@/primitives/controls/DiscreteControl";
-import RotaryImageView from "./RotaryImageView";
+import ImageRotarySwitchView from "./ImageRotarySwitchView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, DiscreteControlProps } from "@/types";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { useDiscreteParameterResolution } from "@/hooks/useDiscreteParameterResolution";
@@ -51,7 +51,6 @@ export type ImageRotarySwitchProps = DiscreteControlProps & AdaptiveSizeProps & 
  *   onChange={(e) => setValue(e.value)}
  *   frameWidth={100}
  *   frameHeight={100}
- *   radius={45}
  *   imageHref="/waveform-knob.png"
  *   openness={90}
  *   rotation={0}
@@ -76,7 +75,6 @@ function ImageRotarySwitch({
     labelAlign,
     frameWidth,
     frameHeight,
-    radius,
     imageHref,
     rotation = 0,
     openness = 90,
@@ -135,11 +133,10 @@ function ImageRotarySwitch({
             onMouseLeave={onMouseLeave}
             viewBoxWidthUnits={frameWidth}
             viewBoxHeightUnits={frameHeight}
-            view={RotaryImageView}
+            view={ImageRotarySwitchView}
             viewProps={{
                 frameWidth,
                 frameHeight,
-                radius,
                 imageHref,
                 rotation,
                 openness,

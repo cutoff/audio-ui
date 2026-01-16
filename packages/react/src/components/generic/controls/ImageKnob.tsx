@@ -9,7 +9,7 @@
 import React from "react";
 import classNames from "classnames";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
-import RotaryImageView from "./RotaryImageView";
+import ImageRotarySwitchView from "./ImageRotarySwitchView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ValueLabelMode } from "@/types";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 
@@ -21,8 +21,6 @@ export type RotaryImageProps = {
     frameWidth: number;
     /** Height of the viewBox (determines viewBox height) */
     frameHeight: number;
-    /** Radius for the rotary image (typically min(frameWidth, frameHeight) / 2) */
-    radius: number;
     /** URL to the image to rotate */
     imageHref: string;
     /** Optional rotation angle offset in degrees (default: 0) */
@@ -81,7 +79,6 @@ export type ImageKnobProps = ContinuousControlProps &
  *   label="Volume"
  *   frameWidth={100}
  *   frameHeight={100}
- *   radius={45}
  *   imageHref="/knob-image.png"
  *   openness={90}
  *   rotation={0}
@@ -105,7 +102,6 @@ function ImageKnob({
     labelAlign,
     frameWidth,
     frameHeight,
-    radius,
     imageHref,
     rotation = 0,
     openness = 90,
@@ -162,11 +158,10 @@ function ImageKnob({
             valueAsLabel={valueAsLabel}
             viewBoxWidthUnits={frameWidth}
             viewBoxHeightUnits={frameHeight}
-            view={RotaryImageView}
+            view={ImageRotarySwitchView}
             viewProps={{
                 frameWidth,
                 frameHeight,
-                radius,
                 imageHref,
                 rotation,
                 openness,

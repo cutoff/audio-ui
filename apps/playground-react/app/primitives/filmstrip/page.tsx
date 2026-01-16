@@ -83,8 +83,8 @@ function FilmstripWrapper({
                   Using native frameRotation support
                 */}
                 <FilmstripImage
-                    cx={50}
-                    cy={50}
+                    x={0}
+                    y={0}
                     frameWidth={width}
                     frameHeight={height}
                     frameCount={frameCount}
@@ -107,8 +107,8 @@ function generateCodeSnippet(
 ): string {
     return `<svg width="100%" height="100%" viewBox="0 0 100 100">
     <FilmstripImage
-        cx={50}
-        cy={50}
+        x={0}
+        y={0}
         frameWidth={${width}}
         frameHeight={${height}}
         frameCount={${frameCount}}

@@ -8,20 +8,18 @@
 
 import React from "react";
 import { ControlComponent } from "@/types";
-import RadialImage from "@/primitives/svg/RadialImage";
+import Image from "@/primitives/svg/Image";
 
 /**
  * Props specific to image switch visualization
  */
-export type ImageViewProps = {
+export type ImageSwitchViewProps = {
     /** Normalized value between 0 and 1 */
     normalizedValue: number;
     /** Width of the viewBox (determines viewBox width) */
     frameWidth: number;
     /** Height of the viewBox (determines viewBox height) */
     frameHeight: number;
-    /** Radius for the image (typically min(frameWidth, frameHeight) / 2) */
-    radius: number;
     /** URL to the image for false/off state */
     imageHrefFalse: string;
     /** URL to the image for true/on state */
@@ -36,59 +34,53 @@ export type ImageViewProps = {
  * Pure SVG presentation component for an image switch control.
  * Renders one of two images based on normalized value (false = 0, true = 1).
  *
- * @param {ImageViewProps} props - Component props
+ * @param {ImageSwitchViewProps} props - Component props
  * @param {number} props.normalizedValue - Value between 0 and 1 (0 = false, 1 = true)
  * @param {number} props.frameWidth - Width of the viewBox
  * @param {number} props.frameHeight - Height of the viewBox
- * @param {number} props.radius - Radius for the image
  * @param {string} props.imageHrefFalse - URL to the image for false/off state
  * @param {string} props.imageHrefTrue - URL to the image for true/on state
  * @param {string} [props.className] - Optional CSS class
  * @returns {JSX.Element} SVG group element containing the image
  */
-function ImageView({
+function ImageSwitchView({
     normalizedValue,
     frameWidth,
     frameHeight,
-    radius,
     imageHrefFalse,
     imageHrefTrue,
     className,
-}: ImageViewProps): JSX.Element {
-    // Center point of the viewBox
-    const cx = frameWidth / 2;
-    const cy = frameHeight / 2;
-
+}: ImageSwitchViewProps): JSX.Element {
     // Determine which image to show based on normalized value (threshold at 0.5)
     const imageHref = normalizedValue > 0.5 ? imageHrefTrue : imageHrefFalse;
 
     return (
         <g className={className}>
-            <RadialImage cx={cx} cy={cy} radius={radius} imageHref={imageHref} />
+            <Image x={0} y={0} width={frameWidth} height={frameHeight} imageHref={imageHref} />
         </g>
     );
 }
 
-const ImageViewMemo = React.memo(ImageView);
+const ImageSwitchViewMemo = React.memo(ImageSwitchView);
 
 // Attach static properties required by ControlComponent contract
 // Note: viewBox dimensions are dynamic based on frameWidth/frameHeight
 // We use a default that can be overridden by the parent component
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(ImageViewMemo as any).viewBox = { width: 100, height: 100 };
+(ImageSwitchViewMemo as any).viewBox = { width: 100, height: 100 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(ImageViewMemo as any).labelHeightUnits = 20;
+(ImageSwitchViewMemo as any).labelHeightUnits = 20;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(ImageViewMemo as any).interaction = {
+(ImageSwitchViewMemo as any).interaction = {
     mode: "both" as const,
     direction: "vertical" as const,
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(ImageViewMemo as any).title = "Image Switch";
+(ImageSwitchViewMemo as any).title = "Image Switch";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(ImageViewMemo as any).description = "A boolean control that displays one of two images based on value";
+(ImageSwitchViewMemo as any).description = "A boolean control that displays one of two images based on value";
 
 // Props for the ControlComponent (excluding normalizedValue, className, style, children)
-type ImageViewComponentProps = Omit<ImageViewProps, "normalizedValue" | "className" | "style" | "children">;
+type ImageSwitchViewComponentProps = Omit<ImageSwitchViewProps, "normalizedValue" | "className" | "style" | "children">;
 
-export default ImageViewMemo as unknown as ControlComponent<ImageViewComponentProps>;
+export default ImageSwitchViewMemo as unknown as ControlComponent<ImageSwitchViewComponentProps>;

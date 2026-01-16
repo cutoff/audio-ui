@@ -44,15 +44,17 @@ export type FilmstripViewProps = {
  * Pure SVG presentation component for a filmstrip control.
  * Renders a single frame from a sprite sheet based on normalized value.
  *
- * @param normalizedValue - Value between 0 and 1
- * @param frameWidth - Width of a single frame in the filmstrip
- * @param frameHeight - Height of a single frame in the filmstrip
- * @param frameCount - Total number of frames in the strip
- * @param imageHref - URL to the sprite sheet/filmstrip image
- * @param orientation - Orientation of the strip (default "vertical")
- * @param frameRotation - Optional frame rotation in degrees (default 0)
- * @param invertValue - If true, inverts the normalized value (0.0 -> 1.0 and 1.0 -> 0.0) (default false)
- * @param className - Optional CSS class
+ * @param {FilmstripViewProps} props - Component props
+ * @param {number} props.normalizedValue - Value between 0 and 1
+ * @param {number} props.frameWidth - Width of a single frame in the filmstrip
+ * @param {number} props.frameHeight - Height of a single frame in the filmstrip
+ * @param {number} props.frameCount - Total number of frames in the strip
+ * @param {string} props.imageHref - URL to the sprite sheet/filmstrip image
+ * @param {"vertical" | "horizontal"} [props.orientation="vertical"] - Orientation of the strip
+ * @param {number} [props.frameRotation=0] - Optional frame rotation in degrees
+ * @param {boolean} [props.invertValue=false] - If true, inverts the normalized value (0.0 -> 1.0 and 1.0 -> 0.0)
+ * @param {string} [props.className] - Optional CSS class
+ * @returns {JSX.Element} SVG group element containing the filmstrip frame
  */
 function FilmstripView({
     normalizedValue,
@@ -65,15 +67,11 @@ function FilmstripView({
     invertValue = false,
     className,
 }: FilmstripViewProps): JSX.Element {
-    // Center point of the viewBox
-    const cx = frameWidth / 2;
-    const cy = frameHeight / 2;
-
     return (
         <g className={className}>
             <FilmstripImage
-                cx={cx}
-                cy={cy}
+                x={0}
+                y={0}
                 frameWidth={frameWidth}
                 frameHeight={frameHeight}
                 frameCount={frameCount}

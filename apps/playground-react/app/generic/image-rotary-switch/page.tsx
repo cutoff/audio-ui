@@ -50,7 +50,6 @@ function generateCodeSnippet(
     value: string | number,
     frameWidth: number,
     frameHeight: number,
-    radius: number,
     imageHref: string,
     rotation: number,
     openness: number,
@@ -61,7 +60,7 @@ function generateCodeSnippet(
         .map((opt) => `    <OptionView value="${opt.value}">${opt.label}</OptionView>`)
         .join("\n");
     let props = `value="${value}" label="${label}"`;
-    props += `\n  frameWidth={${frameWidth}} frameHeight={${frameHeight}} radius={${radius}}`;
+    props += `\n  frameWidth={${frameWidth}} frameHeight={${frameHeight}}`;
     props += `\n  imageHref="${imageHref}"`;
     if (rotation !== 0) props += ` rotation={${rotation}}`;
     if (openness !== 90) props += ` openness={${openness}}`;
@@ -72,7 +71,6 @@ export default function ImageRotarySwitchDemoPage() {
     const [value, setValue] = useState<string | number>("low");
     const [frameWidth, setFrameWidth] = useState(100);
     const [frameHeight, setFrameHeight] = useState(100);
-    const [radius, setRadius] = useState(45);
     const [imageHref, setImageHref] = useState(KNOB_IMAGE);
     const [rotation, setRotation] = useState(0);
     const [openness, setOpenness] = useState(90);
@@ -86,7 +84,6 @@ export default function ImageRotarySwitchDemoPage() {
                 setValue(2);
                 setFrameWidth(100);
                 setFrameHeight(100);
-                setRadius(45);
                 setImageHref(KNOB_IMAGE);
                 setRotation(0);
                 setOpenness(90);
@@ -98,7 +95,6 @@ export default function ImageRotarySwitchDemoPage() {
                 setValue("mid");
                 setFrameWidth(100);
                 setFrameHeight(100);
-                setRadius(45);
                 setImageHref(KNOB_TONE_IMAGE);
                 setRotation(0);
                 setOpenness(90);
@@ -110,7 +106,6 @@ export default function ImageRotarySwitchDemoPage() {
                 setValue(5);
                 setFrameWidth(100);
                 setFrameHeight(100);
-                setRadius(45);
                 setImageHref(KNOB_SELECTOR_IMAGE);
                 setRotation(0);
                 setOpenness(90);
@@ -126,21 +121,19 @@ export default function ImageRotarySwitchDemoPage() {
             label,
             frameWidth,
             frameHeight,
-            radius,
             imageHref,
             rotation,
             openness,
             onChange: (e: AudioControlEvent<string | number>) => setValue(e.value),
             children: options.map((opt) => <OptionView key={opt.value} value={opt.value} />),
         }),
-        [value, label, frameWidth, frameHeight, radius, imageHref, rotation, openness, options]
+        [value, label, frameWidth, frameHeight, imageHref, rotation, openness, options]
     );
 
     const codeSnippet = generateCodeSnippet(
         value,
         frameWidth,
         frameHeight,
-        radius,
         imageHref,
         rotation,
         openness,
@@ -149,7 +142,7 @@ export default function ImageRotarySwitchDemoPage() {
     );
 
     const properties = [
-        <div key="dimensions" className="grid grid-cols-3 gap-2">
+        <div key="dimensions" className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
                 <Label>Frame Width</Label>
                 <Input type="number" value={frameWidth} onChange={(e) => setFrameWidth(Number(e.target.value))} />
@@ -157,10 +150,6 @@ export default function ImageRotarySwitchDemoPage() {
             <div className="space-y-2">
                 <Label>Frame Height</Label>
                 <Input type="number" value={frameHeight} onChange={(e) => setFrameHeight(Number(e.target.value))} />
-            </div>
-            <div className="space-y-2">
-                <Label>Radius</Label>
-                <Input type="number" value={radius} onChange={(e) => setRadius(Number(e.target.value))} />
             </div>
         </div>,
         <div key="imageHref" className="space-y-2">
@@ -211,7 +200,6 @@ export default function ImageRotarySwitchDemoPage() {
                 label="Volume Level"
                 frameWidth={100}
                 frameHeight={100}
-                radius={45}
                 imageHref={KNOB_IMAGE}
                 size="large"
                 onClick={() => handleExampleClick(0)}
@@ -228,7 +216,6 @@ export default function ImageRotarySwitchDemoPage() {
                 label="Tone"
                 frameWidth={100}
                 frameHeight={100}
-                radius={45}
                 imageHref={KNOB_TONE_IMAGE}
                 size="large"
                 onClick={() => handleExampleClick(1)}
@@ -245,7 +232,6 @@ export default function ImageRotarySwitchDemoPage() {
                 label="Selector"
                 frameWidth={100}
                 frameHeight={100}
-                radius={45}
                 imageHref={KNOB_SELECTOR_IMAGE}
                 size="large"
                 onClick={() => handleExampleClick(2)}
