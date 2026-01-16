@@ -54,7 +54,7 @@ export type FilmstripViewProps = {
  * @param {number} [props.frameRotation=0] - Optional frame rotation in degrees
  * @param {boolean} [props.invertValue=false] - If true, inverts the normalized value (0.0 -> 1.0 and 1.0 -> 0.0)
  * @param {string} [props.className] - Optional CSS class
- * @returns {JSX.Element} SVG group element containing the filmstrip frame
+ * @returns {JSX.Element} SVG group element containing the filmstrip frame (FilmstripImage component)
  */
 function FilmstripView({
     normalizedValue,
@@ -68,20 +68,19 @@ function FilmstripView({
     className,
 }: FilmstripViewProps): JSX.Element {
     return (
-        <g className={className}>
-            <FilmstripImage
-                x={0}
-                y={0}
-                frameWidth={frameWidth}
-                frameHeight={frameHeight}
-                frameCount={frameCount}
-                normalizedValue={normalizedValue}
-                imageHref={imageHref}
-                orientation={orientation}
-                frameRotation={frameRotation}
-                invertValue={invertValue}
-            />
-        </g>
+        <FilmstripImage
+            x={0}
+            y={0}
+            frameWidth={frameWidth}
+            frameHeight={frameHeight}
+            frameCount={frameCount}
+            normalizedValue={normalizedValue}
+            imageHref={imageHref}
+            orientation={orientation}
+            frameRotation={frameRotation}
+            invertValue={invertValue}
+            className={className}
+        />
     );
 }
 

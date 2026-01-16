@@ -489,6 +489,34 @@ CustomKnob.interaction = { mode: "both", direction: "circular" };
 </ContinuousControl>
 ```
 
+## DOM Optimization: Avoiding Unnecessary SVG Groups
+
+**Design Decision**: SVG primitives should avoid wrapping single child elements in unnecessary `<g>` (group) elements to reduce DOM depth and improve performance.
+
+**Rule**: When a primitive component renders only a single child element, the `<g>` wrapper should be removed and props (like `className`, `style`, `transform`) should be passed directly to the child element when possible.
+
+**Examples from Primitives**:
+
+- ✅ **Correct**: `RingArc` returns `<circle>` or `<path>` directly (no `<g>` wrapper)
+- ✅ **Correct**: `RevealingPath` returns `<path>` directly (no `<g>` wrapper)
+- ✅ **Correct**: `RadialHtmlOverlay` returns `<foreignObject>` directly (no `<g>` wrapper)
+- ✅ **Correct**: `TickRing` returns `<path>` directly in optimized mode (no `<g>` wrapper)
+- ✅ **Correct**: `ValueRing` returns a fragment `<>` with multiple `RingArc` components (no unnecessary `<g>`)
+- ✅ **Appropriate**: `FilmstripImage` uses `<g>` for rotation transform (necessary for grouping transform with nested `<svg>`)
+- ✅ **Appropriate**: `Image` and `RadialImage` use `<g>` when they need to group `transform`, `className`, and `style` with potentially multiple children (`imageHref` OR `children`)
+- ✅ **Appropriate**: `TickRing` uses `<g>` when `renderTick` is provided (multiple children need grouping)
+
+**When `<g>` is necessary**:
+
+- Multiple children need to be grouped together
+- Transform, className, or style must be applied to a container that cannot be applied to the child element
+- The child element does not accept the necessary props (className, style, transform)
+- A transform needs to be applied to a group containing nested elements (e.g., `FilmstripImage` rotating an `<svg>` containing an `<image>`)
+
+**Performance Impact**: Reducing DOM depth by one level can improve rendering performance, especially in scenarios with many controls (100+ knobs). This optimization is particularly important for audio applications where smooth UI performance is critical.
+
+**Note**: This principle also applies to control view components (e.g., `ImageSwitchView`, `FilmstripView`) that wrap single primitive components - they should pass props directly to the primitive rather than wrapping in an unnecessary `<g>`.
+
 ## SSR Considerations
 
 **Server-Side Rendering is not a priority for this library.** Audio/MIDI applications require real-time client-side processing, making SSR impractical for the primary use cases (VST plugin UIs, DAWs, web-based audio tools).

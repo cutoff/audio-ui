@@ -56,7 +56,7 @@ export type ImageRotarySwitchViewProps = {
  * @param {boolean} [props.bipolar=false] - Whether to start the arc from center (bipolar mode)
  * @param {number} [props.positions] - Optional number of discrete positions for snapping
  * @param {string} [props.className] - Optional CSS class
- * @returns {JSX.Element} SVG group element containing the rotary image
+ * @returns {JSX.Element} SVG group element containing the rotary image (RotaryImage component)
  */
 function ImageRotarySwitchView({
     normalizedValue,
@@ -76,19 +76,18 @@ function ImageRotarySwitchView({
     const radius = Math.min(frameWidth, frameHeight) / 2;
 
     return (
-        <g className={className}>
-            <RotaryImage
-                cx={cx}
-                cy={cy}
-                radius={radius}
-                normalizedValue={normalizedValue}
-                imageHref={imageHref}
-                rotation={rotation}
-                openness={openness}
-                bipolar={bipolar}
-                positions={positions}
-            />
-        </g>
+        <RotaryImage
+            cx={cx}
+            cy={cy}
+            radius={radius}
+            normalizedValue={normalizedValue}
+            imageHref={imageHref}
+            rotation={rotation}
+            openness={openness}
+            bipolar={bipolar}
+            positions={positions}
+            className={className}
+        />
     );
 }
 

@@ -205,6 +205,29 @@ The library provides generic control components that decouple behavior from visu
 - **Performance**: Double memoization (both wrapper and control primitive are memoized) provides optimal re-render protection
 - **Type Exports**: `ControlComponent`, `ControlComponentView`, `ControlComponentViewProps`, and `AdaptiveBoxLogicalSizeProps` are exported from `src/index.ts` for users creating custom view components
 
+### SVG DOM Optimization
+
+**Design Decision**: Control view components should avoid wrapping single child elements in unnecessary `<g>` (group) elements to reduce DOM depth and improve performance.
+
+**Rule**: When a view component renders only a single child element (e.g., a single primitive component), the `<g>` wrapper should be removed and props (like `className`) should be passed directly to the child element.
+
+**Examples**:
+
+- ✅ **Correct**: `ImageSwitchView` renders `<Image className={className} />` directly (no `<g>` wrapper)
+- ✅ **Correct**: `FilmstripView` renders `<FilmstripImage className={className} />` directly (no `<g>` wrapper)
+- ✅ **Correct**: `ImageRotarySwitchView` renders `<RotaryImage className={className} />` directly (no `<g>` wrapper)
+- ❌ **Incorrect**: Wrapping a single child in `<g className={className}><Child /></g>` when the child accepts `className`
+
+**When `<g>` is necessary**:
+
+- Multiple children need to be grouped together
+- Transform, className, or style must be applied to a container that cannot be applied to the child element
+- The child element does not accept the necessary props (className, style, transform)
+
+**Performance Impact**: Reducing DOM depth by one level can improve rendering performance, especially in scenarios with many controls (100+ knobs). This optimization is particularly important for audio applications where smooth UI performance is critical.
+
+**Reference**: See `packages/react/docs/svg-view-primitives.md` for complete documentation on SVG primitives and DOM optimization guidelines.
+
 ### Filmstrip-Based Controls (Generic Components)
 
 The library provides filmstrip-based controls that support the widely-used current industry standard for control representation: bitmap sprite sheets (filmstrips). These components are located in `src/components/generic/controls/`.

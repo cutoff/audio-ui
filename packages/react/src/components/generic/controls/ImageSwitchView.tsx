@@ -41,7 +41,7 @@ export type ImageSwitchViewProps = {
  * @param {string} props.imageHrefFalse - URL to the image for false/off state
  * @param {string} props.imageHrefTrue - URL to the image for true/on state
  * @param {string} [props.className] - Optional CSS class
- * @returns {JSX.Element} SVG group element containing the image
+ * @returns {JSX.Element} SVG image element
  */
 function ImageSwitchView({
     normalizedValue,
@@ -54,11 +54,7 @@ function ImageSwitchView({
     // Determine which image to show based on normalized value (threshold at 0.5)
     const imageHref = normalizedValue > 0.5 ? imageHrefTrue : imageHrefFalse;
 
-    return (
-        <g className={className}>
-            <Image x={0} y={0} width={frameWidth} height={frameHeight} imageHref={imageHref} />
-        </g>
-    );
+    return <Image x={0} y={0} width={frameWidth} height={frameHeight} imageHref={imageHref} className={className} />;
 }
 
 const ImageSwitchViewMemo = React.memo(ImageSwitchView);
