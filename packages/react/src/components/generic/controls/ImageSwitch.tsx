@@ -6,10 +6,10 @@
 
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import classNames from "classnames";
 import BooleanControl from "@/primitives/controls/BooleanControl";
-import { createImageView } from "./ImageView";
+import ImageView from "./ImageView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BooleanControlProps } from "@/types";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 
@@ -102,12 +102,6 @@ function ImageSwitch({
 }: ImageSwitchComponentProps) {
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "button");
 
-    // Create a view component with dynamic viewBox based on frame dimensions
-    const ViewComponent = useMemo(
-        () => createImageView(frameWidth, frameHeight, radius, imageHrefFalse, imageHrefTrue),
-        [frameWidth, frameHeight, radius, imageHrefFalse, imageHrefTrue]
-    );
-
     return (
         <BooleanControl
             value={value}
@@ -128,8 +122,16 @@ function ImageSwitch({
             onMouseUp={onMouseUp}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            view={ViewComponent}
-            viewProps={{}}
+            viewBoxWidthUnits={frameWidth}
+            viewBoxHeightUnits={frameHeight}
+            view={ImageView}
+            viewProps={{
+                frameWidth,
+                frameHeight,
+                radius,
+                imageHrefFalse,
+                imageHrefTrue,
+            }}
         />
     );
 }

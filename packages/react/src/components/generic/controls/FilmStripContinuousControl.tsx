@@ -6,10 +6,10 @@
 
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import classNames from "classnames";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
-import { createFilmstripView } from "./FilmstripView";
+import FilmstripView from "./FilmstripView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ValueLabelMode } from "@/types";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 
@@ -135,33 +135,6 @@ function FilmStripContinuousControl({
 }: FilmStripContinuousControlProps) {
     const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
 
-    // Create a view component with dynamic viewBox based on frame dimensions
-    const ViewComponent = useMemo(
-        () =>
-            createFilmstripView(
-                frameWidth,
-                frameHeight,
-                frameCount,
-                imageHref,
-                orientation,
-                frameRotation,
-                invertValue,
-                interactionMode,
-                interactionDirection
-            ),
-        [
-            frameWidth,
-            frameHeight,
-            frameCount,
-            imageHref,
-            orientation,
-            frameRotation,
-            invertValue,
-            interactionMode,
-            interactionDirection,
-        ]
-    );
-
     return (
         <ContinuousControl
             min={min}
@@ -193,8 +166,18 @@ function FilmStripContinuousControl({
             interactionSensitivity={interactionSensitivity}
             valueFormatter={valueFormatter}
             valueAsLabel={valueAsLabel}
-            view={ViewComponent}
-            viewProps={{}}
+            viewBoxWidthUnits={frameWidth}
+            viewBoxHeightUnits={frameHeight}
+            view={FilmstripView}
+            viewProps={{
+                frameWidth,
+                frameHeight,
+                frameCount,
+                imageHref,
+                orientation,
+                frameRotation,
+                invertValue,
+            }}
         />
     );
 }

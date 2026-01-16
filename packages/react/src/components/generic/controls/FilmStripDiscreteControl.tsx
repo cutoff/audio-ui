@@ -6,10 +6,10 @@
 
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import classNames from "classnames";
 import DiscreteControl from "@/primitives/controls/DiscreteControl";
-import { createFilmstripView } from "./FilmstripView";
+import FilmstripView from "./FilmstripView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, DiscreteControlProps } from "@/types";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { FilmstripProps } from "./FilmStripContinuousControl";
@@ -98,23 +98,6 @@ function FilmStripDiscreteControl({
 }: FilmStripDiscreteControlProps) {
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
 
-    // Create a view component with dynamic viewBox based on frame dimensions
-    const ViewComponent = useMemo(
-        () =>
-            createFilmstripView(
-                frameWidth,
-                frameHeight,
-                frameCount,
-                imageHref,
-                orientation,
-                frameRotation,
-                false, // invertValue not supported for discrete controls
-                undefined, // Discrete controls don't support interaction mode/direction
-                undefined
-            ),
-        [frameWidth, frameHeight, frameCount, imageHref, orientation, frameRotation]
-    );
-
     return (
         <DiscreteControl
             value={value}
@@ -137,8 +120,17 @@ function FilmStripDiscreteControl({
             onMouseUp={onMouseUp}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            view={ViewComponent}
-            viewProps={{}}
+            viewBoxWidthUnits={frameWidth}
+            viewBoxHeightUnits={frameHeight}
+            view={FilmstripView}
+            viewProps={{
+                frameWidth,
+                frameHeight,
+                frameCount,
+                imageHref,
+                orientation,
+                frameRotation,
+            }}
         >
             {children}
         </DiscreteControl>

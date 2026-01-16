@@ -472,7 +472,8 @@ function CustomKnob({ normalizedValue, className, style }: ControlComponentViewP
   );
 }
 
-// Required static properties for ContinuousControl
+// Static properties define defaults for ContinuousControl
+// These can be overridden per-instance via AdaptiveBoxLogicalSizeProps
 CustomKnob.viewBox = { width: 100, height: 100 };
 CustomKnob.labelHeightUnits = 15;
 CustomKnob.interaction = { mode: "both", direction: "circular" };

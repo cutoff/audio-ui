@@ -9,7 +9,7 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 import DiscreteControl from "@/primitives/controls/DiscreteControl";
-import { createRotaryImageView } from "./RotaryImageView";
+import RotaryImageView from "./RotaryImageView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, DiscreteControlProps } from "@/types";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { useDiscreteParameterResolution } from "@/hooks/useDiscreteParameterResolution";
@@ -111,23 +111,6 @@ function ImageRotarySwitch({
     // Calculate positions from the number of options
     const positions = useMemo(() => derivedParameter.options.length, [derivedParameter.options.length]);
 
-    // Create a view component with dynamic viewBox based on frame dimensions
-    const ViewComponent = useMemo(
-        () =>
-            createRotaryImageView(
-                frameWidth,
-                frameHeight,
-                radius,
-                imageHref,
-                rotation,
-                openness,
-                false, // Discrete controls don't use bipolar mode
-                undefined, // Discrete controls don't support interaction mode/direction
-                undefined
-            ),
-        [frameWidth, frameHeight, radius, imageHref, rotation, openness]
-    );
-
     return (
         <DiscreteControl
             value={value}
@@ -150,8 +133,18 @@ function ImageRotarySwitch({
             onMouseUp={onMouseUp}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            view={ViewComponent}
-            viewProps={{ positions }}
+            viewBoxWidthUnits={frameWidth}
+            viewBoxHeightUnits={frameHeight}
+            view={RotaryImageView}
+            viewProps={{
+                frameWidth,
+                frameHeight,
+                radius,
+                imageHref,
+                rotation,
+                openness,
+                positions,
+            }}
         >
             {children}
         </DiscreteControl>

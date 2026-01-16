@@ -18,15 +18,15 @@
 
 ## Quick Setup Summary (Load This First)
 
-| Category            | Details                                                                                                                                                                                                                                                                                                                                               |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Scripts             | `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm link`, `pnpm lint:css`                                                                                                                                                                                                                                                                             |
-| Env Vars            | None                                                                                                                                                                                                                                                                                                                                                  |
-| Component Structure | Props with JSDoc; default params; function ComponentName() {}; arrow functions for handlers; SVG for graphics                                                                                                                                                                                                                                         |
-| Exports             | All from src/index.ts: Components (Button, Knob, Slider, Keys, AdaptiveBox, ContinuousControl, FilmStripContinuousControl, FilmStripDiscreteControl, FilmStripBooleanControl, etc.), Theme utilities (setThemeColor, setThemeRoundness, etc.), Types (including ControlComponent, ControlComponentView), Utils (formatters, note utils), Theme colors |
-| Testing             | Vitest; .test.tsx alongside; mock deps; React 18 compat                                                                                                                                                                                                                                                                                               |
-| Build               | Vite; generates dist/index.js, index.d.ts, style.css; ES modules                                                                                                                                                                                                                                                                                      |
-| Path Aliases        | Use `@/primitives/*`, `@/hooks/*`, `@/defaults/*`, `@/utils/*`, `@/types` instead of relative paths (configured in tsconfig.json and vite.config.ts)                                                                                                                                                                                                  |
+| Category            | Details                                                                                                                                                                                                                                                                                                                                                                            |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scripts             | `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm link`, `pnpm lint:css`                                                                                                                                                                                                                                                                                                          |
+| Env Vars            | None                                                                                                                                                                                                                                                                                                                                                                               |
+| Component Structure | Props with JSDoc; default params; function ComponentName() {}; arrow functions for handlers; SVG for graphics                                                                                                                                                                                                                                                                      |
+| Exports             | All from src/index.ts: Components (Button, Knob, Slider, Keys, AdaptiveBox, ContinuousControl, FilmStripContinuousControl, FilmStripDiscreteControl, FilmStripBooleanControl, etc.), Theme utilities (setThemeColor, setThemeRoundness, etc.), Types (including ControlComponent, ControlComponentView, AdaptiveBoxLogicalSizeProps), Utils (formatters, note utils), Theme colors |
+| Testing             | Vitest; .test.tsx alongside; mock deps; React 18 compat                                                                                                                                                                                                                                                                                                                            |
+| Build               | Vite; generates dist/index.js, index.d.ts, style.css; ES modules                                                                                                                                                                                                                                                                                                                   |
+| Path Aliases        | Use `@/primitives/*`, `@/hooks/*`, `@/defaults/*`, `@/utils/*`, `@/types` instead of relative paths (configured in tsconfig.json and vite.config.ts)                                                                                                                                                                                                                               |
 
 ## Key File Structure
 
@@ -183,17 +183,27 @@ The library provides generic control components that decouple behavior from visu
     3. **Strict Mode (Parameter only)**: Model from `parameter` prop, visual via `renderOption` callback
     4. **Hybrid Mode (Parameter + Children)**: Model from `parameter` prop, visual from children (matched by value)
 - **Contract**: The view component must implement `ControlComponentView` interface, defining:
-  - `viewBox`: Dimensions for the SVG (required)
-  - `labelHeightUnits`: Label height in viewBox units (optional, defaults to 20)
-  - `interaction`: Preferred mode ("drag" | "wheel" | "both") and direction ("vertical" | "horizontal" | "circular")
+  - `viewBox`: Dimensions for the SVG (required) - serves as default, can be overridden via props
+  - `labelHeightUnits`: Label height in viewBox units (optional, defaults to 20) - serves as default, can be overridden via props
+  - `interaction`: Preferred mode ("drag" | "wheel" | "both") and direction ("vertical" | "horizontal" | "circular") - serves as default, can be overridden via props
 - **Props**: The view receives `ControlComponentViewProps` (normalizedValue, children, className, style) plus any custom props (passed through generic type parameter `P`).
+- **Per-Instance Override**: Control primitives accept `AdaptiveBoxLogicalSizeProps` which allow per-instance override of viewBox dimensions:
+  - `viewBoxWidthUnits?: number` - Overrides `viewBox.width` from the view component
+  - `viewBoxHeightUnits?: number` - Overrides `viewBox.height` from the view component
+  - `labelHeightUnits?: number` - Overrides `labelHeightUnits` from the view component
+- **Interaction Override**: Interaction behavior can be overridden via `InteractiveControlProps`:
+  - `interactionMode?: InteractionMode` - Overrides `interaction.mode` from the view component
+  - `interactionDirection?: InteractionDirection` - Overrides `interaction.direction` from the view component
 - **Reference Implementations**:
   - `KnobView` (located in `defaults/controls/`) - SVG-based, implements contract with `viewBox: {width: 100, height: 100}`, `labelHeightUnits: 20`, `interaction: {mode: "both", direction: "vertical"}`
   - `VerticalSliderView` / `HorizontalSliderView` (located in `defaults/controls/`) - SVG-based, specialized slider views with orientation-specific viewBox and interaction direction
-  - `FilmstripView` (located in `generic/controls/`) - Bitmap-based, uses `FilmstripImage` primitive to display frames from sprite sheets
+  - `FilmstripView` (located in `generic/controls/`) - Bitmap-based, uses `FilmstripImage` primitive to display frames from sprite sheets. Default viewBox is 100x100 but is overridden per-instance via props.
+  - `ImageView` (located in `generic/controls/`) - Bitmap-based boolean control that displays one of two images. Default viewBox is 100x100 but is overridden per-instance via props.
+  - `RotaryImageView` (located in `generic/controls/`) - Bitmap-based rotary control that rotates an image. Default viewBox is 100x100 but is overridden per-instance via props.
 - **Internal Usage**: `Knob` wraps `ContinuousControl` with `view={KnobView}`, `Slider` wraps with `view={VerticalSliderView}` or `view={HorizontalSliderView}` based on orientation
+- **Generic Controls**: Filmstrip and image-based controls use default exported view components and pass `viewBoxWidthUnits` and `viewBoxHeightUnits` as props to override the default viewBox dimensions. No factory functions are needed.
 - **Performance**: Double memoization (both wrapper and control primitive are memoized) provides optimal re-render protection
-- **Type Exports**: `ControlComponent`, `ControlComponentView`, and `ControlComponentViewProps` are exported from `src/index.ts` for users creating custom view components
+- **Type Exports**: `ControlComponent`, `ControlComponentView`, `ControlComponentViewProps`, and `AdaptiveBoxLogicalSizeProps` are exported from `src/index.ts` for users creating custom view components
 
 ### Filmstrip-Based Controls (Generic Components)
 
@@ -223,7 +233,7 @@ The library provides filmstrip-based controls that support the widely-used curre
 
 **Props**: Filmstrip-specific props (`frameWidth`, `frameHeight`, `frameCount`, `imageHref`, `orientation`, `frameRotation`) are defined in `FilmstripProps` type. These components do NOT support themable props (color, roundness, thickness) as visuals are entirely determined by the image content.
 
-**View Component**: `FilmstripView` (located in `generic/controls/`) uses the `FilmstripImage` primitive to render frames from sprite sheets. The view component is created dynamically via `createFilmstripView()` factory function to support dynamic viewBox dimensions based on frame size.
+**View Component**: `FilmstripView` (located in `generic/controls/`) uses the `FilmstripImage` primitive to render frames from sprite sheets. The view component has a default viewBox of 100x100, but generic controls pass `viewBoxWidthUnits` and `viewBoxHeightUnits` props to override these defaults with the actual frame dimensions. This allows per-instance customization without needing factory functions.
 
 ### Unified Interaction System (useInteractiveControl)
 

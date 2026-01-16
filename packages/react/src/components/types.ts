@@ -157,6 +157,31 @@ export type AdaptiveBoxProps = {
 };
 
 /**
+ * Logical size props for AdaptiveBox layout calculations.
+ * These correspond to the viewBox and labelHeightUnits properties
+ * from the ControlComponentView interface, but allow per-instance override.
+ */
+export type AdaptiveBoxLogicalSizeProps = {
+    /**
+     * ViewBox width in the same coordinate system as the content.
+     * Overrides the default from the view component's static viewBox.width property.
+     */
+    viewBoxWidthUnits?: number;
+
+    /**
+     * ViewBox height in the same coordinate system as the content.
+     * Overrides the default from the view component's static viewBox.height property.
+     */
+    viewBoxHeightUnits?: number;
+
+    /**
+     * Label height in the same units as SVG viewBox height.
+     * Overrides the default from the view component's static labelHeightUnits property.
+     */
+    labelHeightUnits?: number;
+};
+
+/**
  * Metadata for a control component.
  * Used for display in customization interfaces and documentation.
  */
@@ -451,7 +476,7 @@ export interface ControlComponentView {
      */
     interaction: {
         /** Supported interaction modes */
-        mode?: "drag" | "wheel" | "both";
+        mode?: InteractionMode;
         /**
          * Direction of the interaction gesture.
          * - vertical: Drag up/down changes value (Standard Faders/Knobs)

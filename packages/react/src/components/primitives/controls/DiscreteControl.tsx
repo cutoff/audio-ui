@@ -9,7 +9,7 @@
 import React, { useMemo, useCallback } from "react";
 import classNames from "classnames";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
-import { AdaptiveBoxProps, DiscreteControlProps, ControlComponent } from "@/types";
+import { AdaptiveBoxProps, AdaptiveBoxLogicalSizeProps, DiscreteControlProps, ControlComponent } from "@/types";
 import AdaptiveBox from "../AdaptiveBox";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useDiscreteInteraction } from "@/hooks/useDiscreteInteraction";
@@ -19,7 +19,9 @@ export type DiscreteControlComponentProps<P extends object = Record<string, unkn
     // Base Control Props (includes all DiscreteControlProps)
     DiscreteControlProps &
         // Layout props that configure AdaptiveBox behavior
-        AdaptiveBoxProps & {
+        AdaptiveBoxProps &
+        // Logical size props that override view component defaults
+        AdaptiveBoxLogicalSizeProps & {
             /**
              * The Visualization Component.
              * Must adhere to ControlComponent contract.
@@ -103,6 +105,9 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
         labelPosition,
         labelAlign,
         labelOverflow,
+        viewBoxWidthUnits,
+        viewBoxHeightUnits,
+        labelHeightUnits,
         className,
         style,
         onClick,
@@ -180,9 +185,9 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
             labelOverflow={labelOverflow}
             className={componentClassNames}
             style={style}
-            labelHeightUnits={View.labelHeightUnits ?? 20}
-            viewBoxWidth={View.viewBox.width}
-            viewBoxHeight={View.viewBox.height}
+            labelHeightUnits={labelHeightUnits ?? View.labelHeightUnits ?? 20}
+            viewBoxWidth={viewBoxWidthUnits ?? View.viewBox.width}
+            viewBoxHeight={viewBoxHeightUnits ?? View.viewBox.height}
         >
             <AdaptiveBox.Svg
                 className={svgClassNames}

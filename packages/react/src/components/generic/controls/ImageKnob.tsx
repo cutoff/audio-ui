@@ -6,10 +6,10 @@
 
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import classNames from "classnames";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
-import { createRotaryImageView } from "./RotaryImageView";
+import RotaryImageView from "./RotaryImageView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ValueLabelMode } from "@/types";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 
@@ -129,27 +129,6 @@ function ImageKnob({
 }: ImageKnobProps) {
     const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
 
-    // Create a view component with dynamic viewBox based on frame dimensions
-    // Map "both" to "circular" for rotary controls
-    const effectiveDirection: "vertical" | "horizontal" | "circular" | undefined =
-        interactionDirection === "both" ? "circular" : interactionDirection;
-
-    const ViewComponent = useMemo(
-        () =>
-            createRotaryImageView(
-                frameWidth,
-                frameHeight,
-                radius,
-                imageHref,
-                rotation,
-                openness,
-                bipolar,
-                interactionMode,
-                effectiveDirection
-            ),
-        [frameWidth, frameHeight, radius, imageHref, rotation, openness, bipolar, interactionMode, effectiveDirection]
-    );
-
     return (
         <ContinuousControl
             min={min}
@@ -181,8 +160,18 @@ function ImageKnob({
             interactionSensitivity={interactionSensitivity}
             valueFormatter={valueFormatter}
             valueAsLabel={valueAsLabel}
-            view={ViewComponent}
-            viewProps={{ positions: undefined }}
+            viewBoxWidthUnits={frameWidth}
+            viewBoxHeightUnits={frameHeight}
+            view={RotaryImageView}
+            viewProps={{
+                frameWidth,
+                frameHeight,
+                radius,
+                imageHref,
+                rotation,
+                openness,
+                bipolar,
+            }}
         />
     );
 }

@@ -6,10 +6,10 @@
 
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import classNames from "classnames";
 import BooleanControl from "@/primitives/controls/BooleanControl";
-import { createFilmstripView } from "./FilmstripView";
+import FilmstripView from "./FilmstripView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, BooleanControlProps } from "@/types";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { FilmstripProps } from "./FilmStripContinuousControl";
@@ -99,23 +99,6 @@ function FilmStripBooleanControl({
 }: FilmStripBooleanControlProps) {
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "button");
 
-    // Create the filmstrip view component with invertValue support
-    const ViewComponent = useMemo(
-        () =>
-            createFilmstripView(
-                frameWidth,
-                frameHeight,
-                frameCount,
-                imageHref,
-                orientation,
-                frameRotation,
-                invertValue,
-                undefined, // Boolean controls don't support interaction mode/direction
-                undefined
-            ),
-        [frameWidth, frameHeight, frameCount, imageHref, orientation, frameRotation, invertValue]
-    );
-
     return (
         <BooleanControl
             value={value}
@@ -136,8 +119,18 @@ function FilmStripBooleanControl({
             onMouseUp={onMouseUp}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            view={ViewComponent}
-            viewProps={{}}
+            viewBoxWidthUnits={frameWidth}
+            viewBoxHeightUnits={frameHeight}
+            view={FilmstripView}
+            viewProps={{
+                frameWidth,
+                frameHeight,
+                frameCount,
+                imageHref,
+                orientation,
+                frameRotation,
+                invertValue,
+            }}
         />
     );
 }

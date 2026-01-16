@@ -9,7 +9,7 @@
 import React, { useMemo, useCallback } from "react";
 import classNames from "classnames";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
-import { AdaptiveBoxProps, BooleanControlProps, ControlComponent } from "@/types";
+import { AdaptiveBoxProps, AdaptiveBoxLogicalSizeProps, BooleanControlProps, ControlComponent } from "@/types";
 import AdaptiveBox from "../AdaptiveBox";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useBooleanInteraction } from "@/hooks/useBooleanInteraction";
@@ -19,7 +19,9 @@ export type BooleanControlComponentProps<P extends object = Record<string, unkno
     // Base Control Props (includes all BooleanControlProps)
     BooleanControlProps &
         // Layout props that configure AdaptiveBox behavior
-        AdaptiveBoxProps & {
+        AdaptiveBoxProps &
+        // Logical size props that override view component defaults
+        AdaptiveBoxLogicalSizeProps & {
             /**
              * The Visualization Component.
              * Must adhere to ControlComponent contract.
@@ -97,6 +99,9 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
         labelPosition,
         labelAlign,
         labelOverflow,
+        viewBoxWidthUnits,
+        viewBoxHeightUnits,
+        labelHeightUnits,
         className,
         style,
         onClick,
@@ -234,9 +239,9 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
             labelOverflow={labelOverflow}
             className={componentClassNames}
             style={style}
-            labelHeightUnits={View.labelHeightUnits ?? 20}
-            viewBoxWidth={View.viewBox.width}
-            viewBoxHeight={View.viewBox.height}
+            labelHeightUnits={labelHeightUnits ?? View.labelHeightUnits ?? 20}
+            viewBoxWidth={viewBoxWidthUnits ?? View.viewBox.width}
+            viewBoxHeight={viewBoxHeightUnits ?? View.viewBox.height}
         >
             <AdaptiveBox.Svg
                 className={svgClassNames}

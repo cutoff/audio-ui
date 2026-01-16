@@ -9,7 +9,13 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
-import { AdaptiveBoxProps, ContinuousControlProps, ControlComponent, ValueLabelMode } from "@/types";
+import {
+    AdaptiveBoxProps,
+    AdaptiveBoxLogicalSizeProps,
+    ContinuousControlProps,
+    ControlComponent,
+    ValueLabelMode,
+} from "@/types";
 import AdaptiveBox from "../AdaptiveBox";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useContinuousInteraction } from "@/hooks/useContinuousInteraction";
@@ -19,7 +25,9 @@ export type ContinuousControlComponentProps<P extends object = Record<string, un
     // Base Control Props (includes all ContinuousControlProps)
     ContinuousControlProps &
         // Layout props that configure AdaptiveBox behavior
-        AdaptiveBoxProps & {
+        AdaptiveBoxProps &
+        // Logical size props that override view component defaults
+        AdaptiveBoxLogicalSizeProps & {
             /**
              * The Visualization Component.
              * Must adhere to ControlComponent contract.
@@ -68,6 +76,9 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         labelPosition,
         labelAlign,
         labelOverflow,
+        viewBoxWidthUnits,
+        viewBoxHeightUnits,
+        labelHeightUnits,
         className,
         style,
         onChange,
@@ -199,9 +210,9 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
             labelOverflow={labelOverflow}
             className={componentClassNames}
             style={style}
-            labelHeightUnits={View.labelHeightUnits ?? 20}
-            viewBoxWidth={View.viewBox.width}
-            viewBoxHeight={View.viewBox.height}
+            labelHeightUnits={labelHeightUnits ?? View.labelHeightUnits ?? 20}
+            viewBoxWidth={viewBoxWidthUnits ?? View.viewBox.width}
+            viewBoxHeight={viewBoxHeightUnits ?? View.viewBox.height}
         >
             <AdaptiveBox.Svg
                 className={svgClassNames}
