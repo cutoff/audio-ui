@@ -9,7 +9,7 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 import DiscreteControl from "@/primitives/controls/DiscreteControl";
-import ImageRotarySwitchView from "./ImageRotarySwitchView";
+import ImageKnobView from "./ImageKnobView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, DiscreteControlProps } from "@/types";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { useDiscreteParameterResolution } from "@/hooks/useDiscreteParameterResolution";
@@ -133,7 +133,7 @@ function ImageRotarySwitch({
             onMouseLeave={onMouseLeave}
             viewBoxWidthUnits={frameWidth}
             viewBoxHeightUnits={frameHeight}
-            view={ImageRotarySwitchView}
+            view={ImageKnobView}
             viewProps={{
                 frameWidth,
                 frameHeight,

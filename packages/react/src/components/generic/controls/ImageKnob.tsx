@@ -9,7 +9,7 @@
 import React from "react";
 import classNames from "classnames";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
-import ImageRotarySwitchView from "./ImageRotarySwitchView";
+import ImageKnobView from "./ImageKnobView";
 import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ValueLabelMode } from "@/types";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 
@@ -158,7 +158,7 @@ function ImageKnob({
             valueAsLabel={valueAsLabel}
             viewBoxWidthUnits={frameWidth}
             viewBoxHeightUnits={frameHeight}
-            view={ImageRotarySwitchView}
+            view={ImageKnobView}
             viewProps={{
                 frameWidth,
                 frameHeight,

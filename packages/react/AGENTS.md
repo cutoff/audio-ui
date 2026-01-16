@@ -199,7 +199,7 @@ The library provides generic control components that decouple behavior from visu
   - `VerticalSliderView` / `HorizontalSliderView` (located in `defaults/controls/`) - SVG-based, specialized slider views with orientation-specific viewBox and interaction direction
   - `FilmstripView` (located in `generic/controls/`) - Bitmap-based, uses `FilmstripImage` primitive to display frames from sprite sheets. Default viewBox is 100x100 but is overridden per-instance via props.
   - `ImageSwitchView` (located in `generic/controls/`) - Bitmap-based boolean control that displays one of two images. Default viewBox is 100x100 but is overridden per-instance via props.
-  - `ImageRotarySwitchView` (located in `generic/controls/`) - Bitmap-based rotary control that rotates an image. Default viewBox is 100x100 but is overridden per-instance via props.
+  - `ImageKnobView` (located in `generic/controls/`) - Bitmap-based rotary control that rotates an image. Default viewBox is 100x100 but is overridden per-instance via props.
 - **Internal Usage**: `Knob` wraps `ContinuousControl` with `view={KnobView}`, `Slider` wraps with `view={VerticalSliderView}` or `view={HorizontalSliderView}` based on orientation
 - **Generic Controls**: Filmstrip and image-based controls use default exported view components and pass `viewBoxWidthUnits` and `viewBoxHeightUnits` as props to override the default viewBox dimensions. No factory functions are needed.
 - **Performance**: Double memoization (both wrapper and control primitive are memoized) provides optimal re-render protection
@@ -215,7 +215,7 @@ The library provides generic control components that decouple behavior from visu
 
 - ✅ **Correct**: `ImageSwitchView` renders `<Image className={className} />` directly (no `<g>` wrapper)
 - ✅ **Correct**: `FilmstripView` renders `<FilmstripImage className={className} />` directly (no `<g>` wrapper)
-- ✅ **Correct**: `ImageRotarySwitchView` renders `<RotaryImage className={className} />` directly (no `<g>` wrapper)
+- ✅ **Correct**: `ImageKnobView` renders `<RotaryImage className={className} />` directly (no `<g>` wrapper)
 - ❌ **Incorrect**: Wrapping a single child in `<g className={className}><Child /></g>` when the child accepts `className`
 
 **When `<g>` is necessary**:
