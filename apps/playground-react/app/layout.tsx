@@ -117,7 +117,7 @@ export default function RootLayout({
                     <SidebarProvider>
                         <AppSidebar />
                         <SidebarInset>
-                            <header className="flex h-16 shrink-0 items-center justify-between gap-2 px-4">
+                            <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between gap-2 rounded-t-xl border-b bg-background/80 backdrop-blur-sm px-4">
                                 <div className="flex items-center gap-2">
                                     <SidebarTrigger className="-ml-1" />
                                     <BreadcrumbNav />
