@@ -83,7 +83,8 @@ const navData = [
 
 /**
  * Breadcrumb navigation component that displays the current page location.
- * Shows full breadcrumb (Home | Section | Page) on desktop, and just the page name on mobile.
+ * Shows full breadcrumb hierarchy on desktop (Home | Section | Page for sub-pages, or Home | Section for first-level pages),
+ * and just the page name on mobile.
  *
  * @returns Breadcrumb navigation component
  */
@@ -93,8 +94,9 @@ export function BreadcrumbNav() {
     /**
      * Finds the current section and page based on the pathname.
      * Matches against the navigation structure to determine breadcrumb hierarchy.
+     * For first-level pages (section URLs), returns page as null to avoid duplicate display.
      *
-     * @returns Object with section and page titles, or null for section if on home page
+     * @returns Object with section and page titles. Page is null for first-level pages or home page.
      */
     const findBreadcrumb = () => {
         // Check if it's the home page
@@ -122,9 +124,9 @@ export function BreadcrumbNav() {
 
         // Find matching section and page
         for (const section of navData) {
-            // Check if pathname matches section URL
+            // Check if pathname matches section URL (first-level page)
             if (pathname === section.url) {
-                return { section: section.title, page: section.title };
+                return { section: section.title, page: null };
             }
 
             // Check sub-items
@@ -180,12 +182,14 @@ export function BreadcrumbNav() {
                             </BreadcrumbItem>
                         </>
                     )}
-                    {/* Page separator - only show on desktop when there's a section */}
-                    {section && <BreadcrumbSeparator className="hidden md:block" />}
-                    {/* Page - always visible */}
-                    <BreadcrumbItem>
-                        <BreadcrumbPage>{page}</BreadcrumbPage>
-                    </BreadcrumbItem>
+                    {/* Page separator - only show on desktop when there's a section and a page */}
+                    {section && page && <BreadcrumbSeparator className="hidden md:block" />}
+                    {/* Page - only show when page exists */}
+                    {page && (
+                        <BreadcrumbItem>
+                            <BreadcrumbPage>{page}</BreadcrumbPage>
+                        </BreadcrumbItem>
+                    )}
                 </BreadcrumbList>
             </Breadcrumb>
         </>
