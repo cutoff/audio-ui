@@ -10,6 +10,8 @@ import "./globals.css";
 import { Providers } from "@/app/providers";
 import { AppSidebar } from "@/components/app-sidebar";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
+import { ThemeSettingsButton } from "@/components/theme-settings-button";
+import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -115,10 +117,14 @@ export default function RootLayout({
                     <SidebarProvider>
                         <AppSidebar />
                         <SidebarInset>
-                            <header className="flex h-16 shrink-0 items-center gap-2 px-4">
+                            <header className="flex h-16 shrink-0 items-center justify-between gap-2 px-4">
                                 <div className="flex items-center gap-2">
                                     <SidebarTrigger className="-ml-1" />
                                     <BreadcrumbNav />
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <ThemeSettingsButton />
+                                    <ThemeModeToggle />
                                 </div>
                             </header>
                             <div className="flex-1">{children}</div>

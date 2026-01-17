@@ -13,7 +13,6 @@ import { Command, Sliders, Keyboard, Layers, Box, Layout, Sparkles } from "lucid
 
 import { NavMain } from "@/components/nav-main";
 import { NavExamples } from "@/components/nav-examples";
-import { NavSettings } from "@/components/nav-settings";
 import { NavVersion } from "@/components/nav-version";
 import {
     Sidebar,
@@ -169,7 +168,7 @@ const data = {
 
 /**
  * Main application sidebar component.
- * Displays navigation menu with collapsible sections and theme settings.
+ * Displays navigation menu with collapsible sections.
  * Automatically highlights active navigation items based on current pathname.
  *
  * @param props - Sidebar component props
@@ -208,7 +207,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <NavExamples examples={data.examples} />
             </SidebarContent>
             <SidebarFooter>
-                <NavSettings />
                 <NavVersion />
             </SidebarFooter>
         </Sidebar>

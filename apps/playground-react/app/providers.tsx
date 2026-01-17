@@ -8,7 +8,14 @@
 
 import React, { useEffect } from "react";
 import { ThemeProvider } from "next-themes";
-import { setThemeRoundness, getThemeColor, getThemeRoundness, DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-react";
+import {
+    setThemeRoundness,
+    setThemeColor,
+    getThemeColor,
+    getThemeRoundness,
+    DEFAULT_ROUNDNESS,
+    themeColors,
+} from "@cutoff/audio-ui-react";
 
 // Global state for audio UI theme
 export type AudioUiThemeState = {
@@ -43,9 +50,17 @@ function ThemeInitializer({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         setThemeRoundness(DEFAULT_ROUNDNESS);
 
+        // Check if a theme color is already set, if not, set default adaptive theme
+        const existingColor = getThemeColor();
+        if (!existingColor) {
+            setThemeColor(themeColors.default);
+        }
+
         // Update global state with current values
+        // Store the variable name (themeColors.default) if no color was set.
+        // If a color exists, leave it undefined - the theme settings panel will set it when user selects a theme.
         audioUiThemeState.current = {
-            color: getThemeColor() ?? undefined,
+            color: existingColor ? undefined : themeColors.default,
             roundness: getThemeRoundness() ?? DEFAULT_ROUNDNESS,
             setColor: (color: string) => {
                 if (typeof document !== "undefined") {
