@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
     eslint: {
         ignoreDuringBuilds: true, // Ignore ESLint errors during production builds
     },
+    devIndicators: {
+        position: "bottom-right",
+    },
     webpack: (config) => {
         config.resolve.alias = {
             ...config.resolve.alias,
