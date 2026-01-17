@@ -12,7 +12,7 @@
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
 | Scripts      | `pnpm dev`, `pnpm build`, `pnpm typecheck`, `pnpm lint`                                                                              |
 | Env Vars     | None                                                                                                                                 |
-| Routing      | Next.js app router; pages in app/[route]/page.tsx; categories: examples, controls, devices                                           |
+| Routing      | Next.js app router; pages in app/[route]/page.tsx; categories: examples, defaults, generic, primitives, layout                       |
 | Theming      | next-themes for theme switching; theme controls in header (ThemeSettingsButton, ThemeModeToggle); responsive sheet for customization |
 | Integrations | Import library components for showcases; Radix via shadcn; forms, routing                                                            |
 
@@ -20,7 +20,7 @@
 
 - `app/layout.tsx`: Root layout with header containing theme controls
 - `app/page.tsx`: Home page
-- `app/[route]/page.tsx`: Demo pages (e.g., app/controls/button/page.tsx for Button demo)
+- `app/[route]/page.tsx`: Demo pages (e.g., app/defaults/button/page.tsx for Button demo)
 - `app/layout/sizing/page.tsx`: Centralized sizing system showcase (all components, all sizes)
 - `app/providers.tsx`: Context providers (theme initialization, global theme state)
 - `components/ui/`: **shadcn components ONLY** - do not add custom components here; **NEVER modify shadcn components** - they are third-party stabilized code; work around type issues with type assertions/ts-expect-error if needed
@@ -50,6 +50,8 @@ Validate components imported from library; ensure playground showcases accuratel
 
 Theme customization controls are located in the header (not in the sidebar):
 
+**Important**: Theme settings affect only default components (default theme/skin). Generic components, primitives, and other specialized components are not controlled by these settings.
+
 - **ThemeSettingsButton**: Header button that opens a responsive sheet with theme customization options
   - Desktop/Tablet: Right-side sheet (no overlay for real-time preview)
   - Mobile: Bottom sheet (no overlay for real-time preview)
@@ -64,6 +66,7 @@ Theme customization controls are located in the header (not in the sidebar):
   - Used inside the theme settings sheet
   - Reads from and writes to global theme state (`audioUiThemeState`)
   - Initializes with default adaptive theme if no theme is set
+  - Affects only default components; generic components and primitives are not controlled
 
 - **Implementation Details**:
   - Theme settings are stored in global state (`app/providers.tsx`)

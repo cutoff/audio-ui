@@ -9,7 +9,7 @@
 import * as React from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Command, Sliders, Keyboard, Layers, Box, Layout, Sparkles } from "lucide-react";
+import { Command, Sliders, Layers, Box, Layout, Sparkles } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavExamples } from "@/components/nav-examples";
@@ -27,40 +27,33 @@ import {
 const data = {
     navMain: [
         {
-            title: "Controls",
-            url: "/controls/knob",
+            title: "Defaults",
+            url: "/defaults",
             icon: Sliders,
             items: [
                 {
                     title: "Knob",
-                    url: "/controls/knob",
+                    url: "/defaults/knob",
                 },
                 {
                     title: "Slider (V)",
-                    url: "/controls/vslider",
+                    url: "/defaults/vslider",
                 },
                 {
                     title: "Slider (H)",
-                    url: "/controls/hslider",
+                    url: "/defaults/hslider",
                 },
                 {
                     title: "CycleButton",
-                    url: "/controls/cyclebutton",
+                    url: "/defaults/cyclebutton",
                 },
                 {
                     title: "Button",
-                    url: "/controls/button",
+                    url: "/defaults/button",
                 },
-            ],
-        },
-        {
-            title: "Devices",
-            url: "/devices/keys",
-            icon: Keyboard,
-            items: [
                 {
                     title: "Keys",
-                    url: "/devices/keys",
+                    url: "/defaults/keys",
                 },
             ],
         },

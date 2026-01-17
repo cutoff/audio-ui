@@ -34,6 +34,8 @@ const themeColorOptions: ThemeColor[] = [
 /**
  * Reusable theme settings panel component.
  * Provides controls for theme color and roundness customization.
+ * These settings affect only default components (default theme/skin).
+ * Generic components, primitives, and other specialized components are not controlled by these settings.
  * Settings persist across component remounts by reading from global state and CSS variables.
  * Can be used in sidebar, sheet, or any container.
  *

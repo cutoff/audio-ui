@@ -22,7 +22,7 @@ import { cva } from "class-variance-authority";
  * Configured without overlay to allow real-time preview of theme changes.
  */
 const sheetVariants = cva(
-    "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out",
+    "fixed z-50 gap-4 bg-background/50 backdrop-blur-sm p-6 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out",
     {
         variants: {
             side: {
@@ -100,7 +100,8 @@ export function ThemeSettingsButton() {
                     <SheetHeader>
                         <SheetTitle>Theme Settings</SheetTitle>
                         <SheetDescription>
-                            Customize the appearance of components by adjusting color and roundness.
+                            Customize the default theme settings for default components. Generic components, primitives,
+                            and other specialized components are not controlled by these settings.
                         </SheetDescription>
                     </SheetHeader>
                     <ThemeSettingsPanel />

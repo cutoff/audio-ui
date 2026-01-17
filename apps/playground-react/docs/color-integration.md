@@ -176,7 +176,7 @@ The playground uses Tailwind CSS for its own UI. The library's CSS variables wor
 
 ### Color Picker Integration
 
-Component demo pages (e.g., `app/controls/knob/page.tsx`) include a color picker for testing:
+Component demo pages (e.g., `app/defaults/knob/page.tsx`) include a color picker for testing:
 
 ```tsx
 const [color, setColor] = useState<string | undefined>(undefined);

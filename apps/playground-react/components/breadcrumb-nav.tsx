@@ -36,20 +36,16 @@ const examplesData = [
  */
 const navData = [
     {
-        title: "Controls",
-        url: "/controls/knob",
+        title: "Defaults",
+        url: "/defaults",
         items: [
-            { title: "Knob", url: "/controls/knob" },
-            { title: "Slider (V)", url: "/controls/vslider" },
-            { title: "Slider (H)", url: "/controls/hslider" },
-            { title: "CycleButton", url: "/controls/cyclebutton" },
-            { title: "Button", url: "/controls/button" },
+            { title: "Knob", url: "/defaults/knob" },
+            { title: "Slider (V)", url: "/defaults/vslider" },
+            { title: "Slider (H)", url: "/defaults/hslider" },
+            { title: "CycleButton", url: "/defaults/cyclebutton" },
+            { title: "Button", url: "/defaults/button" },
+            { title: "Keys", url: "/defaults/keys" },
         ],
-    },
-    {
-        title: "Devices",
-        url: "/devices/keys",
-        items: [{ title: "Keys", url: "/devices/keys" }],
     },
     {
         title: "Generic",

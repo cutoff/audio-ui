@@ -37,6 +37,8 @@ const themeColorOptions: ThemeColor[] = [
 /**
  * Theme settings component for the sidebar footer.
  * Provides controls for theme color, roundness, and light/dark/system mode.
+ * These settings affect only default components (default theme/skin).
+ * Generic components, primitives, and other specialized components are not controlled by these settings.
  * Always visible and fixed at the bottom of the sidebar.
  *
  * @returns Theme settings component
