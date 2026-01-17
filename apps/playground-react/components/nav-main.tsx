@@ -75,6 +75,12 @@ export function NavMain({
 /**
  * Individual navigation item with collapsible sub-items.
  * Uses controlled state to allow toggling via link click or chevron button.
+ * Handles touch event propagation issues on tablets to prevent unwanted navigation.
+ *
+ * @param item - Navigation item with optional sub-items
+ * @param isItemActive - Whether the item or any sub-item is currently active
+ * @param shouldBeOpen - Whether the section should be open (auto-opens when navigating to sub-page)
+ * @param pathname - Current pathname for active state detection
  */
 function NavItem({
     item,
@@ -97,20 +103,51 @@ function NavItem({
 }) {
     // Use controlled state for collapsible
     const [open, setOpen] = React.useState(shouldBeOpen);
+    const collapseButtonTouchedRef = React.useRef(false);
+    const prevShouldBeOpenRef = React.useRef(shouldBeOpen);
 
-    // Sync state with pathname changes
+    // Only auto-open when navigating TO a sub-page (shouldBeOpen changes from false to true)
+    // This allows users to manually collapse sections even when on a sub-page
     React.useEffect(() => {
-        if (shouldBeOpen && !open) {
+        const prevShouldBeOpen = prevShouldBeOpenRef.current;
+        if (shouldBeOpen && !prevShouldBeOpen && !open) {
+            // User navigated to a sub-page - auto-open the section
             setOpen(true);
         }
+        prevShouldBeOpenRef.current = shouldBeOpen;
     }, [shouldBeOpen, open]);
 
     // Toggle function that will be called when clicking the link
-    const handleLinkClick = () => {
+    const handleLinkClick = (e: React.MouseEvent) => {
+        // If the collapse button was just touched, ignore this click
+        // (touch events on the collapse button can trigger clicks on the link)
+        if (collapseButtonTouchedRef.current) {
+            e.preventDefault();
+            collapseButtonTouchedRef.current = false;
+            return;
+        }
+
+        // If the item has sub-items, toggle the section when clicking the link
+        // Navigation will happen automatically via the Link
         if (item.items?.length) {
             setOpen((prev) => !prev);
         }
-        // Navigation will happen automatically via the Link
+    };
+
+    // Prevent event propagation when clicking/touching the collapse button
+    // This fixes touch event bubbling on tablets that causes navigation
+    const handleCollapseClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+    };
+
+    const handleCollapseTouchStart = (e: React.TouchEvent) => {
+        e.stopPropagation();
+        collapseButtonTouchedRef.current = true;
+        // Clear the flag after touch events have been processed
+        // This prevents touch events from triggering clicks on the Link
+        setTimeout(() => {
+            collapseButtonTouchedRef.current = false;
+        }, 300);
     };
 
     return (
@@ -125,7 +162,11 @@ function NavItem({
                 {item.items?.length ? (
                     <>
                         <CollapsibleTrigger asChild>
-                            <SidebarMenuAction className="data-[state=open]:rotate-90">
+                            <SidebarMenuAction
+                                className="data-[state=open]:rotate-90 touch-manipulation [&::after]:pointer-events-auto [&::after]:-inset-3 [&::after]:md:block"
+                                onClick={handleCollapseClick}
+                                onTouchStart={handleCollapseTouchStart}
+                            >
                                 <ChevronRight />
                                 <span className="sr-only">Toggle</span>
                             </SidebarMenuAction>
