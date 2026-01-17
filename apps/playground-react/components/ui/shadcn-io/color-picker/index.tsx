@@ -53,10 +53,10 @@ export const useColorPicker = () => {
   return context;
 };
 
-export type ColorPickerProps = HTMLAttributes<HTMLDivElement> & {
+export type ColorPickerProps = Omit<HTMLAttributes<HTMLDivElement>, "onChange"> & {
   value?: Parameters<typeof Color>[0];
   defaultValue?: Parameters<typeof Color>[0];
-  onChange?: (value: Parameters<typeof Color.rgb>[0]) => void;
+  onChange?: (value: [number, number, number, number]) => void;
 };
 
 export const ColorPicker = ({
@@ -105,9 +105,25 @@ export const ColorPicker = ({
       const color = Color.hsl(hue, saturation, lightness).alpha(alpha / 100);
       const rgba = color.rgb().array();
 
+      // Check if the calculated color matches the prop value to avoid circular updates
+      // This prevents onChange from firing when the value prop updates trigger state changes
+      if (value) {
+        try {
+            const propColor = Color(value);
+            // Compare RGB values and alpha to detect if the calculated color matches the prop
+            // This breaks the update loop when value prop changes trigger this effect
+            if (propColor.red() === rgba[0] &&
+                propColor.green() === rgba[1] &&
+                propColor.blue() === rgba[2] &&
+                Math.abs(propColor.alpha() - (alpha / 100)) < 0.01) {
+              return;
+            }
+        } catch {}
+      }
+
       onChange([rgba[0], rgba[1], rgba[2], alpha / 100]);
     }
-  }, [hue, saturation, lightness, alpha, onChange]);
+  }, [hue, saturation, lightness, alpha, onChange, value]);
 
   return (
     <ColorPickerContext.Provider

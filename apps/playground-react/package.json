@@ -63,6 +63,7 @@
         "color": "^5.0.3",
         "date-fns": "^4.1.0",
         "embla-carousel-react": "^8.6.0",
+        "embla-carousel-wheel-gestures": "^8.1.0",
         "input-otp": "^1.4.2",
         "lucide-react": "^0.476.0",
         "next": "^15.5.7",

@@ -32,15 +32,25 @@ interface ColorPickerFieldProps {
     id?: string;
 }
 
+/**
+ * Color picker field component that provides a popover-based color selection interface.
+ * Displays the current color value and allows selection via a full-featured color picker.
+ * Supports clearing the color value.
+ *
+ * @param props - Component props
+ * @param props.value - Current color value (hex string) or undefined
+ * @param props.onChange - Callback invoked when color changes
+ * @param props.label - Optional label text for the field
+ * @param props.id - Optional HTML id for the field
+ * @returns Color picker field component
+ */
 export function ColorPickerField({ value, onChange, label, id }: ColorPickerFieldProps) {
-    const [color, setColor] = React.useState<ReturnType<typeof Color> | undefined>(value ? Color(value) : undefined);
-
-    React.useEffect(() => {
+    // Derive color object from value prop directly
+    const color = React.useMemo(() => {
         try {
-            setColor(value ? Color(value) : undefined);
+            return value ? Color(value) : undefined;
         } catch {
-            console.error("Invalid color value provided to ColorPickerField:", value);
-            setColor(undefined);
+            return undefined;
         }
     }, [value]);
 
@@ -48,7 +58,6 @@ export function ColorPickerField({ value, onChange, label, id }: ColorPickerFiel
         (newColor: [number, number, number, number]) => {
             const [r, g, b, a] = newColor;
             const colorInstance = Color.rgb(r, g, b).alpha(a);
-            setColor(colorInstance);
             onChange(colorInstance.hexa());
         },
         [onChange]
@@ -56,13 +65,10 @@ export function ColorPickerField({ value, onChange, label, id }: ColorPickerFiel
 
     const handleClear = (e: React.MouseEvent) => {
         e.stopPropagation();
-        setColor(undefined);
         onChange(undefined);
     };
 
-    const colorString = React.useMemo(() => {
-        return color ? color.hexa() : "transparent";
-    }, [color]);
+    const colorString = color ? color.hexa() : "transparent";
 
     return (
         <div className="grid gap-2">
@@ -94,13 +100,7 @@ export function ColorPickerField({ value, onChange, label, id }: ColorPickerFiel
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-full">
-                        <ColorPicker
-                            value={value}
-                            defaultValue={"#000000"}
-                            // @ts-expect-error - ColorPicker's type definition doesn't match its implementation
-                            // It actually passes [r, g, b, alpha] but the type says Parameters<typeof Color.rgb>[0]
-                            onChange={handleColorChange}
-                        >
+                        <ColorPicker value={value} defaultValue={"#000000"} onChange={handleColorChange}>
                             <div className="flex flex-col gap-4">
                                 <ColorPickerSelection className="h-36 w-full" />
                                 <div className="flex flex-col gap-2">
