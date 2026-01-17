@@ -54,7 +54,15 @@ const ThemeSheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitiv
     ({ side = "right", className, children, ...props }, ref) => (
         <SheetPrimitive.Portal>
             {/* No overlay - allows preview of theme changes */}
-            <SheetPrimitive.Content ref={ref} className={cn(sheetVariants({ side }), className)} {...props}>
+            <SheetPrimitive.Content
+                ref={ref}
+                className={cn(sheetVariants({ side }), className)}
+                onCloseAutoFocus={(e) => {
+                    // Prevent scroll-to-top when closing the sheet
+                    e.preventDefault();
+                }}
+                {...props}
+            >
                 <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
                     <X className="h-4 w-4" />
                     <span className="sr-only">Close</span>
