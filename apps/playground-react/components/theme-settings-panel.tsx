@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 type ThemeColor = {
     color: string; // Tailwind class for display
@@ -84,6 +85,18 @@ export function ThemeSettingsPanel() {
         audioUiThemeState.current.setRoundness(clamped);
     };
 
+    /**
+     * Reset theme settings to their default values.
+     * Restores both theme color (to default adaptive theme) and roundness (to DEFAULT_ROUNDNESS).
+     * Updates both local component state and global theme state.
+     */
+    const resetToDefaults = () => {
+        setCurrentTheme(themeColors.default);
+        audioUiThemeState.current.setColor(themeColors.default);
+        setRoundnessValue(DEFAULT_ROUNDNESS);
+        audioUiThemeState.current.setRoundness(DEFAULT_ROUNDNESS);
+    };
+
     return (
         <div className="space-y-6 py-4">
             {/* Color Theme Selector */}
@@ -136,6 +149,13 @@ export function ThemeSettingsPanel() {
                     step={0.01}
                     className="w-full"
                 />
+            </div>
+
+            {/* Reset Button */}
+            <div className="pt-2">
+                <Button variant="outline" onClick={resetToDefaults} className="w-full">
+                    Reset
+                </Button>
             </div>
         </div>
     );
