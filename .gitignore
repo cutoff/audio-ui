@@ -40,3 +40,4 @@ vite.config.ts.timestamp-*
 vitest.config.ts.timestamp-*
 
 /docs/internal
+.vercel
