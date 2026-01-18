@@ -21,6 +21,7 @@ import {
 import { Volume2 } from "lucide-react";
 import { SineWaveIcon, SawWaveIcon, SquareWaveIcon, TriangleWaveIcon } from "@/components/wave-icons";
 import { SynthEngine, SynthParams, WaveformType } from "./synth-engine";
+import { useMidi } from "@/hooks/use-midi";
 
 const INITIAL_PARAMS: SynthParams = {
     cutoff: 1000,
@@ -46,6 +47,10 @@ export default function WebAudioPage() {
     const [isSustainActive, setIsSustainActive] = useState(false);
     const synthRef = useRef<SynthEngine | null>(null);
     const initialParamsRef = useRef(params);
+    const prevSelectedInputRef = useRef<WebMidi.MIDIInput | null>(null);
+
+    // Use global MIDI service
+    const { selectedInput, addMessageListener } = useMidi();
 
     // Initialize synth engine
     useEffect(() => {
@@ -115,6 +120,72 @@ export default function WebAudioPage() {
         },
         [sustainedNotes]
     );
+
+    // Handle MIDI messages from global service
+    // Integrates MIDI keyboard input with the synthesizer, supporting note on/off and sustain pedal.
+    // Only clears notes when a MIDI device is disconnected (not when WebMidi is disabled from the start),
+    // allowing the on-screen keyboard to work independently when no MIDI device is connected.
+    useEffect(() => {
+        // Track transition from having a selected input to not having one
+        // This prevents clearing notes when WebMidi is disabled but user is using on-screen keyboard
+        const hadSelectedInput = prevSelectedInputRef.current !== null;
+        const hasSelectedInput = selectedInput !== null;
+
+        if (hadSelectedInput && !hasSelectedInput) {
+            // MIDI device was disconnected - release all active notes from synth
+            // This handles the case where MIDI was playing notes that need to be released when the device disconnects
+            setActiveNotes((currentNotes) => {
+                currentNotes.forEach((midiNote) => {
+                    if (synthRef.current) {
+                        synthRef.current.noteOff(midiNote);
+                    }
+                });
+                return new Set();
+            });
+        }
+
+        prevSelectedInputRef.current = selectedInput;
+
+        if (!selectedInput) {
+            // No MIDI input selected - don't register listener
+            // On-screen keyboard continues to work independently
+            return;
+        }
+
+        const handleMidiMessage = (event: WebMidi.MIDIMessageEvent) => {
+            const data = event.data;
+
+            // Note on message: status byte 0x90 (note on channel 1) with velocity > 0
+            // MIDI status bytes: upper nibble (0xf0 mask) is message type, lower nibble is channel (0-15)
+            // Channel 1 = 0x90, Channel 2 = 0x91, etc.
+            if ((data[0] & 0xf0) === 0x90 && data[2] > 0) {
+                const midiNote = data[1];
+                handleNoteOn(midiNote);
+            }
+
+            // Note off message: status byte 0x80 (note off) or 0x90 with velocity 0
+            // Some MIDI devices send note on with velocity 0 instead of note off for compatibility
+            if ((data[0] & 0xf0) === 0x80 || ((data[0] & 0xf0) === 0x90 && data[2] === 0)) {
+                const midiNote = data[1];
+                handleNoteOff(midiNote);
+            }
+
+            // Sustain pedal: Control Change 64 (CC 64)
+            // Status byte 0xB0 (control change channel 1), data[1] === 64 (CC number)
+            // Value >= 64 = sustain on (pedal pressed), < 64 = sustain off (pedal released)
+            // Standard MIDI convention: 0-63 = off, 64-127 = on
+            if ((data[0] & 0xf0) === 0xb0 && data[1] === 64) {
+                const isActive = data[2] >= 64;
+                handleSustainChange(isActive);
+            }
+        };
+
+        // Register message listener with automatic cleanup
+        // The cleanup function returned by addMessageListener removes the listener on unmount
+        const cleanup = addMessageListener(handleMidiMessage);
+
+        return cleanup;
+    }, [selectedInput, addMessageListener, handleNoteOn, handleNoteOff, handleSustainChange]);
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -365,6 +436,8 @@ export default function WebAudioPage() {
                         heights.
                     </li>
                     <li>WebAudio engine handles polyphony and ADSR envelope.</li>
+                    <li>Supports MIDI keyboard input via global MIDI service (note on/off and sustain pedal).</li>
+                    <li>On-screen keyboard and MIDI keyboard work simultaneously.</li>
                 </ul>
             </footer>
         </div>
