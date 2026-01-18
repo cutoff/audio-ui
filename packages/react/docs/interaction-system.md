@@ -196,6 +196,70 @@ It returns pointer event handlers (`onPointerDown`, `onPointerMove`, `onPointerU
 - **Focus**: Uses `:focus-visible` and `:focus-within` to apply the highlight style when focused, replacing the default outline.
 - **ARIA**: Components automatically receive `role="slider"` (or `button`), `aria-valuenow`, `aria-valuemin`, `aria-valuemax`, and `aria-label`.
 
+## Cursor Behavior
+
+The interaction system provides intelligent cursor feedback based on the control's interaction capabilities and state. All cursor values use CSS variables (defined in `packages/core/src/styles/themes.css`) for customization.
+
+### ContinuousControl (Knob, Slider)
+
+Cursor behavior depends on whether the control is editable (`onChange`), clickable (`onClick`), or both:
+
+**When Editable (`onChange` provided):**
+- Uses `useContinuousInteraction` hook which selects cursor based on interaction configuration:
+  - `disabled` → `--audioui-cursor-disabled` (default: `not-allowed`)
+  - `!editable` (no onChange) → `--audioui-cursor-noneditable` (default: `default`)
+  - `interactionMode === "wheel"` → `--audioui-cursor-vertical` (default: `ns-resize`)
+  - `direction === "horizontal"` → `--audioui-cursor-horizontal` (default: `ew-resize`)
+  - `direction === "vertical"` → `--audioui-cursor-vertical` (default: `ns-resize`)
+  - `direction === "both"` → `--audioui-cursor-bidirectional` (default: `move`)
+  - `direction === "circular"` → `--audioui-cursor-circular` (custom circular cursor)
+  - Otherwise → `--audioui-cursor-clickable` (default: `pointer`)
+- **During drag**: Cursor is applied to `document.body` by the controller to provide consistent feedback even when the pointer moves outside the control boundary.
+
+**When Clickable Only (`onClick` but no `onChange`):**
+- Always uses `--audioui-cursor-clickable` (default: `pointer`) regardless of direction/mode configuration.
+
+**When Neither (`!onChange && !onClick`):**
+- No cursor style applied (default browser cursor).
+
+### DiscreteControl (CycleButton)
+
+**When Interactive (`onChange || onClick`):**
+- Always uses `--audioui-cursor-clickable` (default: `pointer`).
+
+**When Neither (`!onChange && !onClick`):**
+- No cursor style applied (default browser cursor).
+
+### BooleanControl (Button)
+
+**When Interactive (`onChange || onClick`):**
+- Always uses `--audioui-cursor-clickable` (default: `pointer`).
+
+**When Neither (`!onChange && !onClick`):**
+- No cursor style applied (default browser cursor).
+
+### Keys
+
+**When Interactive (`onChange || onClick`):**
+- Always uses `--audioui-cursor-clickable` (default: `pointer`).
+
+**When Neither (`!onChange && !onClick`):**
+- No cursor style applied (default browser cursor).
+
+### Cursor Customization
+
+All cursor values are customizable via CSS variables in `packages/core/src/styles/themes.css`:
+
+- `--audioui-cursor-clickable`: Clickable controls (default: `pointer`)
+- `--audioui-cursor-bidirectional`: Continuous controls with `direction="both"` (default: `move`)
+- `--audioui-cursor-horizontal`: Horizontal drag (default: `ew-resize`)
+- `--audioui-cursor-vertical`: Vertical drag (default: `ns-resize`)
+- `--audioui-cursor-circular`: Circular drag for knobs (custom circular cursor)
+- `--audioui-cursor-noneditable`: Non-editable controls (default: `default`)
+- `--audioui-cursor-disabled`: Disabled controls (default: `not-allowed`)
+
+The cursor selection logic (which cursor to show when) is fixed based on interaction state, but the actual cursor values are customizable via CSS variables.
+
 ## Performance
 
 - **Lazy Listeners**: Global `mousemove`/`touchmove` listeners are only attached _during_ an active drag session and removed immediately after.
