@@ -119,6 +119,57 @@ svg foreignObject div svg {
 }
 
 /* ==========================================================================
+   Cursor Utility Classes
+   ========================================================================== */
+
+/* 
+ * Fix for Safari CSS variable resolution issues with cursor keywords.
+ * Safari fails to resolve `cursor: var(--foo)` correctly when the variable 
+ * resolves to a keyword (e.g., "ew-resize") in inline styles on SVG elements.
+ * 
+ * The fix uses the "double declaration" pattern in a CSS class:
+ * 1. Declare the standard cursor keyword first (fallback for Safari)
+ * 2. Declare the variable second (for browsers that support it)
+ * 
+ * If Safari rejects the variable declaration, it falls back to the keyword.
+ */
+
+.audioui-cursor-horizontal {
+    cursor: ew-resize;
+    cursor: var(--audioui-cursor-horizontal);
+}
+
+.audioui-cursor-vertical {
+    cursor: ns-resize;
+    cursor: var(--audioui-cursor-vertical);
+}
+
+.audioui-cursor-bidirectional {
+    cursor: move;
+    cursor: var(--audioui-cursor-bidirectional);
+}
+
+.audioui-cursor-circular {
+    cursor: move; /* Fallback for circular if URL fails or variable not supported */
+    cursor: var(--audioui-cursor-circular);
+}
+
+.audioui-cursor-clickable {
+    cursor: pointer;
+    cursor: var(--audioui-cursor-clickable);
+}
+
+.audioui-cursor-disabled {
+    cursor: not-allowed;
+    cursor: var(--audioui-cursor-disabled);
+}
+
+.audioui-cursor-noneditable {
+    cursor: default;
+    cursor: var(--audioui-cursor-noneditable);
+}
+
+/* ==========================================================================
    Color Utility Classes
    ========================================================================== */
 

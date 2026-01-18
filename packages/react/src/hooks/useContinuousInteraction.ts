@@ -29,6 +29,7 @@ export interface ContinuousInteractionHandlers {
     role: string;
     "aria-disabled"?: boolean;
     style?: React.CSSProperties;
+    className?: string;
 }
 
 /**
@@ -184,29 +185,30 @@ export function useContinuousInteraction({
 
     // Cursor selection based on interaction state - uses CSS variables for customization
     // The logic (when to show which cursor) is fixed, but cursor types are customizable via CSS
-    const cursor = disabled
-        ? "var(--audioui-cursor-disabled)"
+    // Use CSS classes to handle Safari's issues with CSS variables in inline styles
+    const cursorClass = disabled
+        ? "audioui-cursor-disabled"
         : !editable
-          ? "var(--audioui-cursor-noneditable)"
+          ? "audioui-cursor-noneditable"
           : interactionMode === "wheel"
-            ? "var(--audioui-cursor-vertical)"
+            ? "audioui-cursor-vertical"
             : direction === "horizontal"
-              ? "var(--audioui-cursor-horizontal)"
+              ? "audioui-cursor-horizontal"
               : direction === "vertical"
-                ? "var(--audioui-cursor-vertical)"
+                ? "audioui-cursor-vertical"
                 : direction === "both"
-                  ? "var(--audioui-cursor-bidirectional)"
+                  ? "audioui-cursor-bidirectional"
                   : direction === "circular"
-                    ? "var(--audioui-cursor-circular)"
-                    : "var(--audioui-cursor-clickable)";
+                    ? "audioui-cursor-circular"
+                    : "audioui-cursor-clickable";
 
     return {
         ...handlers,
         tabIndex: disabled ? -1 : 0,
         role: "slider",
         "aria-disabled": disabled,
+        className: cursorClass,
         style: {
-            cursor,
             touchAction: "none",
         },
     };

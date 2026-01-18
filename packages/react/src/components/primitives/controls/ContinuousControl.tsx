@@ -192,15 +192,18 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
     }, [className]);
 
     const svgClassNames = useMemo(() => {
-        return onChange || onClick ? CLASSNAMES.highlight : "";
-    }, [onChange, onClick]);
+        return classNames(
+            onChange || onClick ? CLASSNAMES.highlight : "",
+            interactiveProps.className,
+            // Override cursor for click-only controls (onClick but no onChange)
+            onClick && !onChange ? "audioui-cursor-clickable" : ""
+        );
+    }, [onChange, onClick, interactiveProps.className]);
 
     // Add clickable cursor when clickable but not draggable (onClick but no onChange)
     // Uses CSS variable for customizable cursor type
     const svgStyle = {
         ...(interactiveProps.style ?? {}),
-        // Override cursor for click-only controls
-        ...(onClick && !onChange ? { cursor: "var(--audioui-cursor-clickable)" as const } : {}),
     };
 
     return (

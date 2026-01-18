@@ -75,6 +75,7 @@ export class ContinuousInteractionController {
     private centerX = 0;
     private centerY = 0;
     private isDragging = false;
+    private activeCursorClass: string | null = null;
 
     constructor(config: ContinuousInteractionConfig) {
         this.config = {
@@ -142,12 +143,14 @@ export class ContinuousInteractionController {
 
         // Cursor selection based on interaction direction - uses CSS variables for customization
         // The logic (when to show which cursor) is fixed, but cursor types are customizable via CSS
-        let cursor = "var(--audioui-cursor-vertical)";
-        if (this.config.direction === "horizontal") cursor = "var(--audioui-cursor-horizontal)";
-        if (this.config.direction === "both") cursor = "var(--audioui-cursor-bidirectional)";
-        if (this.config.direction === "circular") cursor = "var(--audioui-cursor-circular)";
+        // Use CSS classes to handle Safari's issues with CSS variables in inline styles
+        let cursorClass = "audioui-cursor-vertical";
+        if (this.config.direction === "horizontal") cursorClass = "audioui-cursor-horizontal";
+        if (this.config.direction === "both") cursorClass = "audioui-cursor-bidirectional";
+        if (this.config.direction === "circular") cursorClass = "audioui-cursor-circular";
 
-        document.body.style.cursor = cursor;
+        this.activeCursorClass = cursorClass;
+        document.body.classList.add(cursorClass);
 
         window.addEventListener("mousemove", this.handleGlobalMouseMove);
         window.addEventListener("mouseup", this.handleGlobalMouseUp);
@@ -215,6 +218,11 @@ export class ContinuousInteractionController {
         this.config.onDragEnd?.();
 
         document.body.style.userSelect = "";
+        
+        if (this.activeCursorClass) {
+            document.body.classList.remove(this.activeCursorClass);
+            this.activeCursorClass = null;
+        }
         document.body.style.cursor = "";
 
         window.removeEventListener("mousemove", this.handleGlobalMouseMove);
