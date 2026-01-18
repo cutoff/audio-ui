@@ -7,12 +7,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { isNoteOn, Keys, noteNumToNote } from "@cutoff/audio-ui-react";
+import { isNoteOn, Keys } from "@cutoff/audio-ui-react";
 import ComponentSkeletonPage from "@/components/ComponentSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ColorPickerField } from "@/components/ColorPickerField";
+import { useMidi } from "@/hooks/use-midi";
 
 // Define the NoteName type to match the one in the Keys component
 type NoteName = "C" | "D" | "E" | "F" | "G" | "A" | "B";
@@ -26,10 +27,8 @@ export default function KeysPage() {
     const [roundness, setRoundness] = useState<number | undefined>(undefined);
     const [keyStyle, setKeyStyle] = useState<"theme" | "classic" | "classic-inverted">("theme");
 
-    // MIDI related state
-    const [midiInputs, setMidiInputs] = useState<WebMidi.MIDIInput[]>([]);
-    const [selectedInputId, setSelectedInputId] = useState<string>("");
-    const [webMidiSupported, setWebMidiSupported] = useState<boolean>(true);
+    // Use global MIDI service
+    const { selectedInput, addMessageListener } = useMidi();
 
     // Handle example clicks to update main component props
     const handleExampleClick = (num: 0 | 1 | 2 | 3 | 4 | 5): void => {
@@ -192,110 +191,49 @@ export default function KeysPage() {
         </div>,
     ];
 
-    // Initialize WebMIDI
+    // Handle MIDI messages from global service
     useEffect(() => {
-        if (typeof navigator.requestMIDIAccess !== "function") {
-            setWebMidiSupported(false);
+        if (!selectedInput) {
+            // Clear notes when no input is selected (device disconnected or deselected)
+            setNotesOn([]);
             return;
         }
 
-        const initWebMidi = async () => {
-            try {
-                const midiAccess = await navigator.requestMIDIAccess();
+        const handleMidiMessage = (event: WebMidi.MIDIMessageEvent) => {
+            const data = event.data;
 
-                // Get all MIDI inputs
-                const inputs: WebMidi.MIDIInput[] = [];
-                midiAccess.inputs.forEach((input) => {
-                    inputs.push(input);
-                });
+            // Note on message: status byte 0x90 (note on channel 1) with velocity > 0
+            // MIDI status bytes: upper nibble is message type, lower nibble is channel (0-15)
+            if ((data[0] & 0xf0) === 0x90 && data[2] > 0) {
+                const midiNote = data[1];
 
-                setMidiInputs(inputs);
-
-                // Listen for state changes (device connect/disconnect)
-                midiAccess.addEventListener("statechange", (event) => {
-                    const midiConnectionEvent = event as WebMidi.MIDIConnectionEvent;
-                    if (midiConnectionEvent.port.type === "input") {
-                        // Refresh the inputs list
-                        const updatedInputs: WebMidi.MIDIInput[] = [];
-                        midiAccess.inputs.forEach((input) => {
-                            updatedInputs.push(input);
-                        });
-                        setMidiInputs(updatedInputs);
-
-                        // If the currently selected input was disconnected, clear the selection
-                        if (
-                            midiConnectionEvent.port.state === "disconnected" &&
-                            midiConnectionEvent.port.id === selectedInputId
-                        ) {
-                            setSelectedInputId("");
-                            setNotesOn([]);
-                        }
+                setNotesOn((prev) => {
+                    // Check if the note is already in the array (handles both string and number representations)
+                    if (!isNoteOn(midiNote, prev)) {
+                        return [...prev, midiNote];
                     }
+                    return prev;
                 });
-            } catch (error) {
-                console.error("Failed to access MIDI devices:", error);
-                setWebMidiSupported(false);
+            }
+
+            // Note off message: status byte 0x80 (note off) or 0x90 with velocity 0
+            // Some MIDI devices send note on with velocity 0 instead of note off
+            if ((data[0] & 0xf0) === 0x80 || ((data[0] & 0xf0) === 0x90 && data[2] === 0)) {
+                const midiNote = data[1];
+
+                setNotesOn((prev) => {
+                    // Filter out the note (handles both string and number representations)
+                    return prev.filter((note) => !isNoteOn(note, [midiNote]));
+                });
             }
         };
 
-        initWebMidi();
-    }, [selectedInputId]);
+        // Register message listener with automatic cleanup
+        // The cleanup function returned by addMessageListener removes the listener on unmount
+        const cleanup = addMessageListener(handleMidiMessage);
 
-    // Handle MIDI input selection
-    useEffect(() => {
-        // Clear previous listeners and notes
-        midiInputs.forEach((input) => {
-            input.removeEventListener("midimessage", handleMidiMessage);
-        });
-
-        // Only clear notes if we're changing inputs
-        if (selectedInputId !== "") {
-            setNotesOn([]);
-        }
-
-        // Set up listener for the selected input
-        if (selectedInputId) {
-            const selectedInput = midiInputs.find((input) => input.id === selectedInputId);
-            if (selectedInput) {
-                selectedInput.addEventListener("midimessage", handleMidiMessage);
-            }
-        }
-
-        // Cleanup function
-        return () => {
-            midiInputs.forEach((input) => {
-                input.removeEventListener("midimessage", handleMidiMessage);
-            });
-        };
-    }, [selectedInputId, midiInputs]);
-
-    // Handle MIDI messages
-    const handleMidiMessage = (event: WebMidi.MIDIMessageEvent) => {
-        const data = event.data;
-
-        // Note on message (status byte: 0x90)
-        if ((data[0] & 0xf0) === 0x90 && data[2] > 0) {
-            const midiNote = data[1];
-
-            setNotesOn((prev) => {
-                // Check if the note is already in the array (either as string or number)
-                if (!isNoteOn(midiNote, prev)) {
-                    return [...prev, midiNote];
-                }
-                return prev;
-            });
-        }
-
-        // Note off message (status byte: 0x80 or 0x90 with velocity 0)
-        if ((data[0] & 0xf0) === 0x80 || ((data[0] & 0xf0) === 0x90 && data[2] === 0)) {
-            const midiNote = data[1];
-
-            setNotesOn((prev) => {
-                // Filter out the note (need to check both string and number representations)
-                return prev.filter((note) => !isNoteOn(note, [midiNote]));
-            });
-        }
-    };
+        return cleanup;
+    }, [selectedInput, addMessageListener]);
 
     return (
         <div className="min-h-screen flex flex-col md:flex-row">
@@ -397,43 +335,6 @@ export default function KeysPage() {
                             </div>
                         </div>
                     </div>
-
-                    {/* MIDI Input Section */}
-                    {webMidiSupported && (
-                        <>
-                            <div>
-                                <h2 className="text-xl md:text-2xl font-medium mb-4">MIDI Input</h2>
-                                <label className="block text-sm font-medium mb-2">Select MIDI Input</label>
-                                <Select value={selectedInputId} onValueChange={setSelectedInputId}>
-                                    <SelectTrigger className="w-full md:w-80">
-                                        <SelectValue placeholder="Select a MIDI input device" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {midiInputs.length === 0 ? (
-                                            <SelectItem value="none" disabled>
-                                                No MIDI devices found
-                                            </SelectItem>
-                                        ) : (
-                                            midiInputs.map((input) => (
-                                                <SelectItem key={input.id} value={input.id}>
-                                                    {input.name || `MIDI Input ${input.id}`}
-                                                </SelectItem>
-                                            ))
-                                        )}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                                <p>Connect a MIDI keyboard and select it from the dropdown to play notes.</p>
-                                <p className="mt-2">
-                                    Active notes:{" "}
-                                    {notesOn
-                                        .map((note) => (typeof note === "number" ? noteNumToNote(note) : note))
-                                        .join(", ") || "None"}
-                                </p>
-                            </div>
-                        </>
-                    )}
                 </div>
             </div>
         </div>

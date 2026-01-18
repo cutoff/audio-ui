@@ -11,6 +11,7 @@ import { Providers } from "@/app/providers";
 import { AppFooter } from "@/components/app-footer";
 import { AppSidebar } from "@/components/app-sidebar";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
+import { MidiSettingsButton } from "@/components/midi-settings-button";
 import { ThemeSettingsButton } from "@/components/theme-settings-button";
 import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -124,6 +125,7 @@ export default function RootLayout({
                                     <BreadcrumbNav />
                                 </div>
                                 <div className="flex items-center gap-1">
+                                    <MidiSettingsButton />
                                     <ThemeSettingsButton />
                                     <ThemeModeToggle />
                                 </div>
