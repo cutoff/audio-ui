@@ -6,15 +6,16 @@
 
 # Interaction System
 
-The interaction system in AudioUI provides a unified way to handle user input across all control components. Continuous controls (Knob, Slider) use continuous interaction (drag/wheel), while discrete controls (CycleButton, Button) use discrete interaction (click/keyboard). It is designed to be performant, accessible, and consistent with professional audio software standards.
+The interaction system in AudioUI provides a unified way to handle user input across all control components. Continuous controls (Knob, Slider) use continuous interaction (drag/wheel), discrete controls (CycleButton, Button) use discrete interaction (click/keyboard), and note-based controls (Keys) use note interaction (pointer events with glissando). It is designed to be performant, accessible, and consistent with professional audio software standards.
 
 ## Architecture
 
-The interaction system consists of three main hooks:
+The interaction system consists of four main hooks:
 
 1. **`useContinuousInteraction`** - For continuous controls (Knob, Slider)
 2. **`useBooleanInteraction`** - For boolean controls (Button)
 3. **`useDiscreteInteraction`** - For discrete/enum controls (CycleButton)
+4. **`useNoteInteraction`** - For note-based controls (Keys)
 
 ### Continuous Interaction
 
@@ -43,6 +44,16 @@ The `useDiscreteInteraction` hook wraps the framework-agnostic `DiscreteInteract
 - **Stepping**: Arrow keys to step up/down through options (clamped at min/max).
 - **Value Resolution**: Automatically finds the nearest valid option index when the current value doesn't match any option.
 - **Keyboard Support**: Arrow keys for stepping, Space/Enter for cycling.
+
+### Note Interaction
+
+The `useNoteInteraction` hook wraps the framework-agnostic `NoteInteractionController` and provides:
+
+- **Multi-Touch Support**: Tracks multiple concurrent pointers (mouse, multi-touch) for polyphonic interactions.
+- **Glissando Detection**: Detects note changes when sliding across keys, automatically triggering note off for the previous key and note on for the new key.
+- **Pointer Capture**: Uses pointer capture to continue receiving events even when the pointer leaves the element, enabling smooth glissando across the entire keyboard.
+- **Note Events**: Triggers `onNoteOn` when a key is pressed and `onNoteOff` when released or when moving to a different key.
+- **Touch Action**: Applies `touchAction: "none"` to prevent default touch behaviors (scrolling, zooming).
 
 ### `useContinuousInteraction` Hook
 
@@ -79,6 +90,20 @@ const handlers = useDiscreteInteraction({
 
 It returns event handlers (`handleClick`, `handleKeyDown`) and manual control methods (`cycleNext`, `stepNext`, `stepPrev`) that can be used to programmatically control the discrete value.
 
+### `useNoteInteraction` Hook
+
+This hook provides note interaction logic for keyboard-like components that need to handle polyphonic input and glissando.
+
+```typescript
+const { onPointerDown, onPointerMove, onPointerUp, onPointerCancel, style } = useNoteInteraction({
+  onNoteOn: (note) => synth.noteOn(note), // MIDI note number (0-127)
+  onNoteOff: (note) => synth.noteOff(note), // MIDI note number (0-127)
+  disabled, // Whether the interaction is disabled
+});
+```
+
+It returns pointer event handlers (`onPointerDown`, `onPointerMove`, `onPointerUp`, `onPointerCancel`) and a style object containing `touchAction: "none"` to prevent default touch behaviors. The component must provide `data-note` attributes on key elements for note detection.
+
 ## Interaction Modes
 
 ### Dragging (Mouse & Touch)
@@ -112,6 +137,13 @@ It returns event handlers (`handleClick`, `handleKeyDown`) and manual control me
   - `Space` / `Enter`:
     - **Button**: Toggle/Activate.
     - **CycleButton**: Cycle to next value (wraps around).
+
+### Pointer Events (Keys)
+
+- **Multi-Touch**: Supports multiple concurrent touches for polyphonic playing.
+- **Glissando**: Sliding across keys automatically triggers note off for the previous key and note on for the new key.
+- **Pointer Capture**: Uses pointer capture to continue receiving events even when the pointer leaves the element, enabling smooth glissando across the entire keyboard.
+- **Touch Action**: Prevents default touch behaviors (scrolling, zooming) via `touchAction: "none"`.
 
 ## Component Implementation
 
@@ -147,6 +179,16 @@ It returns event handlers (`handleClick`, `handleKeyDown`) and manual control me
     - Works even when press starts outside the button
 - **Step Sequencer Pattern**: The drag-in/drag-out behavior enables classic step sequencer interactions where multiple buttons can be activated with a single drag gesture, perfect for programming drum patterns or melodic sequences.
 - **Implementation**: Uses global pointer tracking (`BooleanInteractionController`) and `mouseenter`/`mouseleave` events to detect when pointer crosses button boundary while pressed.
+
+### Keys
+
+- **Interaction**: Click/touch keys to trigger note on/off events.
+- **Multi-Touch**: Supports multiple concurrent touches for polyphonic playing.
+- **Glissando**: Sliding across keys automatically triggers note off for the previous key and note on for the new key, enabling smooth glissando effects.
+- **Pointer Capture**: Uses pointer capture to continue receiving events even when the pointer leaves the element, ensuring reliable glissando detection across the entire keyboard.
+- **Note Detection**: Keys must have `data-note` attributes (MIDI note numbers 0-127) for the interaction system to detect which key is being pressed.
+- **Touch Action**: Prevents default touch behaviors (scrolling, zooming) via `touchAction: "none"`.
+- **Implementation**: Uses `useNoteInteraction` hook which wraps `NoteInteractionController` for framework-agnostic note interaction logic.
 
 ## Styling & Accessibility
 

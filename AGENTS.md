@@ -160,6 +160,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
   - Continuous controls (Knob, Slider) use `useContinuousInteraction` hook.
   - Boolean controls (Button) use `useBooleanInteraction` hook.
   - Discrete/enum controls (CycleButton) use `useDiscreteInteraction` hook.
+  - Note-based controls (Keys) use `useNoteInteraction` hook.
 - **Input Methods**: Supports drag (mouse/touch), wheel, and keyboard interactions
 - **Interaction Modes**: Configurable via `interactionMode` prop ("drag" | "wheel" | "both")
 - **Sensitivity Tuning**: Component-specific defaults tuned for optimal feel (Knob: 0.008, Slider: 0.005). CycleButton is discrete-only (no continuous interaction).
@@ -179,6 +180,14 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
   - **Stepping Behavior**: Arrow keys step up/down through options (clamped at min/max).
   - **Value Resolution**: Automatically finds the nearest valid option index when the current value doesn't match any option.
   - **Keyboard Support**: Arrow keys for stepping, Space/Enter for cycling.
+- **Note Interaction (Keys)**:
+  - **Core Architecture**: Interaction logic is centralized in `packages/core/src/controller/NoteInteractionController.ts` (pure TS class).
+  - **React Adapter**: `useNoteInteraction` hook in `packages/react` wraps `NoteInteractionController` to bind it to React events.
+  - **Multi-Touch Support**: Tracks multiple concurrent pointers (mouse, multi-touch) for polyphonic interactions.
+  - **Glissando Detection**: Detects note changes when sliding across keys, triggering note on/off events as the pointer moves between keys.
+  - **Pointer Capture**: Uses pointer capture to continue receiving events even when the pointer leaves the element, enabling smooth glissando across the entire keyboard.
+  - **Note Events**: Triggers `onNoteOn` when a key is pressed and `onNoteOff` when released or when moving to a different key.
+  - **Touch Action**: Applies `touchAction: "none"` to prevent default touch behaviors (scrolling, zooming).
 - **Focus Management**:
   - Custom highlight effect (brightness/contrast boost + shadow) replaces browser ring
   - Applied via `:focus-visible` (keyboard) and `:focus-within` (click/touch)
