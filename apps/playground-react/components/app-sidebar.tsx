@@ -13,6 +13,7 @@ import { Command, Sliders, Layers, Box, Layout, Sparkles } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavExamples } from "@/components/nav-examples";
+import { NavLinks } from "@/components/nav-links";
 import { NavVersion } from "@/components/nav-version";
 import {
     Sidebar,
@@ -157,6 +158,16 @@ const data = {
             icon: Sparkles,
         },
     ],
+    links: [
+        {
+            title: "AudioUI by Cutoff",
+            url: "https://cutoff.dev",
+        },
+        {
+            title: "Tylium",
+            url: "https://tylium.io",
+        },
+    ],
 };
 
 /**
@@ -201,6 +212,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarContent>
                 <NavMain items={navMainWithActive} />
                 <NavExamples examples={data.examples} />
+                <NavLinks links={data.links} />
             </SidebarContent>
             <SidebarFooter>
                 <NavVersion />
