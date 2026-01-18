@@ -71,6 +71,7 @@ function Button({
     labelPosition,
     labelAlign,
     labelOverflow,
+    labelHeightUnits,
     parameter,
     paramId,
     midiResolution,
@@ -101,6 +102,7 @@ function Button({
             labelPosition={labelPosition}
             labelAlign={labelAlign}
             labelOverflow={labelOverflow}
+            labelHeightUnits={labelHeightUnits}
             className={classNames(sizeClassName, className)}
             style={{ ...adaptiveSizeStyle, ...themableStyle }}
             parameter={parameter}

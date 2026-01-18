@@ -154,6 +154,12 @@ export type AdaptiveBoxProps = {
      * @default "auto"
      */
     labelOverflow?: "ellipsis" | "abbreviate" | "auto";
+
+    /**
+     * Label height in the same units as SVG viewBox height.
+     * Overrides the default from the view component's static labelHeightUnits property.
+     */
+    labelHeightUnits?: number;
 };
 
 /**

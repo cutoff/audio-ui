@@ -132,6 +132,7 @@ function CycleButton({
     labelPosition,
     labelAlign,
     labelOverflow,
+    labelHeightUnits,
     color,
     roundness,
     thickness = 0.4,
@@ -226,6 +227,7 @@ function CycleButton({
             labelPosition={labelPosition}
             labelAlign={labelAlign}
             labelOverflow={labelOverflow}
+            labelHeightUnits={labelHeightUnits}
             className={classNames(sizeClassName, className)}
             style={{ ...sizeStyle, ...themableStyle }}
             onClick={onClick}

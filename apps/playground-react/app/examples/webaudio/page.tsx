@@ -245,6 +245,7 @@ export default function WebAudioPage() {
                                 onChange={(e) => handleParamChange("attack", e.value)}
                                 valueFormatter={(v) => `${v.toFixed(2)}s`}
                                 valueAsLabel="interactive"
+                                labelHeightUnits={25}
                                 adaptiveSize
                                 className="h-full w-full"
                             />
@@ -257,6 +258,7 @@ export default function WebAudioPage() {
                                 onChange={(e) => handleParamChange("decay", e.value)}
                                 valueFormatter={(v) => `${v.toFixed(2)}s`}
                                 valueAsLabel="interactive"
+                                labelHeightUnits={25}
                                 adaptiveSize
                                 className="h-full w-full"
                             />
@@ -277,6 +279,7 @@ export default function WebAudioPage() {
                                         : v.toString()
                                 }
                                 valueAsLabel="interactive"
+                                labelHeightUnits={25}
                                 adaptiveSize
                                 className="h-full w-full"
                             />
@@ -289,6 +292,7 @@ export default function WebAudioPage() {
                                 onChange={(e) => handleParamChange("release", e.value)}
                                 valueFormatter={(v) => `${v.toFixed(2)}s`}
                                 valueAsLabel="interactive"
+                                labelHeightUnits={25}
                                 adaptiveSize
                                 className="h-full w-full"
                             />

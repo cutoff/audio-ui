@@ -91,6 +91,7 @@ function Slider({
     labelPosition,
     labelAlign,
     labelOverflow,
+    labelHeightUnits,
     color,
     roundness,
     thickness = 0.4,
@@ -141,6 +142,7 @@ function Slider({
             labelPosition={labelPosition}
             labelAlign={labelAlign}
             labelOverflow={labelOverflow}
+            labelHeightUnits={labelHeightUnits}
             className={mergedClassName}
             style={{ ...sizeStyle, ...themableStyle }}
             onChange={onChange}
