@@ -8,6 +8,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/app/providers";
+import { AppFooter } from "@/components/app-footer";
 import { AppSidebar } from "@/components/app-sidebar";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import { ThemeSettingsButton } from "@/components/theme-settings-button";
@@ -128,6 +129,7 @@ export default function RootLayout({
                                 </div>
                             </header>
                             <div className="flex-1">{children}</div>
+                            <AppFooter />
                         </SidebarInset>
                     </SidebarProvider>
                     <Toaster />
