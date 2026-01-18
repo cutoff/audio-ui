@@ -1,6 +1,7 @@
 # AudioUI by Cutoff
 
 <a href="https://playground.cutoff.dev" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Playground-Try%20It%20Live-blue?style=for-the-badge" alt="Playground" /></a>
+<a href="https://discord.gg/7RB6t2xqYW" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord" /></a>
 
 AudioUI is a professional, open-source React component library for building high-performance user interfaces for audio and MIDI applications. It provides a meticulously crafted set of components designed to meet the demanding needs of music software, digital audio workstations (DAWs), audio plugins with a web UI, and other audio-centric web applications.
 
