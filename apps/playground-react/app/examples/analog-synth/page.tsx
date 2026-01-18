@@ -311,6 +311,13 @@ export default function AnalogSynthPage() {
                             nbKeys={88}
                             octaveShift={0}
                             adaptiveSize
+                            onChange={(e) => {
+                                if (e.value.active) {
+                                    handleNoteOn(e.value.note);
+                                } else {
+                                    handleNoteOff(e.value.note);
+                                }
+                            }}
                         />
                     </div>
 
@@ -341,32 +348,14 @@ export default function AnalogSynthPage() {
             <footer className="mt-12 p-6 bg-muted/30 rounded-xl text-sm border">
                 <h3 className="font-semibold mb-2 text-foreground">Design Details:</h3>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-muted-foreground list-inside list-disc">
-                    <li>
-                        Uses <code>CycleButton</code> with themed wave icons for waveform selection.
-                    </li>
-                    <li>
-                        Uses <code>Knob</code> with <code>plainCap</code> variant for filter cutoff and resonance.
-                    </li>
-                    <li>
-                        Uses <code>Knob</code> with <code>iconCap</code> variant and volume icon for master gain.
-                    </li>
-                    <li>
-                        Uses <code>Slider</code> for envelope ADSR parameters, grouped for better workflow.
-                    </li>
-                    <li>
-                        Uses 88-key <code>Keys</code> component for full piano-range note visualization.
-                    </li>
-                    <li>
-                        Uses <code>Button</code> with dynamic <code>latch</code> prop for momentary or toggle
-                        interaction.
-                    </li>
-                    <li>
-                        Grid layout for synth controls using <code>adaptiveSize</code> with constrained container
-                        heights.
-                    </li>
-                    <li>
-                        Keyboard note buttons using <code>flex</code> layout for natural spacing.
-                    </li>
+                    <li>Uses <code>CycleButton</code> with themed wave icons for waveform selection.</li>
+                    <li>Uses <code>Knob</code> with <code>plainCap</code> variant for filter cutoff and resonance.</li>
+                    <li>Uses <code>Knob</code> with <code>iconCap</code> variant and volume icon for master gain.</li>
+                    <li>Uses <code>Slider</code> for envelope ADSR parameters, grouped for better workflow.</li>
+                    <li>Uses 88-key <code>Keys</code> component with glissando-style interaction and note visualization.</li>
+                    <li>Uses <code>Button</code> with dynamic <code>latch</code> prop for momentary or toggle interaction.</li>
+                    <li>Grid layout for synth controls using <code>adaptiveSize</code> with constrained container heights.</li>
+                    <li>Keyboard note buttons using <code>flex</code> layout for natural spacing.</li>
                     <li>WebAudio engine handles polyphony and ADSR envelope.</li>
                 </ul>
             </footer>

@@ -9,10 +9,11 @@
 import React, { useMemo, useCallback } from "react";
 import classNames from "classnames";
 import AdaptiveBox from "@/primitives/AdaptiveBox";
-import { AdaptiveBoxProps, AdaptiveSizeProps, BaseProps, ThemableProps } from "@/types";
+import { AdaptiveBoxProps, AdaptiveSizeProps, AudioControlEvent, BaseProps, ThemableProps } from "@/types";
 import { generateColorVariants } from "@cutoff/audio-ui-core";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
 import { useThemableProps } from "@/hooks/useThemableProps";
+import { useNoteInteraction } from "@/hooks/useNoteInteraction";
 import {
     createNoteNumSet,
     DIATONIC_TO_CHROMATIC,
@@ -64,6 +65,11 @@ export type KeysProps = BaseProps &
          * - 'classic-inverted': Inverted classic style with ebony white keys and ivory black keys
          * @default 'theme' */
         keyStyle?: "theme" | "classic" | "classic-inverted";
+        /** Callback triggered when a key is pressed or released.
+         * Only active if this prop is provided. */
+        onChange?: (event: AudioControlEvent<{ note: number; active: boolean }>) => void;
+        /** Whether the interaction is disabled */
+        disabled?: boolean;
     };
 
 /**
@@ -145,9 +151,36 @@ function Keys({
     roundness,
     className = "",
     style = {},
+    onChange,
+    disabled = false,
 }: KeysProps) {
     // Ensure nbKeys is within valid range (1-128)
     const validNbKeys = Math.max(1, Math.min(128, nbKeys));
+
+    // Interaction setup
+    const {
+        onPointerDown,
+        onPointerMove,
+        onPointerUp,
+        onPointerCancel,
+        style: interactionStyle,
+    } = useNoteInteraction({
+        onNoteOn: (note) => {
+            onChange?.({
+                value: { note, active: true },
+                normalizedValue: note / 127,
+                midiValue: note,
+            });
+        },
+        onNoteOff: (note) => {
+            onChange?.({
+                value: { note, active: false },
+                normalizedValue: note / 127,
+                midiValue: note,
+            });
+        },
+        disabled: disabled || !onChange,
+    });
     // Memoize initial computations
     const keysDimensions = useMemo(() => {
         const nbOctaves = Math.floor(validNbKeys / 12);
@@ -351,6 +384,7 @@ function Keys({
             return (
                 <rect
                     key={`white-${index}-${currentWhiteNote}`}
+                    data-note={noteNum}
                     style={{
                         stroke: strokeColor,
                         fill: fillColor,
@@ -436,6 +470,7 @@ function Keys({
             return (
                 <rect
                     key={`black-${index}-${currentBlackNote}`}
+                    data-note={noteNum}
                     style={{
                         zIndex: 1,
                         stroke: strokeColor,
@@ -476,13 +511,18 @@ function Keys({
             // Keys does not expose labels; hide label row explicitly.
             labelMode="none"
             className={componentClassNames}
-            style={{ ...sizeStyle, ...themableStyle }}
+            style={{ ...sizeStyle, ...themableStyle, ...interactionStyle }}
             viewBoxWidth={keysDimensions.width + keysDimensions.innerStrokeWidth}
             viewBoxHeight={keysDimensions.whiteHeight + keysDimensions.innerStrokeWidth}
             minWidth={40}
             minHeight={40}
         >
-            <AdaptiveBox.Svg>
+            <AdaptiveBox.Svg
+                onPointerDown={onPointerDown}
+                onPointerMove={onPointerMove}
+                onPointerUp={onPointerUp}
+                onPointerCancel={onPointerCancel}
+            >
                 {renderWhiteKeys}
                 {renderBlackKeys}
             </AdaptiveBox.Svg>

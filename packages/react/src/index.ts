@@ -148,3 +148,4 @@ export * from "./hooks/useThemableProps";
 export * from "./hooks/useDiscreteParameterResolution";
 export * from "./hooks/useContinuousParameterResolution";
 export * from "./hooks/useBooleanParameterResolution";
+export * from "./hooks/useNoteInteraction";

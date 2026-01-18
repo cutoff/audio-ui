@@ -13,6 +13,7 @@ export * from "./constants/cursors";
 export * from "./controller/ContinuousInteractionController";
 export * from "./controller/DiscreteInteractionController";
 export * from "./controller/BooleanInteractionController";
+export * from "./controller/NoteInteractionController";
 export * from "./model/AudioParameter";
 export * from "./utils/math";
 export * from "./utils/svg";

@@ -273,6 +273,10 @@ export interface AdaptiveBoxSvgProps extends PropsWithChildren {
     onTouchEnd?: React.TouchEventHandler<SVGSVGElement>;
     onKeyDown?: React.KeyboardEventHandler<SVGSVGElement>;
     onKeyUp?: React.KeyboardEventHandler<SVGSVGElement>;
+    onPointerDown?: React.PointerEventHandler<SVGSVGElement>;
+    onPointerMove?: React.PointerEventHandler<SVGSVGElement>;
+    onPointerUp?: React.PointerEventHandler<SVGSVGElement>;
+    onPointerCancel?: React.PointerEventHandler<SVGSVGElement>;
     tabIndex?: number;
     role?: string;
     "aria-valuenow"?: number;
