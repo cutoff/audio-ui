@@ -148,6 +148,11 @@ const data = {
             icon: Sparkles,
         },
         {
+            name: "Analog Synth",
+            url: "/examples/analog-synth",
+            icon: Sparkles,
+        },
+        {
             name: "Drag Interaction",
             url: "/examples/drag-interaction",
             icon: Sparkles,
