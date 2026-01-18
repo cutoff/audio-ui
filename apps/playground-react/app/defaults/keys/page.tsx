@@ -316,89 +316,83 @@ export default function KeysPage() {
                         <h2 className="text-xl md:text-2xl font-medium mb-4 md:mb-6">Examples</h2>
                         <div className="flex flex-wrap gap-4 md:gap-8 justify-center md:justify-start">
                             <div className="flex flex-col items-center gap-2">
-                                <div onClick={() => handleExampleClick(0)}>
-                                    <Keys
-                                        nbKeys={61}
-                                        startKey="C"
-                                        keyStyle="theme"
-                                        notesOn={["C4", 64, 67]}
-                                        color={undefined}
-                                        roundness={undefined}
-                                        size="large"
-                                        adaptiveSize={false}
-                                    />
-                                </div>
+                                <Keys
+                                    onClick={() => handleExampleClick(0)}
+                                    nbKeys={61}
+                                    startKey="C"
+                                    keyStyle="theme"
+                                    notesOn={["C4", 64, 67]}
+                                    color={undefined}
+                                    roundness={undefined}
+                                    size="large"
+                                    adaptiveSize={false}
+                                />
                                 <span className="text-xs text-muted-foreground text-center">Default</span>
                             </div>
                             <div className="flex flex-col items-center gap-2">
-                                <div onClick={() => handleExampleClick(1)}>
-                                    <Keys
-                                        nbKeys={25}
-                                        startKey="C"
-                                        keyStyle="classic"
-                                        notesOn={["C4", "E4", "G4"]}
-                                        color={undefined}
-                                        size="large"
-                                        adaptiveSize={false}
-                                    />
-                                </div>
+                                <Keys
+                                    onClick={() => handleExampleClick(1)}
+                                    nbKeys={25}
+                                    startKey="C"
+                                    keyStyle="classic"
+                                    notesOn={["C4", "E4", "G4"]}
+                                    color={undefined}
+                                    size="large"
+                                    adaptiveSize={false}
+                                />
                                 <span className="text-xs text-muted-foreground text-center">Classic Style</span>
                             </div>
                             <div className="flex flex-col items-center gap-2">
-                                <div onClick={() => handleExampleClick(2)}>
-                                    <Keys
-                                        nbKeys={25}
-                                        startKey="C"
-                                        keyStyle="classic-inverted"
-                                        notesOn={["C4", "E4", "G4"]}
-                                        color="#ff3366"
-                                        size="large"
-                                        adaptiveSize={false}
-                                    />
-                                </div>
+                                <Keys
+                                    onClick={() => handleExampleClick(2)}
+                                    nbKeys={25}
+                                    startKey="C"
+                                    keyStyle="classic-inverted"
+                                    notesOn={["C4", "E4", "G4"]}
+                                    color="#ff3366"
+                                    size="large"
+                                    adaptiveSize={false}
+                                />
                                 <span className="text-xs text-muted-foreground text-center">Classic Inverted</span>
                             </div>
                             <div className="flex flex-col items-center gap-2">
-                                <div onClick={() => handleExampleClick(3)}>
-                                    <Keys
-                                        nbKeys={25}
-                                        startKey="C"
-                                        keyStyle="classic"
-                                        notesOn={[]}
-                                        color="#33cc66"
-                                        roundness={0.3}
-                                        size="large"
-                                        adaptiveSize={false}
-                                    />
-                                </div>
+                                <Keys
+                                    onClick={() => handleExampleClick(3)}
+                                    nbKeys={25}
+                                    startKey="C"
+                                    keyStyle="classic"
+                                    notesOn={[]}
+                                    color="#33cc66"
+                                    roundness={0.3}
+                                    size="large"
+                                    adaptiveSize={false}
+                                />
                                 <span className="text-xs text-muted-foreground text-center">With Roundness</span>
                             </div>
                             <div className="flex flex-col items-center gap-2">
-                                <div onClick={() => handleExampleClick(4)}>
-                                    <Keys
-                                        nbKeys={37}
-                                        startKey="C"
-                                        keyStyle="classic"
-                                        notesOn={["C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4"]}
-                                        color="#9966ff"
-                                        size="large"
-                                        adaptiveSize={false}
-                                    />
-                                </div>
+                                <Keys
+                                    onClick={() => handleExampleClick(4)}
+                                    nbKeys={37}
+                                    startKey="C"
+                                    keyStyle="classic"
+                                    notesOn={["C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4"]}
+                                    color="#9966ff"
+                                    size="large"
+                                    adaptiveSize={false}
+                                />
                                 <span className="text-xs text-muted-foreground text-center">Scale (C Major)</span>
                             </div>
                             <div className="flex flex-col items-center gap-2">
-                                <div onClick={() => handleExampleClick(5)}>
-                                    <Keys
-                                        nbKeys={13}
-                                        startKey="C"
-                                        keyStyle="theme"
-                                        notesOn={[60, 64, 67]}
-                                        color="#ff9933"
-                                        size="large"
-                                        adaptiveSize={false}
-                                    />
-                                </div>
+                                <Keys
+                                    onClick={() => handleExampleClick(5)}
+                                    nbKeys={13}
+                                    startKey="C"
+                                    keyStyle="theme"
+                                    notesOn={[60, 64, 67]}
+                                    color="#ff9933"
+                                    size="large"
+                                    adaptiveSize={false}
+                                />
                                 <span className="text-xs text-muted-foreground text-center">Small (MIDI Notes)</span>
                             </div>
                         </div>

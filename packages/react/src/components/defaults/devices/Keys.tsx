@@ -68,8 +68,6 @@ export type KeysProps = BaseProps &
         /** Callback triggered when a key is pressed or released.
          * Only active if this prop is provided. */
         onChange?: (event: AudioControlEvent<{ note: number; active: boolean }>) => void;
-        /** Whether the interaction is disabled */
-        disabled?: boolean;
     };
 
 /**
@@ -152,7 +150,7 @@ function Keys({
     className = "",
     style = {},
     onChange,
-    disabled = false,
+    onClick,
 }: KeysProps) {
     // Ensure nbKeys is within valid range (1-128)
     const validNbKeys = Math.max(1, Math.min(128, nbKeys));
@@ -179,7 +177,6 @@ function Keys({
                 midiValue: note,
             });
         },
-        disabled: disabled || !onChange,
     });
     // Memoize initial computations
     const keysDimensions = useMemo(() => {
@@ -505,19 +502,38 @@ function Keys({
         return classNames(sizeClassName, CLASSNAMES.root, className);
     }, [sizeClassName, className]);
 
+    // Add highlight class when interactive (onChange or onClick)
+    const svgClassNames = useMemo(() => {
+        return onChange || onClick ? CLASSNAMES.highlight : "";
+    }, [onChange, onClick]);
+
+    // Add clickable cursor when interactive (onChange or onClick)
+    // Uses CSS variable for customizable cursor type
+    // View-only components (no onChange, no onClick) get default cursor
+    const svgStyle = useMemo(
+        () => ({
+            ...(interactionStyle ?? {}),
+            ...(onClick || onChange ? { cursor: "var(--audioui-cursor-clickable)" as const } : {}),
+        }),
+        [interactionStyle, onClick, onChange]
+    );
+
     return (
         <AdaptiveBox
             displayMode={displayMode ?? "scaleToFit"}
             // Keys does not expose labels; hide label row explicitly.
             labelMode="none"
             className={componentClassNames}
-            style={{ ...sizeStyle, ...themableStyle, ...interactionStyle }}
+            style={{ ...sizeStyle, ...themableStyle }}
             viewBoxWidth={keysDimensions.width + keysDimensions.innerStrokeWidth}
             viewBoxHeight={keysDimensions.whiteHeight + keysDimensions.innerStrokeWidth}
             minWidth={40}
             minHeight={40}
         >
             <AdaptiveBox.Svg
+                className={svgClassNames}
+                style={svgStyle}
+                onClick={onClick}
                 onPointerDown={onPointerDown}
                 onPointerMove={onPointerMove}
                 onPointerUp={onPointerUp}

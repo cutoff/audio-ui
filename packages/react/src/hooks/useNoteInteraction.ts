@@ -54,8 +54,19 @@ export interface UseNoteInteractionResult {
  * It uses the framework-agnostic `NoteInteractionController` to handle the
  * core interaction logic and manages pointer capture for reliable glissando.
  *
- * @param props Configuration for the note interaction hook
- * @returns Object containing pointer event handlers and styles
+ * The hook returns pointer event handlers and a style object containing
+ * `touchAction: "none"` to prevent default touch behaviors. Cursor styling
+ * is handled by the consuming component based on its interactivity state.
+ *
+ * @param {UseNoteInteractionProps} props - Configuration for the note interaction hook
+ * @param {(note: number) => void} props.onNoteOn - Callback triggered when a note is pressed
+ * @param {(note: number) => void} props.onNoteOff - Callback triggered when a note is released
+ * @param {boolean} [props.disabled=false] - Whether the interaction is disabled
+ * @param {React.PointerEventHandler} [props.onPointerDown] - Optional user-provided pointer down handler
+ * @param {React.PointerEventHandler} [props.onPointerMove] - Optional user-provided pointer move handler
+ * @param {React.PointerEventHandler} [props.onPointerUp] - Optional user-provided pointer up handler
+ * @param {React.PointerEventHandler} [props.onPointerCancel] - Optional user-provided pointer cancel handler
+ * @returns {UseNoteInteractionResult} Object containing pointer event handlers and styles
  *
  * @example
  * ```tsx
@@ -174,7 +185,6 @@ export function useNoteInteraction({
         onPointerCancel: handlePointerCancel,
         style: {
             touchAction: "none",
-            cursor: disabled ? "var(--audioui-cursor-disabled)" : "var(--audioui-cursor-clickable)",
         },
     };
 }
