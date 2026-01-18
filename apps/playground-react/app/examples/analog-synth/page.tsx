@@ -33,27 +33,17 @@ const INITIAL_PARAMS: SynthParams = {
     gain: 0.3,
 };
 
-const NOTES = [
-    { label: "C", midi: 60 },
-    { label: "D", midi: 62 },
-    { label: "E", midi: 64 },
-    { label: "F", midi: 65 },
-    { label: "G", midi: 67 },
-    { label: "A", midi: 69 },
-    { label: "B", midi: 71 },
-    { label: "C", midi: 72 },
-];
-
 /**
  * Analog Synth Example Page.
  * Demonstrates a virtual analog synthesizer implementation using AudioUI components
  * and WebAudio API. Includes oscillator controls, filter, ADSR envelope, and
- * an interactive 88-key keyboard.
+ * an interactive 88-key keyboard with sustain pedal functionality.
  */
 export default function AnalogSynthPage() {
     const [params, setParams] = useState<SynthParams>(INITIAL_PARAMS);
     const [activeNotes, setActiveNotes] = useState<Set<number>>(new Set());
-    const [isLatchMode, setIsLatchMode] = useState(false);
+    const [sustainedNotes, setSustainedNotes] = useState<Set<number>>(new Set());
+    const [isSustainActive, setIsSustainActive] = useState(false);
     const synthRef = useRef<SynthEngine | null>(null);
     const initialParamsRef = useRef(params);
 
@@ -78,21 +68,53 @@ export default function AnalogSynthPage() {
 
     const handleNoteOn = useCallback((midi: number) => {
         setActiveNotes((prev) => new Set(prev).add(midi));
-        if (synthRef.current) {
-            synthRef.current.noteOn(midi);
-        }
-    }, []);
-
-    const handleNoteOff = useCallback((midi: number) => {
-        setActiveNotes((prev) => {
+        // Remove from sustained notes if it was previously sustained
+        setSustainedNotes((prev) => {
             const next = new Set(prev);
             next.delete(midi);
             return next;
         });
         if (synthRef.current) {
-            synthRef.current.noteOff(midi);
+            synthRef.current.noteOn(midi);
         }
     }, []);
+
+    const handleNoteOff = useCallback(
+        (midi: number) => {
+            setActiveNotes((prev) => {
+                const next = new Set(prev);
+                next.delete(midi);
+                return next;
+            });
+
+            // If sustain is active, hold the note instead of releasing it
+            if (isSustainActive) {
+                setSustainedNotes((prev) => new Set(prev).add(midi));
+            } else {
+                if (synthRef.current) {
+                    synthRef.current.noteOff(midi);
+                }
+            }
+        },
+        [isSustainActive]
+    );
+
+    const handleSustainChange = useCallback(
+        (active: boolean) => {
+            setIsSustainActive(active);
+
+            if (!active) {
+                // Release all sustained notes when sustain pedal is released
+                sustainedNotes.forEach((midi) => {
+                    if (synthRef.current) {
+                        synthRef.current.noteOff(midi);
+                    }
+                });
+                setSustainedNotes(new Set());
+            }
+        },
+        [sustainedNotes]
+    );
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -283,29 +305,19 @@ export default function AnalogSynthPage() {
 
                         <div className="flex items-center gap-3 px-3 py-1.5 bg-muted/20 rounded-lg border border-dashed border-muted-foreground/30">
                             <span className="text-[10px] font-bold uppercase tracking-tight text-muted-foreground">
-                                Latch Mode
+                                Sustain
                             </span>
                             <Button
                                 size="small"
                                 className="w-6 h-6"
                                 latch={true}
-                                value={isLatchMode}
-                                onChange={(e) => {
-                                    setIsLatchMode(e.value);
-                                    if (!e.value) {
-                                        // Turn off all notes when disabling latch mode to avoid stuck notes
-                                        activeNotes.forEach((midi) => {
-                                            if (synthRef.current) synthRef.current.noteOff(midi);
-                                        });
-                                        setActiveNotes(new Set());
-                                    }
-                                }}
-                                color="var(--audioui-primary-color)"
+                                value={isSustainActive}
+                                onChange={(e) => handleSustainChange(e.value)}
                             />
                         </div>
                     </div>
 
-                    <div className="mb-12 h-48">
+                    <div className="h-48">
                         <Keys
                             notesOn={Array.from(activeNotes)}
                             nbKeys={88}
@@ -320,42 +332,34 @@ export default function AnalogSynthPage() {
                             }}
                         />
                     </div>
-
-                    <div className="flex flex-wrap justify-center gap-6 max-w-4xl mx-auto">
-                        {NOTES.map((note) => (
-                            <div key={note.midi} className="flex flex-col items-center gap-2">
-                                <Button
-                                    label={note.label}
-                                    value={activeNotes.has(note.midi)}
-                                    latch={isLatchMode}
-                                    onChange={(e) => {
-                                        if (e.value) {
-                                            handleNoteOn(note.midi);
-                                        } else {
-                                            handleNoteOff(note.midi);
-                                        }
-                                    }}
-                                    size="large"
-                                    color="var(--audioui-primary-color)"
-                                />
-                                <span className="text-[10px] text-muted-foreground font-mono">MIDI {note.midi}</span>
-                            </div>
-                        ))}
-                    </div>
                 </section>
             </main>
 
             <footer className="mt-12 p-6 bg-muted/30 rounded-xl text-sm border">
                 <h3 className="font-semibold mb-2 text-foreground">Design Details:</h3>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-muted-foreground list-inside list-disc">
-                    <li>Uses <code>CycleButton</code> with themed wave icons for waveform selection.</li>
-                    <li>Uses <code>Knob</code> with <code>plainCap</code> variant for filter cutoff and resonance.</li>
-                    <li>Uses <code>Knob</code> with <code>iconCap</code> variant and volume icon for master gain.</li>
-                    <li>Uses <code>Slider</code> for envelope ADSR parameters, grouped for better workflow.</li>
-                    <li>Uses 88-key <code>Keys</code> component with glissando-style interaction and note visualization.</li>
-                    <li>Uses <code>Button</code> with dynamic <code>latch</code> prop for momentary or toggle interaction.</li>
-                    <li>Grid layout for synth controls using <code>adaptiveSize</code> with constrained container heights.</li>
-                    <li>Keyboard note buttons using <code>flex</code> layout for natural spacing.</li>
+                    <li>
+                        Uses <code>CycleButton</code> with themed wave icons for waveform selection.
+                    </li>
+                    <li>
+                        Uses <code>Knob</code> with <code>plainCap</code> variant for filter cutoff and resonance.
+                    </li>
+                    <li>
+                        Uses <code>Knob</code> with <code>iconCap</code> variant and volume icon for master gain.
+                    </li>
+                    <li>
+                        Uses <code>Slider</code> for envelope ADSR parameters, grouped for better workflow.
+                    </li>
+                    <li>
+                        Uses 88-key <code>Keys</code> component with interactive note playing and visualization.
+                    </li>
+                    <li>
+                        Uses <code>Button</code> with <code>latch</code> prop as sustain pedal switch.
+                    </li>
+                    <li>
+                        Grid layout for synth controls using <code>adaptiveSize</code> with constrained container
+                        heights.
+                    </li>
                     <li>WebAudio engine handles polyphony and ADSR envelope.</li>
                 </ul>
             </footer>
