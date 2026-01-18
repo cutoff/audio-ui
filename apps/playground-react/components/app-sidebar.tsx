@@ -148,8 +148,8 @@ const data = {
             icon: Sparkles,
         },
         {
-            name: "Analog Synth",
-            url: "/examples/analog-synth",
+            name: "WebAudio",
+            url: "/examples/webaudio",
             icon: Sparkles,
         },
         {

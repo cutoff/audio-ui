@@ -34,12 +34,12 @@ const INITIAL_PARAMS: SynthParams = {
 };
 
 /**
- * Analog Synth Example Page.
+ * WebAudio Example Page.
  * Demonstrates a virtual analog synthesizer implementation using AudioUI components
  * and WebAudio API. Includes oscillator controls, filter, ADSR envelope, and
  * an interactive 88-key keyboard with sustain pedal functionality.
  */
-export default function AnalogSynthPage() {
+export default function WebAudioPage() {
     const [params, setParams] = useState<SynthParams>(INITIAL_PARAMS);
     const [activeNotes, setActiveNotes] = useState<Set<number>>(new Set());
     const [sustainedNotes, setSustainedNotes] = useState<Set<number>>(new Set());
@@ -119,7 +119,7 @@ export default function AnalogSynthPage() {
     return (
         <div className="container mx-auto px-4 py-8 max-w-5xl">
             <header className="mb-12">
-                <h1 className="text-4xl font-bold mb-2">Virtual Analog Synth</h1>
+                <h1 className="text-4xl font-bold mb-2">WebAudio</h1>
                 <p className="text-muted-foreground">
                     A simple monophonic synthesizer built with WebAudio and AudioUI components.
                 </p>
