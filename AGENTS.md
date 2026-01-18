@@ -192,6 +192,11 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
   - Custom highlight effect (brightness/contrast boost + shadow) replaces browser ring
   - Applied via `:focus-visible` (keyboard) and `:focus-within` (click/touch)
   - Elements receive focus naturally (no `preventDefault` on mousedown)
+- **Cursor Behavior**:
+  - ContinuousControl: Direction-based cursors (move/ew-resize/ns-resize/circular) when editable, pointer when clickable-only
+  - DiscreteControl, BooleanControl, Keys: Pointer cursor when interactive (onChange or onClick), no cursor otherwise
+  - All cursor values customizable via CSS variables (--audioui-cursor-\*)
+  - During drag, cursor applied to document.body for consistent feedback
 - **Text Selection**: Prevented during drag via `user-select: none`
 - **Wheel Propagation**: Native non-passive listeners prevent page scrolling
 - **Keyboard Support**:
