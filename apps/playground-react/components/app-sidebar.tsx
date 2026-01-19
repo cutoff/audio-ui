@@ -91,9 +91,13 @@ const data = {
         },
         {
             title: "Primitives",
-            url: "/primitives/ring",
+            url: "/primitives",
             icon: Box,
             items: [
+                {
+                    title: "AdaptiveBox",
+                    url: "/primitives/adaptive-box",
+                },
                 {
                     title: "ValueRing",
                     url: "/primitives/ring",
@@ -124,10 +128,6 @@ const data = {
                 {
                     title: "Size System",
                     url: "/layout/sizing",
-                },
-                {
-                    title: "Adaptive Box",
-                    url: "/layout/adaptive-box",
                 },
                 {
                     title: "Grid Layout",

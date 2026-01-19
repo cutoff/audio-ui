@@ -61,8 +61,9 @@ const navData = [
     },
     {
         title: "Primitives",
-        url: "/primitives/ring",
+        url: "/primitives",
         items: [
+            { title: "AdaptiveBox", url: "/primitives/adaptive-box" },
             { title: "ValueRing", url: "/primitives/ring" },
             { title: "RotaryImage", url: "/primitives/rotary" },
             { title: "FilmStripImage", url: "/primitives/filmstrip" },
@@ -75,7 +76,6 @@ const navData = [
         url: "/layout/sizing",
         items: [
             { title: "Size System", url: "/layout/sizing" },
-            { title: "Adaptive Box", url: "/layout/adaptive-box" },
             { title: "Grid Layout", url: "/layout/grid-layout" },
         ],
     },
