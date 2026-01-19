@@ -385,13 +385,17 @@ function Keys({
                     style={{
                         stroke: strokeColor,
                         fill: fillColor,
+                        rx: cornerRadius,
+                        ry: cornerRadius,
                     }}
                     strokeWidth={innerStrokeWidth}
                     x={index * whiteWidth + halfInnerStrokeWidth}
                     y={halfInnerStrokeWidth}
                     width={whiteWidth}
                     height={whiteHeight}
-                    rx={cornerRadius}
+                    // Use 0 as fallback for older browsers that don't support CSS rx/ry
+                    // If cornerRadius is a number, we can use it directly
+                    rx={typeof cornerRadius === "number" ? cornerRadius : 0}
                 />
             );
         });
@@ -472,13 +476,17 @@ function Keys({
                         zIndex: 1,
                         stroke: strokeColor,
                         fill: fillColor,
+                        rx: cornerRadius,
+                        ry: cornerRadius,
                     }}
                     strokeWidth={innerStrokeWidth}
                     x={index * whiteWidth + blackXShift + halfInnerStrokeWidth}
                     y={halfInnerStrokeWidth}
                     width={blackWidth}
                     height={blackHeight}
-                    rx={cornerRadius}
+                    // Use 0 as fallback for older browsers that don't support CSS rx/ry
+                    // If cornerRadius is a number, we can use it directly
+                    rx={typeof cornerRadius === "number" ? cornerRadius : 0}
                 />
             );
         }).filter(Boolean);

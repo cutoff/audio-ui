@@ -118,24 +118,36 @@ function SliderView({
         <g className={className}>
             {/* Background Rectangle */}
             <rect
-                style={{ fill: "var(--audioui-primary-50)" }}
+                style={{
+                    fill: "var(--audioui-primary-50)",
+                    rx: cornerRadius,
+                    ry: cornerRadius,
+                }}
                 x={mainZone.x}
                 y={mainZone.y}
                 width={mainZone.w}
                 height={mainZone.h}
-                rx={cornerRadius}
-                ry={cornerRadius}
+                // Use 0 as fallback for older browsers that don't support CSS rx/ry
+                // If cornerRadius is a number, we can use it directly
+                rx={typeof cornerRadius === "number" ? cornerRadius : 0}
+                ry={typeof cornerRadius === "number" ? cornerRadius : 0}
             />
 
             {/* Foreground Rectangle */}
             <rect
-                style={{ fill: "var(--audioui-primary-color)" }}
+                style={{
+                    fill: "var(--audioui-primary-color)",
+                    rx: cornerRadius,
+                    ry: cornerRadius,
+                }}
                 x={orientation === "horizontal" ? filledZone.x : mainZone.x}
                 y={orientation === "vertical" ? filledZone.y : mainZone.y}
                 width={orientation === "horizontal" ? filledZone.w : mainZone.w}
                 height={orientation === "vertical" ? filledZone.h : mainZone.h}
-                rx={cornerRadius}
-                ry={cornerRadius}
+                // Use 0 as fallback for older browsers that don't support CSS rx/ry
+                // If cornerRadius is a number, we can use it directly
+                rx={typeof cornerRadius === "number" ? cornerRadius : 0}
+                ry={typeof cornerRadius === "number" ? cornerRadius : 0}
             />
         </g>
     );

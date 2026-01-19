@@ -44,9 +44,11 @@ function RingArc({ startAngle, endAngle, style, cx, cy, radius, thickness, strok
                 r={radius}
                 fill="none"
                 strokeWidth={thickness}
-                // @ts-expect-error - strokeLinecap accepts CSS variables (strings) but React types are strict
-                strokeLinecap={strokeLinecap}
-                style={style}
+                style={{
+                    ...style,
+                    // @ts-expect-error - strokeLinecap accepts CSS variables (strings) but React types are strict
+                    strokeLinecap: strokeLinecap,
+                }}
             />
         );
     }
@@ -58,9 +60,11 @@ function RingArc({ startAngle, endAngle, style, cx, cy, radius, thickness, strok
             d={path}
             fill="none"
             strokeWidth={thickness}
-            // @ts-expect-error - strokeLinecap accepts CSS variables (strings) but React types are strict
-            strokeLinecap={strokeLinecap}
-            style={style}
+            style={{
+                ...style,
+                // @ts-expect-error - strokeLinecap accepts CSS variables (strings) but React types are strict
+                strokeLinecap: strokeLinecap,
+            }}
         />
     );
 }

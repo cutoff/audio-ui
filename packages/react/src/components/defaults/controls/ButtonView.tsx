@@ -79,13 +79,17 @@ function ButtonView({
                 stroke: buttonStyles.stroke,
                 fill: buttonStyles.fill,
                 strokeWidth: buttonStyles.strokeWidth,
+                rx: cornerRadius,
+                ry: cornerRadius,
             }}
             x={10}
             y={10}
             width={80}
             height={40}
-            rx={cornerRadius}
-            ry={cornerRadius}
+            // Use 0 as fallback for older browsers that don't support CSS rx/ry
+            // If cornerRadius is a number, we can use it directly
+            rx={typeof cornerRadius === "number" ? cornerRadius : 0}
+            ry={typeof cornerRadius === "number" ? cornerRadius : 0}
         />
     );
 }

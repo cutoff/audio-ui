@@ -639,3 +639,27 @@ The system supports all valid CSS color formats:
 - Server and client render the same string: `"var(--audioui-adaptive-default-color)"`
 - Browser resolves the actual color based on `.dark` class
 - No JavaScript required for mode detection on initial render
+
+### SVG Cross-Browser Compatibility (SVG 2 Geometry Properties)
+
+To ensure cross-browser compatibility when using CSS variables for SVG geometry (like roundness), the library follows specific implementation patterns:
+
+1. **Geometry Properties (`rx`, `ry`)**:
+   - **Chrome**: Strict parser rejects CSS variables in attributes (`rx="var(...)"`).
+   - **Safari < 17.4**: Does not support CSS property `rx`/`ry`.
+   - **Solution**: Move geometry properties to the `style` prop for modern browsers, and provide a static numeric fallback in the attribute for older browsers.
+
+   ```tsx
+   // Correct pattern for cross-browser compatibility
+   <rect
+     style={{
+       rx: cornerRadius, // Dynamic CSS variable (Modern browsers)
+       ry: cornerRadius,
+     }}
+     rx={0} // Static fallback (Older Safari) - ignored by modern browsers due to style override
+     ry={0}
+   />
+   ```
+
+2. **Presentation Attributes (`stroke-linecap`)**:
+   - **Best Practice**: Prefer using the `style` prop (`style={{ strokeLinecap: ... }}`) over attributes for consistency with SVG 2, although Chrome is lenient with CSS variables in legacy presentation attributes.
