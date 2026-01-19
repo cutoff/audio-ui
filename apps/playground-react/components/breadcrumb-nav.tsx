@@ -49,7 +49,7 @@ const navData = [
     },
     {
         title: "Generic",
-        url: "/generic/image-knob",
+        url: "/generic",
         items: [
             { title: "Image Knob", url: "/generic/image-knob" },
             { title: "Image Rotary Switch", url: "/generic/image-rotary-switch" },

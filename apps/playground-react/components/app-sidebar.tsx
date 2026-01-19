@@ -60,7 +60,7 @@ const data = {
         },
         {
             title: "Generic",
-            url: "/generic/image-knob",
+            url: "/generic",
             icon: Layers,
             items: [
                 {
