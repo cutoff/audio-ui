@@ -269,12 +269,14 @@ Cursor behavior depends on whether the control is editable (`onChange`), clickab
 All cursor values are customizable via CSS variables in `packages/core/src/styles/themes.css`:
 
 - `--audioui-cursor-clickable`: Clickable controls (default: `pointer`)
-- `--audioui-cursor-bidirectional`: Continuous controls with `direction="both"` (default: `move`)
-- `--audioui-cursor-horizontal`: Horizontal drag (default: `ew-resize`)
-- `--audioui-cursor-vertical`: Vertical drag (default: `ns-resize`)
+- `--audioui-cursor-bidirectional`: Continuous controls with `direction="both"` (default: SVG data URI for `move` cursor)
+- `--audioui-cursor-horizontal`: Horizontal drag (default: SVG data URI for `ew-resize` cursor)
+- `--audioui-cursor-vertical`: Vertical drag (default: SVG data URI for `ns-resize` cursor)
 - `--audioui-cursor-circular`: Circular drag for knobs (custom circular cursor)
 - `--audioui-cursor-noneditable`: Non-editable controls (default: `default`)
 - `--audioui-cursor-disabled`: Disabled controls (default: `not-allowed`)
+
+**Note on SVG Cursors**: The library uses SVG data URIs for bidirectional, horizontal, and vertical cursors instead of standard CSS keywords (like `ns-resize`) to ensure consistent behavior across browsers, specifically addressing a Safari regression where CSS variable-based keyword cursors were ignored in inline styles.
 
 The cursor selection logic (which cursor to show when) is fixed based on interaction state, but the actual cursor values are customizable via CSS variables.
 

@@ -141,7 +141,6 @@ describe("ContinuousInteractionController", () => {
             expect(adjustValue).toHaveBeenCalledWith(0.1, 1.0);
         });
 
-
         it("should reset drag accumulator on new drag start", () => {
             controller.updateConfig({ step: 0.1, sensitivity: 0.01 });
             controller.handleMouseDown(100, 100);
