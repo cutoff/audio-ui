@@ -17,7 +17,7 @@ This document provides a comprehensive guide to how colors are handled in the Au
 5. [CSS Theme Variables](#css-theme-variables)
 6. [Color Utilities](#color-utilities)
 7. [Component Color Resolution](#component-color-resolution)
-8. [Theme Provider System](#theme-provider-system)
+8. [Theme Management System](#theme-management-system)
 9. [Predefined Theme Colors](#predefined-theme-colors)
 10. [Usage Examples](#usage-examples)
 11. [Performance Optimizations](#performance-optimizations)
@@ -79,7 +79,7 @@ These are the fundamental requirements that define the color system. **These mus
 ### Implementation Notes
 
 - Variants are computed in CSS using `color-mix()` for optimal performance
-- CSS variables are used for all theme values (color, roundness, thickness)
+- CSS variables are used for all theme values (color, roundness)
 - The adaptive default uses a CSS variable (`--audioui-adaptive-default-color`) to prevent hydration mismatches
 - Dark mode is handled automatically by CSS via `.dark` class - no JavaScript tracking needed
 
@@ -124,7 +124,7 @@ SVG Component Rendering (reads CSS variables)
 
 ### Key Files
 
-- **`themes.css`**: Defines CSS theme variables for primary colors, variants, roundness, thickness, and adaptive default
+- **`themes.css`**: Defines CSS theme variables for primary colors, variants, roundness, and adaptive default
 - **`styles.css`**: Base styles and optional utility classes
 - **`colorUtils.ts`**: Legacy utility for color variant generation (used by Keys component for luminosity variants)
 - **`themeColors.ts`**: Exports predefined theme colors as CSS color values
@@ -144,7 +144,6 @@ The library defines theme variables in `themes.css`:
 --audioui-primary-50  /* 50% variant (computed via color-mix) */
 --audioui-primary-20  /* 20% variant (computed via color-mix) */
 --audioui-roundness-base  /* Base roundness (normalized 0.0-1.0) */
---audioui-thickness-base  /* Base thickness (normalized 0.0-1.0) */
 ```
 
 **Note**: Variants (`primary50`, `primary20`) are computed automatically in CSS using `color-mix()` for optimal performance.
@@ -300,7 +299,7 @@ Components resolve colors using the following priority (highest to lowest):
 All components follow this pattern:
 
 ```typescript
-function MyComponent({ color, roundness, thickness, style, ...otherProps }: MyComponentProps) {
+function MyComponent({ color, roundness, style, ...otherProps }: MyComponentProps) {
     // 1. Build CSS variables from props (if provided)
     const cssVars = useMemo(() => {
         const vars: React.CSSProperties = {};
@@ -310,11 +309,8 @@ function MyComponent({ color, roundness, thickness, style, ...otherProps }: MyCo
         if (color !== undefined) {
             vars["--audioui-primary-color"] = color;
         }
-        if (thickness !== undefined) {
-            vars["--audioui-thickness-base"] = clampNormalized(thickness);
-        }
         return { ...vars, ...style }; // User style takes precedence
-    }, [roundness, color, thickness, style]);
+    }, [roundness, color, style]);
 
     // 2. Pass CSS variables to component
     return (
@@ -346,7 +342,6 @@ The library uses pure CSS variables for theming. No React Context or Provider ne
 :root {
   --audioui-primary-color: var(--audioui-adaptive-default-color);
   --audioui-roundness-base: 0.3;
-  --audioui-thickness-base: 0.4;
   --audioui-primary-50: color-mix(in srgb, var(--audioui-primary-color) 50%, transparent);
   --audioui-primary-20: color-mix(in srgb, var(--audioui-primary-color) 20%, transparent);
 }
@@ -359,26 +354,23 @@ The library uses pure CSS variables for theming. No React Context or Provider ne
 Lightweight utility functions for programmatic theme management (no Context needed):
 
 ```typescript
-import { setThemeColor, setThemeRoundness, setThemeThickness, setTheme } from "@cutoff/audio-ui-react";
+import { setThemeColor, setThemeRoundness, setTheme } from "@cutoff/audio-ui-react";
 
 // Set individual theme values
 setThemeColor("blue");
 setThemeRoundness(0.5);
-setThemeThickness(0.6);
 
 // Set multiple values at once
-setTheme({ color: "purple", roundness: 0.4, thickness: 0.5 });
+setTheme({ color: "purple", roundness: 0.4 });
 ```
 
 **Available Functions**:
 
 - `setThemeColor(color: string)` - Set global theme color
 - `setThemeRoundness(value: number)` - Set global theme roundness (0.0-1.0)
-- `setThemeThickness(value: number)` - Set global theme thickness (0.0-1.0)
 - `setTheme(theme: ThemeConfig)` - Set multiple theme values at once
 - `getThemeColor()` - Get current theme color from CSS variable
 - `getThemeRoundness()` - Get current theme roundness from CSS variable
-- `getThemeThickness()` - Get current theme thickness from CSS variable
 
 **Performance Features**:
 
@@ -396,12 +388,10 @@ setTheme({ color: "purple", roundness: 0.4, thickness: 0.5 });
 Exported predefined theme colors as CSS color values (CSS variables).
 
 ```typescript
-import { themeColors } from '@cutoff/audio-ui-react';
+import { themeColors, setThemeColor } from '@cutoff/audio-ui-react';
 
-// Use in AudioUiProvider
-<AudioUiProvider initialColor={themeColors.blue}>
-    <App />
-</AudioUiProvider>
+// Set global theme color
+setThemeColor(themeColors.blue);
 
 // Use in components
 <Knob value={50} color={themeColors.purple} />

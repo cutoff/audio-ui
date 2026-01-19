@@ -5,15 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import {
-    setThemeColor,
-    setThemeRoundness,
-    setThemeThickness,
-    setTheme,
-    getThemeColor,
-    getThemeRoundness,
-    getThemeThickness,
-} from "./theme";
+import { setThemeColor, setThemeRoundness, setTheme, getThemeColor, getThemeRoundness } from "./theme";
 
 describe("theme utilities", () => {
     beforeEach(() => {
@@ -21,7 +13,6 @@ describe("theme utilities", () => {
         if (typeof document !== "undefined") {
             document.documentElement.style.removeProperty("--audioui-primary-color");
             document.documentElement.style.removeProperty("--audioui-roundness-base");
-            document.documentElement.style.removeProperty("--audioui-thickness-base");
         }
     });
 
@@ -30,7 +21,6 @@ describe("theme utilities", () => {
         if (typeof document !== "undefined") {
             document.documentElement.style.removeProperty("--audioui-primary-color");
             document.documentElement.style.removeProperty("--audioui-roundness-base");
-            document.documentElement.style.removeProperty("--audioui-thickness-base");
         }
     });
 
@@ -75,35 +65,15 @@ describe("theme utilities", () => {
         });
     });
 
-    describe("setThemeThickness", () => {
-        it("sets the thickness CSS variable", () => {
-            setThemeThickness(0.6);
-            expect(
-                window.getComputedStyle(document.documentElement).getPropertyValue("--audioui-thickness-base").trim()
-            ).toBe("0.6");
-        });
-
-        it("handles server-side rendering (no document)", () => {
-            const originalDocument = globalThis.document;
-            // @ts-expect-error - intentionally removing document for SSR test
-            delete (globalThis as { document?: typeof document }).document;
-            expect(() => setThemeThickness(0.6)).not.toThrow();
-            (globalThis as { document: typeof document }).document = originalDocument;
-        });
-    });
-
     describe("setTheme", () => {
         it("sets multiple theme values at once", () => {
-            setTheme({ color: "red", roundness: 0.7, thickness: 0.8 });
+            setTheme({ color: "red", roundness: 0.7 });
             expect(
                 window.getComputedStyle(document.documentElement).getPropertyValue("--audioui-primary-color").trim()
             ).toBe("red");
             expect(
                 window.getComputedStyle(document.documentElement).getPropertyValue("--audioui-roundness-base").trim()
             ).toBe("0.7");
-            expect(
-                window.getComputedStyle(document.documentElement).getPropertyValue("--audioui-thickness-base").trim()
-            ).toBe("0.8");
         });
 
         it("sets only provided values", () => {
@@ -111,7 +81,7 @@ describe("theme utilities", () => {
             expect(
                 window.getComputedStyle(document.documentElement).getPropertyValue("--audioui-primary-color").trim()
             ).toBe("green");
-            // Roundness and thickness should remain unchanged (or be default)
+            // Roundness should remain unchanged (or be default)
         });
 
         it("handles server-side rendering (no document)", () => {
@@ -159,26 +129,6 @@ describe("theme utilities", () => {
             // @ts-expect-error - intentionally removing document for SSR test
             delete (globalThis as { document?: typeof document }).document;
             expect(getThemeRoundness()).toBeNull();
-            (globalThis as { document: typeof document }).document = originalDocument;
-        });
-    });
-
-    describe("getThemeThickness", () => {
-        it("returns the current theme thickness", () => {
-            setThemeThickness(0.5);
-            expect(getThemeThickness()).toBe(0.5);
-        });
-
-        it("returns null if thickness is not set", () => {
-            document.documentElement.style.removeProperty("--audioui-thickness-base");
-            expect(getThemeThickness()).toBeNull();
-        });
-
-        it("returns null on server-side", () => {
-            const originalDocument = globalThis.document;
-            // @ts-expect-error - intentionally removing document for SSR test
-            delete (globalThis as { document?: typeof document }).document;
-            expect(getThemeThickness()).toBeNull();
             (globalThis as { document: typeof document }).document = originalDocument;
         });
     });

@@ -58,15 +58,7 @@ export type {
 } from "./components/primitives/AdaptiveBox";
 
 // Export theme utility functions
-export {
-    setThemeColor,
-    setThemeRoundness,
-    setThemeThickness,
-    setTheme,
-    getThemeColor,
-    getThemeRoundness,
-    getThemeThickness,
-} from "./utils/theme";
+export { setThemeColor, setThemeRoundness, setTheme, getThemeColor, getThemeRoundness } from "./utils/theme";
 export type { ThemeConfig } from "./utils/theme";
 
 // Also export types for consuming applications

@@ -22,7 +22,7 @@
 - `app/page.tsx`: Home page
 - `app/[route]/page.tsx`: Demo pages (e.g., app/defaults/button/page.tsx for Button demo)
 - `app/layout/sizing/page.tsx`: Centralized sizing system showcase (all components, all sizes)
-- `app/providers.tsx`: Context providers (theme initialization, global theme state)
+- `app/providers.tsx`: Next.js ThemeProvider (light/dark mode) and ThemeInitializer (CSS variable initialization, global theme state)
 - `components/ui/`: **shadcn components ONLY** - do not add custom components here; **NEVER modify shadcn components** - they are third-party stabilized code; work around type issues with type assertions/ts-expect-error if needed
 - `components/`: Custom playground components (e.g., ColorPickerField, ComponentSkeletonPage, ControlSkeletonPage, theme-settings-button, theme-settings-panel, theme-mode-toggle)
 - `components/examples/`: Custom library component examples (see `components/examples/README.md` for creation guide)
@@ -36,7 +36,7 @@
 - Add new playground page: Create app/[route]/[component]/page.tsx; import from @cutoff/audio-ui-react; add examples with props; use shadcn for UI
 - Control demo pages: Use `ControlSkeletonPage` component; examples use `size="large"` for visibility; no individual Size showcases (centralized in `/layout/sizing`)
 - Sizing showcase: Centralized at `/layout/sizing`; showcases all components (Button, Knob, CycleButton, Slider, Keys) with all sizes (xsmall through xlarge)
-- Theming: next-themes in providers; theme controls in header (ThemeSettingsButton, ThemeModeToggle); responsive sheet for theme customization
+- Theming: next-themes ThemeProvider (light/dark mode) and ThemeInitializer (CSS variable-based Audio UI theming); theme controls in header (ThemeSettingsButton, ThemeModeToggle); responsive sheet for theme customization
 - Testing demos: Run pnpm dev; validate components from library
 - Building: pnpm build for prod; Next.js optimization
 - UI: Use shadcn; add if missing with `pnpm dlx shadcn@latest add [component]`; **NEVER modify shadcn components** - they are third-party stabilized code; work around type issues with type assertions/ts-expect-error if needed

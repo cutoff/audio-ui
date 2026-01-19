@@ -10,11 +10,13 @@
  *
  * @example
  * ```tsx
- * import { themeColors } from '@cutoff/audio-ui-react';
+ * import { themeColors, setThemeColor } from '@cutoff/audio-ui-react';
  *
- * <AudioUiProvider initialColor={themeColors.blue}>
- *   <App />
- * </AudioUiProvider>
+ * // Set global theme color
+ * setThemeColor(themeColors.blue);
+ *
+ * // Or use in component props
+ * <Knob value={50} color={themeColors.blue} />
  * ```
  */
 export const themeColors = {

@@ -298,9 +298,9 @@ export default function Home() {
                 </div>
                 <p className="text-muted-foreground mb-6 max-w-3xl">
                     Components that support industry-standard control representations using bitmap sprite sheets
-                    (filmstrips) and image-based visuals. While bitmap-based visualization is more constrained than
-                    SVG, these components provide full access to all library features: complete layout system, full
-                    parameter model, complete interaction system, and all accessibility features.
+                    (filmstrips) and image-based visuals. While bitmap-based visualization is more constrained than SVG,
+                    these components provide full access to all library features: complete layout system, full parameter
+                    model, complete interaction system, and all accessibility features.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {genericComponents.map((component) => {

@@ -7,7 +7,6 @@
 :root {
     /* High-level theming parameters – Change this for global theme customization on default components */
     --audioui-roundness-base: 0.3; /* Normalized 0.0-1.0 */
-    --audioui-thickness-base: 0.4; /* Normalized 0.0-1.0 */
     --audioui-primary-color: var(--audioui-adaptive-default-color);
 
     /* Colors  */
@@ -80,10 +79,6 @@
     --audioui-linecap-knob: var(--audioui-linecap-base);
     --audioui-linecap-slider: var(--audioui-linecap-base);
     --audioui-linecap-button: var(--audioui-linecap-base);
-
-    /* Component-specific thickness (calculated from base) */
-    --audioui-thickness-knob: calc(1px + var(--audioui-thickness-base) * 19px);
-    --audioui-thickness-slider: calc(1px + var(--audioui-thickness-base) * 49px);
 
     /* Size System - Base Unit */
     /* The atomic unit for consistent sizing across all components */

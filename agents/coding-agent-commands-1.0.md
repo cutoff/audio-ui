@@ -30,6 +30,7 @@ When a user requests "Execute [CommandName]", the agent should follow the proced
     - **Verbosity is acceptable when justified** - thorough explanations of complex logic are better than brief, unclear comments
     - Avoid trivial comments that restate obvious code
   - Make sure the code doesn't feel "vibe-coded"
+  - Make sure agents instructions and documentation (AGENTS.md and docs/ directories) are up-to-date with the latest changes.
 - Make sure no unused imports remain.
 - Launch prettier on modified files.
 - Iterate on `pnpm check` until all errors are fixed (if any).

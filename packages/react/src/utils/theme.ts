@@ -53,26 +53,6 @@ export function setThemeRoundness(value: number): void {
 }
 
 /**
- * Set the global theme thickness.
- * Updates the CSS variable `--audioui-thickness-base` on the document root.
- * Component-specific thickness values are automatically calculated from this base value.
- *
- * @param value - Normalized thickness value between 0.0 and 1.0
- *
- * @example
- * ```ts
- * setThemeThickness(0.4); // 40% thickness
- * setThemeThickness(0.0); // Minimum thickness
- * setThemeThickness(1.0); // Maximum thickness
- * ```
- */
-export function setThemeThickness(value: number): void {
-    if (typeof document !== "undefined") {
-        document.documentElement.style.setProperty("--audioui-thickness-base", value.toString());
-    }
-}
-
-/**
  * Theme configuration object for setting multiple theme values at once.
  */
 export interface ThemeConfig {
@@ -80,20 +60,18 @@ export interface ThemeConfig {
     color?: string;
     /** Roundness (normalized 0.0-1.0) */
     roundness?: number;
-    /** Thickness (normalized 0.0-1.0) */
-    thickness?: number;
 }
 
 /**
  * Set multiple theme values at once.
  * Convenience function that calls individual setter functions for each provided value.
  *
- * @param theme - Theme configuration object with optional color, roundness, and thickness values
+ * @param theme - Theme configuration object with optional color and roundness values
  *
  * @example
  * ```ts
- * setTheme({ color: "blue", roundness: 0.3, thickness: 0.4 });
- * setTheme({ color: "purple" }); // Only sets color, leaves roundness/thickness unchanged
+ * setTheme({ color: "blue", roundness: 0.3 });
+ * setTheme({ color: "purple" }); // Only sets color, leaves roundness unchanged
  * ```
  */
 export function setTheme(theme: ThemeConfig): void {
@@ -104,9 +82,6 @@ export function setTheme(theme: ThemeConfig): void {
     }
     if (theme.roundness !== undefined) {
         setThemeRoundness(theme.roundness);
-    }
-    if (theme.thickness !== undefined) {
-        setThemeThickness(theme.thickness);
     }
 }
 
@@ -146,25 +121,5 @@ export function getThemeColor(): string | null {
 export function getThemeRoundness(): number | null {
     if (typeof document === "undefined" || typeof window === "undefined") return null;
     const value = window.getComputedStyle(document.documentElement).getPropertyValue("--audioui-roundness-base").trim();
-    return value ? parseFloat(value) : null;
-}
-
-/**
- * Get current theme thickness from CSS variable.
- * Reads the value of `--audioui-thickness-base` from the document root.
- *
- * @returns The current theme thickness value as a number (0.0-1.0), or `null` if not set or in SSR context
- *
- * @example
- * ```ts
- * const thickness = getThemeThickness();
- * if (thickness !== null) {
- *   console.log(`Current thickness: ${thickness * 100}%`);
- * }
- * ```
- */
-export function getThemeThickness(): number | null {
-    if (typeof document === "undefined" || typeof window === "undefined") return null;
-    const value = window.getComputedStyle(document.documentElement).getPropertyValue("--audioui-thickness-base").trim();
     return value ? parseFloat(value) : null;
 }

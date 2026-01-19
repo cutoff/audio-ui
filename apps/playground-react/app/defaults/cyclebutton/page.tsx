@@ -138,7 +138,7 @@ export default function CycleButtonDemoPage() {
         setValue(0);
         setLabel("Waveform");
         setRoundness(undefined); // Use theme roundness
-        setThickness(undefined); // Use theme thickness
+        setThickness(undefined); // Use default thickness
         setOpenness(undefined); // Use default openness
         setRotation(undefined); // Use default rotation
         setColor(undefined); // Use theme color
