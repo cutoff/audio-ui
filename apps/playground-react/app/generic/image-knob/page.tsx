@@ -24,7 +24,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const KNOB_IMAGE = "/knob-volume.png";
 const KNOB_TONE_IMAGE = "/knob-tone.png";
-const KNOB_SELECTOR_IMAGE = "/knob-selector.png";
+const FINGER_POINTING_IMAGE = "/finger-pointing.png";
 
 function generateCodeSnippet(
     value: number,
@@ -119,7 +119,7 @@ export default function ImageKnobDemoPage() {
                 setUnit(undefined);
                 break;
             case 2:
-                // Selector Knob
+                // Finger Pointing
                 setValue(3);
                 setMin(0);
                 setMax(10);
@@ -127,10 +127,10 @@ export default function ImageKnobDemoPage() {
                 setBipolar(false);
                 setFrameWidth(100);
                 setFrameHeight(100);
-                setImageHref(KNOB_SELECTOR_IMAGE);
+                setImageHref(FINGER_POINTING_IMAGE);
                 setRotation(0);
                 setOpenness(90);
-                setLabel("Selector");
+                setLabel("Direction");
                 setInteractionMode(undefined);
                 setInteractionDirection("circular");
                 setInteractionSensitivity(undefined);
@@ -388,14 +388,14 @@ export default function ImageKnobDemoPage() {
                 onClick={() => handleExampleClick(1)}
             />,
             <ImageKnob
-                key="selector"
+                key="finger-pointing"
                 value={3}
                 min={0}
                 max={10}
-                label="Selector"
+                label="Direction"
                 frameWidth={100}
                 frameHeight={100}
-                imageHref={KNOB_SELECTOR_IMAGE}
+                imageHref={FINGER_POINTING_IMAGE}
                 interactionDirection="circular"
                 size="large"
                 onClick={() => handleExampleClick(2)}

@@ -18,37 +18,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const VU3_IMAGE = "/vu3.png";
-const GUITAR_IMAGE = "/guitar_strat_tone-2.png";
-const ABS_IMAGE = "/ABS.png";
+const TRAFFIC_LIGHT_FILMSTRIP = "/traffic-light-filmstrip.png";
 
-// Options for the discrete control
-const defaultOptions = [
-    { value: "low", label: "Low" },
-    { value: "medium", label: "Medium" },
-    { value: "high", label: "High" },
-];
-
-// VU Meter example - 3 levels
-const vuOptions = [
-    { value: "low", label: "Low" },
-    { value: "medium", label: "Medium" },
-    { value: "high", label: "High" },
-];
-
-// Guitar tone example - 5 positions
-const guitarOptions = [
-    { value: 0, label: "0" },
-    { value: 1, label: "1" },
-    { value: 2, label: "2" },
-    { value: 3, label: "3" },
-    { value: 4, label: "4" },
-];
-
-// ABS knob example - 10 positions
-const absOptions = Array.from({ length: 10 }, (_, i) => ({
-    value: i,
-    label: String(i),
+// Traffic Light example - 8 states
+const trafficLightOptions = Array.from({ length: 8 }, (_, i) => ({
+    value: i + 1,
+    label: `State ${i + 1}`,
 }));
 
 function generateCodeSnippet(
@@ -74,56 +49,15 @@ function generateCodeSnippet(
 }
 
 export default function FilmStripDiscreteDemoPage() {
-    const [value, setValue] = useState<string | number>("low");
-    const [frameWidth, setFrameWidth] = useState(120);
-    const [frameHeight, setFrameHeight] = useState(80);
-    const [frameCount, setFrameCount] = useState(48);
-    const [imageHref, setImageHref] = useState(VU3_IMAGE);
+    const [value, setValue] = useState<string | number>(4);
+    const [frameWidth, setFrameWidth] = useState(103);
+    const [frameHeight, setFrameHeight] = useState(260);
+    const [frameCount, setFrameCount] = useState(8);
+    const [imageHref, setImageHref] = useState(TRAFFIC_LIGHT_FILMSTRIP);
     const [orientation, setOrientation] = useState<"vertical" | "horizontal">("vertical");
     const [frameRotation, setFrameRotation] = useState(0);
-    const [label, setLabel] = useState("Level");
-    const [options, setOptions] = useState<Array<{ value: string | number; label: string }>>(defaultOptions);
-
-    const handleExampleClick = (num: 0 | 1 | 2): void => {
-        switch (num) {
-            case 0:
-                // VU Meter
-                setValue("medium");
-                setFrameWidth(120);
-                setFrameHeight(80);
-                setFrameCount(48);
-                setImageHref(VU3_IMAGE);
-                setOrientation("vertical");
-                setFrameRotation(0);
-                setLabel("VU Level");
-                setOptions(vuOptions);
-                break;
-            case 1:
-                // Guitar Tone
-                setValue(2);
-                setFrameWidth(80);
-                setFrameHeight(80);
-                setFrameCount(31);
-                setImageHref(GUITAR_IMAGE);
-                setOrientation("vertical");
-                setFrameRotation(0);
-                setLabel("Tone Position");
-                setOptions(guitarOptions);
-                break;
-            case 2:
-                // ABS Knob
-                setValue(5);
-                setFrameWidth(128);
-                setFrameHeight(128);
-                setFrameCount(200);
-                setImageHref(ABS_IMAGE);
-                setOrientation("vertical");
-                setFrameRotation(0);
-                setLabel("ABS Position");
-                setOptions(absOptions);
-                break;
-        }
-    };
+    const [label, setLabel] = useState("Traffic Light");
+    const [options, _setOptions] = useState<Array<{ value: string | number; label: string }>>(trafficLightOptions);
 
     const componentProps: FilmStripDiscreteControlProps = useMemo(
         () => ({
@@ -219,51 +153,16 @@ export default function FilmStripDiscreteDemoPage() {
     const examples = useMemo(
         () => [
             <FilmStripDiscreteControl
-                key="vu3"
-                value="medium"
-                label="VU Level"
-                frameWidth={120}
-                frameHeight={80}
-                frameCount={48}
-                imageHref={VU3_IMAGE}
+                key="traffic-light"
+                value={4}
+                label="Traffic Light"
+                frameWidth={103}
+                frameHeight={260}
+                frameCount={8}
+                imageHref={TRAFFIC_LIGHT_FILMSTRIP}
                 size="large"
-                onClick={() => handleExampleClick(0)}
             >
-                {vuOptions.map((opt) => (
-                    <OptionView key={opt.value} value={opt.value}>
-                        {opt.label}
-                    </OptionView>
-                ))}
-            </FilmStripDiscreteControl>,
-            <FilmStripDiscreteControl
-                key="guitar"
-                value={2}
-                label="Tone Position"
-                frameWidth={80}
-                frameHeight={80}
-                frameCount={31}
-                imageHref={GUITAR_IMAGE}
-                size="large"
-                onClick={() => handleExampleClick(1)}
-            >
-                {guitarOptions.map((opt) => (
-                    <OptionView key={opt.value} value={opt.value}>
-                        {opt.label}
-                    </OptionView>
-                ))}
-            </FilmStripDiscreteControl>,
-            <FilmStripDiscreteControl
-                key="abs"
-                value={5}
-                label="ABS Position"
-                frameWidth={128}
-                frameHeight={128}
-                frameCount={200}
-                imageHref={ABS_IMAGE}
-                size="large"
-                onClick={() => handleExampleClick(2)}
-            >
-                {absOptions.map((opt) => (
+                {trafficLightOptions.map((opt) => (
                     <OptionView key={opt.value} value={opt.value}>
                         {opt.label}
                     </OptionView>
