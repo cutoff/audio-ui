@@ -223,7 +223,7 @@ function Knob({
             scale={scale}
             interactionMode={interactionMode}
             interactionDirection={interactionDirection}
-            interactionSensitivity={interactionSensitivity ?? 0.008}
+            interactionSensitivity={interactionSensitivity}
             valueFormatter={valueFormatter}
             valueAsLabel={valueAsLabel}
             view={KnobView}

@@ -163,7 +163,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
   - Note-based controls (Keys) use `useNoteInteraction` hook.
 - **Input Methods**: Supports drag (mouse/touch), wheel, and keyboard interactions
 - **Interaction Modes**: Configurable via `interactionMode` prop ("drag" | "wheel" | "both")
-- **Sensitivity Tuning**: Component-specific defaults tuned for optimal feel (Knob: 0.008, Slider: 0.005). CycleButton is discrete-only (no continuous interaction).
+- **Sensitivity Tuning**: Standardized to `0.005` (200px throw) for all continuous controls (Knob, Slider). Adaptive sensitivity automatically increases for low-resolution parameters to prevent "dead zones". Wheel sensitivity is decoupled from drag sensitivity for consistent behavior across all parameter ranges.
 - **Boolean Interaction (Button)**:
   - **Core Architecture**: Interaction logic is centralized in `packages/core/src/controller/BooleanInteractionController.ts` (pure TS class).
   - **React Adapter**: `useBooleanInteraction` hook in `packages/react` wraps `BooleanInteractionController` to bind it to React events.

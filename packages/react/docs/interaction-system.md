@@ -21,8 +21,8 @@ The interaction system consists of four main hooks:
 
 The core of continuous interaction is the `useContinuousInteraction` hook, which centralizes the logic for:
 
-- **Pointer Dragging**: Mouse and Touch support with velocity-sensitive value adjustment.
-- **Mouse Wheel**: High-precision scrolling with configurable sensitivity.
+- **Pointer Dragging**: Mouse and Touch support with adaptive sensitivity.
+- **Mouse Wheel**: High-precision scrolling with configurable sensitivity and accumulator for discrete steps.
 - **Keyboard Navigation**: Accessible control via Arrow keys, Home/End, and specialized handlers (Space/Enter).
 - **Focus Management**: Consistent focus behavior and styling.
 
@@ -62,14 +62,19 @@ This hook abstracts the complexity of event handling and state management.
 ```typescript
 const handlers = useContinuousInteraction({
   adjustValue, // Function to update the normalized value
-  value, // Current normalized value (optional)
   interactionMode, // "drag" | "wheel" | "both"
-  direction, // "vertical" | "horizontal" | "circular" (internal prop name)
-  sensitivity, // Drag sensitivity (normalized value per pixel) (internal prop name)
-  wheelSensitivity, // Wheel sensitivity (normalized value per unit)
+  direction, // "vertical" | "horizontal" | "circular" | "both"
+  sensitivity, // Drag sensitivity (normalized value per pixel, default: 0.005)
+  wheelSensitivity, // Wheel sensitivity (normalized value per unit, default: 0.005)
+  step, // Normalized step size (0..1) for adaptive behavior and accumulators
+  min, // Minimum value (real domain) - used to calculate normalized step if step not provided
+  max, // Maximum value (real domain) - used to calculate normalized step if step not provided
+  paramStep, // Step size (real domain) - used to calculate normalized step if step not provided
   disabled, // Whether the control is disabled
 });
 ```
+
+**Adaptive Sensitivity**: When `step` (or `min`/`max`/`paramStep`) is provided, the hook automatically calculates adaptive drag sensitivity to ensure responsiveness. The normalized step is calculated from real values if needed, and the effective sensitivity is `Math.max(baseSensitivity, stepSize / TARGET_PIXELS_PER_STEP)` where `TARGET_PIXELS_PER_STEP = 30`.
 
 **Note**: High-level components (Knob, CycleButton, Slider) expose these props as `interactionDirection` and `interactionSensitivity` for clarity. The internal hook uses `direction` and `sensitivity`.
 
@@ -116,14 +121,18 @@ It returns pointer event handlers (`onPointerDown`, `onPointerMove`, `onPointerU
   - **Circular Mode**: Rotational drag around the center of the element (Clockwise = Increase, Counter-Clockwise = Decrease).
 - **Text Selection**: Automatically disabled (`user-select: none`) during drag operations to prevent accidental selection.
 - **Focus**: Clicking a control gives it focus, enabling keyboard interaction.
-- **Sensitivity**: Configurable per component. Default is tuned for precision (`0.005` for continuous, `0.1` for discrete).
+- **Sensitivity**: Configurable per component. Defaults to `0.005` (approx 200px throw).
+  - **Adaptive Sensitivity**: For low-resolution parameters (where step size is large), the sensitivity is automatically adjusted to ensure that a single step change requires no more than 30 pixels of movement (`TARGET_PIXELS_PER_STEP`). This prevents "dead zones" in discrete-like continuous controls. The adaptive calculation uses `Math.max(baseSensitivity, stepSize / TARGET_PIXELS_PER_STEP)` to ensure responsiveness.
+  - **Drag Accumulator**: Uses an accumulator for stepped parameters to support slow dragging without losing progress between events. Small drag movements accumulate until they exceed the step size, at which point the value is adjusted in discrete steps. This prevents unresponsive behavior when dragging slowly on low-resolution parameters.
 
 ### Mouse Wheel
 
 - **Behavior**: Scroll over the control to adjust value.
 - **Direction**: Standard scrolling (Up/Push = Increase, Down/Pull = Decrease).
 - **Page Scroll**: Strictly prevented. Wheel events on controls stop propagation and default behavior to avoid scrolling the page while adjusting parameters.
-- **Sensitivity**: Configurable. Tuned to be responsive but controllable (`stepSize / 5` for discrete controls).
+- **Sensitivity**: Configurable. Defaults to `DEFAULT_WHEEL_SENSITIVITY` (0.005).
+  - **Decoupled**: Wheel sensitivity is decoupled from drag sensitivity to prevent "too fast" scrolling on low-resolution parameters that use boosted drag sensitivity. This allows independent tuning of wheel and drag interactions.
+  - **Wheel Accumulator**: For stepped parameters, wheel deltas are accumulated until they exceed the step size. This ensures reliable operation across different hardware (trackpads with small deltas vs. mice with large clicks) and prevents landing "between" steps. The accumulator ensures that even small wheel movements contribute to value changes.
 
 ### Keyboard
 

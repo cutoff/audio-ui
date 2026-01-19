@@ -6,10 +6,17 @@
 
 import React, { useEffect, useMemo, useRef } from "react";
 import { ContinuousInteractionController, ContinuousInteractionConfig } from "@cutoff/audio-ui-core";
+import { DEFAULT_CONTINUOUS_SENSITIVITY, DEFAULT_KEYBOARD_STEP, TARGET_PIXELS_PER_STEP } from "@cutoff/audio-ui-core";
 
 export type UseContinuousInteractionProps = Omit<ContinuousInteractionConfig, "adjustValue"> & {
     adjustValue: (delta: number, sensitivity?: number) => void;
     editable?: boolean;
+    /** Minimum value (real domain). Used to calculate normalized step if step is not provided. */
+    min?: number;
+    /** Maximum value (real domain). Used to calculate normalized step if step is not provided. */
+    max?: number;
+    /** Step size (real domain). Used to calculate normalized step if step is not provided. */
+    paramStep?: number;
     /** Optional user-provided mouse down handler (composed with hook handler) */
     onMouseDown?: React.MouseEventHandler;
     /** Optional user-provided touch start handler (composed with hook handler) */
@@ -52,7 +59,11 @@ export interface ContinuousInteractionHandlers {
  * @param interactionMode Interaction mode: "drag", "wheel", or "both" (default: "both")
  * @param direction Direction of drag interaction: "vertical", "horizontal", "circular", or "both" (default: "both")
  * @param sensitivity Sensitivity of the control (default: 0.005). Higher = more sensitive.
- * @param wheelSensitivity Optional separate sensitivity for wheel events. Defaults to sensitivity / 4.
+ * @param wheelSensitivity Optional separate sensitivity for wheel events. Defaults to DEFAULT_WHEEL_SENSITIVITY (0.005).
+ * @param step Normalized step size (0..1). Used for adaptive wheel interaction and sensitivity scaling.
+ * @param min Minimum value (real domain). Used to calculate normalized step if step is not provided.
+ * @param max Maximum value (real domain). Used to calculate normalized step if step is not provided.
+ * @param paramStep Step size (real domain). Used to calculate normalized step if step is not provided.
  * @param disabled Whether the control is disabled (default: false)
  * @param editable Whether the control is editable (default: true). When false, uses `--audioui-cursor-noneditable`.
  * @param onDragStart Callback when drag interaction starts
@@ -81,11 +92,15 @@ export interface ContinuousInteractionHandlers {
  */
 export function useContinuousInteraction({
     adjustValue,
-    keyboardStep = 0.05,
+    keyboardStep = DEFAULT_KEYBOARD_STEP,
     interactionMode = "both",
     direction = "both",
-    sensitivity = 0.005,
+    sensitivity,
     wheelSensitivity,
+    step,
+    min,
+    max,
+    paramStep,
     disabled = false,
     editable = true,
     onDragStart,
@@ -95,6 +110,30 @@ export function useContinuousInteraction({
     onWheel: userOnWheel,
     onKeyDown: userOnKeyDown,
 }: UseContinuousInteractionProps): ContinuousInteractionHandlers {
+    // Adaptive Sensitivity Logic
+    // If a step is provided, ensure that dragging one step corresponds to at most TARGET_PIXELS_PER_STEP.
+    // This prevents "dead zones" where you have to drag huge distances to change a low-resolution parameter.
+    const effectiveStep = useMemo(() => {
+        if (step !== undefined) return step;
+        if (paramStep !== undefined && min !== undefined && max !== undefined && max !== min) {
+            return paramStep / Math.abs(max - min);
+        }
+        return undefined;
+    }, [step, min, max, paramStep]);
+
+    const effectiveSensitivity = useMemo(() => {
+        const base = sensitivity ?? DEFAULT_CONTINUOUS_SENSITIVITY;
+        if (effectiveStep) {
+            // e.g. Step = 0.1 (range 0-10). Target = 5px.
+            // Required sensitivity = 0.1 / 5 = 0.02.
+            // Base = 0.005.
+            // Result = 0.02.
+            const minSensitivityForStep = effectiveStep / TARGET_PIXELS_PER_STEP;
+            return Math.max(base, minSensitivityForStep);
+        }
+        return base;
+    }, [sensitivity, effectiveStep]);
+
     const controllerRef = useRef<ContinuousInteractionController | null>(null);
 
     if (!controllerRef.current) {
@@ -103,8 +142,9 @@ export function useContinuousInteraction({
             keyboardStep,
             interactionMode,
             direction,
-            sensitivity,
+            sensitivity: effectiveSensitivity,
             wheelSensitivity,
+            step: effectiveStep,
             disabled,
             onDragStart,
             onDragEnd,
@@ -117,8 +157,9 @@ export function useContinuousInteraction({
             keyboardStep,
             interactionMode,
             direction,
-            sensitivity,
+            sensitivity: effectiveSensitivity,
             wheelSensitivity,
+            step: effectiveStep,
             disabled,
             onDragStart,
             onDragEnd,
@@ -128,8 +169,9 @@ export function useContinuousInteraction({
         keyboardStep,
         interactionMode,
         direction,
-        sensitivity,
+        effectiveSensitivity,
         wheelSensitivity,
+        effectiveStep,
         disabled,
         onDragStart,
         onDragEnd,

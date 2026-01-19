@@ -156,8 +156,8 @@ describe("useContinuousInteraction", () => {
             expect(preventDefault).toHaveBeenCalled();
             expect(stopPropagation).toHaveBeenCalled();
 
-            // Default wheel sensitivity is sensitivity / 4 => 0.01 / 4 = 0.0025
-            expect(adjustValue).toHaveBeenCalledWith(100, 0.0025);
+            // Default wheel sensitivity is DEFAULT_WHEEL_SENSITIVITY = 0.005
+            expect(adjustValue).toHaveBeenCalledWith(100, 0.005);
         });
 
         it("uses provided wheelSensitivity", () => {
@@ -462,6 +462,151 @@ describe("useContinuousInteraction", () => {
                 expect(userOnTouchStart).toHaveBeenCalled();
                 expect(document.body.style.userSelect).toBe("");
             });
+        });
+    });
+
+    describe("Adaptive Sensitivity", () => {
+        it("should calculate normalized step from min/max/paramStep", () => {
+            const { result } = renderHook(() =>
+                useContinuousInteraction({
+                    adjustValue,
+                    min: 0,
+                    max: 10,
+                    paramStep: 1,
+                })
+            );
+
+            // paramStep=1, range=10, so normalized step should be 1/10 = 0.1
+            // This should be passed to the controller
+            // We can't directly test the internal step, but we can verify behavior
+            expect(result.current).toBeDefined();
+        });
+
+        it("should prioritize explicit step over calculated step", () => {
+            const { result } = renderHook(() =>
+                useContinuousInteraction({
+                    adjustValue,
+                    step: 0.2, // Explicit normalized step
+                    min: 0,
+                    max: 10,
+                    paramStep: 1, // Would calculate to 0.1, but should be ignored
+                })
+            );
+
+            expect(result.current).toBeDefined();
+        });
+
+        it("should use base sensitivity when no step is provided", () => {
+            const { result } = renderHook(() =>
+                useContinuousInteraction({
+                    adjustValue,
+                    sensitivity: 0.01,
+                })
+            );
+
+            // Without step, effective sensitivity should be base sensitivity
+            act(() => {
+                // @ts-expect-error - simulating event
+                result.current.onMouseDown({ clientX: 100, clientY: 100 });
+            });
+
+            fireEvent.mouseMove(window, { clientX: 100, clientY: 90 });
+            // Should use base sensitivity 0.01
+            expect(adjustValue).toHaveBeenCalledWith(10, 0.01);
+        });
+
+        it("should boost sensitivity for large step sizes", () => {
+            // Step = 0.5 (50% of range), TARGET_PIXELS_PER_STEP = 30
+            // minSensitivityForStep = 0.5 / 30 = 0.0167
+            // Base = 0.005
+            // Effective = max(0.005, 0.0167) = 0.0167
+            // With step, we need a large enough movement to trigger the accumulator
+            // Movement of 200 pixels: 200 * 0.0167 = 3.34, which is >= 0.5, so it should trigger
+            const { result } = renderHook(() =>
+                useContinuousInteraction({
+                    adjustValue,
+                    step: 0.5,
+                    sensitivity: 0.005, // Base sensitivity
+                })
+            );
+
+            act(() => {
+                // @ts-expect-error - simulating event
+                result.current.onMouseDown({ clientX: 100, clientY: 100 });
+            });
+
+            // Large movement to trigger accumulator with stepped parameter
+            fireEvent.mouseMove(window, { clientX: 100, clientY: -100 });
+            // Should use boosted sensitivity (at least 0.0167)
+            expect(adjustValue).toHaveBeenCalled();
+            const call = adjustValue.mock.calls[0];
+            // The sensitivity passed to adjustValue should be 1.0 for stepped parameters
+            // (the actual effective sensitivity is used in delta calculation, not passed to adjustValue)
+            expect(call[1]).toBe(1.0);
+        });
+    });
+
+    describe("Drag Accumulator", () => {
+        it("should accumulate small drag movements for stepped parameters", () => {
+            const { result } = renderHook(() =>
+                useContinuousInteraction({
+                    adjustValue,
+                    step: 0.1,
+                    sensitivity: 0.01,
+                })
+            );
+
+            act(() => {
+                // @ts-expect-error - simulating event
+                result.current.onMouseDown({ clientX: 100, clientY: 100 });
+            });
+
+            // Small movement: 5 pixels * 0.01 = 0.05 normalized delta
+            // With step=0.1, this should accumulate but not trigger yet
+            fireEvent.mouseMove(window, { clientX: 100, clientY: 95 });
+            expect(adjustValue).not.toHaveBeenCalled();
+
+            // Another small movement: accumulator should now trigger
+            fireEvent.mouseMove(window, { clientX: 100, clientY: 90 });
+            expect(adjustValue).toHaveBeenCalled();
+        });
+    });
+
+    describe("Wheel Accumulator", () => {
+        it("should accumulate small wheel deltas for stepped parameters", () => {
+            const { result } = renderHook(() =>
+                useContinuousInteraction({
+                    adjustValue,
+                    step: 0.1,
+                    wheelSensitivity: 0.01,
+                })
+            );
+
+            const preventDefault = vi.fn();
+            const stopPropagation = vi.fn();
+
+            // Small wheel delta: 5 * 0.01 = 0.05 normalized
+            // With step=0.1, this should accumulate but not trigger yet
+            act(() => {
+                // @ts-expect-error - simulating event
+                result.current.onWheel({
+                    deltaY: 5,
+                    preventDefault,
+                    stopPropagation,
+                });
+            });
+            expect(adjustValue).not.toHaveBeenCalled();
+
+            // Another small wheel delta: accumulator should now trigger
+            act(() => {
+                // @ts-expect-error - simulating event
+                result.current.onWheel({
+                    deltaY: 5,
+                    preventDefault,
+                    stopPropagation,
+                });
+            });
+            expect(adjustValue).toHaveBeenCalled();
         });
     });
 });

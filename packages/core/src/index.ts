@@ -10,6 +10,7 @@ export * from "./constants/theme";
 export * from "./constants/themeDefaults";
 export * from "./constants/cssVars";
 export * from "./constants/cursors";
+export * from "./constants/interaction";
 export * from "./controller/ContinuousInteractionController";
 export * from "./controller/DiscreteInteractionController";
 export * from "./controller/BooleanInteractionController";

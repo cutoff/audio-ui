@@ -122,6 +122,45 @@ describe("ContinuousInteractionController", () => {
             // Total: 0. Delta is 0, so adjustValue should not be called.
             expect(adjustValue).not.toHaveBeenCalled();
         });
+
+        it("should accumulate drag deltas for stepped parameters", () => {
+            controller.updateConfig({ step: 0.1, sensitivity: 0.01 });
+            controller.handleMouseDown(100, 100);
+
+            // Small movement: delta = 5 pixels, normalizedDelta = 5 * 0.01 = 0.05
+            // Accumulator = 0.05, which is < 0.1 (step), so no adjustment yet
+            const moveEvent1 = new MouseEvent("mousemove", { clientX: 100, clientY: 95 });
+            (controller as unknown as TestController).handleGlobalMouseMove(moveEvent1);
+            expect(adjustValue).not.toHaveBeenCalled();
+
+            // Another small movement: delta = 5 pixels, normalizedDelta = 0.05
+            // Accumulator = 0.05 + 0.05 = 0.1, which is >= 0.1 (step)
+            // stepsToMove = Math.trunc(0.1 / 0.1) = 1 step = 0.1
+            const moveEvent2 = new MouseEvent("mousemove", { clientX: 100, clientY: 90 });
+            (controller as unknown as TestController).handleGlobalMouseMove(moveEvent2);
+            expect(adjustValue).toHaveBeenCalledWith(0.1, 1.0);
+        });
+
+
+        it("should reset drag accumulator on new drag start", () => {
+            controller.updateConfig({ step: 0.1, sensitivity: 0.01 });
+            controller.handleMouseDown(100, 100);
+
+            // Small movement that accumulates but doesn't trigger
+            const moveEvent1 = new MouseEvent("mousemove", { clientX: 100, clientY: 95 });
+            (controller as unknown as TestController).handleGlobalMouseMove(moveEvent1);
+            expect(adjustValue).not.toHaveBeenCalled();
+
+            // End drag
+            (controller as unknown as TestController).handleGlobalMouseUp();
+
+            // Start new drag - accumulator should be reset
+            controller.handleMouseDown(100, 100);
+            const moveEvent2 = new MouseEvent("mousemove", { clientX: 100, clientY: 95 });
+            (controller as unknown as TestController).handleGlobalMouseMove(moveEvent2);
+            // Should still not trigger because accumulator was reset
+            expect(adjustValue).not.toHaveBeenCalled();
+        });
     });
 
     describe("Circular Interaction", () => {
@@ -208,8 +247,8 @@ describe("ContinuousInteractionController", () => {
 
             controller.handleWheel(wheelEvent);
 
-            // Default wheel sensitivity is sensitivity / 4 = 0.0025
-            expect(adjustValue).toHaveBeenCalledWith(-100, 0.0025);
+            // Default wheel sensitivity is DEFAULT_WHEEL_SENSITIVITY = 0.005
+            expect(adjustValue).toHaveBeenCalledWith(-100, 0.005);
             expect(wheelEvent.preventDefault).toHaveBeenCalled();
         });
 
@@ -223,6 +262,45 @@ describe("ContinuousInteractionController", () => {
 
             controller.handleWheel(wheelEvent);
             expect(adjustValue).not.toHaveBeenCalled();
+        });
+
+        it("should accumulate wheel deltas for stepped parameters", () => {
+            controller.updateConfig({ step: 0.1, wheelSensitivity: 0.01 });
+            const wheelEvent = {
+                preventDefault: vi.fn(),
+                stopPropagation: vi.fn(),
+                deltaY: 5, // Small delta: 5 * 0.01 = 0.05
+            } as unknown as WheelEvent;
+
+            // First wheel event: 5 * 0.01 = 0.05, accumulator = 0.05 < 0.1, so no trigger
+            controller.handleWheel(wheelEvent);
+            expect(adjustValue).not.toHaveBeenCalled();
+
+            // Second wheel event: accumulator = 0.05 + 0.05 = 0.1, which is >= 0.1
+            // stepsToMove = Math.trunc(0.1 / 0.1) = 1 step = 0.1
+            controller.handleWheel(wheelEvent);
+            expect(adjustValue).toHaveBeenCalledWith(0.1, 1.0);
+        });
+
+        it("should handle wheel accumulator remainder correctly", () => {
+            controller.updateConfig({ step: 0.1, wheelSensitivity: 0.01 });
+            const wheelEvent = {
+                preventDefault: vi.fn(),
+                stopPropagation: vi.fn(),
+                deltaY: 50, // 50 * 0.01 = 0.5
+            } as unknown as WheelEvent;
+
+            // First event: accumulator = 0.5, which is >= 0.1
+            // stepsToMove = Math.trunc(0.5 / 0.1) = 5 steps = 0.5
+            controller.handleWheel(wheelEvent);
+            expect(adjustValue).toHaveBeenCalledWith(0.5, 1.0);
+            adjustValue.mockClear();
+
+            // Accumulator should now be 0.5 - 0.5 = 0.0
+            // Second event: accumulator = 0.0 + 0.5 = 0.5 again
+            // stepsToMove = Math.trunc(0.5 / 0.1) = 5 steps = 0.5
+            controller.handleWheel(wheelEvent);
+            expect(adjustValue).toHaveBeenCalledWith(0.5, 1.0);
         });
     });
 

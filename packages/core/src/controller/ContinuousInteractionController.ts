@@ -5,6 +5,11 @@
  */
 
 import { InteractionDirection, InteractionMode } from "../types";
+import {
+    DEFAULT_CONTINUOUS_SENSITIVITY,
+    DEFAULT_KEYBOARD_STEP,
+    DEFAULT_WHEEL_SENSITIVITY,
+} from "../constants/interaction";
 
 export interface ContinuousInteractionConfig {
     /**
@@ -34,15 +39,22 @@ export interface ContinuousInteractionConfig {
 
     /**
      * Separate sensitivity for wheel events.
-     * If not provided, defaults to sensitivity / 4.
+     * If not provided, defaults to DEFAULT_WHEEL_SENSITIVITY (0.005).
      */
     wheelSensitivity?: number;
 
     /**
      * Step size for keyboard interaction (normalized 0..1)
-     * @default 0.1
+     * @default 0.05
      */
     keyboardStep?: number;
+
+    /**
+     * Normalized step size of the parameter (0..1).
+     * Used for adaptive wheel interaction (accumulating deltas until a step is reached).
+     * If not provided, wheel interaction is continuous.
+     */
+    step?: number;
 
     /**
      * Callback when a drag interaction starts
@@ -65,8 +77,11 @@ export interface ContinuousInteractionConfig {
  * for continuous controls.
  */
 export class ContinuousInteractionController {
-    private config: Required<Omit<ContinuousInteractionConfig, "wheelSensitivity" | "onDragStart" | "onDragEnd">> & {
+    private config: Required<
+        Omit<ContinuousInteractionConfig, "wheelSensitivity" | "step" | "onDragStart" | "onDragEnd">
+    > & {
         wheelSensitivity?: number;
+        step?: number;
         onDragStart?: () => void;
         onDragEnd?: () => void;
     };
@@ -75,13 +90,15 @@ export class ContinuousInteractionController {
     private centerX = 0;
     private centerY = 0;
     private isDragging = false;
+    private wheelAccumulator = 0;
+    private dragAccumulator = 0;
 
     constructor(config: ContinuousInteractionConfig) {
         this.config = {
             interactionMode: "both",
             direction: "both",
-            sensitivity: 0.005,
-            keyboardStep: 0.05,
+            sensitivity: DEFAULT_CONTINUOUS_SENSITIVITY,
+            keyboardStep: DEFAULT_KEYBOARD_STEP,
             disabled: false,
             // adjustValue is provided in config
             ...config,
@@ -130,6 +147,7 @@ export class ContinuousInteractionController {
         this.startX = x;
         this.startY = y;
         this.isDragging = true;
+        this.dragAccumulator = 0;
         this.config.onDragStart?.();
 
         if (this.config.direction === "circular" && target && (target as HTMLElement).getBoundingClientRect) {
@@ -199,7 +217,25 @@ export class ContinuousInteractionController {
         }
 
         if (delta !== 0) {
-            this.config.adjustValue(delta, this.config.sensitivity);
+            const normalizedDelta = delta * this.config.sensitivity;
+
+            if (this.config.step) {
+                this.dragAccumulator += normalizedDelta;
+
+                if (Math.abs(this.dragAccumulator) >= this.config.step) {
+                    // How many whole steps?
+                    const stepsToMove = Math.trunc(this.dragAccumulator / this.config.step);
+                    const valueChange = stepsToMove * this.config.step;
+
+                    this.config.adjustValue(valueChange, 1.0); // Pass 1.0 as sensitivity since we calculated the full normalized delta
+
+                    // Keep the remainder in the accumulator
+                    this.dragAccumulator -= valueChange;
+                }
+            } else {
+                this.config.adjustValue(delta, this.config.sensitivity);
+            }
+
             this.startX = x;
             this.startY = y;
         }
@@ -236,9 +272,25 @@ export class ContinuousInteractionController {
         if (e.stopPropagation) e.stopPropagation();
 
         const delta = e.deltaY;
-        const effectiveSensitivity = this.config.wheelSensitivity ?? this.config.sensitivity / 4;
+        // Use separate wheel sensitivity default (or user provided), ignoring adaptive drag sensitivity
+        const effectiveSensitivity = this.config.wheelSensitivity ?? DEFAULT_WHEEL_SENSITIVITY;
 
-        this.config.adjustValue(delta, effectiveSensitivity);
+        // If we have a discrete step size, we use an accumulator to ensure we don't land between steps
+        // This solves "too fast" issues on notched mice (ensures 1 notch >= 1 step)
+        // and "too slow" issues on trackpads (accumulates small deltas until 1 step)
+        if (this.config.step) {
+            this.wheelAccumulator += delta * effectiveSensitivity;
+
+            if (Math.abs(this.wheelAccumulator) >= this.config.step) {
+                const stepsToMove = Math.trunc(this.wheelAccumulator / this.config.step);
+                // Move exactly N steps.
+                // Note: we pass 1.0 as sensitivity so the first arg is the absolute normalized delta.
+                this.config.adjustValue(stepsToMove * this.config.step, 1.0);
+                this.wheelAccumulator -= stepsToMove * this.config.step;
+            }
+        } else {
+            this.config.adjustValue(delta, effectiveSensitivity);
+        }
     };
 
     /**
