@@ -88,6 +88,9 @@ export function MidiSettingsButton() {
     const isMobile = useIsMobile();
     const [mounted, setMounted] = React.useState(false);
     const [isSupported, setIsSupported] = React.useState(false);
+    const [open, setOpen] = React.useState(false);
+    const [isEnabled, setIsEnabled] = React.useState(() => midiServiceState.current.isEnabled);
+    const [selectedInputId, setSelectedInputId] = React.useState(() => midiServiceState.current.selectedInputId);
 
     // Check support after mount to avoid hydration mismatch
     React.useEffect(() => {
@@ -95,19 +98,46 @@ export function MidiSettingsButton() {
         setIsSupported(midiServiceState.current.isSupported);
     }, []);
 
+    // Sync with MIDI service state to update icon appearance
+    React.useEffect(() => {
+        const service = midiServiceState.current;
+
+        // Initial sync
+        setIsEnabled(service.isEnabled);
+        setSelectedInputId(service.selectedInputId);
+
+        // Poll for state changes to update icon
+        const interval = setInterval(() => {
+            setIsEnabled(service.isEnabled);
+            setSelectedInputId(service.selectedInputId);
+        }, 100);
+
+        return () => clearInterval(interval);
+    }, []);
+
     // Don't render during SSR or if WebMidi is not supported
     if (!mounted || !isSupported) {
         return null;
     }
 
+    // Determine icon appearance: muted color when inactive, primary color when device is selected and active
+    const isActive = isEnabled && selectedInputId !== null;
+    const iconClassName = cn("h-4 w-4 transition-colors", isActive ? "text-primary" : "text-muted-foreground");
+
     return (
         <TooltipProvider>
-            <Sheet>
+            <Sheet open={open} onOpenChange={setOpen}>
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <SheetTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-9 w-9">
-                                <Cable className="h-4 w-4" />
+                            <Button variant="ghost" size="icon" className="h-9 w-9 relative">
+                                <Cable className={iconClassName} />
+                                {isActive && (
+                                    <span
+                                        className="absolute top-1 right-1 h-2 w-2 rounded-full bg-primary"
+                                        aria-hidden="true"
+                                    />
+                                )}
                                 <span className="sr-only">MIDI Settings</span>
                             </Button>
                         </SheetTrigger>
@@ -127,7 +157,7 @@ export function MidiSettingsButton() {
                             access here.
                         </SheetDescription>
                     </SheetHeader>
-                    <MidiSettingsPanel />
+                    <MidiSettingsPanel open={open} onOpenChange={setOpen} />
                 </MidiSheetContent>
             </Sheet>
         </TooltipProvider>

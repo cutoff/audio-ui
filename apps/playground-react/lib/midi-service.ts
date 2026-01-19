@@ -27,6 +27,8 @@ export type MidiServiceState = {
     disable: () => void;
     /** Select a MIDI input device by ID */
     selectInput: (inputId: string | null) => void;
+    /** Refresh the list of available MIDI input devices */
+    refreshInputs: () => void;
     /** Register a message listener to receive MIDI messages */
     addMessageListener: (listener: (event: WebMidi.MIDIMessageEvent) => void) => void;
     /** Remove a registered message listener */
@@ -78,6 +80,7 @@ const defaultMidiService: MidiServiceState = {
             defaultMidiService.isEnabled = true;
 
             // Enumerate all available MIDI input devices
+            // Include all devices regardless of connection state
             const inputs: WebMidi.MIDIInput[] = [];
             midiAccess.inputs.forEach((input) => {
                 inputs.push(input);
@@ -142,6 +145,18 @@ const defaultMidiService: MidiServiceState = {
                 // Route all messages from this input to registered listeners via handleMidiMessage
                 selectedInput.addEventListener("midimessage", handleMidiMessage);
             }
+        }
+    },
+    refreshInputs: () => {
+        // Refresh the list of available MIDI input devices
+        // This is useful when the sheet opens to ensure we have the latest device list
+        // Include all devices regardless of connection state
+        if (defaultMidiService.isEnabled && defaultMidiService.midiAccess) {
+            const updatedInputs: WebMidi.MIDIInput[] = [];
+            defaultMidiService.midiAccess.inputs.forEach((input) => {
+                updatedInputs.push(input);
+            });
+            defaultMidiService.inputs = updatedInputs;
         }
     },
     addMessageListener: (listener: (event: WebMidi.MIDIMessageEvent) => void) => {
