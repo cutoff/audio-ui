@@ -22,6 +22,7 @@ import {
     SidebarMenuSub,
     SidebarMenuSubButton,
     SidebarMenuSubItem,
+    SidebarSeparator,
 } from "@/components/ui/sidebar";
 
 /**
@@ -95,6 +96,7 @@ function NavItem({
         items?: {
             title: string;
             url: string;
+            separatorAfter?: boolean;
         }[];
     };
     isItemActive: boolean;
@@ -173,16 +175,23 @@ function NavItem({
                         </CollapsibleTrigger>
                         <CollapsibleContent>
                             <SidebarMenuSub>
-                                {item.items?.map((subItem) => {
+                                {item.items?.map((subItem, index) => {
                                     const isSubActive = pathname === subItem.url;
                                     return (
-                                        <SidebarMenuSubItem key={subItem.title}>
-                                            <SidebarMenuSubButton asChild isActive={isSubActive}>
-                                                <Link href={subItem.url}>
-                                                    <span>{subItem.title}</span>
-                                                </Link>
-                                            </SidebarMenuSubButton>
-                                        </SidebarMenuSubItem>
+                                        <React.Fragment key={subItem.title}>
+                                            <SidebarMenuSubItem>
+                                                <SidebarMenuSubButton asChild isActive={isSubActive}>
+                                                    <Link href={subItem.url}>
+                                                        <span>{subItem.title}</span>
+                                                    </Link>
+                                                </SidebarMenuSubButton>
+                                            </SidebarMenuSubItem>
+                                            {subItem.separatorAfter && index < item.items!.length - 1 && (
+                                                <SidebarMenuSubItem>
+                                                    <SidebarSeparator className="my-1" />
+                                                </SidebarMenuSubItem>
+                                            )}
+                                        </React.Fragment>
                                     );
                                 })}
                             </SidebarMenuSub>

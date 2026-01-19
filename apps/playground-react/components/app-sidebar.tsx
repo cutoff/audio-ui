@@ -97,6 +97,7 @@ const data = {
                 {
                     title: "AdaptiveBox",
                     url: "/primitives/adaptive-box",
+                    separatorAfter: true,
                 },
                 {
                     title: "ValueRing",
