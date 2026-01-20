@@ -27,6 +27,11 @@ import { SizeType, InteractionMode, InteractionDirection } from "@cutoff/audio-u
 export type KnobVariant = "abstract" | "simplest" | "plainCap" | "iconCap";
 
 /**
+ * Variant options for the Slider component
+ */
+export type SliderVariant = "abstract" | "trackless" | "trackfull" | "stripeless";
+
+/**
  * Mode for displaying value vs label.
  * - "labelOnly": Always shows the label (default)
  * - "valueOnly": Always shows the value

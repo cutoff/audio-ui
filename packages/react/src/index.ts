@@ -111,6 +111,7 @@ export type {
     AudioControlEvent,
     ControlComponentMetadata,
     KnobVariant,
+    SliderVariant,
     ValueLabelMode,
 } from "./components/types";
 

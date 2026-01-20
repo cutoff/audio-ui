@@ -9,7 +9,7 @@
 import React, { useMemo } from "react";
 import { translateSliderThickness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
-import { ControlComponent } from "@/types";
+import { ControlComponent, SliderVariant } from "@/types";
 import LinearStrip from "@/primitives/svg/LinearStrip";
 import ValueStrip from "@/primitives/svg/ValueStrip";
 import LinearCursor from "@/primitives/svg/LinearCursor";
@@ -22,6 +22,8 @@ export type SliderViewProps = {
     normalizedValue: number;
     /** Whether to start fill from center (bipolar mode) */
     bipolar?: boolean;
+    /** Visual variant of the slider */
+    variant?: SliderVariant;
     /** Orientation of the slider */
     orientation?: "horizontal" | "vertical";
     /** Thickness of the slider (normalized 0.0-1.0, maps to 1-50) */
@@ -45,6 +47,7 @@ export type SliderViewProps = {
  *
  * @param {number} normalizedValue - Value between 0 and 1
  * @param {boolean} [bipolar=false] - Whether to fill from center (bipolar mode)
+ * @param {SliderVariant} [variant="abstract"] - Visual variant of the slider
  * @param {"horizontal" | "vertical"} [orientation="vertical"] - Orientation of the slider
  * @param {number} [thickness=0.4] - Normalized thickness 0.0-1.0 (maps to 1-50)
  * @param {number | string} [roundness] - Normalized roundness 0.0-1.0 (maps to 0-20) or CSS variable string
@@ -55,6 +58,7 @@ export type SliderViewProps = {
 function SliderView({
     normalizedValue,
     bipolar = false,
+    variant = "abstract",
     orientation = "vertical",
     thickness = 0.4,
     roundness = DEFAULT_ROUNDNESS,
@@ -82,6 +86,8 @@ function SliderView({
         }
     }, [orientation]);
 
+    const stripPadding = (variant === "trackfull") ? 10 : 0;
+
     return (
         <g className={className}>
             {/* Background Strip */}
@@ -98,11 +104,11 @@ function SliderView({
             />
 
             {/* Foreground Value Strip */}
-            <ValueStrip
+            {(variant !== "stripeless") ? <ValueStrip
                 cx={cx}
                 cy={cy}
-                length={260}
-                thickness={legacyThickness}
+                length={260 - stripPadding}
+                thickness={legacyThickness - stripPadding}
                 rotation={rotation}
                 roundness={roundness}
                 normalizedValue={normalizedValue}
@@ -110,19 +116,19 @@ function SliderView({
                 style={{
                     fill: "var(--audioui-primary-color)",
                 }}
-            />
+            /> : undefined}
 
             {/* Cursor */}
-            <LinearCursor
+            {(variant !== "abstract") ? <LinearCursor
                 cx={cx}
                 cy={cy}
-                length={260}
+                length={260 - stripPadding}
                 rotation={rotation}
                 normalizedValue={normalizedValue}
-                width={legacyThickness}
+                width={legacyThickness - stripPadding}
                 aspectRatio={1}
                 roundness={roundness}
-            />
+            /> : undefined}
         </g>
     );
 }

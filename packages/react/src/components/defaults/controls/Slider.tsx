@@ -11,7 +11,7 @@ import classNames from "classnames";
 import { VerticalSliderView, HorizontalSliderView } from "./SliderView";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
-import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps, ValueLabelMode } from "@/types";
+import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps, SliderVariant, ValueLabelMode } from "@/types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "@/hooks/useThemableProps";
 
@@ -22,6 +22,10 @@ export type SliderProps = ContinuousControlProps &
     AdaptiveSizeProps &
     AdaptiveBoxProps &
     ThemableProps & {
+        /** Visual variant of the slider
+         * @default "abstract"
+         */
+        variant?: SliderVariant;
         /** Orientation of the slider
          * @default 'vertical' */
         orientation?: "horizontal" | "vertical";
@@ -43,6 +47,7 @@ export type SliderProps = ContinuousControlProps &
  * Supports both horizontal and vertical orientations with continuous value adjustment.
  *
  * Features:
+ * - Multiple visual variants (abstract, trackless, trackfull, stripeless)
  * - Configurable orientation (horizontal or vertical)
  * - Bipolar mode support (centered at zero, grows in both directions)
  * - Customizable thickness and roundness
@@ -94,6 +99,7 @@ function Slider({
     labelHeightUnits,
     color,
     roundness,
+    variant = "abstract",
     thickness = 0.4,
     parameter,
     unit,
@@ -165,6 +171,7 @@ function Slider({
             view={ViewComponent}
             viewProps={{
                 color: color ?? "var(--audioui-primary-color)",
+                variant: variant,
                 thickness: clampedThickness,
                 roundness: roundness ?? "var(--audioui-roundness-slider)",
                 bipolar: bipolar,

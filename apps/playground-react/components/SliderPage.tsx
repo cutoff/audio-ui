@@ -7,7 +7,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Slider, ValueLabelMode, AudioParameter, AudioControlEvent } from "@cutoff/audio-ui-react";
+import { Slider, ValueLabelMode, AudioParameter, AudioControlEvent, SliderVariant } from "@cutoff/audio-ui-react";
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -54,6 +54,7 @@ type SliderComponentProps = {
     color?: string;
     valueAsLabel?: ValueLabelMode;
     unit?: string;
+    variant?: SliderVariant;
     orientation: "horizontal" | "vertical";
     adaptiveSize?: boolean;
     onChange?: (event: AudioControlEvent<number | string>) => void;
@@ -76,6 +77,7 @@ function SliderComponent({
     color,
     valueAsLabel,
     unit,
+    variant,
     orientation,
     adaptiveSize,
     onChange,
@@ -103,6 +105,7 @@ function SliderComponent({
             color={color}
             valueAsLabel={valueAsLabel}
             unit={unit}
+            variant={variant}
             orientation={orientation}
             valueFormatter={
                 bipolar && useMidiBipolar
@@ -128,6 +131,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
     const [color, setColor] = useState<string | undefined>(undefined); // Allow undefined to use theme values
     const [valueAsLabel, setValueAsLabel] = useState<ValueLabelMode | undefined>(undefined);
     const [unit, setUnit] = useState<string | undefined>(undefined);
+    const [variant, setVariant] = useState<SliderVariant | undefined>(undefined);
 
     // Generate code snippet with all props
     function generateCodeSnippet(): string {
@@ -157,6 +161,10 @@ export default function SliderPage({ orientation }: SliderPageProps) {
 
         if (valueAsLabel !== undefined) {
             props += ` valueAsLabel='${valueAsLabel}'`;
+        }
+
+        if (variant !== undefined) {
+            props += ` variant='${variant}'`;
         }
 
         // Add valueFormatter prop if using MIDI bipolar formatter or pan formatter
@@ -194,6 +202,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setColor(undefined);
                 setValueAsLabel(undefined);
                 setUnit(undefined);
+                setVariant(undefined);
                 break;
             case 1:
                 // Volume - unipolar, percentage
@@ -302,9 +311,35 @@ export default function SliderPage({ orientation }: SliderPageProps) {
         color,
         valueAsLabel,
         unit,
+        variant,
     };
 
     const properties = [
+        // Visual/Styling props
+        <div key="variant" className="grid gap-2">
+            <Label htmlFor="variantProp">Variant</Label>
+            <Select
+                value={variant === undefined ? "default" : variant}
+                onValueChange={(value) => {
+                    if (value === "default") {
+                        setVariant(undefined);
+                    } else {
+                        setVariant(value as SliderVariant);
+                    }
+                }}
+            >
+                <SelectTrigger id="variantProp">
+                    <SelectValue placeholder="Select variant" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="default">Default (Abstract)</SelectItem>
+                    <SelectItem value="abstract">Abstract</SelectItem>
+                    <SelectItem value="trackless">Trackless</SelectItem>
+                    <SelectItem value="trackfull">Trackfull</SelectItem>
+                    <SelectItem value="stripeless">Stripeless</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>,
         // Behavior props
         <div key="bipolar" className="flex items-center gap-2 pt-2">
             <Checkbox id="bipolarProp" checked={bipolar} onCheckedChange={(checked) => setBipolar(checked === true)} />
