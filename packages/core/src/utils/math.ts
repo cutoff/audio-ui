@@ -9,34 +9,6 @@
  */
 
 /**
- * Represents the dimensions and position of a rectangular zone within the SVG
- */
-export type Zone = {
-    /** X coordinate of the zone */
-    x: number;
-    /** Y coordinate of the zone */
-    y: number;
-    /** Width of the zone */
-    w: number;
-    /** Height of the zone */
-    h: number;
-};
-
-/**
- * Represents the dimensions of the filled portion of the slider
- */
-export type FilledZone = {
-    /** X coordinate where the fill starts (for horizontal) */
-    x?: number;
-    /** Y coordinate where the fill starts (for vertical) */
-    y?: number;
-    /** Width of the filled area (for horizontal) */
-    w?: number;
-    /** Height of the filled area (for vertical) */
-    h?: number;
-};
-
-/**
  * Convert polar coordinates to Cartesian coordinates.
  *
  * This function is used extensively in circular controls (knobs, rotary switches) to position
@@ -67,128 +39,6 @@ export const polarToCartesian = (
         x: centerX + radius * Math.cos(angleInRadians),
         y: centerY + radius * Math.sin(angleInRadians),
     };
-};
-
-/**
- * Calculate a bounded ratio between 0 and 1 for a value within a min-max range.
- *
- * This utility ensures the value is clamped to the range before calculating the ratio,
- * preventing division by zero and handling edge cases gracefully.
- *
- * @param value - The value to convert to a ratio
- * @param min - The minimum value (corresponds to ratio = 0)
- * @param max - The maximum value (corresponds to ratio = 1)
- * @returns A ratio between 0 and 1 representing where value falls in the min-max range
- *
- * @example
- * ```ts
- * calculateBoundedRatio(50, 0, 100); // 0.5
- * calculateBoundedRatio(150, 0, 100); // 1.0 (clamped)
- * calculateBoundedRatio(-10, 0, 100); // 0.0 (clamped)
- * ```
- */
-export const calculateBoundedRatio = (value: number, min: number, max: number): number => {
-    const boundedValue = Math.max(min, Math.min(value, max));
-    const ratio = (boundedValue - min) / (max - min);
-    return Math.max(0, Math.min(ratio, 1));
-};
-
-/**
- * Calculates the filled zone dimensions for a slider
- *
- * This function determines how to draw the filled portion of a slider based on:
- * - The slider's orientation (horizontal or vertical)
- * - Whether it's in bipolar mode (has a center point)
- * - The current value relative to min, max, and center
- *
- * @param mainZone - The dimensions of the slider's background
- * @param value - The current value (will be bounded to min-max range)
- * @param min - The minimum value
- * @param max - The maximum value
- * @param center - Optional center point for bipolar mode
- * @param isHorizontal - Whether the slider is horizontal (false = vertical)
- * @returns Dimensions of the filled portion (x,w for horizontal; y,h for vertical)
- *
- * For horizontal sliders:
- * - Normal mode: Fills from left edge, growing rightward as value increases
- * - Bipolar mode:
- *   - When value > center: Fills from center, growing rightward
- *   - When value < center: Fills from center, growing leftward (DJ crossfader style)
- *
- * For vertical sliders:
- * - Normal mode: Fills from bottom edge, growing upward as value increases
- * - Bipolar mode:
- *   - When value > center: Fills from center, growing upward
- *   - When value < center: Fills from center, growing downward
- */
-export const computeFilledZone = (
-    mainZone: Zone,
-    value: number,
-    min: number,
-    max: number,
-    center?: number,
-    isHorizontal: boolean = false
-): FilledZone => {
-    const boundedValue = Math.max(min, Math.min(value, max));
-
-    const dimension = isHorizontal ? mainZone.w : mainZone.h;
-    const position = isHorizontal ? mainZone.x : mainZone.y;
-
-    if (center === undefined) {
-        const ratio = calculateBoundedRatio(boundedValue, min, max);
-        const size = dimension * ratio;
-
-        if (isHorizontal) {
-            return {
-                x: position,
-                w: size,
-            };
-        } else {
-            // Vertical: fill from bottom to top (inverted position)
-            return {
-                y: position + (dimension - size),
-                h: size,
-            };
-        }
-    }
-
-    const halfSize = dimension / 2;
-    const centerPoint = position + halfSize;
-
-    if (boundedValue >= center) {
-        const bipolarRatio = calculateBoundedRatio(boundedValue, center, max);
-        const bipolarSize = halfSize * bipolarRatio;
-
-        if (isHorizontal) {
-            return {
-                x: centerPoint,
-                w: bipolarSize,
-            };
-        } else {
-            // Vertical: fill from center to top (inverted position)
-            return {
-                y: position + (halfSize - bipolarSize),
-                h: bipolarSize,
-            };
-        }
-    } else {
-        // Value < center: invert ratio so min -> max fill, center -> min fill
-        const bipolarRatio = 1 - calculateBoundedRatio(boundedValue, min, center);
-        const bipolarSize = halfSize * bipolarRatio;
-
-        if (isHorizontal) {
-            // Horizontal: fill from center to left (DJ crossfader style)
-            return {
-                x: centerPoint - bipolarSize,
-                w: bipolarSize,
-            };
-        } else {
-            return {
-                y: centerPoint,
-                h: bipolarSize,
-            };
-        }
-    }
 };
 
 /**
@@ -226,6 +76,23 @@ export interface ArcAngleResult {
  * @param bipolar Whether to start the value arc from the center (12 o'clock) instead of the start angle (default false)
  * @param positions Optional number of discrete positions. When defined, the value will snap to the nearest position. Defaults to undefined (continuous mode).
  * @returns Calculated angles and normalized values
+ *
+ * @example
+ * ```ts
+ * // Standard knob at 50% value
+ * const result = calculateArcAngles(0.5, 90);
+ * // result.valueToAngle = 360 (12 o'clock)
+ * // result.startAngle = 225 (7:30)
+ * // result.endAngle = 495 (4:30)
+ *
+ * // Bipolar knob (pan control) at center
+ * const bipolar = calculateArcAngles(0.5, 90, 0, true);
+ * // bipolar.valueStartAngle = 360 (starts from center)
+ *
+ * // Discrete positions (5-way switch)
+ * const discrete = calculateArcAngles(0.37, 90, 0, false, 5);
+ * // discrete.normalizedValue = 0.25 (snapped to nearest position)
+ * ```
  */
 export function calculateArcAngles(
     normalizedValue: number,
@@ -278,4 +145,40 @@ export function calculateArcAngles(
         valueToAngle,
         valueStartAngle,
     };
+}
+
+/**
+ * Calculates the cursor Y position for linear controls (sliders, faders).
+ *
+ * The cursor represents the current value position along a linear strip.
+ * The strip extends along the Y-axis (in unrotated coordinate space) from
+ * (cy - length/2) to (cy + length/2).
+ *
+ * The cursor position is independent of bipolar mode - it always maps:
+ * - value 0 = bottom (cy + length/2)
+ * - value 1 = top (cy - length/2)
+ *
+ * Bipolar mode only affects how the rectangle is drawn (from center vs from bottom),
+ * not the cursor position itself.
+ *
+ * @param cy Y coordinate of the strip center point
+ * @param length Length of the strip
+ * @param normalizedValue Normalized value between 0 and 1
+ * @returns Y coordinate of the cursor center
+ *
+ * @example
+ * ```ts
+ * // Cursor moves from bottom to top based on value
+ * const cursorY = calculateLinearPosition(150, 260, 0.65);
+ * // cursorY = 31 (65% from bottom to top)
+ * ```
+ */
+export function calculateLinearPosition(cy: number, length: number, normalizedValue: number): number {
+    // Clamp normalized value to valid range [0, 1]
+    const clampedValue = Math.max(0, Math.min(1, normalizedValue));
+
+    // Cursor position: value 0 maps to bottom (cy + length/2), value 1 maps to top (cy - length/2)
+    // Interpolate from bottom to top
+    const bottomY = cy + length / 2;
+    return bottomY - clampedValue * length;
 }

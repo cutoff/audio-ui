@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { polarToCartesian, calculateBoundedRatio, computeFilledZone, calculateArcAngles } from "./math";
+import { polarToCartesian, calculateArcAngles, calculateLinearPosition } from "./math";
 
 describe("math", () => {
     describe("polarToCartesian", () => {
@@ -48,192 +48,6 @@ describe("math", () => {
             const result = polarToCartesian(50, 50, 10, -90);
             expect(result.x).toBeCloseTo(40); // 50 + 10*cos(-π) = 40
             expect(result.y).toBeCloseTo(50); // 50 + 10*sin(-π) = 50
-        });
-    });
-
-    describe("calculateBoundedRatio", () => {
-        it("calculates ratio for value at minimum", () => {
-            expect(calculateBoundedRatio(0, 0, 100)).toBe(0);
-        });
-
-        it("calculates ratio for value at maximum", () => {
-            expect(calculateBoundedRatio(100, 0, 100)).toBe(1);
-        });
-
-        it("calculates ratio for value at center", () => {
-            expect(calculateBoundedRatio(50, 0, 100)).toBe(0.5);
-        });
-
-        it("clamps values below minimum to 0", () => {
-            expect(calculateBoundedRatio(-10, 0, 100)).toBe(0);
-        });
-
-        it("clamps values above maximum to 1", () => {
-            expect(calculateBoundedRatio(110, 0, 100)).toBe(1);
-        });
-
-        it("handles negative ranges", () => {
-            expect(calculateBoundedRatio(-50, -100, 0)).toBe(0.5);
-            expect(calculateBoundedRatio(-100, -100, 0)).toBe(0);
-            expect(calculateBoundedRatio(0, -100, 0)).toBe(1);
-        });
-
-        it("handles non-zero minimum", () => {
-            expect(calculateBoundedRatio(25, 20, 30)).toBe(0.5);
-            expect(calculateBoundedRatio(20, 20, 30)).toBe(0);
-            expect(calculateBoundedRatio(30, 20, 30)).toBe(1);
-        });
-    });
-
-    describe("computeFilledZone", () => {
-        const mainZone = { x: 0, y: 0, w: 100, h: 100 };
-
-        describe("horizontal slider - normal mode", () => {
-            it("fills from left edge at minimum value", () => {
-                const result = computeFilledZone(mainZone, 0, 0, 100, undefined, true);
-                expect(result.x).toBe(0);
-                expect(result.w).toBe(0);
-                expect(result.y).toBeUndefined();
-                expect(result.h).toBeUndefined();
-            });
-
-            it("fills halfway at center value", () => {
-                const result = computeFilledZone(mainZone, 50, 0, 100, undefined, true);
-                expect(result.x).toBe(0);
-                expect(result.w).toBe(50);
-            });
-
-            it("fills completely at maximum value", () => {
-                const result = computeFilledZone(mainZone, 100, 0, 100, undefined, true);
-                expect(result.x).toBe(0);
-                expect(result.w).toBe(100);
-            });
-
-            it("clamps values above maximum", () => {
-                const result = computeFilledZone(mainZone, 150, 0, 100, undefined, true);
-                expect(result.w).toBe(100);
-            });
-
-            it("clamps values below minimum", () => {
-                const result = computeFilledZone(mainZone, -10, 0, 100, undefined, true);
-                expect(result.w).toBe(0);
-            });
-        });
-
-        describe("vertical slider - normal mode", () => {
-            it("fills from bottom edge at minimum value", () => {
-                const result = computeFilledZone(mainZone, 0, 0, 100, undefined, false);
-                expect(result.y).toBe(100);
-                expect(result.h).toBe(0);
-                expect(result.x).toBeUndefined();
-                expect(result.w).toBeUndefined();
-            });
-
-            it("fills halfway at center value", () => {
-                const result = computeFilledZone(mainZone, 50, 0, 100, undefined, false);
-                expect(result.y).toBe(50);
-                expect(result.h).toBe(50);
-            });
-
-            it("fills completely at maximum value", () => {
-                const result = computeFilledZone(mainZone, 100, 0, 100, undefined, false);
-                expect(result.y).toBe(0);
-                expect(result.h).toBe(100);
-            });
-        });
-
-        describe("horizontal slider - bipolar mode", () => {
-            const center = 50;
-
-            it("fills from center to right when value > center", () => {
-                const result = computeFilledZone(mainZone, 75, 0, 100, center, true);
-                expect(result.x).toBe(50); // center point
-                expect(result.w).toBeGreaterThan(0);
-                expect(result.w).toBeLessThan(50);
-            });
-
-            it("fills from center to left when value < center", () => {
-                const result = computeFilledZone(mainZone, 25, 0, 100, center, true);
-                expect(result.x).toBeLessThan(50);
-                expect(result.w).toBeGreaterThan(0);
-                expect(result.w).toBeLessThan(50);
-            });
-
-            it("fills completely to right at maximum", () => {
-                const result = computeFilledZone(mainZone, 100, 0, 100, center, true);
-                expect(result.x).toBe(50);
-                expect(result.w).toBe(50);
-            });
-
-            it("fills completely to left at minimum", () => {
-                const result = computeFilledZone(mainZone, 0, 0, 100, center, true);
-                expect(result.x).toBe(0);
-                expect(result.w).toBe(50);
-            });
-
-            it("has zero width at center value", () => {
-                const result = computeFilledZone(mainZone, 50, 0, 100, center, true);
-                expect(result.x).toBe(50);
-                expect(result.w).toBe(0);
-            });
-        });
-
-        describe("vertical slider - bipolar mode", () => {
-            const center = 50;
-
-            it("fills from center to top when value > center", () => {
-                const result = computeFilledZone(mainZone, 75, 0, 100, center, false);
-                expect(result.y).toBeLessThan(50);
-                expect(result.h).toBeGreaterThan(0);
-                expect(result.h).toBeLessThan(50);
-            });
-
-            it("fills from center to bottom when value < center", () => {
-                const result = computeFilledZone(mainZone, 25, 0, 100, center, false);
-                expect(result.y).toBe(50);
-                expect(result.h).toBeGreaterThan(0);
-                expect(result.h).toBeLessThan(50);
-            });
-
-            it("fills completely to top at maximum", () => {
-                const result = computeFilledZone(mainZone, 100, 0, 100, center, false);
-                expect(result.y).toBe(0);
-                expect(result.h).toBe(50);
-            });
-
-            it("fills completely to bottom at minimum", () => {
-                const result = computeFilledZone(mainZone, 0, 0, 100, center, false);
-                expect(result.y).toBe(50);
-                expect(result.h).toBe(50);
-            });
-
-            it("has zero height at center value", () => {
-                const result = computeFilledZone(mainZone, 50, 0, 100, center, false);
-                expect(result.y).toBe(50);
-                expect(result.h).toBe(0);
-            });
-        });
-
-        describe("edge cases", () => {
-            it("handles zero-sized zone", () => {
-                const zeroZone = { x: 0, y: 0, w: 0, h: 0 };
-                const result = computeFilledZone(zeroZone, 50, 0, 100, undefined, true);
-                expect(result.w).toBe(0);
-            });
-
-            it("handles very small zone", () => {
-                const smallZone = { x: 0, y: 0, w: 1, h: 1 };
-                const result = computeFilledZone(smallZone, 50, 0, 100, undefined, true);
-                expect(result.w).toBeGreaterThanOrEqual(0);
-                expect(result.w).toBeLessThanOrEqual(1);
-            });
-
-            it("handles non-zero positioned zone", () => {
-                const offsetZone = { x: 10, y: 20, w: 100, h: 100 };
-                const result = computeFilledZone(offsetZone, 50, 0, 100, undefined, true);
-                expect(result.x).toBe(10);
-                expect(result.w).toBe(50);
-            });
         });
     });
 
@@ -430,6 +244,86 @@ describe("math", () => {
                 expect(result.normalizedValue).toBe(0.5);
                 expect(result.valueToAngle).toBe(360);
             });
+        });
+    });
+
+    describe("calculateLinearPosition", () => {
+        it("calculates cursor position at minimum value (0)", () => {
+            // cy=150, length=260, value=0 -> bottom = 150 + 130 = 280
+            const result = calculateLinearPosition(150, 260, 0);
+            expect(result).toBe(280);
+        });
+
+        it("calculates cursor position at maximum value (1)", () => {
+            // cy=150, length=260, value=1 -> top = 150 - 130 = 20
+            const result = calculateLinearPosition(150, 260, 1);
+            expect(result).toBe(20);
+        });
+
+        it("calculates cursor position at center value (0.5)", () => {
+            // cy=150, length=260, value=0.5 -> center = 150
+            const result = calculateLinearPosition(150, 260, 0.5);
+            expect(result).toBe(150);
+        });
+
+        it("calculates cursor position at 25% value", () => {
+            // cy=150, length=260, value=0.25
+            // bottom = 280, offset = 0.25 * 260 = 65
+            // cursorY = 280 - 65 = 215
+            const result = calculateLinearPosition(150, 260, 0.25);
+            expect(result).toBe(215);
+        });
+
+        it("calculates cursor position at 75% value", () => {
+            // cy=150, length=260, value=0.75
+            // bottom = 280, offset = 0.75 * 260 = 195
+            // cursorY = 280 - 195 = 85
+            const result = calculateLinearPosition(150, 260, 0.75);
+            expect(result).toBe(85);
+        });
+
+        it("clamps normalized value below 0 to 0", () => {
+            const result = calculateLinearPosition(150, 260, -0.5);
+            expect(result).toBe(280); // Same as value 0
+        });
+
+        it("clamps normalized value above 1 to 1", () => {
+            const result = calculateLinearPosition(150, 260, 1.5);
+            expect(result).toBe(20); // Same as value 1
+        });
+
+        it("handles different center positions", () => {
+            // cy=100, length=200, value=0.5 -> center = 100
+            const result = calculateLinearPosition(100, 200, 0.5);
+            expect(result).toBe(100);
+        });
+
+        it("handles different strip lengths", () => {
+            // cy=150, length=100, value=0.5 -> center = 150
+            const result = calculateLinearPosition(150, 100, 0.5);
+            expect(result).toBe(150);
+
+            // cy=150, length=100, value=0 -> bottom = 150 + 50 = 200
+            const resultMin = calculateLinearPosition(150, 100, 0);
+            expect(resultMin).toBe(200);
+
+            // cy=150, length=100, value=1 -> top = 150 - 50 = 100
+            const resultMax = calculateLinearPosition(150, 100, 1);
+            expect(resultMax).toBe(100);
+        });
+
+        it("handles edge case with very small length", () => {
+            // cy=150, length=1, value=0.5 -> center = 150
+            const result = calculateLinearPosition(150, 1, 0.5);
+            expect(result).toBe(150);
+        });
+
+        it("handles fractional normalized values", () => {
+            // cy=150, length=260, value=0.333...
+            // bottom = 280, offset = 0.333... * 260 ≈ 86.67
+            // cursorY ≈ 280 - 86.67 ≈ 193.33
+            const result = calculateLinearPosition(150, 260, 1 / 3);
+            expect(result).toBeCloseTo(193.33, 1);
         });
     });
 });

@@ -383,6 +383,15 @@ export default function Home() {
                                 <td className="p-4 text-right">—</td>
                             </tr>
                             <tr className="bg-muted/20">
+                                <td className="p-4 font-medium">ValueStrip</td>
+                                <td className="p-4 text-muted-foreground">
+                                    The active (foreground) portion of a linear strip. Renders the filled portion based
+                                    on normalized value, supporting unipolar (fills from bottom) and bipolar (fills from
+                                    center) modes. Used for slider value indicators and fader fills.
+                                </td>
+                                <td className="p-4 text-right">—</td>
+                            </tr>
+                            <tr className="bg-muted/20">
                                 <td className="p-4 font-medium">RadialImage</td>
                                 <td className="p-4 text-muted-foreground">
                                     Displays static content at radial coordinates. Content is sized to fit within the

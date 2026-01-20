@@ -436,6 +436,95 @@ type LabelRingProps = Omit<TickRingProps, "renderTick" | "variant" | "thickness"
   - `radial`: Text rotates to match the angle (like tick marks).
 - **React Nodes**: When passing React components as labels, they are wrapped in a `<g>` element that handles positioning and rotation. The components themselves should be centered (e.g., icons).
 
+## Linear Primitives
+
+Low-level building blocks for composing custom linear controls (sliders, faders, pitch/mod wheels). Primitives use a linear strip model with center coordinates (`cx`, `cy`), length, and rotation.
+
+### LinearStrip
+
+Renders a rectangular strip (background track) for linear controls. The strip is positioned at a center point and can be rotated to any angle.
+
+#### Props
+
+```typescript
+type LinearStripProps = {
+  cx: number; // X coordinate of center point
+  cy: number; // Y coordinate of center point
+  length: number; // Length of the strip
+  thickness: number; // Width of the strip
+  rotation?: number; // Rotation angle in degrees (0 = vertical, -90 or 270 = horizontal)
+  roundness?: number | string; // Corner roundness (normalized 0.0-1.0 or CSS variable)
+  className?: string;
+  style?: CSSProperties;
+};
+```
+
+#### Usage
+
+```tsx
+// Vertical strip (default)
+<LinearStrip cx={50} cy={150} length={260} thickness={6} />
+
+// Horizontal strip (rotated -90 degrees)
+<LinearStrip cx={150} cy={50} length={260} thickness={6} rotation={-90} />
+```
+
+#### Design Notes
+
+- The rectangle is centered at `(cx, cy)` with `width=thickness` and `height=length`
+- Rotation is applied around the center point using SVG transform
+- Corner roundness can be specified as a normalized value (0.0-1.0) or CSS variable string
+- Used for slider tracks and fader backgrounds
+
+### ValueStrip
+
+Renders the active (foreground) portion of a linear strip. Designed to work in tandem with `LinearStrip` (background).
+
+#### Props
+
+```typescript
+type ValueStripProps = {
+  cx: number; // X coordinate of center point
+  cy: number; // Y coordinate of center point
+  length: number; // Length of the strip
+  thickness: number; // Width of the strip
+  normalizedValue: number; // Value between 0 and 1
+  bipolar?: boolean; // Start fill from center (default: false)
+  rotation?: number; // Rotation angle in degrees (0 = vertical, -90 or 270 = horizontal)
+  roundness?: number | string; // Corner roundness (normalized 0.0-1.0 or CSS variable)
+  className?: string;
+  style?: CSSProperties;
+};
+```
+
+#### Usage
+
+```tsx
+// Vertical value strip (unipolar)
+<ValueStrip cx={50} cy={150} length={260} thickness={6} normalizedValue={0.65} />
+
+// Horizontal value strip (bipolar)
+<ValueStrip cx={150} cy={50} length={260} thickness={6} rotation={-90} normalizedValue={0.75} bipolar />
+```
+
+#### Design Notes
+
+- **Unipolar mode** (default): Fills from the "bottom" (relative to rotation) to the current value
+- **Bipolar mode**: Fills from the center to the current value
+- The fill direction is calculated in unrotated coordinate space, then rotated
+- Used for slider value indicators and fader fills
+
+### Rotation Behavior
+
+**All SVG primitives (Radial and Linear) use consistent rotation semantics:**
+
+- **Positive rotation values** rotate **Counter-Clockwise (Left)**
+- **Negative rotation values** rotate **Clockwise (Right)**
+
+This matches standard mathematical conventions and ensures consistent behavior across all primitives.
+
+For horizontal orientation (vertical strip rotated to horizontal), use `rotation={-90}` (or `270`).
+
 ## Composing Custom Knobs
 
 These primitives are designed to be composed together to create custom knob designs.

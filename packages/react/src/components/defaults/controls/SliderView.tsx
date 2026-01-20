@@ -7,11 +7,11 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { computeFilledZone, Zone } from "@cutoff/audio-ui-core";
-import { translateSliderRoundness, translateSliderThickness } from "@cutoff/audio-ui-core";
+import { translateSliderThickness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import { ControlComponent } from "@/types";
 import LinearStrip from "@/primitives/svg/LinearStrip";
+import ValueStrip from "@/primitives/svg/ValueStrip";
 
 /**
  * Props for the SliderView component
@@ -42,13 +42,14 @@ export type SliderViewProps = {
  * Colors are read from CSS variables (`--audioui-primary-color`, `--audioui-primary-50`)
  * which are set by the parent Slider component based on the `color` prop.
  *
- * @param normalizedValue - Value between 0 and 1
- * @param bipolar - Whether to fill from center (default false)
- * @param orientation - Horizontal or vertical (default 'vertical')
- * @param thickness - Normalized thickness 0.0-1.0 (default 0.4, maps to 1-50)
- * @param roundness - Normalized roundness 0.0-1.0 (default 0.3, maps to 0-20)
- * @param color - Color prop (kept for API compatibility, but not used - CSS variables are used instead)
- * @param className - Optional CSS class
+ * @param {number} normalizedValue - Value between 0 and 1
+ * @param {boolean} [bipolar=false] - Whether to fill from center (bipolar mode)
+ * @param {"horizontal" | "vertical"} [orientation="vertical"] - Orientation of the slider
+ * @param {number} [thickness=0.4] - Normalized thickness 0.0-1.0 (maps to 1-50)
+ * @param {number | string} [roundness] - Normalized roundness 0.0-1.0 (maps to 0-20) or CSS variable string
+ * @param {string} [color] - Color prop (kept for API compatibility, but not used - CSS variables are used instead)
+ * @param {string} [className] - Optional CSS class name
+ * @returns {JSX.Element} SVG group element containing background and foreground strips
  */
 function SliderView({
     normalizedValue,
@@ -63,87 +64,51 @@ function SliderView({
         return translateSliderThickness(thickness);
     }, [thickness]);
 
-    // Calculate the dimensions of the slider's main zone based on orientation and thickness
-    const mainZone = useMemo<Zone>(() => {
+    // Determine layout based on orientation
+    const { cx, cy, rotation } = useMemo(() => {
         if (orientation === "vertical") {
-            // Center the slider based on its thickness
-            const x = 50 - legacyThickness / 2;
             return {
-                x,
-                y: 20,
-                w: legacyThickness,
-                h: 260,
+                cx: 50,
+                cy: 150,
+                rotation: 0,
             };
         } else {
-            // For horizontal orientation
-            const y = 50 - legacyThickness / 2;
             return {
-                x: 20,
-                y,
-                w: 260,
-                h: legacyThickness,
-                maxH: legacyThickness, // Add maxH to match Zone type if needed, or rely on w/h
+                cx: 150,
+                cy: 50,
+                rotation: -90,
             };
         }
-    }, [legacyThickness, orientation]);
-
-    // Calculate the dimensions of the filled portion based on normalized value and orientation
-    const filledZone = useMemo(() => {
-        // For bipolar mode, center is at 0.5 of the normalized range
-        const normalizedCenter = bipolar ? 0.5 : undefined;
-        return computeFilledZone(mainZone, normalizedValue, 0, 1, normalizedCenter, orientation === "horizontal");
-    }, [normalizedValue, bipolar, mainZone, orientation]);
-
-    // Translate normalized roundness to legacy range (0-20) and calculate corner radius or use CSS variable
-    // When roundness is a CSS variable string (from theme), pass it directly to SVG rx/ry attributes.
-    // When roundness is a number, translate it to the legacy pixel range.
-    const cornerRadius = useMemo(() => {
-        if (typeof roundness === "string") {
-            // CSS variable - pass directly to SVG (browser will resolve it)
-            return roundness;
-        }
-        // Numeric value - translate to legacy pixel range (0-20)
-        const legacyRoundness = translateSliderRoundness(roundness ?? DEFAULT_ROUNDNESS);
-
-        // If roundness is 0, use square corners
-        if (legacyRoundness === 0) {
-            return 0;
-        }
-
-        // Use the translated roundness value
-        return legacyRoundness;
-    }, [roundness]);
+    }, [orientation]);
 
     return (
         <g className={className}>
             {/* Background Strip */}
             <LinearStrip
-                cx={50}
-                cy={150}
+                cx={cx}
+                cy={cy}
                 length={260}
                 thickness={legacyThickness}
-                rotation={orientation === "vertical" ? 0 : 270}
+                rotation={rotation}
                 roundness={roundness}
                 style={{
                     fill: "var(--audioui-primary-50)",
                 }}
             />
 
-            {/* Foreground Rectangle */}
-            <rect
+            {/* Foreground Value Strip */}
+            <ValueStrip
+                cx={cx}
+                cy={cy}
+                length={260}
+                thickness={legacyThickness}
+                rotation={rotation}
+                roundness={roundness}
+                normalizedValue={normalizedValue}
+                bipolar={bipolar}
                 style={{
                     fill: "var(--audioui-primary-color)",
-                    rx: cornerRadius,
-                    ry: cornerRadius,
                 }}
-                x={orientation === "horizontal" ? filledZone.x : mainZone.x}
-                y={orientation === "vertical" ? filledZone.y : mainZone.y}
-                width={orientation === "horizontal" ? filledZone.w : mainZone.w}
-                height={orientation === "vertical" ? filledZone.h : mainZone.h}
-                // Use 0 as fallback for older browsers that don't support CSS rx/ry
-                // If cornerRadius is a number, we can use it directly
-                rx={typeof cornerRadius === "number" ? cornerRadius : 0}
-                ry={typeof cornerRadius === "number" ? cornerRadius : 0}
             />
         </g>
     );

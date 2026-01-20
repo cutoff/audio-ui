@@ -17,7 +17,7 @@ export type LinearStripProps = {
     cy: number;
     /** Length of the strip */
     length: number;
-    /** Rotation angle in degrees (0 = vertical, 270 = horizontal) */
+    /** Rotation angle in degrees (0 = vertical, -90 or 270 = horizontal) */
     rotation?: number;
     /** Width of the strip (thickness) */
     thickness: number;
@@ -38,7 +38,7 @@ export type LinearStripProps = {
  * @param {number} cx - X coordinate of the center point
  * @param {number} cy - Y coordinate of the center point
  * @param {number} length - Length of the strip (height of the rectangle)
- * @param {number} [rotation=0] - Rotation angle in degrees (0 = vertical, 270 = horizontal)
+ * @param {number} [rotation=0] - Rotation angle in degrees (0 = vertical, -90 or 270 = horizontal)
  * @param {number} thickness - Width of the strip (thickness of the rectangle)
  * @param {number | string} [roundness] - Corner roundness (normalized 0.0-1.0, maps to 0-20, or CSS variable string)
  * @param {string} [className] - CSS class name
@@ -50,8 +50,8 @@ export type LinearStripProps = {
  * // Vertical strip (default)
  * <LinearStrip cx={50} cy={150} length={260} thickness={6} />
  *
- * // Horizontal strip (rotated 270 degrees)
- * <LinearStrip cx={150} cy={50} length={260} thickness={6} rotation={270} />
+ * // Horizontal strip (rotated -90 degrees)
+ * <LinearStrip cx={150} cy={50} length={260} thickness={6} rotation={-90} />
  * ```
  */
 function LinearStrip({
@@ -98,7 +98,8 @@ function LinearStrip({
         if (rotation === 0) {
             return undefined;
         }
-        return `rotate(${rotation} ${cx} ${cy})`;
+        // Negate rotation to match Radial components (positive = counter-clockwise)
+        return `rotate(${-rotation} ${cx} ${cy})`;
     }, [rotation, cx, cy]);
 
     return (

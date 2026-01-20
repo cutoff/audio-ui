@@ -259,6 +259,9 @@ For composing custom radial controls (knobs, dials, rotary encoders). All primit
 For composing custom linear controls (sliders, faders, pitch/mod wheels). Primitives use a linear strip model with center coordinates (`cx`, `cy`), length, and rotation.
 
 - **LinearStrip**: Rectangle strip for linear controls; positioned at center point (cx, cy) with configurable length, thickness, rotation, and rounded corners; supports CSS variable-based roundness; used for slider tracks and fader backgrounds
+- **ValueStrip**: The active (foreground) portion of a linear strip; renders the filled portion based on normalized value; supports unipolar (fills from bottom) and bipolar (fills from center) modes; used for slider value indicators and fader fills
+
+**Rotation Behavior**: All SVG primitives (Radial and Linear) use consistent rotation semantics: **positive rotation values rotate Counter-Clockwise (Left)**, negative values rotate Clockwise (Right). This matches standard mathematical conventions. For horizontal orientation, use `rotation={-90}` (or `270`).
 
 - **SSR**: Not a priority; audio/MIDI apps require client-side processing; RadialText/RadialContent fall back gracefully
 - **Comprehensive Documentation**: See `packages/react/docs/svg-view-primitives.md` for complete API, design decisions, and composition examples

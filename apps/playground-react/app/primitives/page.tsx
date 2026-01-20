@@ -22,7 +22,7 @@ import {
     Film,
     RotateCw,
 } from "lucide-react";
-import { ValueRing, TickRing, LabelRing, AdaptiveBox, LinearStrip } from "@cutoff/audio-ui-react";
+import { ValueRing, TickRing, LabelRing, AdaptiveBox, LinearStrip, ValueStrip } from "@cutoff/audio-ui-react";
 import { TriangleWaveIcon, SineWaveIcon, SquareWaveIcon, SawWaveIcon } from "@/components/wave-icons";
 
 const layoutPrimitives = [
@@ -157,6 +157,38 @@ const svgPrimitives = [
                     roundness={0.3}
                     style={{
                         fill: "var(--audioui-primary-50)",
+                    }}
+                />
+            </svg>
+        ),
+    },
+    {
+        name: "ValueStrip",
+        description:
+            "The active (foreground) portion of a linear strip. Renders the filled portion based on normalized value, supporting unipolar (fills from bottom) and bipolar (fills from center) modes. Used for slider value indicators and fader fills.",
+        preview: (
+            <svg width="100%" height="100%" viewBox="0 0 100 300" style={{ display: "block" }}>
+                <LinearStrip
+                    cx={50}
+                    cy={150}
+                    length={260}
+                    thickness={8}
+                    rotation={0}
+                    roundness={0.3}
+                    style={{
+                        fill: "var(--audioui-primary-50)",
+                    }}
+                />
+                <ValueStrip
+                    cx={50}
+                    cy={150}
+                    length={260}
+                    thickness={8}
+                    rotation={0}
+                    roundness={0.3}
+                    normalizedValue={0.65}
+                    style={{
+                        fill: "var(--audioui-primary-color)",
                     }}
                 />
             </svg>
