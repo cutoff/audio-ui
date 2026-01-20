@@ -241,7 +241,11 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 
 ## SVG View Primitives
 
-Low-level building blocks for composing custom radial controls (knobs, dials, rotary encoders). All primitives share a common coordinate system (`cx`, `cy`, `radius`).
+Low-level building blocks for composing custom controls. Primitives are organized into two categories:
+
+### Radial Primitives
+
+For composing custom radial controls (knobs, dials, rotary encoders). All primitives share a common coordinate system (`cx`, `cy`, `radius`).
 
 - **ValueRing**: Arc/ring indicator showing value progress; supports bipolar mode, configurable thickness/openness/roundness; stroke expands inward from radius
 - **RotaryImage**: Rotates children based on normalized value; shares angle logic with ValueRing via `useArcAngle` hook; wraps RadialImage internally
@@ -249,6 +253,13 @@ Low-level building blocks for composing custom radial controls (knobs, dials, ro
 - **RadialText**: Auto-fitting text with measure-once pattern; uses reference text for consistent sizing; GPU-accelerated CSS `transform: scale()`; global font metrics cache for performance (100+ knobs = 1 measurement); `dominantBaseline="central"` with baseline correction for vertical centering
 - **TickRing**: Scale decoration (ticks/lines/dots); supports optimized single-path rendering or custom content
 - **LabelRing**: Scale labels (text/icons); wrapper around TickRing for easy positioning and rotation
+
+### Linear Primitives
+
+For composing custom linear controls (sliders, faders, pitch/mod wheels). Primitives use a linear strip model with center coordinates (`cx`, `cy`), length, and rotation.
+
+- **LinearStrip**: Rectangle strip for linear controls; positioned at center point (cx, cy) with configurable length, thickness, rotation, and rounded corners; supports CSS variable-based roundness; used for slider tracks and fader backgrounds
+
 - **SSR**: Not a priority; audio/MIDI apps require client-side processing; RadialText/RadialContent fall back gracefully
 - **Comprehensive Documentation**: See `packages/react/docs/svg-view-primitives.md` for complete API, design decisions, and composition examples
 

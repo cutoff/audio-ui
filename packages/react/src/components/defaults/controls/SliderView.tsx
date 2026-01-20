@@ -11,6 +11,7 @@ import { computeFilledZone, Zone } from "@cutoff/audio-ui-core";
 import { translateSliderRoundness, translateSliderThickness } from "@cutoff/audio-ui-core";
 import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import { ControlComponent } from "@/types";
+import LinearStrip from "@/primitives/svg/LinearStrip";
 
 /**
  * Props for the SliderView component
@@ -55,7 +56,6 @@ function SliderView({
     orientation = "vertical",
     thickness = 0.4,
     roundness = DEFAULT_ROUNDNESS,
-    color: _color, // Prefixed with _ to indicate intentionally unused (kept for API compatibility)
     className,
 }: SliderViewProps): JSX.Element {
     // Translate normalized thickness to legacy range (1-50)
@@ -116,21 +116,17 @@ function SliderView({
 
     return (
         <g className={className}>
-            {/* Background Rectangle */}
-            <rect
+            {/* Background Strip */}
+            <LinearStrip
+                cx={50}
+                cy={150}
+                length={260}
+                thickness={legacyThickness}
+                rotation={orientation === "vertical" ? 0 : 270}
+                roundness={roundness}
                 style={{
                     fill: "var(--audioui-primary-50)",
-                    rx: cornerRadius,
-                    ry: cornerRadius,
                 }}
-                x={mainZone.x}
-                y={mainZone.y}
-                width={mainZone.w}
-                height={mainZone.h}
-                // Use 0 as fallback for older browsers that don't support CSS rx/ry
-                // If cornerRadius is a number, we can use it directly
-                rx={typeof cornerRadius === "number" ? cornerRadius : 0}
-                ry={typeof cornerRadius === "number" ? cornerRadius : 0}
             />
 
             {/* Foreground Rectangle */}

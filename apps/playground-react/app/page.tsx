@@ -374,6 +374,15 @@ export default function Home() {
                                 </td>
                             </tr>
                             <tr className="bg-background">
+                                <td className="p-4 font-medium">LinearStrip</td>
+                                <td className="p-4 text-muted-foreground">
+                                    A linear rectangle strip for linear controls. Positioned at a center point (cx, cy)
+                                    with configurable length, thickness, rotation, and rounded corners. Used for slider
+                                    tracks, faders, and pitch/mod wheels.
+                                </td>
+                                <td className="p-4 text-right">—</td>
+                            </tr>
+                            <tr className="bg-muted/20">
                                 <td className="p-4 font-medium">RadialImage</td>
                                 <td className="p-4 text-muted-foreground">
                                     Displays static content at radial coordinates. Content is sized to fit within the

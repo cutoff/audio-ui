@@ -22,7 +22,7 @@ import {
     Film,
     RotateCw,
 } from "lucide-react";
-import { ValueRing, TickRing, LabelRing, AdaptiveBox } from "@cutoff/audio-ui-react";
+import { ValueRing, TickRing, LabelRing, AdaptiveBox, LinearStrip } from "@cutoff/audio-ui-react";
 import { TriangleWaveIcon, SineWaveIcon, SquareWaveIcon, SawWaveIcon } from "@/components/wave-icons";
 
 const layoutPrimitives = [
@@ -139,6 +139,26 @@ const svgPrimitives = [
                     labelClassName="text-[8px] font-medium fill-foreground"
                 />
                 <circle cx={50} cy={50} r={2} className="fill-muted-foreground" />
+            </svg>
+        ),
+    },
+    {
+        name: "LinearStrip",
+        description:
+            "A linear rectangle strip for linear controls. Positioned at a center point (cx, cy) with configurable length, thickness, rotation, and rounded corners. Used for slider tracks, faders, and pitch/mod wheels.",
+        preview: (
+            <svg width="100%" height="100%" viewBox="0 0 100 300" style={{ display: "block" }}>
+                <LinearStrip
+                    cx={50}
+                    cy={150}
+                    length={260}
+                    thickness={8}
+                    rotation={0}
+                    roundness={0.3}
+                    style={{
+                        fill: "var(--audioui-primary-50)",
+                    }}
+                />
             </svg>
         ),
     },

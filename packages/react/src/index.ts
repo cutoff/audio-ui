@@ -39,6 +39,8 @@ export { default as TickRing } from "./components/primitives/svg/TickRing";
 export type { TickRingProps } from "./components/primitives/svg/TickRing";
 export { default as LabelRing } from "./components/primitives/svg/LabelRing";
 export type { LabelRingProps } from "./components/primitives/svg/LabelRing";
+export { default as LinearStrip } from "./components/primitives/svg/LinearStrip";
+export type { LinearStripProps } from "./components/primitives/svg/LinearStrip";
 
 // Export SVG presentation components
 export { default as ButtonView } from "./components/defaults/controls/ButtonView";
