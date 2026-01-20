@@ -391,6 +391,16 @@ export default function Home() {
                                 </td>
                                 <td className="p-4 text-right">—</td>
                             </tr>
+                            <tr className="bg-background">
+                                <td className="p-4 font-medium">LinearCursor</td>
+                                <td className="p-4 text-muted-foreground">
+                                    A cursor that slides along a linear strip. Position driven by normalized value (0.0
+                                    = bottom, 1.0 = top). Supports image or SVG shape (rectangle/ellipse based on
+                                    roundness). Rotates around strip center along with the virtual bar. Used for slider
+                                    cursors and fader handles.
+                                </td>
+                                <td className="p-4 text-right">—</td>
+                            </tr>
                             <tr className="bg-muted/20">
                                 <td className="p-4 font-medium">RadialImage</td>
                                 <td className="p-4 text-muted-foreground">

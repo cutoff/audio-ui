@@ -43,6 +43,8 @@ export { default as LinearStrip } from "./components/primitives/svg/LinearStrip"
 export type { LinearStripProps } from "./components/primitives/svg/LinearStrip";
 export { default as ValueStrip } from "./components/primitives/svg/ValueStrip";
 export type { ValueStripProps } from "./components/primitives/svg/ValueStrip";
+export { default as LinearCursor } from "./components/primitives/svg/LinearCursor";
+export type { LinearCursorProps } from "./components/primitives/svg/LinearCursor";
 
 // Export SVG presentation components
 export { default as ButtonView } from "./components/defaults/controls/ButtonView";

@@ -514,6 +514,52 @@ type ValueStripProps = {
 - The fill direction is calculated in unrotated coordinate space, then rotated
 - Used for slider value indicators and fader fills
 
+### LinearCursor
+
+Renders a cursor that slides along a linear strip. The cursor position is driven by a normalized value, where 0.0 represents the bottom of the virtual bar and 1.0 represents the top.
+
+#### Props
+
+```typescript
+type LinearCursorProps = {
+  cx: number; // X coordinate of center point of the strip
+  cy: number; // Y coordinate of center point of the strip
+  length: number; // Length of the strip
+  rotation?: number; // Rotation angle in degrees of the virtual bar (0 = vertical, -90 or 270 = horizontal)
+  normalizedValue: number; // Value between 0 and 1, driving the cursor position (0.0 = bottom, 1.0 = top)
+  width: number; // Width of the cursor (x axis)
+  aspectRatio: number; // Aspect ratio (e.g., 1 = 1:1, 1.5 = 1.5:1). Height = width / aspectRatio. Ignored when imageHref is provided.
+  imageHref?: string; // Optional image URL. When provided, roundness and aspectRatio are ignored (image preserves natural aspect ratio).
+  roundness?: number | string; // Corner roundness (normalized 0.0-1.0 or CSS variable). 1.0 = ellipse/circle. Ignored when imageHref is provided.
+  className?: string;
+  style?: CSSProperties;
+};
+```
+
+#### Usage
+
+```tsx
+// Vertical cursor (rectangle)
+<LinearCursor cx={50} cy={150} length={260} normalizedValue={0.65} width={6} aspectRatio={1} />
+
+// Horizontal cursor (ellipse)
+<LinearCursor cx={150} cy={50} length={260} rotation={-90} normalizedValue={0.75} width={8} aspectRatio={1} roundness={1} />
+
+// Image-based cursor (preserves natural aspect ratio)
+<LinearCursor cx={50} cy={150} length={260} normalizedValue={0.5} width={20} aspectRatio={1} imageHref="/cursor.png" />
+```
+
+#### Design Notes
+
+- The cursor slides along a virtual bar centered at `(cx, cy)` with a defined `length`
+- **Rotation**: The `rotation` prop represents the rotation of the virtual bar (not the cursor itself). The cursor rotates around the strip center `(cx, cy)` along with the bar
+- **Position**: `normalizedValue` 0.0 = bottom of virtual bar, 1.0 = top of virtual bar
+- **Rendering modes**:
+  - **Image mode**: When `imageHref` is provided, the image preserves its natural aspect ratio within a square bounding box. `roundness` and `aspectRatio` are ignored
+  - **Ellipse mode**: When `roundness = 1.0`, renders as an ellipse/circle
+  - **Rectangle mode**: When `roundness < 1.0`, renders as a rounded rectangle
+- Used for slider cursors and fader handles
+
 ### Rotation Behavior
 
 **All SVG primitives (Radial and Linear) use consistent rotation semantics:**

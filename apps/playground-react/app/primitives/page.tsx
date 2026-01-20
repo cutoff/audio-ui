@@ -22,7 +22,15 @@ import {
     Film,
     RotateCw,
 } from "lucide-react";
-import { ValueRing, TickRing, LabelRing, AdaptiveBox, LinearStrip, ValueStrip } from "@cutoff/audio-ui-react";
+import {
+    ValueRing,
+    TickRing,
+    LabelRing,
+    AdaptiveBox,
+    LinearStrip,
+    ValueStrip,
+    LinearCursor,
+} from "@cutoff/audio-ui-react";
 import { TriangleWaveIcon, SineWaveIcon, SquareWaveIcon, SawWaveIcon } from "@/components/wave-icons";
 
 const layoutPrimitives = [
@@ -187,6 +195,51 @@ const svgPrimitives = [
                     rotation={0}
                     roundness={0.3}
                     normalizedValue={0.65}
+                    style={{
+                        fill: "var(--audioui-primary-color)",
+                    }}
+                />
+            </svg>
+        ),
+    },
+    {
+        name: "LinearCursor",
+        description:
+            "A cursor that slides along a linear strip. Position driven by normalized value (0.0 = bottom, 1.0 = top). Supports image or SVG shape (rectangle/ellipse based on roundness). Rotates around strip center along with the virtual bar. Used for slider cursors and fader handles.",
+        preview: (
+            <svg width="100%" height="100%" viewBox="0 0 100 300" style={{ display: "block" }}>
+                <LinearStrip
+                    cx={50}
+                    cy={150}
+                    length={260}
+                    thickness={8}
+                    rotation={0}
+                    roundness={0.3}
+                    style={{
+                        fill: "var(--audioui-primary-50)",
+                    }}
+                />
+                <ValueStrip
+                    cx={50}
+                    cy={150}
+                    length={260}
+                    thickness={8}
+                    rotation={0}
+                    roundness={0.3}
+                    normalizedValue={0.65}
+                    style={{
+                        fill: "var(--audioui-primary-color)",
+                    }}
+                />
+                <LinearCursor
+                    cx={50}
+                    cy={150}
+                    length={260}
+                    rotation={0}
+                    normalizedValue={0.65}
+                    width={8}
+                    aspectRatio={1}
+                    roundness={0.3}
                     style={{
                         fill: "var(--audioui-primary-color)",
                     }}

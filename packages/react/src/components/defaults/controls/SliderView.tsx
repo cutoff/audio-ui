@@ -12,6 +12,7 @@ import { DEFAULT_ROUNDNESS } from "@cutoff/audio-ui-core";
 import { ControlComponent } from "@/types";
 import LinearStrip from "@/primitives/svg/LinearStrip";
 import ValueStrip from "@/primitives/svg/ValueStrip";
+import LinearCursor from "@/primitives/svg/LinearCursor";
 
 /**
  * Props for the SliderView component
@@ -109,6 +110,18 @@ function SliderView({
                 style={{
                     fill: "var(--audioui-primary-color)",
                 }}
+            />
+
+            {/* Cursor */}
+            <LinearCursor
+                cx={cx}
+                cy={cy}
+                length={260}
+                rotation={rotation}
+                normalizedValue={normalizedValue}
+                width={legacyThickness}
+                aspectRatio={1}
+                roundness={roundness}
             />
         </g>
     );

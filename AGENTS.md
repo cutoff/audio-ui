@@ -260,6 +260,7 @@ For composing custom linear controls (sliders, faders, pitch/mod wheels). Primit
 
 - **LinearStrip**: Rectangle strip for linear controls; positioned at center point (cx, cy) with configurable length, thickness, rotation, and rounded corners; supports CSS variable-based roundness; used for slider tracks and fader backgrounds
 - **ValueStrip**: The active (foreground) portion of a linear strip; renders the filled portion based on normalized value; supports unipolar (fills from bottom) and bipolar (fills from center) modes; used for slider value indicators and fader fills
+- **LinearCursor**: Cursor that slides along a linear strip; position driven by normalized value (0.0 = bottom, 1.0 = top); supports image or SVG shape (rectangle/ellipse based on roundness); rotates around strip center (cx, cy) along with the virtual bar; images preserve natural aspect ratio
 
 **Rotation Behavior**: All SVG primitives (Radial and Linear) use consistent rotation semantics: **positive rotation values rotate Counter-Clockwise (Left)**, negative values rotate Clockwise (Right). This matches standard mathematical conventions. For horizontal orientation, use `rotation={-90}` (or `270`).
 
