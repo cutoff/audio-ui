@@ -15,25 +15,37 @@ export interface SynthParams {
     release: number;
     waveform: WaveformType;
     gain: number;
+    panning: number;
 }
 
 /**
- * WebAudio-based monophonic synthesizer engine.
- * Handles oscillator generation, low-pass filtering, and ADSR envelope management.
+ * WebAudio-based polyphonic synthesizer engine.
+ * Handles oscillator generation, low-pass filtering, ADSR envelope management, and stereo panning.
+ *
+ * Supports multiple simultaneous voices (polyphony) with independent ADSR envelopes per voice.
+ * Each voice has its own oscillator, filter, and gain node, allowing for complex sound layering.
  */
 export class SynthEngine {
     private ctx: AudioContext | null = null;
-    private filter: BiquadFilterNode | null = null;
-    private output: GainNode | null = null;
     private masterGain: GainNode | null = null;
+    private panner: StereoPannerNode | null = null;
     private activeOscillators: Map<number, { osc: OscillatorNode; amp: GainNode; filter: BiquadFilterNode }> =
         new Map();
     private params: SynthParams;
 
+    /**
+     * Creates a new synthesizer engine with the specified initial parameters.
+     * @param initialParams - Initial synthesizer parameters (cutoff, resonance, ADSR, waveform, gain, panning)
+     */
     constructor(initialParams: SynthParams) {
         this.params = { ...initialParams };
     }
 
+    /**
+     * Initializes the WebAudio context and audio graph.
+     * Creates the master gain node and stereo panner, connecting them to the audio destination.
+     * This method is called lazily on first note playback to avoid blocking on page load.
+     */
     private init() {
         if (this.ctx) return;
 
@@ -44,20 +56,39 @@ export class SynthEngine {
 
         this.masterGain = this.ctx.createGain();
         this.masterGain.gain.value = this.params.gain;
-        this.masterGain.connect(this.ctx.destination);
+
+        this.panner = this.ctx.createStereoPanner();
+        this.panner.pan.value = this.params.panning;
+
+        this.masterGain.connect(this.panner);
+        this.panner.connect(this.ctx.destination);
     }
 
+    /**
+     * Updates synthesizer parameters with smooth transitions.
+     * Uses `setTargetAtTime` for gain and panning to avoid audio glitches during parameter changes.
+     * @param newParams - Partial parameter object containing the parameters to update
+     */
     public updateParams(newParams: Partial<SynthParams>) {
         this.params = { ...this.params, ...newParams };
 
-        if (this.ctx && this.masterGain) {
+        if (this.ctx) {
             const now = this.ctx.currentTime;
-            if (newParams.gain !== undefined) {
+            if (this.masterGain && newParams.gain !== undefined) {
                 this.masterGain.gain.setTargetAtTime(newParams.gain, now, 0.05);
+            }
+            if (this.panner && newParams.panning !== undefined) {
+                this.panner.pan.setTargetAtTime(newParams.panning, now, 0.05);
             }
         }
     }
 
+    /**
+     * Triggers a note on event for the specified MIDI note.
+     * Creates a new voice with oscillator, filter, and ADSR envelope.
+     * If a voice for this note already exists, it is stopped first (re-trigger behavior).
+     * @param midiNote - MIDI note number (0-127, where 69 = A4 = 440Hz)
+     */
     public noteOn(midiNote: number) {
         this.init();
         if (!this.ctx || !this.masterGain) return;
@@ -96,6 +127,11 @@ export class SynthEngine {
         this.activeOscillators.set(midiNote, { osc, amp, filter: voiceFilter });
     }
 
+    /**
+     * Triggers a note off event for the specified MIDI note.
+     * Applies the release phase of the ADSR envelope and stops the oscillator after the release time.
+     * @param midiNote - MIDI note number to release
+     */
     public noteOff(midiNote: number) {
         if (!this.ctx) return;
 
@@ -110,6 +146,11 @@ export class SynthEngine {
         }
     }
 
+    /**
+     * Updates global parameters (cutoff, resonance, waveform) for all active voices.
+     * Uses smooth transitions to avoid audio glitches when changing filter or waveform during playback.
+     * This method is called when parameters change while notes are playing.
+     */
     public updateGlobalParams() {
         if (!this.ctx) return;
         const now = this.ctx.currentTime;

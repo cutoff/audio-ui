@@ -32,13 +32,14 @@ const INITIAL_PARAMS: SynthParams = {
     release: 0.5,
     waveform: "sawtooth",
     gain: 0.3,
+    panning: 0,
 };
 
 /**
  * WebAudio Example Page.
  * Demonstrates a virtual analog synthesizer implementation using AudioUI components
  * and WebAudio API. Includes oscillator controls, filter, ADSR envelope, and
- * an interactive 88-key keyboard with sustain pedal functionality.
+ * an interactive 61-key keyboard with sustain pedal functionality.
  */
 export default function WebAudioPage() {
     const [params, setParams] = useState<SynthParams>(INITIAL_PARAMS);
@@ -319,6 +320,9 @@ export default function WebAudioPage() {
                                 labelHeightUnits={25}
                                 adaptiveSize
                                 className="h-full w-full"
+                                variant="trackfull"
+                                cursorSize="Strip"
+                                cursorRoundness={1}
                             />
                             <Slider
                                 label="Decay"
@@ -332,6 +336,9 @@ export default function WebAudioPage() {
                                 labelHeightUnits={25}
                                 adaptiveSize
                                 className="h-full w-full"
+                                variant="trackfull"
+                                cursorSize="Strip"
+                                cursorRoundness={1}
                             />
                             <Slider
                                 label="Sustain"
@@ -353,6 +360,9 @@ export default function WebAudioPage() {
                                 labelHeightUnits={25}
                                 adaptiveSize
                                 className="h-full w-full"
+                                variant="trackfull"
+                                cursorSize="Strip"
+                                cursorRoundness={1}
                             />
                             <Slider
                                 label="Release"
@@ -366,10 +376,40 @@ export default function WebAudioPage() {
                                 labelHeightUnits={25}
                                 adaptiveSize
                                 className="h-full w-full"
+                                variant="trackfull"
+                                cursorSize="Strip"
+                                cursorRoundness={1}
                             />
                         </div>
                     </section>
                 </div>
+
+                {/* Panning Section */}
+                <section className="mb-16 max-w-2xl mx-auto">
+                    <div className="flex items-center gap-2 mb-6">
+                        <div className="w-1 h-4 bg-primary rounded-full"></div>
+                        <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Panning</h2>
+                    </div>
+                    <div className="h-24">
+                        <Slider
+                            label="Pan"
+                            orientation="horizontal"
+                            variant="stripless"
+                            cursorSize="Label"
+                            cursorAspectRatio={5}
+                            bipolar
+                            value={params.panning}
+                            min={-1}
+                            max={1}
+                            step={0.01}
+                            onChange={(e) => handleParamChange("panning", e.value)}
+                            valueFormatter={(v) => v.toFixed(2)}
+                            valueAsLabel="interactive"
+                            adaptiveSize
+                            className="h-full w-full"
+                        />
+                    </div>
+                </section>
 
                 {/* Keyboard Section */}
                 <section className="pt-8 border-t">
@@ -395,7 +435,7 @@ export default function WebAudioPage() {
                     <div className="h-48">
                         <Keys
                             notesOn={Array.from(activeNotes)}
-                            nbKeys={88}
+                            nbKeys={61}
                             octaveShift={0}
                             adaptiveSize
                             onChange={(e) => {
@@ -426,7 +466,7 @@ export default function WebAudioPage() {
                         Uses <code>Slider</code> for envelope ADSR parameters, grouped for better workflow.
                     </li>
                     <li>
-                        Uses 88-key <code>Keys</code> component with interactive note playing and visualization.
+                        Uses 61-key <code>Keys</code> component with interactive note playing and visualization.
                     </li>
                     <li>
                         Uses <code>Button</code> with <code>latch</code> prop as sustain pedal switch.
@@ -435,7 +475,7 @@ export default function WebAudioPage() {
                         Grid layout for synth controls using <code>adaptiveSize</code> with constrained container
                         heights.
                     </li>
-                    <li>WebAudio engine handles polyphony and ADSR envelope.</li>
+                    <li>WebAudio engine handles polyphony, ADSR envelope, and stereo panning.</li>
                     <li>Supports MIDI keyboard input via global MIDI service (note on/off and sustain pedal).</li>
                     <li>On-screen keyboard and MIDI keyboard work simultaneously.</li>
                 </ul>
