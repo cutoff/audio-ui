@@ -17,6 +17,8 @@ export type UseContinuousInteractionProps = Omit<ContinuousInteractionConfig, "a
     max?: number;
     /** Step size (real domain). Used to calculate normalized step if step is not provided. */
     paramStep?: number;
+    /** Function to reset the value to its default (called on double-click) */
+    resetToDefault?: () => void;
     /** Optional user-provided mouse down handler (composed with hook handler) */
     onMouseDown?: React.MouseEventHandler;
     /** Optional user-provided touch start handler (composed with hook handler) */
@@ -25,6 +27,8 @@ export type UseContinuousInteractionProps = Omit<ContinuousInteractionConfig, "a
     onWheel?: React.WheelEventHandler;
     /** Optional user-provided keyboard key down handler (composed with hook handler) */
     onKeyDown?: React.KeyboardEventHandler;
+    /** Optional user-provided double click handler (composed with hook handler) */
+    onDoubleClick?: React.MouseEventHandler;
 };
 
 export interface ContinuousInteractionHandlers {
@@ -32,6 +36,7 @@ export interface ContinuousInteractionHandlers {
     onTouchStart: React.TouchEventHandler;
     onWheel: React.WheelEventHandler;
     onKeyDown: React.KeyboardEventHandler;
+    onDoubleClick: React.MouseEventHandler;
     tabIndex: number;
     role: string;
     "aria-disabled"?: boolean;
@@ -45,6 +50,7 @@ export interface ContinuousInteractionHandlers {
  * - Drag interactions (mouse and touch)
  * - Wheel scrolling
  * - Keyboard navigation (arrow keys, Home/End)
+ * - Double-click to reset to default value
  *
  * The hook wraps the framework-agnostic `ContinuousInteractionController` and provides React
  * event handlers that can be attached directly to SVG elements. It handles focus
@@ -66,13 +72,15 @@ export interface ContinuousInteractionHandlers {
  * @param paramStep Step size (real domain). Used to calculate normalized step if step is not provided.
  * @param disabled Whether the control is disabled (default: false)
  * @param editable Whether the control is editable (default: true). When false, uses `--audioui-cursor-noneditable`.
+ * @param resetToDefault Function to reset the value to its default (called on double-click). Only active when editable and not disabled.
  * @param onDragStart Callback when drag interaction starts
  * @param onDragEnd Callback when drag interaction ends
  * @param onMouseDown Optional user-provided mouse down handler (composed with hook handler)
  * @param onTouchStart Optional user-provided touch start handler (composed with hook handler)
  * @param onWheel Optional user-provided wheel handler (composed with hook handler)
  * @param onKeyDown Optional user-provided keyboard key down handler (composed with hook handler)
- * @returns Object containing React event handlers (onMouseDown, onTouchStart, onWheel, onKeyDown) and accessibility props
+ * @param onDoubleClick Optional user-provided double click handler (composed with hook handler)
+ * @returns Object containing React event handlers (onMouseDown, onTouchStart, onWheel, onKeyDown, onDoubleClick) and accessibility props
  *
  * @example
  * ```tsx
@@ -80,6 +88,7 @@ export interface ContinuousInteractionHandlers {
  *   adjustValue: (delta, sensitivity) => {
  *     setValue(v => clamp(v + delta * sensitivity, 0, 100));
  *   },
+ *   resetToDefault: () => setValue(defaultValue),
  *   interactionMode: "both",
  *   direction: "vertical",
  *   sensitivity: 0.01
@@ -105,10 +114,12 @@ export function useContinuousInteraction({
     editable = true,
     onDragStart,
     onDragEnd,
+    resetToDefault,
     onMouseDown: userOnMouseDown,
     onTouchStart: userOnTouchStart,
     onWheel: userOnWheel,
     onKeyDown: userOnKeyDown,
+    onDoubleClick: userOnDoubleClick,
 }: UseContinuousInteractionProps): ContinuousInteractionHandlers {
     // Adaptive Sensitivity Logic
     // If a step is provided, ensure that dragging one step corresponds to at most TARGET_PIXELS_PER_STEP.
@@ -221,8 +232,26 @@ export function useContinuousInteraction({
                     ctrl.handleKeyDown(e as unknown as KeyboardEvent);
                 }
             },
+            onDoubleClick: (e: React.MouseEvent) => {
+                // Call user handler first
+                userOnDoubleClick?.(e);
+                // Only reset if not prevented and resetToDefault is provided
+                if (!e.defaultPrevented && resetToDefault && editable && !disabled) {
+                    e.preventDefault();
+                    resetToDefault();
+                }
+            },
         };
-    }, [userOnMouseDown, userOnTouchStart, userOnWheel, userOnKeyDown]);
+    }, [
+        userOnMouseDown,
+        userOnTouchStart,
+        userOnWheel,
+        userOnKeyDown,
+        userOnDoubleClick,
+        resetToDefault,
+        editable,
+        disabled,
+    ]);
 
     // Cursor selection based on interaction state - uses CSS variables for customization
     // The logic (when to show which cursor) is fixed, but cursor types are customizable via CSS

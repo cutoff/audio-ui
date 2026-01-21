@@ -264,6 +264,7 @@ export interface AdaptiveBoxSvgProps extends PropsWithChildren {
     // Event handlers (use native WheelEvent as requested)
     onWheel?: (e: React.WheelEvent<SVGSVGElement>) => void;
     onClick?: React.MouseEventHandler<SVGSVGElement>;
+    onDoubleClick?: React.MouseEventHandler<SVGSVGElement>;
     onMouseDown?: React.MouseEventHandler<SVGSVGElement>;
     onMouseUp?: React.MouseEventHandler<SVGSVGElement>;
     onMouseEnter?: React.MouseEventHandler<SVGSVGElement>;

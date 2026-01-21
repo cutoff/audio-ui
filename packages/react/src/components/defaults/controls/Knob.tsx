@@ -221,6 +221,8 @@ function Knob({
             parameter={parameter}
             unit={unit}
             scale={scale}
+            midiResolution={midiResolution}
+            defaultValue={defaultValue}
             interactionMode={interactionMode}
             interactionDirection={interactionDirection}
             interactionSensitivity={interactionSensitivity}

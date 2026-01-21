@@ -28,6 +28,17 @@ export interface UseAudioParameterResult {
      * @param sensitivity Optional multiplier (default 1.0)
      */
     adjustValue: (delta: number, sensitivity?: number) => void;
+    /**
+     * Get the default normalized value (0..1).
+     * Returns the normalized defaultValue from the parameter if defined,
+     * otherwise returns 0.0 for unipolar or 0.5 for bipolar parameters.
+     */
+    getDefaultNormalizedValue: () => number;
+    /**
+     * Reset the value to the default value.
+     * Uses the parameter's defaultValue if defined, otherwise uses 0.0 for unipolar or 0.5 for bipolar.
+     */
+    resetToDefault: () => void;
 }
 
 /**
@@ -166,6 +177,27 @@ export function useAudioParameter<T extends number | boolean | string>(
         return userLabel ?? parameterDef.name;
     }, [valueAsLabel, formattedValue, userLabel, parameterDef.name]);
 
+    // Get default normalized value
+    const getDefaultNormalizedValue = useCallback(() => {
+        if (parameterDef.type === "continuous") {
+            if (parameterDef.defaultValue !== undefined) {
+                return converter.normalize(parameterDef.defaultValue);
+            }
+            // If no defaultValue, use 0.0 for unipolar, 0.5 for bipolar
+            const isBipolar = parameterDef.bipolar === true;
+            return isBipolar ? 0.5 : 0.0;
+        }
+        // For non-continuous parameters, return 0.0
+        return 0.0;
+    }, [converter, parameterDef]);
+
+    // Reset to default value
+    const resetToDefault = useCallback(() => {
+        if (!onChange) return;
+        const defaultNormalized = getDefaultNormalizedValue();
+        setNormalizedValue(defaultNormalized);
+    }, [onChange, getDefaultNormalizedValue, setNormalizedValue]);
+
     return {
         normalizedValue,
         formattedValue,
@@ -173,5 +205,7 @@ export function useAudioParameter<T extends number | boolean | string>(
         converter,
         setNormalizedValue,
         adjustValue,
+        getDefaultNormalizedValue,
+        resetToDefault,
     };
 }

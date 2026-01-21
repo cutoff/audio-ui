@@ -129,6 +129,7 @@ function generateCodeSnippet(
 
 type KnobComponentProps = {
     value: number;
+    defaultValue?: number | undefined;
     min: number;
     max: number;
     step?: number;
@@ -153,6 +154,7 @@ type KnobComponentProps = {
 
 function KnobComponent({
     value,
+    defaultValue,
     min,
     max,
     step,
@@ -184,6 +186,7 @@ function KnobComponent({
             max={max}
             step={step}
             value={value}
+            defaultValue={defaultValue}
             label={label}
             bipolar={bipolar}
             roundness={roundness}
@@ -208,6 +211,7 @@ function KnobComponent({
 
 export default function KnobDemoPage() {
     const [value, setValue] = useState(42);
+    const [defaultValue, setDefaultValue] = useState<number | undefined>(42);
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(100);
     const [step, setStep] = useState<number | undefined>(1);
@@ -227,6 +231,7 @@ export default function KnobDemoPage() {
         switch (num) {
             case 0:
                 setValue(42);
+                setDefaultValue(42);
                 setMin(0);
                 setMax(100);
                 setStep(1);
@@ -244,6 +249,7 @@ export default function KnobDemoPage() {
                 break;
             case 1:
                 setValue(64);
+                setDefaultValue(64);
                 setMin(0);
                 setMax(127);
                 setStep(1);
@@ -261,6 +267,7 @@ export default function KnobDemoPage() {
                 break;
             case 2:
                 setValue(0);
+                setDefaultValue(0);
                 setMin(-1024);
                 setMax(1024);
                 setStep(1);
@@ -278,6 +285,7 @@ export default function KnobDemoPage() {
                 break;
             case 4:
                 setValue(64);
+                setDefaultValue(64);
                 setMin(0);
                 setMax(127);
                 setStep(1);
@@ -295,6 +303,7 @@ export default function KnobDemoPage() {
                 break;
             case 5:
                 setValue(0);
+                setDefaultValue(0);
                 setMin(-100);
                 setMax(100);
                 setStep(1);
@@ -312,6 +321,7 @@ export default function KnobDemoPage() {
                 break;
             case 6:
                 setValue(0);
+                setDefaultValue(0);
                 setMin(-100);
                 setMax(100);
                 setStep(1);
@@ -330,6 +340,7 @@ export default function KnobDemoPage() {
             case 7:
                 // Oscillator - iconCap with default rotary overlay
                 setValue(64);
+                setDefaultValue(64);
                 setMin(0);
                 setMax(127);
                 setStep(1);
@@ -348,6 +359,7 @@ export default function KnobDemoPage() {
             case 8:
                 // LFO - iconCap with rotary overlay enabled
                 setValue(0);
+                setDefaultValue(0);
                 setMin(-64);
                 setMax(64);
                 setStep(1);
@@ -526,6 +538,19 @@ export default function KnobDemoPage() {
                 placeholder="Continuous"
             />
         </div>,
+        <div key="defaultValue" className="grid gap-2">
+            <Label htmlFor="defaultValueProp">Default Value</Label>
+            <Input
+                id="defaultValueProp"
+                type="number"
+                value={defaultValue !== undefined ? defaultValue : ""}
+                onChange={(e) => {
+                    const val = e.target.value === "" ? undefined : Number(e.target.value);
+                    setDefaultValue(val);
+                }}
+                placeholder="Auto (0.0 unipolar, 0.5 bipolar)"
+            />
+        </div>,
     ];
 
     const examples = [
@@ -658,6 +683,7 @@ export default function KnobDemoPage() {
         max,
         step,
         value,
+        defaultValue,
         label,
         roundness,
         thickness,

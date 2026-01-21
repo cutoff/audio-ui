@@ -239,6 +239,7 @@ export default function WebAudioPage() {
                                 variant="iconCap"
                                 label="Master"
                                 value={params.gain}
+                                defaultValue={INITIAL_PARAMS.gain}
                                 min={0}
                                 max={1}
                                 step={0.01}
@@ -274,6 +275,7 @@ export default function WebAudioPage() {
                                 variant="plainCap"
                                 label="Cutoff"
                                 value={params.cutoff}
+                                defaultValue={INITIAL_PARAMS.cutoff}
                                 min={20}
                                 max={10000}
                                 scale="log"
@@ -287,6 +289,7 @@ export default function WebAudioPage() {
                                 variant="plainCap"
                                 label="Resonance"
                                 value={params.resonance}
+                                defaultValue={INITIAL_PARAMS.resonance}
                                 min={0.1}
                                 max={20}
                                 step={0.1}
@@ -311,6 +314,7 @@ export default function WebAudioPage() {
                             <Slider
                                 label="Attack"
                                 value={params.attack}
+                                defaultValue={INITIAL_PARAMS.attack}
                                 min={0.001}
                                 max={2}
                                 step={0.01}
@@ -327,6 +331,7 @@ export default function WebAudioPage() {
                             <Slider
                                 label="Decay"
                                 value={params.decay}
+                                defaultValue={INITIAL_PARAMS.decay}
                                 min={0.001}
                                 max={2}
                                 step={0.01}
@@ -343,6 +348,7 @@ export default function WebAudioPage() {
                             <Slider
                                 label="Sustain"
                                 value={params.sustain}
+                                defaultValue={INITIAL_PARAMS.sustain}
                                 min={0}
                                 max={1}
                                 step={0.01}
@@ -367,6 +373,7 @@ export default function WebAudioPage() {
                             <Slider
                                 label="Release"
                                 value={params.release}
+                                defaultValue={INITIAL_PARAMS.release}
                                 min={0.001}
                                 max={3}
                                 step={0.01}
@@ -399,6 +406,7 @@ export default function WebAudioPage() {
                             cursorAspectRatio={5}
                             bipolar
                             value={params.panning}
+                            defaultValue={INITIAL_PARAMS.panning}
                             min={-1}
                             max={1}
                             step={0.01}

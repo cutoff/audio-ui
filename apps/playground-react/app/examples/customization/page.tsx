@@ -85,6 +85,7 @@ export default function CustomizationPage() {
                                 max={16383}
                                 step={1}
                                 value={value}
+                                defaultValue={0}
                                 onChange={(event: AudioControlEvent<number>) => setValue(event.value)}
                                 label={selectedComponent.title || "Custom Control"}
                                 className="w-full h-full"

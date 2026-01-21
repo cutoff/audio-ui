@@ -98,7 +98,7 @@ export interface DiscreteOption {
     midiValue?: number;
 }
 
-interface BaseAudioParameter {
+interface BaseAudioParameter<T = number | boolean | string> {
     id: string;
     name: string; // 'title' in MIDI 2.0 PE
     type: AudioParameterType;
@@ -106,29 +106,30 @@ interface BaseAudioParameter {
     // The physical MIDI resolution (7, 14 bits, etc.)
     // Default: 32 (High resolution for internal precision)
     midiResolution?: MidiResolution;
+    /** Default value for the parameter */
+    defaultValue?: T;
 }
 
-export interface ContinuousParameter extends BaseAudioParameter {
+export interface ContinuousParameter extends BaseAudioParameter<number> {
     type: "continuous";
     min: number;
     max: number;
     step?: number; // Granularity of the REAL value (e.g. 0.1, or 1 for Integers)
-    defaultValue?: number;
     unit?: string; // "dB", "Hz"
     scale?: ScaleType;
+    /** Whether the parameter operates in bipolar mode (centered around zero) */
+    bipolar?: boolean;
 }
 
-export interface BooleanParameter extends BaseAudioParameter {
+export interface BooleanParameter extends BaseAudioParameter<boolean> {
     type: "boolean";
-    defaultValue?: boolean;
     mode?: "toggle" | "momentary";
     trueLabel?: string; // e.g. "On"
     falseLabel?: string;
 }
 
-export interface DiscreteParameter extends BaseAudioParameter {
+export interface DiscreteParameter extends BaseAudioParameter<number | string> {
     type: "discrete";
-    defaultValue?: number | string;
     /** Array of option definitions (parameter model) */
     options: DiscreteOption[];
 
@@ -637,6 +638,7 @@ export const AudioParameterFactory = {
         midiResolution: 7,
         unit: "",
         defaultValue: 0,
+        bipolar: true,
     }),
 
     /**
@@ -665,6 +667,7 @@ export const AudioParameterFactory = {
         midiResolution: 14,
         unit: "",
         defaultValue: 0,
+        bipolar: true,
     }),
 
     /**
@@ -697,6 +700,7 @@ export const AudioParameterFactory = {
         step: 1,
         unit,
         defaultValue: 0,
+        bipolar: true,
     }),
 
     /**
@@ -766,7 +770,11 @@ export const AudioParameterFactory = {
      * standard MIDI presets.
      *
      * The method handles bipolar mode automatically: if `bipolar` is true, it adjusts
-     * min/max to be symmetric around zero and sets the default value to 0.
+     * min/max to be symmetric around zero when only one boundary is provided. For default values:
+     * - If `defaultValue` is provided, it is used (even when `bipolar=true`)
+     * - If `defaultValue` is not provided and `bipolar=true`, the center of the range is calculated
+     *   (0 for symmetric ranges, otherwise the midpoint)
+     * - If `defaultValue` is not provided and `bipolar=false`, falls back to `min` or 0
      *
      * @param config Configuration object with optional fields for all parameter properties
      * @returns A ContinuousParameter configured according to the provided config
@@ -788,6 +796,15 @@ export const AudioParameterFactory = {
      *   unit: "%"
      * });
      * // Automatically sets min: -100, max: 100, defaultValue: 0
+     *
+     * const customBipolarParam = AudioParameterFactory.createControl({
+     *   name: "Custom",
+     *   min: 0,
+     *   max: 127,
+     *   bipolar: true,
+     *   defaultValue: 64
+     * });
+     * // Uses provided defaultValue: 64 (center of 0-127 range)
      * ```
      */
     createControl: (config: ContinuousControlConfig): ContinuousParameter => {
@@ -795,7 +812,7 @@ export const AudioParameterFactory = {
 
         let effectiveMin = min;
         let effectiveMax = max;
-        let effectiveDefault = defaultValue ?? min ?? 0;
+        let effectiveDefault = defaultValue;
 
         // Handle bipolar mode: ensure symmetric range around zero
         if (bipolar) {
@@ -810,8 +827,21 @@ export const AudioParameterFactory = {
                 // Only min specified: make symmetric (e.g., min=-100 -> max=100)
                 effectiveMax = -min!;
             }
-            // Bipolar parameters always default to center (zero)
-            effectiveDefault = 0;
+            // Bipolar parameters default to center: use provided defaultValue if given,
+            // otherwise calculate center of the range (which may not be 0 if range isn't symmetric)
+            if (effectiveDefault === undefined) {
+                const finalMin = effectiveMin ?? 0;
+                const finalMax = effectiveMax ?? 100;
+                // If range is symmetric around zero, default to 0; otherwise use center of range
+                if (finalMin === -finalMax) {
+                    effectiveDefault = 0;
+                } else {
+                    effectiveDefault = (finalMin + finalMax) / 2;
+                }
+            }
+        } else {
+            // Unipolar: use provided defaultValue or fall back to min or 0
+            effectiveDefault = effectiveDefault ?? min ?? 0;
         }
 
         return {
@@ -825,6 +855,7 @@ export const AudioParameterFactory = {
             defaultValue: effectiveDefault,
             scale,
             midiResolution,
+            bipolar: bipolar ?? false,
         };
     },
 };

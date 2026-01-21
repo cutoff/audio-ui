@@ -24,6 +24,7 @@ The core of continuous interaction is the `useContinuousInteraction` hook, which
 - **Pointer Dragging**: Mouse and Touch support with adaptive sensitivity.
 - **Mouse Wheel**: High-precision scrolling with configurable sensitivity and accumulator for discrete steps.
 - **Keyboard Navigation**: Accessible control via Arrow keys, Home/End, and specialized handlers (Space/Enter).
+- **Double-Click Reset**: Double-click to reset the value to its default (only active when editable and `resetToDefault` is provided).
 - **Focus Management**: Consistent focus behavior and styling.
 
 ### Boolean Interaction
@@ -62,6 +63,7 @@ This hook abstracts the complexity of event handling and state management.
 ```typescript
 const handlers = useContinuousInteraction({
   adjustValue, // Function to update the normalized value
+  resetToDefault, // Function to reset value to default (called on double-click)
   interactionMode, // "drag" | "wheel" | "both"
   direction, // "vertical" | "horizontal" | "circular" | "both"
   sensitivity, // Drag sensitivity (normalized value per pixel, default: 0.005)
@@ -71,6 +73,7 @@ const handlers = useContinuousInteraction({
   max, // Maximum value (real domain) - used to calculate normalized step if step not provided
   paramStep, // Step size (real domain) - used to calculate normalized step if step not provided
   disabled, // Whether the control is disabled
+  editable, // Whether the control is editable (default: true)
 });
 ```
 
@@ -78,7 +81,9 @@ const handlers = useContinuousInteraction({
 
 **Note**: High-level components (Knob, CycleButton, Slider) expose these props as `interactionDirection` and `interactionSensitivity` for clarity. The internal hook uses `direction` and `sensitivity`.
 
-It returns a set of event handlers (`onMouseDown`, `onTouchStart`, `onWheel`, `onKeyDown`) and accessibility props (`tabIndex`, `role`, `aria-*`) that should be spread onto the interactive element.
+It returns a set of event handlers (`onMouseDown`, `onTouchStart`, `onWheel`, `onKeyDown`, `onDoubleClick`) and accessibility props (`tabIndex`, `role`, `aria-*`) that should be spread onto the interactive element.
+
+**Double-Click Reset**: When `resetToDefault` is provided and the control is editable and not disabled, double-clicking the control resets the value to its default. The default value is determined by the parameter's `defaultValue` property, or calculated as 0.0 for unipolar or 0.5 for bipolar parameters when not specified.
 
 ### `useDiscreteInteraction` Hook
 

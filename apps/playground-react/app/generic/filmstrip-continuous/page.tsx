@@ -44,12 +44,14 @@ function generateCodeSnippet(
     interactionSensitivity: number | undefined,
     valueAsLabel: ValueLabelMode | undefined,
     unit: string | undefined,
-    invertValue: boolean
+    invertValue: boolean,
+    defaultValue: number | undefined
 ): string {
     let props = `value={${value}} min={${min}} max={${max}} label="${label}"`;
     if (bipolar) props += ` bipolar={${bipolar}}`;
     if (step !== undefined) props += ` step={${step}}`;
     if (unit !== undefined) props += ` unit="${unit}"`;
+    if (defaultValue !== undefined) props += ` defaultValue={${defaultValue}}`;
     props += `\n  frameWidth={${frameWidth}} frameHeight={${frameHeight}} frameCount={${frameCount}}`;
     props += `\n  imageHref="${imageHref}"`;
     if (orientation !== "vertical") props += ` orientation="${orientation}"`;
@@ -65,6 +67,7 @@ function generateCodeSnippet(
 export default function FilmStripContinuousDemoPage() {
     // Default props match VU Meter example
     const [value, setValue] = useState(-2);
+    const [defaultValue, setDefaultValue] = useState<number | undefined>(-2);
     const [min, setMin] = useState(-7);
     const [max, setMax] = useState(3);
     const [step, setStep] = useState<number | undefined>(1);
@@ -88,6 +91,7 @@ export default function FilmStripContinuousDemoPage() {
             case 0:
                 // VU Meter
                 setValue(-2);
+                setDefaultValue(-2);
                 setMin(-7);
                 setMax(3);
                 setStep(1);
@@ -109,6 +113,7 @@ export default function FilmStripContinuousDemoPage() {
             case 1:
                 // Guitar Tone
                 setValue(1);
+                setDefaultValue(1);
                 setMin(1);
                 setMax(10);
                 setStep(1);
@@ -130,6 +135,7 @@ export default function FilmStripContinuousDemoPage() {
             case 2:
                 // ABS Knob
                 setValue(150);
+                setDefaultValue(150);
                 setMin(0);
                 setMax(199);
                 setStep(1);
@@ -154,6 +160,7 @@ export default function FilmStripContinuousDemoPage() {
     const componentProps: FilmStripContinuousControlProps = useMemo(
         () => ({
             value,
+            defaultValue,
             min,
             max,
             step,
@@ -175,6 +182,7 @@ export default function FilmStripContinuousDemoPage() {
         }),
         [
             value,
+            defaultValue,
             min,
             max,
             step,
@@ -213,7 +221,8 @@ export default function FilmStripContinuousDemoPage() {
         interactionSensitivity,
         valueAsLabel,
         unit,
-        invertValue
+        invertValue,
+        defaultValue
     );
 
     const properties = [
@@ -243,6 +252,18 @@ export default function FilmStripContinuousDemoPage() {
                     setStep(val);
                 }}
                 placeholder="Continuous"
+            />
+        </div>,
+        <div key="defaultValue" className="grid gap-2">
+            <Label>Default Value</Label>
+            <Input
+                type="number"
+                value={defaultValue !== undefined ? defaultValue : ""}
+                onChange={(e) => {
+                    const val = e.target.value === "" ? undefined : Number(e.target.value);
+                    setDefaultValue(val);
+                }}
+                placeholder="Auto (0.0 unipolar, 0.5 bipolar)"
             />
         </div>,
         <div key="bipolar" className="flex items-center gap-2">

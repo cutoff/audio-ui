@@ -50,6 +50,7 @@ export type SliderPageProps = {
 
 type SliderComponentProps = {
     value: number;
+    defaultValue?: number | undefined;
     min: number;
     max: number;
     step?: number;
@@ -76,6 +77,7 @@ type SliderComponentProps = {
 
 function SliderComponent({
     value,
+    defaultValue,
     min,
     max,
     step,
@@ -105,6 +107,7 @@ function SliderComponent({
             max={max}
             step={step}
             value={value}
+            defaultValue={defaultValue}
             label={label}
             bipolar={bipolar}
             roundness={roundness}
@@ -136,6 +139,7 @@ function SliderComponent({
 
 export default function SliderPage({ orientation }: SliderPageProps) {
     const [value, setValue] = useState(42);
+    const [defaultValue, setDefaultValue] = useState<number | undefined>(42);
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(100);
     const [step, setStep] = useState<number | undefined>(1);
@@ -222,6 +226,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
             case 0:
                 // Default - matches initial state
                 setValue(42);
+                setDefaultValue(42);
                 setMin(0);
                 setMax(100);
                 setStep(1);
@@ -241,6 +246,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
             case 1:
                 // Volume - unipolar, percentage
                 setValue(75);
+                setDefaultValue(75);
                 setMin(0);
                 setMax(100);
                 setStep(1);
@@ -256,6 +262,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
             case 2:
                 // Pan - bipolar, L100-C-R100 format
                 setValue(0);
+                setDefaultValue(0);
                 setMin(-100);
                 setMax(100);
                 setStep(1);
@@ -271,6 +278,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
             case 3:
                 // Cutoff - unipolar, MIDI range, no unit
                 setValue(64);
+                setDefaultValue(64);
                 setMin(0);
                 setMax(127);
                 setStep(1);
@@ -286,6 +294,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
             case 4:
                 // Gain - bipolar, dB, decimal step
                 setValue(0);
+                setDefaultValue(0);
                 setMin(-12);
                 setMax(12);
                 setStep(0.1);
@@ -301,6 +310,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
             case 5:
                 // Delay Time - unipolar, milliseconds, larger range, step 10
                 setValue(500);
+                setDefaultValue(500);
                 setMin(0);
                 setMax(2000);
                 setStep(10);
@@ -316,6 +326,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
             case 6:
                 // Tuning - bipolar, cents, smaller range
                 setValue(0);
+                setDefaultValue(0);
                 setMin(-50);
                 setMax(50);
                 setStep(1);
@@ -338,6 +349,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
         max,
         step,
         value,
+        defaultValue,
         label,
         thickness,
         roundness,
@@ -550,6 +562,19 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 placeholder="Continuous"
             />
         </div>,
+        <div key="defaultValue" className="grid gap-2">
+            <Label htmlFor="defaultValueProp">Default Value</Label>
+            <Input
+                id="defaultValueProp"
+                type="number"
+                value={defaultValue !== undefined ? defaultValue : ""}
+                onChange={(e) => {
+                    const val = e.target.value === "" ? undefined : Number(e.target.value);
+                    setDefaultValue(val);
+                }}
+                placeholder="Auto (0.0 unipolar, 0.5 bipolar)"
+            />
+        </div>,
     ];
 
     const examples = [
@@ -668,6 +693,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 cursorSize="Track"
                 onClick={() => {
                     setValue(60);
+                    setDefaultValue(60);
                     setMin(0);
                     setMax(100);
                     setStep(1);
@@ -699,6 +725,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 cursorSize="Strip"
                 onClick={() => {
                     setValue(40);
+                    setDefaultValue(40);
                     setMin(0);
                     setMax(100);
                     setStep(1);
@@ -730,6 +757,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 cursorSize="None"
                 onClick={() => {
                     setValue(80);
+                    setDefaultValue(80);
                     setMin(0);
                     setMax(100);
                     setStep(1);
@@ -762,6 +790,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 cursorAspectRatio={0.5}
                 onClick={() => {
                     setValue(50);
+                    setDefaultValue(50);
                     setMin(0);
                     setMax(100);
                     setStep(1);
@@ -794,6 +823,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 cursorRoundness={1.0}
                 onClick={() => {
                     setValue(30);
+                    setDefaultValue(30);
                     setMin(0);
                     setMax(100);
                     setStep(1);
@@ -827,6 +857,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 cursorRoundness={0.3}
                 onClick={() => {
                     setValue(70);
+                    setDefaultValue(70);
                     setMin(0);
                     setMax(100);
                     setStep(1);
@@ -859,6 +890,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 cursorAspectRatio={1.2}
                 onClick={() => {
                     setValue(55);
+                    setDefaultValue(55);
                     setMin(0);
                     setMax(100);
                     setStep(1);

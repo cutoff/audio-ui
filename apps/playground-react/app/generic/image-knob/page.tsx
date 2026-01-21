@@ -42,12 +42,14 @@ function generateCodeSnippet(
     interactionDirection: InteractionDirection | undefined,
     interactionSensitivity: number | undefined,
     valueAsLabel: ValueLabelMode | undefined,
-    unit: string | undefined
+    unit: string | undefined,
+    defaultValue: number | undefined
 ): string {
     let props = `value={${value}} min={${min}} max={${max}} label="${label}"`;
     if (bipolar) props += ` bipolar={${bipolar}}`;
     if (step !== undefined) props += ` step={${step}}`;
     if (unit !== undefined) props += ` unit="${unit}"`;
+    if (defaultValue !== undefined) props += ` defaultValue={${defaultValue}}`;
     props += `\n  frameWidth={${frameWidth}} frameHeight={${frameHeight}}`;
     props += `\n  imageHref="${imageHref}"`;
     if (rotation !== 0) props += ` rotation={${rotation}}`;
@@ -62,6 +64,7 @@ function generateCodeSnippet(
 export default function ImageKnobDemoPage() {
     // Default props match Volume Knob example
     const [value, setValue] = useState(50);
+    const [defaultValue, setDefaultValue] = useState<number | undefined>(50);
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(100);
     const [step, setStep] = useState<number | undefined>(undefined);
@@ -83,6 +86,7 @@ export default function ImageKnobDemoPage() {
             case 0:
                 // Volume Knob
                 setValue(50);
+                setDefaultValue(50);
                 setMin(0);
                 setMax(100);
                 setStep(undefined);
@@ -102,6 +106,7 @@ export default function ImageKnobDemoPage() {
             case 1:
                 // Tone Knob
                 setValue(5);
+                setDefaultValue(5);
                 setMin(1);
                 setMax(10);
                 setStep(1);
@@ -121,6 +126,7 @@ export default function ImageKnobDemoPage() {
             case 2:
                 // Finger Pointing
                 setValue(3);
+                setDefaultValue(3);
                 setMin(0);
                 setMax(10);
                 setStep(1);
@@ -143,6 +149,7 @@ export default function ImageKnobDemoPage() {
     const componentProps: ImageKnobProps = useMemo(
         () => ({
             value,
+            defaultValue,
             min,
             max,
             step,
@@ -162,6 +169,7 @@ export default function ImageKnobDemoPage() {
         }),
         [
             value,
+            defaultValue,
             min,
             max,
             step,
@@ -196,7 +204,8 @@ export default function ImageKnobDemoPage() {
         interactionDirection,
         interactionSensitivity,
         valueAsLabel,
-        unit
+        unit,
+        defaultValue
     );
 
     const properties = [
@@ -226,6 +235,18 @@ export default function ImageKnobDemoPage() {
                     setStep(val);
                 }}
                 placeholder="Continuous"
+            />
+        </div>,
+        <div key="defaultValue" className="grid gap-2">
+            <Label>Default Value</Label>
+            <Input
+                type="number"
+                value={defaultValue !== undefined ? defaultValue : ""}
+                onChange={(e) => {
+                    const val = e.target.value === "" ? undefined : Number(e.target.value);
+                    setDefaultValue(val);
+                }}
+                placeholder="Auto (0.0 unipolar, 0.5 bipolar)"
             />
         </div>,
         <div key="bipolar" className="flex items-center gap-2">

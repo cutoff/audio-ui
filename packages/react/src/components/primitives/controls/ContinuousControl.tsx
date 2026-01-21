@@ -58,6 +58,17 @@ export type ContinuousControlComponentProps<P extends object = Record<string, un
 /**
  * A Generic Continuous Control that connects a Data Model (AudioParameter)
  * to a Visualization View (ControlComponent).
+ *
+ * This component provides a generic wrapper for continuous controls (Knob, Slider, etc.),
+ * decoupling behavior (AudioParameter, interaction logic) from visualization (SVG rendering).
+ * It handles parameter resolution, normalization, interaction, and layout automatically.
+ *
+ * Supports double-click to reset to default value when editable (onChange provided).
+ * The default value is determined by the parameter's `defaultValue` property, or
+ * calculated as 0.0 for unipolar or 0.5 for bipolar parameters when not specified.
+ *
+ * @param props Component props including parameter configuration, view component, and layout props
+ * @returns Rendered continuous control with AdaptiveBox layout
  */
 export function ContinuousControl<P extends object = Record<string, unknown>>(
     props: ContinuousControlComponentProps<P>
@@ -149,7 +160,7 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
     const showValueAsLabel =
         valueAsLabel === "valueOnly" || (valueAsLabel === "interactive" && (isDragging || isRecentlyActive));
 
-    const { normalizedValue, adjustValue, effectiveLabel } = useAudioParameter(
+    const { normalizedValue, adjustValue, effectiveLabel, resetToDefault } = useAudioParameter(
         value,
         onChange,
         derivedParameter,
@@ -182,6 +193,7 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         max: derivedParameter.max,
         paramStep: derivedParameter.step,
         editable: !!onChange,
+        resetToDefault: onChange ? resetToDefault : undefined,
         onDragStart: valueAsLabel === "interactive" && onChange ? handleDragStart : undefined,
         onDragEnd: valueAsLabel === "interactive" && onChange ? handleDragEnd : undefined,
         onMouseDown,
@@ -225,6 +237,7 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
                 onMouseDown={interactiveProps.onMouseDown}
                 onTouchStart={interactiveProps.onTouchStart}
                 onKeyDown={interactiveProps.onKeyDown}
+                onDoubleClick={interactiveProps.onDoubleClick}
                 onMouseUp={onMouseUp}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}

@@ -176,6 +176,7 @@ function ControlSurfacePage() {
                                         max={1}
                                         step={0.02}
                                         value={channelPans[id]}
+                                        defaultValue={channelPans[id]}
                                         onChange={(e) =>
                                             setChannelPans((prev) => ({ ...prev, [id]: e.value as number }))
                                         }
@@ -194,6 +195,7 @@ function ControlSurfacePage() {
                                         max={12}
                                         step={0.5}
                                         value={channelGains[id]}
+                                        defaultValue={channelGains[id]}
                                         unit="dB"
                                         onChange={(e) =>
                                             setChannelGains((prev) => ({ ...prev, [id]: e.value as number }))
@@ -225,6 +227,7 @@ function ControlSurfacePage() {
                                             max={FADER_MAX_DB}
                                             step={0.5}
                                             value={channelFaderDb[id]}
+                                            defaultValue={channelFaderDb[id]}
                                             unit="dB"
                                             onChange={(e) =>
                                                 setChannelFaderDb((prev) => ({ ...prev, [id]: e.value as number }))
@@ -276,6 +279,7 @@ function ControlSurfacePage() {
                                     max={1}
                                     step={0.02}
                                     value={masterPan}
+                                    defaultValue={masterPan}
                                     onChange={(e) => setMasterPan(e.value as number)}
                                     valueFormatter={(val) => {
                                         if (val === 0) return "C";
@@ -299,6 +303,7 @@ function ControlSurfacePage() {
                                         max={FADER_MAX_DB}
                                         step={0.5}
                                         value={masterFaderDb}
+                                        defaultValue={masterFaderDb}
                                         unit="dB"
                                         onChange={(e) => setMasterFaderDb(e.value as number)}
                                         style={{

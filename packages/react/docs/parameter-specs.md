@@ -49,9 +49,9 @@ The `AudioParameter` is a polymorphic union type to handle different data shapes
 #### Base Definition
 
 ```typescript
-export type AudioParameterType = "continuous" | "boolean" | "enum";
+export type AudioParameterType = "continuous" | "boolean" | "discrete";
 
-interface BaseAudioParameter {
+interface BaseAudioParameter<T = number | boolean | string> {
   id: string;
   name: string; // 'title' in MIDI 2.0 PE
   type: AudioParameterType;
@@ -59,6 +59,8 @@ interface BaseAudioParameter {
   // The physical MIDI resolution (7, 14 bits, etc.)
   // Default: 32 (High resolution for internal precision)
   midiResolution?: 7 | 8 | 14 | 16 | 32 | 64;
+  /** Default value for the parameter */
+  defaultValue?: T;
 }
 ```
 
@@ -85,16 +87,24 @@ export const ExpScale: ScaleFunction; // For envelope curves
 // Type: can be ScaleFunction object or string shortcut
 export type ScaleType = ScaleFunction | "linear" | "log" | "exp";
 
-export interface ContinuousParameter extends BaseAudioParameter {
+export interface ContinuousParameter extends BaseAudioParameter<number> {
   type: "continuous";
   min: number;
   max: number;
   step?: number; // Granularity of the REAL value (e.g. 0.1, or 1 for Integers)
-  defaultValue?: number;
   unit?: string; // "dB", "Hz"
   scale?: ScaleType; // Default: "linear" (can be string shortcut or ScaleFunction object)
+  /** Whether the parameter operates in bipolar mode (centered around zero) */
+  bipolar?: boolean;
 }
 ```
+
+**Bipolar Mode:**
+
+The `bipolar` flag indicates that a parameter operates in bipolar mode (centered around zero). This is independent of the numeric range - a parameter can be bipolar even if `min >= 0` (e.g., `min=0, max=127, bipolar=true`). The `bipolar` flag is the authoritative indicator for bipolar detection, used for:
+
+- Default value calculation: When no `defaultValue` is provided, bipolar parameters default to the center of the range (0.5 normalized), while unipolar parameters default to the minimum (0.0 normalized).
+- Visual rendering: Bipolar controls render from the center (e.g., ValueRing starts at 12 o'clock, ValueStrip fills from center).
 
 **Important: `step` and Non-Linear Scales**
 
@@ -202,9 +212,8 @@ const customScale: ScaleFunction = {
 Used for Mute, Solo, Bypass.
 
 ```typescript
-export interface BooleanParameter extends BaseAudioParameter {
+export interface BooleanParameter extends BaseAudioParameter<boolean> {
   type: "boolean";
-  defaultValue?: boolean;
   mode?: "toggle" | "momentary";
   trueLabel?: string; // e.g. "On"
   falseLabel?: string; // e.g. "Off"
@@ -225,9 +234,8 @@ export interface BooleanParameter extends BaseAudioParameter {
 Used for Waveforms (Sine/Saw/Square), Filter Types (LP/BP/HP).
 
 ```typescript
-export interface DiscreteParameter extends BaseAudioParameter {
+export interface DiscreteParameter extends BaseAudioParameter<number | string> {
   type: "discrete";
-  defaultValue?: number | string;
   options: Array<{
     value: number | string;
     label: string;
@@ -345,7 +353,8 @@ function Knob(props: KnobProps) {
       max: props.max ?? 100,
       step: props.step,
       unit: props.unit,
-      defaultValue: props.min ?? 0,
+      defaultValue: props.defaultValue,
+      bipolar: props.bipolar,
       midiResolution: 32, // High resolution default
     };
   }, [props.parameter, props.min, props.max, props.step, props.label, props.unit]);
