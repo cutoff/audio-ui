@@ -112,6 +112,7 @@ export type {
     ControlComponentMetadata,
     KnobVariant,
     SliderVariant,
+    SliderCursorSize,
     ValueLabelMode,
 } from "./components/types";
 

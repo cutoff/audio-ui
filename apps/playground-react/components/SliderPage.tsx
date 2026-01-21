@@ -7,7 +7,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { Slider, ValueLabelMode, AudioParameter, AudioControlEvent, SliderVariant } from "@cutoff/audio-ui-react";
+import {
+    Slider,
+    ValueLabelMode,
+    AudioParameter,
+    AudioControlEvent,
+    SliderVariant,
+    SliderCursorSize,
+} from "@cutoff/audio-ui-react";
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -55,6 +62,9 @@ type SliderComponentProps = {
     valueAsLabel?: ValueLabelMode;
     unit?: string;
     variant?: SliderVariant;
+    cursorSize?: SliderCursorSize;
+    cursorAspectRatio?: number;
+    cursorRoundness?: number;
     orientation: "horizontal" | "vertical";
     adaptiveSize?: boolean;
     onChange?: (event: AudioControlEvent<number | string>) => void;
@@ -78,6 +88,9 @@ function SliderComponent({
     valueAsLabel,
     unit,
     variant,
+    cursorSize,
+    cursorAspectRatio,
+    cursorRoundness,
     orientation,
     adaptiveSize,
     onChange,
@@ -106,6 +119,9 @@ function SliderComponent({
             valueAsLabel={valueAsLabel}
             unit={unit}
             variant={variant}
+            cursorSize={cursorSize}
+            cursorAspectRatio={cursorAspectRatio}
+            cursorRoundness={cursorRoundness}
             orientation={orientation}
             valueFormatter={
                 bipolar && useMidiBipolar
@@ -132,6 +148,9 @@ export default function SliderPage({ orientation }: SliderPageProps) {
     const [valueAsLabel, setValueAsLabel] = useState<ValueLabelMode | undefined>(undefined);
     const [unit, setUnit] = useState<string | undefined>(undefined);
     const [variant, setVariant] = useState<SliderVariant | undefined>(undefined);
+    const [cursorSize, setCursorSize] = useState<SliderCursorSize | undefined>(undefined);
+    const [cursorAspectRatio, setCursorAspectRatio] = useState<number | undefined>(undefined);
+    const [cursorRoundness, setCursorRoundness] = useState<number | undefined>(undefined);
 
     // Generate code snippet with all props
     function generateCodeSnippet(): string {
@@ -165,6 +184,18 @@ export default function SliderPage({ orientation }: SliderPageProps) {
 
         if (variant !== undefined) {
             props += ` variant='${variant}'`;
+        }
+
+        if (cursorSize !== undefined) {
+            props += ` cursorSize='${cursorSize}'`;
+        }
+
+        if (cursorAspectRatio !== undefined) {
+            props += ` cursorAspectRatio={${cursorAspectRatio}}`;
+        }
+
+        if (cursorRoundness !== undefined) {
+            props += ` cursorRoundness={${cursorRoundness}}`;
         }
 
         // Add valueFormatter prop if using MIDI bipolar formatter or pan formatter
@@ -203,6 +234,9 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 setValueAsLabel(undefined);
                 setUnit(undefined);
                 setVariant(undefined);
+                setCursorSize(undefined);
+                setCursorAspectRatio(undefined);
+                setCursorRoundness(undefined);
                 break;
             case 1:
                 // Volume - unipolar, percentage
@@ -312,6 +346,9 @@ export default function SliderPage({ orientation }: SliderPageProps) {
         valueAsLabel,
         unit,
         variant,
+        cursorSize,
+        cursorAspectRatio,
+        cursorRoundness,
     };
 
     const properties = [
@@ -336,9 +373,67 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                     <SelectItem value="abstract">Abstract</SelectItem>
                     <SelectItem value="trackless">Trackless</SelectItem>
                     <SelectItem value="trackfull">Trackfull</SelectItem>
-                    <SelectItem value="stripeless">Stripeless</SelectItem>
+                    <SelectItem value="stripless">Stripless</SelectItem>
                 </SelectContent>
             </Select>
+        </div>,
+        <div key="cursorSize" className="grid gap-2">
+            <Label htmlFor="cursorSizeProp">Cursor Size</Label>
+            <Select
+                value={cursorSize === undefined ? "default" : cursorSize}
+                onValueChange={(value) => {
+                    if (value === "default") {
+                        setCursorSize(undefined);
+                    } else {
+                        setCursorSize(value as SliderCursorSize);
+                    }
+                }}
+            >
+                <SelectTrigger id="cursorSizeProp">
+                    <SelectValue placeholder="Select cursor size" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="default">Default (Auto)</SelectItem>
+                    <SelectItem value="None">None</SelectItem>
+                    <SelectItem value="Strip">Strip</SelectItem>
+                    <SelectItem value="Track">Track</SelectItem>
+                    <SelectItem value="Tick">Tick</SelectItem>
+                    <SelectItem value="Label">Label</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>,
+        <div key="cursorAspectRatio" className="grid gap-2">
+            <Label htmlFor="cursorAspectRatioProp">Cursor Aspect Ratio</Label>
+            <Input
+                id="cursorAspectRatioProp"
+                type="number"
+                min="0.1"
+                max="10"
+                step="0.1"
+                value={cursorAspectRatio !== undefined ? cursorAspectRatio : ""}
+                onChange={(e) => {
+                    const value =
+                        e.target.value === "" ? undefined : Math.max(0.1, Math.min(10, Number(e.target.value)));
+                    setCursorAspectRatio(value);
+                }}
+                placeholder="Default (1.0)"
+            />
+        </div>,
+        <div key="cursorRoundness" className="grid gap-2">
+            <Label htmlFor="cursorRoundnessProp">Cursor Roundness (0.0-1.0)</Label>
+            <Input
+                id="cursorRoundnessProp"
+                type="number"
+                min="0"
+                max="1"
+                step="0.01"
+                value={cursorRoundness !== undefined ? cursorRoundness : ""}
+                onChange={(e) => {
+                    const value = e.target.value === "" ? undefined : Math.max(0, Math.min(1, Number(e.target.value)));
+                    setCursorRoundness(value);
+                }}
+                placeholder="Default (inherits roundness)"
+            />
         </div>,
         // Behavior props
         <div key="bipolar" className="flex items-center gap-2 pt-2">
@@ -557,6 +652,229 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 valueAsLabel="interactive"
                 unit="cents"
                 onClick={() => handleExampleClick(6)}
+            />
+        </div>,
+        // Cursor size and variant examples
+        <div key="7" className={orientation === "vertical" ? "h-64" : "w-64"}>
+            <Slider
+                min={0}
+                max={100}
+                step={1}
+                value={60}
+                label="Track Variant"
+                size="large"
+                orientation={orientation}
+                variant="trackless"
+                cursorSize="Track"
+                onClick={() => {
+                    setValue(60);
+                    setMin(0);
+                    setMax(100);
+                    setStep(1);
+                    setLabel("Track Variant");
+                    setBipolar(false);
+                    setUseMidiBipolar(false);
+                    setThickness(undefined);
+                    setRoundness(undefined);
+                    setColor(undefined);
+                    setValueAsLabel(undefined);
+                    setUnit(undefined);
+                    setVariant("trackless");
+                    setCursorSize("Track");
+                    setCursorAspectRatio(undefined);
+                    setCursorRoundness(undefined);
+                }}
+            />
+        </div>,
+        <div key="8" className={orientation === "vertical" ? "h-64" : "w-64"}>
+            <Slider
+                min={0}
+                max={100}
+                step={1}
+                value={40}
+                label="Strip Cursor"
+                size="large"
+                orientation={orientation}
+                variant="trackfull"
+                cursorSize="Strip"
+                onClick={() => {
+                    setValue(40);
+                    setMin(0);
+                    setMax(100);
+                    setStep(1);
+                    setLabel("Strip Cursor");
+                    setBipolar(false);
+                    setUseMidiBipolar(false);
+                    setThickness(undefined);
+                    setRoundness(undefined);
+                    setColor(undefined);
+                    setValueAsLabel(undefined);
+                    setUnit(undefined);
+                    setVariant("trackfull");
+                    setCursorSize("Strip");
+                    setCursorAspectRatio(undefined);
+                    setCursorRoundness(undefined);
+                }}
+            />
+        </div>,
+        <div key="9" className={orientation === "vertical" ? "h-64" : "w-64"}>
+            <Slider
+                min={0}
+                max={100}
+                step={1}
+                value={80}
+                label="No Cursor"
+                size="large"
+                orientation={orientation}
+                variant="trackless"
+                cursorSize="None"
+                onClick={() => {
+                    setValue(80);
+                    setMin(0);
+                    setMax(100);
+                    setStep(1);
+                    setLabel("No Cursor");
+                    setBipolar(false);
+                    setUseMidiBipolar(false);
+                    setThickness(undefined);
+                    setRoundness(undefined);
+                    setColor(undefined);
+                    setValueAsLabel(undefined);
+                    setUnit(undefined);
+                    setVariant("trackless");
+                    setCursorSize("None");
+                    setCursorAspectRatio(undefined);
+                    setCursorRoundness(undefined);
+                }}
+            />
+        </div>,
+        <div key="10" className={orientation === "vertical" ? "h-64" : "w-64"}>
+            <Slider
+                min={0}
+                max={100}
+                step={1}
+                value={50}
+                label="Wide Cursor"
+                size="large"
+                orientation={orientation}
+                variant="trackfull"
+                cursorSize="Track"
+                cursorAspectRatio={0.5}
+                onClick={() => {
+                    setValue(50);
+                    setMin(0);
+                    setMax(100);
+                    setStep(1);
+                    setLabel("Wide Cursor");
+                    setBipolar(false);
+                    setUseMidiBipolar(false);
+                    setThickness(undefined);
+                    setRoundness(undefined);
+                    setColor(undefined);
+                    setValueAsLabel(undefined);
+                    setUnit(undefined);
+                    setVariant("trackfull");
+                    setCursorSize("Track");
+                    setCursorAspectRatio(0.5);
+                    setCursorRoundness(undefined);
+                }}
+            />
+        </div>,
+        <div key="11" className={orientation === "vertical" ? "h-64" : "w-64"}>
+            <Slider
+                min={0}
+                max={100}
+                step={1}
+                value={30}
+                label="Round Cursor"
+                size="large"
+                orientation={orientation}
+                variant="trackless"
+                cursorSize="Strip"
+                cursorRoundness={1.0}
+                onClick={() => {
+                    setValue(30);
+                    setMin(0);
+                    setMax(100);
+                    setStep(1);
+                    setLabel("Round Cursor");
+                    setBipolar(false);
+                    setUseMidiBipolar(false);
+                    setThickness(undefined);
+                    setRoundness(undefined);
+                    setColor(undefined);
+                    setValueAsLabel(undefined);
+                    setUnit(undefined);
+                    setVariant("trackless");
+                    setCursorSize("Strip");
+                    setCursorAspectRatio(undefined);
+                    setCursorRoundness(1.0);
+                }}
+            />
+        </div>,
+        <div key="12" className={orientation === "vertical" ? "h-64" : "w-64"}>
+            <Slider
+                min={0}
+                max={100}
+                step={1}
+                value={70}
+                label="Tall Cursor"
+                size="large"
+                orientation={orientation}
+                variant="abstract"
+                cursorSize="Track"
+                cursorAspectRatio={2.0}
+                cursorRoundness={0.3}
+                onClick={() => {
+                    setValue(70);
+                    setMin(0);
+                    setMax(100);
+                    setStep(1);
+                    setLabel("Tall Cursor");
+                    setBipolar(false);
+                    setUseMidiBipolar(false);
+                    setThickness(undefined);
+                    setRoundness(undefined);
+                    setColor(undefined);
+                    setValueAsLabel(undefined);
+                    setUnit(undefined);
+                    setVariant("abstract");
+                    setCursorSize("Track");
+                    setCursorAspectRatio(2.0);
+                    setCursorRoundness(0.3);
+                }}
+            />
+        </div>,
+        <div key="13" className={orientation === "vertical" ? "h-64" : "w-64"}>
+            <Slider
+                min={0}
+                max={100}
+                step={1}
+                value={55}
+                label="Stripless"
+                size="large"
+                orientation={orientation}
+                variant="stripless"
+                cursorSize="Track"
+                cursorAspectRatio={1.2}
+                onClick={() => {
+                    setValue(55);
+                    setMin(0);
+                    setMax(100);
+                    setStep(1);
+                    setLabel("Stripless");
+                    setBipolar(false);
+                    setUseMidiBipolar(false);
+                    setThickness(undefined);
+                    setRoundness(undefined);
+                    setColor(undefined);
+                    setValueAsLabel(undefined);
+                    setUnit(undefined);
+                    setVariant("stripless");
+                    setCursorSize("Track");
+                    setCursorAspectRatio(1.2);
+                    setCursorRoundness(undefined);
+                }}
             />
         </div>,
     ];

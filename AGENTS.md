@@ -213,7 +213,11 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - CSS vars for theming; adaptive named themes (blue, orange, pink, green, purple, yellow); .dark hue adjust
 - Default adaptive theme (black-ish light, white-ish dark)
 - CSS variables: --audioui-primary-color, --audioui-roundness-base
-- Color variants computed via CSS color-mix(): --audioui-primary-50, --audioui-primary-20
+- Color variants computed via CSS color-mix():
+  - **Transparency variants**: --audioui-primary-50, --audioui-primary-20 (50% and 20% opacity)
+  - **Luminosity variants**: --audioui-primary-light, --audioui-primary-dark (80% color + 20% white/black for lighter/darker versions)
+  - **Adaptive variants**: --audioui-adaptive-50, --audioui-adaptive-20, --audioui-adaptive-light, --audioui-adaptive-dark (same patterns for adaptive colors)
+- Luminosity variants are essential for borders and outlines where transparency doesn't provide sufficient visibility
 - Classes: .audioui-stroke-primary, .audioui-fill-primary, .audioui-border-primary, .audioui-text-primary (all prefixed with `audioui-`)
 - Theme utilities: setThemeColor(), setThemeRoundness(), setTheme() for programmatic access
 - Components read CSS variables directly; props set CSS variables as convenience API
@@ -260,7 +264,7 @@ For composing custom linear controls (sliders, faders, pitch/mod wheels). Primit
 
 - **LinearStrip**: Rectangle strip for linear controls; positioned at center point (cx, cy) with configurable length, thickness, rotation, and rounded corners; supports CSS variable-based roundness; used for slider tracks and fader backgrounds
 - **ValueStrip**: The active (foreground) portion of a linear strip; renders the filled portion based on normalized value; supports unipolar (fills from bottom) and bipolar (fills from center) modes; used for slider value indicators and fader fills
-- **LinearCursor**: Cursor that slides along a linear strip; position driven by normalized value (0.0 = bottom, 1.0 = top); supports image or SVG shape (rectangle/ellipse based on roundness); rotates around strip center (cx, cy) along with the virtual bar; images preserve natural aspect ratio
+- **LinearCursor**: Cursor that slides along a linear strip; position driven by normalized value (0.0 = bottom, 1.0 = top); supports image or SVG shape (rectangle/ellipse based on roundness); rotates around strip center (cx, cy) along with the virtual bar; images preserve natural aspect ratio; cursor length is automatically adjusted to subtract cursor height, preventing the cursor from extending beyond strip bounds
 
 **Rotation Behavior**: All SVG primitives (Radial and Linear) use consistent rotation semantics: **positive rotation values rotate Counter-Clockwise (Left)**, negative values rotate Clockwise (Right). This matches standard mathematical conventions. For horizontal orientation, use `rotation={-90}` (or `270`).
 

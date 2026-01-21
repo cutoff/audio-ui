@@ -205,6 +205,40 @@ The library provides generic control components that decouple behavior from visu
 - **Performance**: Double memoization (both wrapper and control primitive are memoized) provides optimal re-render protection
 - **Type Exports**: `ControlComponent`, `ControlComponentView`, `ControlComponentViewProps`, and `AdaptiveBoxLogicalSizeProps` are exported from `src/index.ts` for users creating custom view components
 
+### Slider Component
+
+The Slider component provides linear fader controls with multiple visual variants and extensive cursor customization.
+
+- **Variants**: Four visual variants available via `variant` prop:
+  - `"abstract"`: Minimal design with transparent track background (uses `--audioui-primary-20` for subtle track visibility)
+  - `"trackless"`: Track background without padding
+  - `"trackfull"`: Full track with thickness-dependent padding (formula: `25 * thickness + 5` pixels)
+  - `"stripless"`: No value strip (track only, no fill indicator)
+- **Cursor Customization**: Comprehensive cursor props for fine-grained control:
+  - `cursorSize`: Determines cursor width source (`"None"` | `"Strip"` | `"Track"` | `"Tick"` | `"Label"`)
+    - `"None"`: No cursor rendered
+    - `"Strip"`: Width matches ValueStrip (if variant supports it)
+    - `"Track"`: Width matches LinearStrip (track background)
+    - `"Tick"`: Width includes tick track shift (future use for tick marks)
+    - `"Label"`: Width includes tick and label track shifts (future use for full-width cursor)
+  - `cursorAspectRatio`: Numeric aspect ratio for cursor (height = width / aspectRatio)
+  - `cursorRoundness`: Overrides cursor roundness (defaults to component `roundness` prop)
+  - `cursorImageHref`: Optional image URL for image-based cursor (preserves natural aspect ratio)
+  - `cursorClassName`: Optional CSS class for cursor
+  - `cursorStyle`: Optional inline styles for cursor
+- **Cursor Length Adjustment**: Cursor length automatically subtracts cursor height to prevent the cursor from extending beyond strip bounds. This ensures the cursor stays within the visible track area at all positions.
+- **Performance Optimizations**: SliderView uses balanced memoization:
+  - Memoized: thickness translation, layout coordinates, strip padding, cursor width/height/length calculations, style objects
+  - Not memoized: Simple boolean checks (`shouldRenderCursor`), nullish coalescing (`effectiveCursorRoundness`), constant values
+  - Constants moved outside component to avoid unnecessary dependency array entries
+- **CSS Variables**: Slider-specific color variables in `themes.css`:
+  - `--audioui-slider-track-color`: Background track color (defaults to `--audioui-adaptive-20`)
+  - `--audioui-slider-strip-color`: Foreground value strip color (defaults to `--audioui-primary-color`)
+  - `--audioui-slider-cursor-color`: Cursor fill color (defaults to `--audioui-primary-color`)
+  - `--audioui-slider-cursor-border-color`: Cursor border color (uses luminosity variants: `--audioui-primary-light` in light mode, `--audioui-primary-dark` in dark mode)
+  - `--audioui-slider-cursor-border-width`: Cursor border width (defaults to `1px`)
+- **Location**: `packages/react/src/components/defaults/controls/Slider.tsx` (wrapper) and `SliderView.tsx` (SVG view component)
+
 ### SVG DOM Optimization
 
 **Design Decision**: Control view components should avoid wrapping single child elements in unnecessary `<g>` (group) elements to reduce DOM depth and improve performance.

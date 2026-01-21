@@ -29,7 +29,18 @@ export type KnobVariant = "abstract" | "simplest" | "plainCap" | "iconCap";
 /**
  * Variant options for the Slider component
  */
-export type SliderVariant = "abstract" | "trackless" | "trackfull" | "stripeless";
+export type SliderVariant = "abstract" | "trackless" | "trackfull" | "stripless";
+
+/**
+ * Cursor size options for the Slider component.
+ * Determines which component's width is used for the cursor.
+ * - "None": No cursor is rendered
+ * - "Strip": Width of the ValueStrip (if variant supports it)
+ * - "Track": Width of the LinearStrip (track)
+ * - "Tick": Width of the TickStrip (future use)
+ * - "Label": Entire width of the Slider, to the LabelStrip (future use)
+ */
+export type SliderCursorSize = "None" | "Strip" | "Track" | "Tick" | "Label";
 
 /**
  * Mode for displaying value vs label.

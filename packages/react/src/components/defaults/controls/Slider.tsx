@@ -11,7 +11,15 @@ import classNames from "classnames";
 import { VerticalSliderView, HorizontalSliderView } from "./SliderView";
 import ContinuousControl from "@/primitives/controls/ContinuousControl";
 import { useAdaptiveSize } from "@/hooks/useAdaptiveSize";
-import { AdaptiveBoxProps, AdaptiveSizeProps, ContinuousControlProps, ThemableProps, SliderVariant, ValueLabelMode } from "@/types";
+import {
+    AdaptiveBoxProps,
+    AdaptiveSizeProps,
+    ContinuousControlProps,
+    ThemableProps,
+    SliderVariant,
+    SliderCursorSize,
+    ValueLabelMode,
+} from "@/types";
 import { clampNormalized } from "@cutoff/audio-ui-core";
 import { useThemableProps } from "@/hooks/useThemableProps";
 
@@ -40,6 +48,18 @@ export type SliderProps = ContinuousControlProps &
          * @default "labelOnly"
          */
         valueAsLabel?: ValueLabelMode;
+        /** Cursor size option - determines which component's width is used for the cursor */
+        cursorSize?: SliderCursorSize;
+        /** Aspect ratio of the cursor */
+        cursorAspectRatio?: number;
+        /** Overrides the roundness factor of the cursor. Defaults to `roundness` */
+        cursorRoundness?: number | string;
+        /** Optional image URL to display as cursor */
+        cursorImageHref?: string;
+        /** Optional CSS class name for the cursor */
+        cursorClassName?: string;
+        /** Optional inline styles for the cursor */
+        cursorStyle?: React.CSSProperties;
     };
 
 /**
@@ -47,7 +67,7 @@ export type SliderProps = ContinuousControlProps &
  * Supports both horizontal and vertical orientations with continuous value adjustment.
  *
  * Features:
- * - Multiple visual variants (abstract, trackless, trackfull, stripeless)
+ * - Multiple visual variants (abstract, trackless, trackfull, stripless)
  * - Configurable orientation (horizontal or vertical)
  * - Bipolar mode support (centered at zero, grows in both directions)
  * - Customizable thickness and roundness
@@ -100,7 +120,7 @@ function Slider({
     color,
     roundness,
     variant = "abstract",
-    thickness = 0.4,
+    thickness = 0.5,
     parameter,
     unit,
     scale,
@@ -118,6 +138,12 @@ function Slider({
     onMouseLeave,
     className,
     style,
+    cursorSize,
+    cursorAspectRatio,
+    cursorRoundness,
+    cursorImageHref,
+    cursorClassName,
+    cursorStyle,
 }: SliderProps) {
     const { style: themableStyle } = useThemableProps({
         color,
@@ -175,6 +201,12 @@ function Slider({
                 thickness: clampedThickness,
                 roundness: roundness ?? "var(--audioui-roundness-slider)",
                 bipolar: bipolar,
+                cursorSize: cursorSize,
+                cursorAspectRatio: cursorAspectRatio,
+                cursorRoundness: cursorRoundness,
+                cursorImageHref: cursorImageHref,
+                cursorClassName: cursorClassName,
+                cursorStyle: cursorStyle,
             }}
         />
     );
