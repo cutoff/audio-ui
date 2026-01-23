@@ -43,11 +43,11 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 | GitHub Operations   | **Do NOT update GitHub issues without explicit request.** Always ask for user confirmation before creating, updating, or closing issues/PRs.                                                                                                                                                                      |
 | Documentation Style | **Write in present tense, declarative statements.** Avoid evolution phrasing: "now", "recently", "changed", "updated", "moved", "introduced", "added", "removed". Focus on current state, not history. Example: "Knob uses ContinuousControl" not "Knob now uses ContinuousControl".                              |
 | Performance Mandate | **Critical Priority.** Audio apps have heavy runtime constraints (e.g., avoiding UI stutters, ensuring low-latency response). Prioritize performance in all decisions: minimal re-renders, no JS for layout/sizing, efficient event handling.                                                                     |
-| React               | React 18 only; library as peer deps (`^18.2.0`), demo as direct (`^18.3.1`); never upgrade to 19                                                                                                                                                                                                                  |
+| React               | React 18+; library as peer deps (`^18.2.0 || ^19.0.0`), demo as direct (`^18.3.1`); compatible with React 19                                                                                                                                                                                                     |
 | TypeScript          | Strict mode; handle all errors; prefix unused params with \_; `@types/react:^18.3.23`                                                                                                                                                                                                                             |
 | Package Manager     | pnpm                                                                                                                                                                                                                                                                                                              |
 | UI Components       | Use shadcn/ui; add with `pnpm dlx shadcn@latest add [component]`; no custom if shadcn available; **NEVER modify shadcn components** - they are third-party stabilized code; work around type issues with type assertions/ts-expect-error if needed                                                                |
-| Testing             | Vitest; files `.test.tsx` alongside; mock deps; React 18 compat                                                                                                                                                                                                                                                   |
+| Testing             | Vitest; files `.test.tsx` alongside; mock deps; React 18/19 compat                                                                                                                                                                                                                                                |
 | Build               | Library: Vite with TS decl; demo: Next.js 15 with Turbopack; run `pnpm build && pnpm typecheck`                                                                                                                                                                                                                   |
 | Dev Server          | Run `pnpm dev` at root for development; never in playground-app for testing                                                                                                                                                                                                                                       |
 | Theming             | CSS vars with `--audioui-*`; default adaptive (black light, white dark); utility classes `.audioui-*`; named themes blue etc.                                                                                                                                                                                     |
@@ -124,12 +124,17 @@ See `agents/coding-agent-commands-1.0.md` for complete command definitions and p
 
 ## React Version Compatibility
 
-**React 18 Only**: The library uses React 18 as a peer dependency. Never upgrade to React 19.
+**React 18 Minimum, React 19 Compatible**: The library uses React 18 as a minimum peer dependency but is compatible with React 19.
+
+**CRITICAL RULE FOR AGENTS:**
+- **Develop against React 18**: The library's `devDependencies` MUST remain on React 18 (`@types/react@^18.x`).
+- **Do NOT use React 19-only features**: Do not use new APIs like `use()`, `useFormStatus`, `useOptimistic`, or Server Actions within the library (`packages/react`).
+- **Verification**: `pnpm typecheck` and `pnpm test` will run against React 18 types/runtime. If these pass, the code is React 18 compatible.
 
 When TypeScript errors occur related to React types:
 
 1. Check versions: `pnpm ls react @types/react`
-2. Ensure React 18: `pnpm install react@^18.3.1 react-dom@^18.3.1 @types/react@^18.3.23 @types/react-dom@^18.3.7`
+2. Ensure compatible versions are installed.
 3. `pnpm typecheck` both
 4. `pnpm build`
 
@@ -149,7 +154,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - Modes: scaleToFit (contain, aspect, letterbox); fill (preserve vert, distort SVG width)
 - Features: container query cqw/cqh; scaler calc; two-row grid; align start/center/end; label modes visible/hidden/none; overlay sibling
 - See packages/react/docs/adaptive-box-layout.md for complete specification
-- React 18 compatible
+- React 18+ compatible
 - **Wheel Event Handling**: Uses native non-passive event listeners (not React synthetic events) to reliably prevent page scrolling during wheel interactions
 
 ## Interactive Controls System

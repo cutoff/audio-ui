@@ -97,18 +97,18 @@ To develop and test changes:
 
 ## React Version Requirements
 
-**Critical**: This project requires React 18. Before making changes:
+**Critical**: This project requires React 18 or newer. Before making changes:
 
 ```bash
 # Check React versions
 pnpm ls react @types/react
 
-# Should show React 18.x versions consistently
+# Should show React 18.x or 19.x versions consistently
 ```
 
 If you encounter version conflicts:
 
-1. Install React 18 versions: `pnpm add react@^18.3.1 react-dom@^18.3.1 @types/react@^18.3.23 -w`
+1. Install React versions: `pnpm add react@^18.3.1 react-dom@^18.3.1 @types/react@^18.3.23 -w`
 2. Run type checks: `pnpm typecheck`
 3. Rebuild: `pnpm build`
 
@@ -201,7 +201,7 @@ pnpm dev
 
 ```bash
 pnpm ls react @types/react
-# Fix by installing consistent React 18 versions
+# Fix by installing consistent React versions
 ```
 
 **Build failures**: Check TypeScript errors
@@ -220,7 +220,7 @@ pnpm dev
 
 ## Contributing
 
-1. Ensure React 18 compatibility
+1. Ensure React compatibility
 2. Run type checks before committing: `pnpm typecheck`
 3. Test changes in playground app: `pnpm dev`
 4. Update documentation as needed

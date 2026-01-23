@@ -8,7 +8,7 @@
 
 This document specifies the pure layout model used by AdaptiveBox. It focuses on the atomic unit composed of an SVG drawing area plus an optional label, and the CSS technique that achieves contain-style scaling with optional alignment controls.
 
-Compatibility: React 18 (library peer dependency)
+Compatibility: React 18+ (library peer dependency)
 
 Key points
 

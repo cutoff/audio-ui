@@ -16,11 +16,13 @@ env:
 
 jobs:
     quality:
+        name: Quality (Node ${{ matrix.node-version }} / React ${{ matrix.react-version }})
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
                 node-version: [18, 20]
+                react-version: [18, 19]
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -39,13 +41,17 @@ jobs:
               with:
                   path: .turbo
                   key:
-                      ${{ runner.os }}-turbo-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml', 'turbo.json')
+                      ${{ runner.os }}-turbo-${{ matrix.node-version }}-react${{ matrix.react-version }}-${{ hashFiles('**/pnpm-lock.yaml', 'turbo.json')
                       }}
                   restore-keys: |
-                      ${{ runner.os }}-turbo-${{ matrix.node-version }}-
+                      ${{ runner.os }}-turbo-${{ matrix.node-version }}-react${{ matrix.react-version }}-
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
+
+            - name: Upgrade to React 19
+              if: matrix.react-version == 19
+              run: pnpm update -r react@19 react-dom@19 @types/react@19 @types/react-dom@19
 
             - name: Run quality pipeline (typecheck, build, lint, test)
               run: pnpm turbo run typecheck build lint test --cache-dir=.turbo --continue --no-daemon
