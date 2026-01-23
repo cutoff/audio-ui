@@ -86,7 +86,7 @@ pnpm add @cutoff/audio-ui-react@preview
 You will also need to install its peer dependencies:
 
 ```bash
-pnpm add react@^18.2.0 react-dom@^18.2.0
+pnpm add react@^19.0.0 react-dom@^19.0.0
 ```
 
 **Note**: AudioUI is currently in Developer Preview phase. The `preview` tag provides access to the latest preview releases with timestamped versions. For production use, we recommend pinning to a specific version once the first Developer Preview (dp.0) is released.
