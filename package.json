@@ -22,7 +22,7 @@
         "test": "turbo test",
         "lint": "turbo lint --continue",
         "lint:fix": "turbo lint:fix --continue",
-        "check": "turbo run typecheck build lint test",
+        "check": "pnpm install && turbo run typecheck build lint test",
         "clean": "(pnpm exec turbo clean || true) && rm -rf node_modules .turbo",
         "clean-build": "pnpm clean && pnpm i && pnpm build",
         "format": "prettier --write .",
@@ -40,7 +40,7 @@
         "components"
     ],
     "dependencies": {
-        "turbo": "^2.6.3"
+        "turbo": "^2.7.5"
     },
     "devDependencies": {
         "@eslint/compat": "^1.2.4",
