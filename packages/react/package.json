@@ -1,7 +1,7 @@
 {
     "name": "@cutoff/audio-ui-react",
     "description": "AudioUI by Cutoff - React Components for Audio and MIDI apps! Dual-licensed: GPL-3.0 for open source, Commercial for proprietary use.",
-    "version": "1.0.0-dp.1",
+    "version": "1.0.0-dev",
     "author": "Renaud Denis <mail@renauddenis.com> (https://renauddenis.com)",
     "license": "GPL-3.0-only",
     "homepage": "https://cutoff.dev",

@@ -11,4 +11,4 @@
  */
 
 export const APP_VERSION_LABEL = "Developer Preview";
-export const APP_VERSION = "1.0.0-dp.1";
+export const APP_VERSION = "1.0.0-dev";

@@ -27,8 +27,8 @@ interface MidiSettingsPanelProps {
  * @param props.onOpenChange - Callback when sheet open state changes (currently unused, reserved for future use)
  * @returns MIDI settings panel component with device toggle group
  */
-export function MidiSettingsPanel({ open, onOpenChange: _onOpenChange }: MidiSettingsPanelProps) {
-    const [_isEnabled, setIsEnabled] = React.useState(() => midiServiceState.current.isEnabled);
+export function MidiSettingsPanel({ open }: MidiSettingsPanelProps) {
+    const [, setIsEnabled] = React.useState(() => midiServiceState.current.isEnabled);
     const [inputs, setInputs] = React.useState(() => midiServiceState.current.inputs);
     const [selectedInputId, setSelectedInputId] = React.useState(() => midiServiceState.current.selectedInputId);
     const [isSupported, setIsSupported] = React.useState(() => midiServiceState.current.isSupported);

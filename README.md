@@ -77,10 +77,10 @@ This monorepo contains the following packages:
 
 ### Using the Component Library
 
-To use AudioUI components in your project, install the `@cutoff/audio-ui-react` package from npm:
+To use AudioUI components in your project, install the `@cutoff/audio-ui-react` package from npm using the `preview` tag:
 
 ```bash
-pnpm add @cutoff/audio-ui-react
+pnpm add @cutoff/audio-ui-react@preview
 ```
 
 You will also need to install its peer dependencies:
@@ -88,6 +88,8 @@ You will also need to install its peer dependencies:
 ```bash
 pnpm add react@^18.2.0 react-dom@^18.2.0
 ```
+
+**Note**: AudioUI is currently in Developer Preview phase. The `preview` tag provides access to the latest preview releases with timestamped versions. For production use, we recommend pinning to a specific version once the first Developer Preview (dp.0) is released.
 
 Here is a basic example of how to use a component:
 
@@ -112,7 +114,7 @@ function MyAudioModule() {
 To develop AudioUI locally, clone the repository and install the dependencies:
 
 ```bash
-git clone git@github.com:cutoff/audio-ui.git
+git clone https://github.com/cutoff/audio-ui.git
 cd audio-ui
 pnpm install
 ```

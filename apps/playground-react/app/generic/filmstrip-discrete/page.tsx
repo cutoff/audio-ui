@@ -57,7 +57,7 @@ export default function FilmStripDiscreteDemoPage() {
     const [orientation, setOrientation] = useState<"vertical" | "horizontal">("vertical");
     const [frameRotation, setFrameRotation] = useState(0);
     const [label, setLabel] = useState("Traffic Light");
-    const [options, _setOptions] = useState<Array<{ value: string | number; label: string }>>(trafficLightOptions);
+    const [options] = useState<Array<{ value: string | number; label: string }>>(trafficLightOptions);
 
     const componentProps: FilmStripDiscreteControlProps = useMemo(
         () => ({

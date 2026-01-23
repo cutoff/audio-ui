@@ -4,7 +4,7 @@
  See LICENSE.md for details.
 -->
 
-**Version**: 2.0 | **Meta**: React component library for audio and MIDI applications (Developer Preview); monorepo structure with library and playground-app.
+**Version**: 2.0 | **Meta**: React component library for audio and MIDI applications (Developer Preview); monorepo structure with library and playground-app. Development versions use Maven-like `-dev` suffix (e.g., `1.0.0-dev`, equivalent to Maven's `-SNAPSHOT`). npm releases use timestamped preview versions (e.g., `1.0.0-preview.YYYYMMDD.HHMM`). Working toward first Developer Preview release (dp.0).
 
 **IMPORTANT: Documentation File Structure**
 
@@ -108,6 +108,7 @@ Available commands:
 
 - **Review**: Comprehensive code review procedure (documentation, readability, performance, unused imports, prettier, and `pnpm check`)
 - **Check**: Iterate on `pnpm check` until no errors remain
+- **Release**: Release procedure using release-it for version management, changelog generation, and git tagging
 
 See `agents/coding-agent-commands-1.0.md` for complete command definitions and procedures.
 
