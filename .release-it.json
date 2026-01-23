@@ -26,6 +26,6 @@
   },
   "hooks": {
     "before:init": ["pnpm check"],
-    "after:bump": "node scripts/sync-monorepo-versions.js"
+    "after:bump": "tsx scripts/sync-monorepo-versions.ts"
   }
 }

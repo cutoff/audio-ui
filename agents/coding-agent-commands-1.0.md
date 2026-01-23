@@ -99,20 +99,13 @@ See `agents/documentation-standards-2.0.md` for comprehensive examples of:
    - Execute `pnpm check` to ensure all tests pass, build succeeds, linting passes, and type checking is clean
    - If checks fail, abort the release and report errors
 
-3. **Generate changelog entry automatically**:
-   - Get the last git tag (or initial commit if no tags exist)
-   - Generate git diff between last tag and current HEAD using `git diff --name-status`
-   - Parse changes and categorize into Added, Changed, Fixed, Removed
-   - Format according to Keep a Changelog format
-   - Add new version section to `CHANGELOG.md` using `scripts/generate-changelog.js`
-
-4. **Execute release-it**:
+3. **Execute release-it**:
    - For `preview`: Generate timestamped version using `scripts/generate-timestamped-preview.js`, then run `release-it --no-increment --preRelease=preview`
    - For `dp`: Run `release-it --preRelease=dp`
    - For `patch`/`minor`/`major`: Run `release-it ${type}` (e.g., `release-it patch`)
    - **Important**: Agent must never execute git modifying commands (commit, push, reset, etc.) without explicit user approval. Release-it will handle git tagging, but the agent should not commit or push automatically.
 
-5. **Post-release cleanup** (if needed):
+4. **Post-release cleanup** (if needed):
    - After successful release, optionally reset to `-dev` version using `pnpm version:dev` if continuing development
    - This step should be confirmed with the user
 
@@ -122,5 +115,4 @@ See `agents/documentation-standards-2.0.md` for comprehensive examples of:
 - Release-it handles git tagging automatically as part of its workflow
 - Release tags follow the format: `release/{version}` (e.g., `release/1.0.0-preview.20260123.1117`)
 - All package.json files (root, packages, apps) are automatically synchronized to the same version
-- Changelog is auto-generated from git diff between last release tag and current state
 - Publishing to npm is disabled by default in release-it config; enable with `--npm.publish` flag if needed
