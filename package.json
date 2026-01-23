@@ -1,7 +1,7 @@
 {
   "name": "@cutoff/audio-ui",
   "description": "AudioUI by Cutoff - React component library for audio and MIDI applications",
-  "version": "1.0.0-dev",
+  "version": "1.0.0-preview.20260123.1715",
   "type": "module",
   "private": true,
   "author": "Renaud Denis <mail@renauddenis.com> (https://renauddenis.com)",
