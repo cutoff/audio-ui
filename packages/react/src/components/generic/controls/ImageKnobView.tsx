@@ -68,7 +68,7 @@ function ImageKnobView({
     bipolar = false,
     positions,
     className,
-}: ImageKnobViewProps): JSX.Element {
+}: ImageKnobViewProps): React.JSX.Element {
     // Center point of the viewBox
     const cx = frameWidth / 2;
     const cy = frameHeight / 2;

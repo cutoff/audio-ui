@@ -97,7 +97,7 @@ function SliderView({
     cursorClassName,
     cursorStyle,
     className,
-}: SliderViewProps): JSX.Element {
+}: SliderViewProps): React.JSX.Element {
     // Translate normalized thickness to pixel range (1-50)
     const effectiveThickness = useMemo(() => {
         return translateSliderThickness(thickness);

@@ -50,7 +50,7 @@ function ImageSwitchView({
     imageHrefFalse,
     imageHrefTrue,
     className,
-}: ImageSwitchViewProps): JSX.Element {
+}: ImageSwitchViewProps): React.JSX.Element {
     // Determine which image to show based on normalized value (threshold at 0.5)
     const imageHref = normalizedValue > 0.5 ? imageHrefTrue : imageHrefFalse;
 

@@ -46,7 +46,7 @@ function ButtonView({
     roundness,
     color: _color, // Prefixed with _ to indicate intentionally unused (kept for API compatibility)
     className,
-}: ButtonViewProps): JSX.Element {
+}: ButtonViewProps): React.JSX.Element {
     // Determine if button is "on" based on threshold
     const isOn = useMemo(() => normalizedValue > threshold, [normalizedValue, threshold]);
 

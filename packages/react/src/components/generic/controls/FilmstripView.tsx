@@ -66,7 +66,7 @@ function FilmstripView({
     frameRotation = 0,
     invertValue = false,
     className,
-}: FilmstripViewProps): JSX.Element {
+}: FilmstripViewProps): React.JSX.Element {
     return (
         <FilmstripImage
             x={0}
