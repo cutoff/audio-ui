@@ -2,7 +2,7 @@
     "name": "@cutoff/audio-ui-react-playground-app",
     "description": "AudioUI by Cutoff - Playground Application",
     "private": true,
-    "version": "1.0.0-preview.20260126.2009",
+    "version": "1.0.0-dev",
     "versionLabel": "Developer Preview",
     "author": "Renaud Denis <mail@renauddenis.com> (https://renauddenis.com)",
     "license": "GPL-3.0-only",
