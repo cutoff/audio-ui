@@ -1,61 +1,61 @@
 {
-    "name": "@cutoff/audio-ui",
-    "description": "AudioUI by Cutoff - React component library for audio and MIDI applications",
-    "version": "1.0.0-dev",
-    "type": "module",
-    "private": true,
-    "author": "Renaud Denis <mail@renauddenis.com> (https://renauddenis.com)",
-    "license": "GPL-3.0-only",
-    "homepage": "https://cutoff.dev",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/cutoff/audio-ui.git"
-    },
-    "bugs": {
-        "url": "https://github.com/cutoff/audio-ui/issues"
-    },
-    "packageManager": "pnpm@10.23.0",
-    "scripts": {
-        "dev": "turbo dev",
-        "typecheck": "turbo typecheck",
-        "build": "turbo build",
-        "start": "turbo start",
-        "test": "turbo test",
-        "lint": "turbo lint --continue",
-        "lint:fix": "turbo lint:fix --continue",
-        "check": "pnpm install && turbo run typecheck build lint test",
-        "clean": "(pnpm exec turbo clean || true) && rm -rf node_modules .turbo",
-        "clean-build": "pnpm clean && pnpm i && pnpm build",
-        "format": "prettier --write .",
-        "version:dev": "tsx scripts/set-dev-version.ts",
-        "version:preview": "tsx scripts/generate-preview-version.ts",
-        "release": "release-it",
-        "release:preview": "tsx scripts/generate-timestamped-preview.ts && release-it --no-increment",
-        "release:dp": "release-it --preRelease=dp",
-        "publish:preview": "cd packages && pnpm publish --tag preview"
-    },
-    "keywords": [
-        "react",
-        "audio",
-        "midi",
-        "components"
-    ],
-    "dependencies": {
-        "turbo": "^2.7.5"
-    },
-    "devDependencies": {
-        "@eslint/compat": "^1.2.4",
-        "@eslint/js": "^9.39.1",
-        "@release-it/bumper": "^7.0.5",
-        "@typescript-eslint/eslint-plugin": "^8.48.1",
-        "@typescript-eslint/parser": "^8.48.1",
-        "eslint": "^9.39.1",
-        "eslint-plugin-license-header": "^0.8.0",
-        "eslint-plugin-react": "^7.37.5",
-        "eslint-plugin-react-hooks": "^5.2.0",
-        "prettier": "^3.7.4",
-        "release-it": "^19.2.4",
-        "tsx": "^4.19.2",
-        "vitest": "^1.6.1"
-    }
+  "name": "@cutoff/audio-ui",
+  "description": "AudioUI by Cutoff - React component library for audio and MIDI applications",
+  "version": "1.0.0-preview.20260126.2009",
+  "type": "module",
+  "private": true,
+  "author": "Renaud Denis <mail@renauddenis.com> (https://renauddenis.com)",
+  "license": "GPL-3.0-only",
+  "homepage": "https://cutoff.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cutoff/audio-ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cutoff/audio-ui/issues"
+  },
+  "packageManager": "pnpm@10.23.0",
+  "scripts": {
+    "dev": "turbo dev",
+    "typecheck": "turbo typecheck",
+    "build": "turbo build",
+    "start": "turbo start",
+    "test": "turbo test",
+    "lint": "turbo lint --continue",
+    "lint:fix": "turbo lint:fix --continue",
+    "check": "pnpm install && turbo run typecheck build lint test",
+    "clean": "(pnpm exec turbo clean || true) && rm -rf node_modules .turbo",
+    "clean-build": "pnpm clean && pnpm i && pnpm build",
+    "format": "prettier --write .",
+    "version:dev": "tsx scripts/set-dev-version.ts",
+    "version:preview": "tsx scripts/generate-preview-version.ts",
+    "release": "release-it",
+    "release:preview": "tsx scripts/generate-timestamped-preview.ts && release-it --no-increment",
+    "release:dp": "release-it --preRelease=dp",
+    "publish:preview": "cd packages && pnpm publish --tag preview"
+  },
+  "keywords": [
+    "react",
+    "audio",
+    "midi",
+    "components"
+  ],
+  "dependencies": {
+    "turbo": "^2.7.5"
+  },
+  "devDependencies": {
+    "@eslint/compat": "^1.2.4",
+    "@eslint/js": "^9.39.1",
+    "@release-it/bumper": "^7.0.5",
+    "@typescript-eslint/eslint-plugin": "^8.48.1",
+    "@typescript-eslint/parser": "^8.48.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-license-header": "^0.8.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "prettier": "^3.7.4",
+    "release-it": "^19.2.4",
+    "tsx": "^4.19.2",
+    "vitest": "^1.6.1"
+  }
 }
