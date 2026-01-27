@@ -14,9 +14,9 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const SWITCH_METAL_IMAGE = "/switch_metal.png";
-const BIG_BUTTON_IMAGE = "/big_button.png";
-const POWER_SWITCH_IMAGE = "/Power_switch_01.png";
+const SWITCH_METAL_IMAGE = "/images/demo/switch_metal.png";
+const BIG_BUTTON_IMAGE = "/images/demo/big_button.png";
+const POWER_SWITCH_IMAGE = "/images/demo/Power_switch_01.png";
 
 function generateCodeSnippet(
     value: boolean,

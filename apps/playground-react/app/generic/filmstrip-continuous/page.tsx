@@ -22,9 +22,9 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const VU3_IMAGE = "/vu3.png";
-const GUITAR_IMAGE = "/guitar_strat_tone-2.png";
-const ABS_IMAGE = "/ABS.png";
+const VU3_IMAGE = "/images/demo/vu3.png";
+const GUITAR_IMAGE = "/images/demo/guitar_strat_tone-2.png";
+const ABS_IMAGE = "/images/demo/ABS.png";
 
 function generateCodeSnippet(
     value: number,

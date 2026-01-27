@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const TRAFFIC_LIGHT_FILMSTRIP = "/traffic-light-filmstrip.png";
+const TRAFFIC_LIGHT_FILMSTRIP = "/images/demo/traffic-light-filmstrip.png";
 
 // Traffic Light example - 8 states
 const trafficLightOptions = Array.from({ length: 8 }, (_, i) => ({

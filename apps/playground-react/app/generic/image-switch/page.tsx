@@ -13,8 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 
-const STAR_OFF_IMAGE = "/star-off.png";
-const STAR_ON_IMAGE = "/star-on.png";
+const STAR_OFF_IMAGE = "/images/demo/star-off.png";
+const STAR_ON_IMAGE = "/images/demo/star-on.png";
 
 function generateCodeSnippet(
     value: boolean,

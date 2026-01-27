@@ -13,9 +13,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const KNOB_IMAGE = "/knob-volume.png";
-const KNOB_TONE_IMAGE = "/knob-tone.png";
-const KNOB_SELECTOR_IMAGE = "/knob-selector.png";
+const KNOB_IMAGE = "/images/demo/knob-volume.png";
+const KNOB_TONE_IMAGE = "/images/demo/knob-tone.png";
+const KNOB_SELECTOR_IMAGE = "/images/demo/knob-selector.png";
 
 // Options for the discrete control
 const defaultOptions = [
