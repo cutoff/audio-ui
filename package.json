@@ -14,7 +14,7 @@
     "bugs": {
         "url": "https://github.com/cutoff/audio-ui/issues"
     },
-    "packageManager": "pnpm@10.23.0",
+    "packageManager": "pnpm@10.28.2",
     "scripts": {
         "dev": "turbo dev",
         "typecheck": "turbo typecheck",
@@ -41,21 +41,21 @@
         "components"
     ],
     "dependencies": {
-        "turbo": "^2.7.5"
+        "turbo": "^2.7.6"
     },
     "devDependencies": {
-        "@eslint/compat": "^1.2.4",
-        "@eslint/js": "^9.39.1",
+        "@eslint/compat": "^1.4.1",
+        "@eslint/js": "^9.39.2",
         "@release-it/bumper": "^7.0.5",
-        "@typescript-eslint/eslint-plugin": "^8.48.1",
-        "@typescript-eslint/parser": "^8.48.1",
-        "eslint": "^9.39.1",
+        "@typescript-eslint/eslint-plugin": "^8.54.0",
+        "@typescript-eslint/parser": "^8.54.0",
+        "eslint": "^9.39.2",
         "eslint-plugin-license-header": "^0.8.0",
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-hooks": "^5.2.0",
-        "prettier": "^3.7.4",
+        "prettier": "^3.8.1",
         "release-it": "^19.2.4",
-        "tsx": "^4.19.2",
+        "tsx": "^4.21.0",
         "vitest": "^1.6.1"
     }
 }
