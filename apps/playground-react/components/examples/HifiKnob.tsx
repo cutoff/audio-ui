@@ -86,7 +86,7 @@ HifiKnob.viewBox = {
 /**
  * Label height for the ImageBackgroundKnob component.
  */
-HifiKnob.labelHeightUnits = 15;
+HifiKnob.labelHeightUnits = 10;
 
 /**
  * Interaction contract for the ImageBackgroundKnob component.
