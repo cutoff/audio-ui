@@ -41,8 +41,8 @@ jobs:
               with:
                   path: .turbo
                   key:
-                      ${{ runner.os }}-turbo-${{ matrix.node-version }}-react${{ matrix.react-version }}-${{ hashFiles('**/pnpm-lock.yaml', 'turbo.json')
-                      }}
+                      ${{ runner.os }}-turbo-${{ matrix.node-version }}-react${{ matrix.react-version }}-${{
+                      hashFiles('**/pnpm-lock.yaml', 'turbo.json') }}
                   restore-keys: |
                       ${{ runner.os }}-turbo-${{ matrix.node-version }}-react${{ matrix.react-version }}-
 

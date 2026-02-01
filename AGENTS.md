@@ -37,13 +37,13 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 ## Quick Rules Summary for Agents (Load This First)
 
 | Category            | Rule/Details                                                                                                                                                                                                                                                                                                      |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | --------------------------------------------------------------- |
 | Architecture        | **CRITICAL**: `packages/core/` is framework-agnostic (pure TypeScript, no framework deps). `packages/react/` is the React implementation that wraps core. The architecture supports potential future framework implementations following the same pattern: depend on core, provide framework-specific components. |
 | Git Operations      | **Do NOT commit or execute any modifying git command without explicit request.** Always ask for user confirmation before running `git commit`, `git merge`, `git reset`, or modifying git history.                                                                                                                |
 | GitHub Operations   | **Do NOT update GitHub issues without explicit request.** Always ask for user confirmation before creating, updating, or closing issues/PRs.                                                                                                                                                                      |
 | Documentation Style | **Write in present tense, declarative statements.** Avoid evolution phrasing: "now", "recently", "changed", "updated", "moved", "introduced", "added", "removed". Focus on current state, not history. Example: "Knob uses ContinuousControl" not "Knob now uses ContinuousControl".                              |
 | Performance Mandate | **Critical Priority.** Audio apps have heavy runtime constraints (e.g., avoiding UI stutters, ensuring low-latency response). Prioritize performance in all decisions: minimal re-renders, no JS for layout/sizing, efficient event handling.                                                                     |
-| React               | React 18+; library as peer deps (`^18.2.0 || ^19.0.0`), demo as direct (`^18.3.1`); compatible with React 19                                                                                                                                                                                                     |
+| React               | React 18+; library as peer deps (`^18.2.0                                                                                                                                                                                                                                                                         |     | ^19.0.0`), demo as direct (`^18.3.1`); compatible with React 19 |
 | TypeScript          | Strict mode; handle all errors; prefix unused params with \_; `@types/react:^18.3.23`                                                                                                                                                                                                                             |
 | Package Manager     | pnpm                                                                                                                                                                                                                                                                                                              |
 | UI Components       | Use shadcn/ui; add with `pnpm dlx shadcn@latest add [component]`; no custom if shadcn available; **NEVER modify shadcn components** - they are third-party stabilized code; work around type issues with type assertions/ts-expect-error if needed                                                                |
@@ -94,7 +94,7 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 
 - **Framework-Agnostic Architecture**: The core package (`packages/core/`) is designed to be framework-agnostic, enabling potential implementations for other frameworks. Any future framework-specific packages would follow the same architectural pattern: depend on `@cutoff/audio-ui-core` for shared logic and provide framework-specific components and adapters.
 
-- `apps/playground-react/`: Next.js playground; showcases components; app/components for pages (inferred)
+- `apps/playground-react/`: Next.js playground; showcases components; routes: examples, vector-components, raster-components, primitives, layout; app/components for pages (inferred)
 - `agents/`: Shared conventions (coding-conventions-2.0.md, typescript-guidelines-2.0.md, react-conventions-2.0.md, documentation-standards-2.0.md, coding-agent-commands-1.0.md)
 - `packages/react/docs/`: Specialized tech docs (e.g., adaptive-box-layout.md)
 - `links/`: Symbolic links to external repositories (Read-Only, Ignored by Git). Use for reference only.
@@ -127,6 +127,7 @@ See `agents/coding-agent-commands-1.0.md` for complete command definitions and p
 **React 18 Minimum, React 19 Compatible**: The library uses React 18 as a minimum peer dependency but is compatible with React 19.
 
 **CRITICAL RULE FOR AGENTS:**
+
 - **Develop against React 18**: The library's `devDependencies` MUST remain on React 18 (`@types/react@^18.x`).
 - **Do NOT use React 19-only features**: Do not use new APIs like `use()`, `useFormStatus`, `useOptimistic`, or Server Actions within the library (`packages/react`).
 - **Verification**: `pnpm typecheck` and `pnpm test` will run against React 18 types/runtime. If these pass, the code is React 18 compatible.

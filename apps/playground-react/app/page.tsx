@@ -29,14 +29,14 @@ import {
 
 const sections = [
     {
-        name: "Default Components",
-        url: "/defaults",
+        name: "Vector Components",
+        url: "/vector-components",
         icon: Sliders,
         description: "6 production-ready components (Knob, Slider, Button, etc.) that respond to theme settings.",
     },
     {
-        name: "Generic Components",
-        url: "/generic",
+        name: "Raster Components",
+        url: "/raster-components",
         icon: Layers,
         description: "Image and filmstrip-based controls with custom visuals (not theme-controlled).",
     },
@@ -64,7 +64,7 @@ const sections = [
  * Playground home page.
  * Provides quick navigation to all component sections with external resource links and getting started guidance.
  *
- * @returns Home page component
+ * @returns {JSX.Element} Home page component
  */
 export default function Home() {
     return (
@@ -152,10 +152,10 @@ export default function Home() {
                                 <h3 className="font-semibold text-base">Theme Customization</h3>
                                 <p className="text-sm text-muted-foreground leading-relaxed">
                                     Click the <Palette className="inline h-4 w-4 mx-1 align-text-bottom text-primary" />{" "}
-                                    icon in the header to customize colors and roundness for default components.
+                                    icon in the header to customize colors and roundness for vector components.
                                 </p>
                                 <p className="text-xs text-muted-foreground/80 leading-relaxed pl-4 border-l-2 border-muted">
-                                    Note: Generic components and primitives use custom visuals and are not controlled by
+                                    Note: Raster components and primitives use custom visuals and are not controlled by
                                     theme settings.
                                 </p>
                             </div>

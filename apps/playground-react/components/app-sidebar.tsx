@@ -28,64 +28,64 @@ import {
 const data = {
     navMain: [
         {
-            title: "Defaults",
-            url: "/defaults",
+            title: "Vector Components",
+            url: "/vector-components",
             icon: Sliders,
             items: [
                 {
                     title: "Knob",
-                    url: "/defaults/knob",
+                    url: "/vector-components/knob",
                 },
                 {
                     title: "Slider (V)",
-                    url: "/defaults/vslider",
+                    url: "/vector-components/vslider",
                 },
                 {
                     title: "Slider (H)",
-                    url: "/defaults/hslider",
+                    url: "/vector-components/hslider",
                 },
                 {
                     title: "CycleButton",
-                    url: "/defaults/cyclebutton",
+                    url: "/vector-components/cyclebutton",
                 },
                 {
                     title: "Button",
-                    url: "/defaults/button",
+                    url: "/vector-components/button",
                 },
                 {
                     title: "Keys",
-                    url: "/defaults/keys",
+                    url: "/vector-components/keys",
                 },
             ],
         },
         {
-            title: "Generic",
-            url: "/generic",
+            title: "Raster Components",
+            url: "/raster-components",
             icon: Layers,
             items: [
                 {
                     title: "Image Knob",
-                    url: "/generic/image-knob",
+                    url: "/raster-components/image-knob",
                 },
                 {
                     title: "Image Rotary Switch",
-                    url: "/generic/image-rotary-switch",
+                    url: "/raster-components/image-rotary-switch",
                 },
                 {
                     title: "Image Switch",
-                    url: "/generic/image-switch",
+                    url: "/raster-components/image-switch",
                 },
                 {
                     title: "FilmStrip Continuous",
-                    url: "/generic/filmstrip-continuous",
+                    url: "/raster-components/filmstrip-continuous",
                 },
                 {
                     title: "FilmStrip Discrete",
-                    url: "/generic/filmstrip-discrete",
+                    url: "/raster-components/filmstrip-discrete",
                 },
                 {
                     title: "FilmStrip Boolean",
-                    url: "/generic/filmstrip-boolean",
+                    url: "/raster-components/filmstrip-boolean",
                 },
             ],
         },

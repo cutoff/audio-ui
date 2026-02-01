@@ -35,11 +35,13 @@ During development, the project uses a **single development suffix** following a
 - `-dev`: The development suffix (equivalent to Maven's `-SNAPSHOT`).
 
 **Versioning Rules**:
+
 - **All development branches**: Use `1.0.0-dev`
   - This includes `develop`, `staging`, `feature/*`, `bugfix/*`, `hotfix/*`, etc.
   - No distinction between branch types - all use the same `-dev` suffix
 
 **Rationale**: This Maven-like approach provides:
+
 - Simplicity: One suffix for all development work
 - Familiarity: Similar to Maven's `-SNAPSHOT` convention
 - Clarity: Clear distinction between development (`-dev`) and release versions
@@ -65,6 +67,7 @@ For npm releases, the project uses a **preview channel** with timestamped versio
 **Why dot-separated timestamps**: SemVer 2.0.0 sorts dot-separated pre-release identifiers correctly, ensuring newer timestamps are treated as newer versions. This enables continuous releases without manual version management.
 
 **Workflow**:
+
 1. During development: Use branch-based versions (`1.0.0-dev`)
 2. Before npm release: Run `pnpm release:preview` to generate timestamped version and create release
 3. Release-it automatically:

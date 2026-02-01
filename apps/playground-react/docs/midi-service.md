@@ -517,7 +517,7 @@ This is expected behavior. The service routes messages to all registered listene
 - **Settings Button**: `components/midi-settings-button.tsx`
 - **Settings Panel**: `components/midi-settings-panel.tsx`
 - **Example Integration**: `app/examples/webaudio/page.tsx`
-- **Keys Example**: `app/defaults/keys/page.tsx`
+- **Keys Example**: `app/vector-components/keys/page.tsx`
 
 ## WebMidi API Reference
 
