@@ -1,6 +1,6 @@
 {
     "git": {
-        "commitMessage": "Release version ${version}",
+        "commitMessage": "Bump version ${version}",
         "tagName": "release/${version}",
         "requireCleanWorkingDir": false,
         "requireUpstream": false,

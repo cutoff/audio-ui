@@ -1,0 +1,41 @@
+# Notify #moderators on Discord when someone stars the repository.
+# Requires repository secret: DISCORD_MODERATORS_WEBHOOK_URL (webhook for #moderators channel).
+
+name: Notify Discord on Star
+
+on:
+    watch:
+        types: [started]
+
+jobs:
+    notify:
+        name: Notify #moderators
+        runs-on: ubuntu-latest
+        steps:
+            - name: Send Discord notification
+              env:
+                  DISCORD_MODERATORS_WEBHOOK_URL: ${{ secrets.DISCORD_MODERATORS_WEBHOOK_URL }}
+              run: |
+                  payload=$(jq -n \
+                      --arg repo "${{ github.repository }}" \
+                      --arg url "${{ github.event.repository.html_url }}" \
+                      --arg user "${{ github.event.sender.login }}" \
+                      --arg user_url "${{ github.event.sender.html_url }}" \
+                      '{
+                          content: null,
+                          embeds: [{
+                              title: "⭐ New star",
+                              description: ("**" + $user + "** starred **" + $repo + "**"),
+                              url: $url,
+                              color: 5814783,
+                              fields: [
+                                  { name: "Repository", value: ("[" + $repo + "](" + $url + ")"), inline: false },
+                                  { name: "Stargazer", value: ("[" + $user + "](" + $user_url + ")"), inline: false }
+                              ],
+                              footer: { text: "GitHub watch event" },
+                              timestamp: (now | strftime("%Y-%m-%dT%H:%M:%SZ"))
+                          }]
+                      }')
+                  curl -sS -X POST "$DISCORD_MODERATORS_WEBHOOK_URL" \
+                      -H "Content-Type: application/json" \
+                      -d "$payload"
