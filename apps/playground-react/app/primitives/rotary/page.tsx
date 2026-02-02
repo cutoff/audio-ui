@@ -17,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 type ChildMode = "default" | "complex" | "none" | "pixel" | "mixed";
 
 // Sample Images
-const VINTAGE_KNOB_IMAGE = "/knob-volume.png";
+const VINTAGE_KNOB_IMAGE = "/images/demo/knob-volume.png";
 const VINTAGE_KNOB_SVG =
     "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iIzMzMyIgc3Ryb2tlPSIjMTExIiBzdHJva2Utd2lkdGg9IjIiIC8+CiAgPGxpbmUgeDE9IjUwIiB5MT0iNTAiIHgyPSI1MCIgeTI9IjEwIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgLz4KPC9zdmc+";
 const GREY_BG_SVG =

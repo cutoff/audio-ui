@@ -7,560 +7,239 @@
 "use client";
 
 import Link from "next/link";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sliders, Layers, Box, Layout, Sparkles, Palette, Sun, Moon } from "lucide-react";
+import {
+    ArrowRight,
+    Sliders,
+    Layers,
+    Box,
+    Layout,
+    Sparkles,
+    ExternalLink,
+    Github,
+    MessageSquare,
+    Palette,
+    Sun,
+    Moon,
+    Monitor,
+    Sidebar,
+    MousePointer2,
+} from "lucide-react";
 
-const defaultComponents = [
+const sections = [
     {
-        name: "Knob",
-        url: "/defaults/knob",
-        description:
-            "Rotary control for continuous parameter adjustment with bipolar/unipolar modes and customizable formatting.",
+        name: "Vector Components",
+        url: "/vector-components",
+        icon: Sliders,
+        description: "6 production-ready components (Knob, Slider, Button, etc.) that respond to theme settings.",
     },
     {
-        name: "Slider (V)",
-        url: "/defaults/vslider",
-        description: "Vertical slider for level controls, faders, and vertical parameter adjustment.",
+        name: "Raster Components",
+        url: "/raster-components",
+        icon: Layers,
+        description: "Image and filmstrip-based controls with custom visuals (not theme-controlled).",
     },
     {
-        name: "Slider (H)",
-        url: "/defaults/hslider",
-        description: "Horizontal slider for pan controls and horizontal parameter adjustment.",
+        name: "Primitives",
+        url: "/primitives",
+        icon: Box,
+        description: "Low-level building blocks for composing custom controls.",
     },
     {
-        name: "CycleButton",
-        url: "/defaults/cyclebutton",
-        description: "Button that cycles through discrete options with keyboard navigation support.",
-    },
-    {
-        name: "Button",
-        url: "/defaults/button",
-        description: "Versatile button supporting momentary and latch modes with drag-in/drag-out behavior.",
-    },
-    {
-        name: "Keys",
-        url: "/defaults/keys",
-        description: "Piano-style keyboard for MIDI note input and visualization with configurable ranges.",
-    },
-];
-
-const genericComponents = [
-    {
-        name: "Image Knob",
-        url: "/generic/image-knob",
-        description: "Rotary knob that rotates a bitmap image based on continuous parameter values.",
-    },
-    {
-        name: "Image Rotary Switch",
-        url: "/generic/image-rotary-switch",
-        description: "Discrete rotary switch that rotates a bitmap image to discrete positions.",
-    },
-    {
-        name: "Image Switch",
-        url: "/generic/image-switch",
-        description: "Boolean switch that displays one of two bitmap images based on state.",
-    },
-    {
-        name: "FilmStrip Continuous",
-        url: "/generic/filmstrip-continuous",
-        description: "Continuous control using bitmap sprite sheets for visualization.",
-    },
-    {
-        name: "FilmStrip Discrete",
-        url: "/generic/filmstrip-discrete",
-        description: "Discrete control using bitmap sprite sheets for visualization.",
-    },
-    {
-        name: "FilmStrip Boolean",
-        url: "/generic/filmstrip-boolean",
-        description: "Boolean control using bitmap sprite sheets for visualization.",
-    },
-];
-
-const layoutPages = [
-    {
-        name: "Size System",
+        name: "Layout & Sizing",
         url: "/layout/sizing",
-        description: "Showcase of all components across all size variants demonstrating the consistent sizing system.",
+        icon: Layout,
+        description: "Size system and grid layout demonstrations.",
     },
     {
-        name: "Grid Layout",
-        url: "/layout/grid-layout",
-        description: "Interactive demonstration of AdaptiveBox layout capabilities within CSS Grid.",
-    },
-];
-
-const examples = [
-    {
-        name: "Customization",
-        url: "/examples/customization",
-        description:
-            "Advanced customization techniques for building custom control components using primitives and generic controls.",
-    },
-    {
-        name: "Control Surface",
+        name: "Examples",
         url: "/examples/control-surface",
-        description:
-            "Complete 4-channel mixer interface with faders, pan controls, gain knobs, mute buttons, and EQ controls.",
-    },
-    {
-        name: "WebAudio",
-        url: "/examples/webaudio",
-        description: "Interactive synthesizer demonstrating AudioUI components integrated with Web Audio API.",
-    },
-    {
-        name: "Drag Interaction",
-        url: "/examples/drag-interaction",
-        description:
-            "Demonstration of drag interaction behaviors including drag-in/drag-out patterns and step sequencer interactions.",
-    },
-    {
-        name: "Stress Test",
-        url: "/examples/stress-test",
-        description: "Performance demonstration with 100+ components rendered simultaneously.",
+        icon: Sparkles,
+        description: "Live demos: Control Surface, WebAudio, Customization, and more.",
     },
 ];
 
 /**
- * Home page providing an overview of all playground content.
- * Organizes content into sections: Default Components, Generic Components, Primitives, Layout, and Examples.
+ * Playground home page.
+ * Provides quick navigation to all component sections with external resource links and getting started guidance.
  *
- * @returns Home page component
+ * @returns {JSX.Element} Home page component
  */
 export default function Home() {
     return (
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="container mx-auto px-4 py-8 max-w-5xl">
             {/* Hero Section */}
-            <div className="flex flex-col gap-4 mb-12 text-center">
-                <h1 className="text-4xl md:text-5xl font-bold tracking-tight">AudioUI by Cutoff</h1>
-                <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
-                    React components for audio and MIDI applications
+            <div className="flex flex-col gap-4 mb-8 text-center">
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tight">AudioUI Playground</h1>
+                <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+                    Interactive testing environment for AudioUI components
                 </p>
-                <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-                    An interactive playground for exploring and testing components designed for professional audio
-                    interfaces, plugins, and music software.
-                </p>
+                <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground">
+                    <span>For documentation, visit</span>
+                    <Button asChild variant="link" size="sm" className="h-auto p-0 text-sm">
+                        <a
+                            href="https://cutoff.dev"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1"
+                        >
+                            cutoff.dev
+                            <ExternalLink className="h-3 w-3" />
+                        </a>
+                    </Button>
+                    <span>•</span>
+                    <Button asChild variant="link" size="sm" className="h-auto p-0 text-sm">
+                        <a
+                            href="https://github.com/cutoff/audio-ui"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1"
+                        >
+                            <Github className="h-3 w-3" />
+                            View source
+                        </a>
+                    </Button>
+                    <span>•</span>
+                    <Button asChild variant="link" size="sm" className="h-auto p-0 text-sm">
+                        <a
+                            href="https://discord.gg/7RB6t2xqYW"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1"
+                        >
+                            <MessageSquare className="h-3 w-3" />
+                            Join Discord
+                        </a>
+                    </Button>
+                </div>
             </div>
 
-            {/* Default Components Section */}
+            {/* Getting Started Section */}
             <section className="mb-16">
-                <div className="flex items-center gap-3 mb-6">
-                    <Sliders className="h-6 w-6 text-primary" />
-                    <h2 className="text-3xl font-bold">Default Components</h2>
-                    <Button asChild variant="ghost" size="sm" className="ml-auto">
-                        <Link href="/defaults">
-                            View All
-                            <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                    </Button>
-                </div>
-                <p className="text-muted-foreground mb-6 max-w-3xl">
-                    Opinionated, production-ready components designed to cover 90% of use cases for audio applications
-                    and plugins. Each component includes ad-hoc properties for common customization needs, uses adaptive
-                    sizing to fit seamlessly into layouts, and responds to global theme settings (
-                    <Palette className="inline h-4 w-4 mx-0.5 align-middle" aria-label="Theme Settings" />{" "}
-                    <Sun className="inline h-4 w-4 mx-0.5 align-middle" aria-label="Light Mode" />{" "}
-                    <Moon className="inline h-4 w-4 mx-0.5 align-middle" aria-label="Dark Mode" /> in the header).
-                </p>
-                <div className="border rounded-lg overflow-hidden">
-                    <table className="w-full">
-                        <thead className="bg-muted/50">
-                            <tr>
-                                <th className="text-left p-4 font-semibold">Component</th>
-                                <th className="text-left p-4 font-semibold">Description</th>
-                                <th className="text-right p-4 font-semibold">Link</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {defaultComponents.map((component, index) => (
-                                <tr key={component.name} className={index % 2 === 0 ? "bg-background" : "bg-muted/20"}>
-                                    <td className="p-4 font-medium">{component.name}</td>
-                                    <td className="p-4 text-muted-foreground">{component.description}</td>
-                                    <td className="p-4 text-right">
-                                        <Button asChild variant="ghost" size="sm">
-                                            <Link href={component.url}>
-                                                View
-                                                <ArrowRight className="ml-2 h-4 w-4" />
-                                            </Link>
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                <Card className="border-primary/20 shadow-lg">
+                    <CardHeader className="pb-6">
+                        <CardTitle className="text-2xl">Getting Started</CardTitle>
+                        <CardDescription className="text-base">
+                            Essential tips for exploring the playground
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        {/* Navigation */}
+                        <div className="flex gap-4">
+                            <div className="flex-shrink-0 mt-1">
+                                <div className="rounded-lg bg-primary/10 p-3">
+                                    <Sidebar className="h-5 w-5 text-primary" />
+                                </div>
+                            </div>
+                            <div className="flex-1 space-y-1">
+                                <h3 className="font-semibold text-base">Navigation</h3>
+                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                    Use the sidebar to explore all components and examples. Each section contains
+                                    detailed demonstrations with live, interactive controls.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Theme Settings */}
+                        <div className="flex gap-4">
+                            <div className="flex-shrink-0 mt-1">
+                                <div className="rounded-lg bg-primary/10 p-3">
+                                    <Palette className="h-5 w-5 text-primary" />
+                                </div>
+                            </div>
+                            <div className="flex-1 space-y-2">
+                                <h3 className="font-semibold text-base">Theme Customization</h3>
+                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                    Click the <Palette className="inline h-4 w-4 mx-1 align-text-bottom text-primary" />{" "}
+                                    icon in the header to customize colors and roundness for vector components.
+                                </p>
+                                <p className="text-xs text-muted-foreground/80 leading-relaxed pl-4 border-l-2 border-muted">
+                                    Note: Raster components and primitives use custom visuals and are not controlled by
+                                    theme settings.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Light/Dark Mode */}
+                        <div className="flex gap-4">
+                            <div className="flex-shrink-0 mt-1">
+                                <div className="rounded-lg bg-primary/10 p-3 relative">
+                                    <Sun className="h-5 w-5 text-primary absolute inset-0 m-auto opacity-0 dark:opacity-100 transition-opacity" />
+                                    <Moon className="h-5 w-5 text-primary absolute inset-0 m-auto opacity-100 dark:opacity-0 transition-opacity" />
+                                    <div className="h-5 w-5 opacity-0">
+                                        <Monitor className="h-5 w-5" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex-1 space-y-1">
+                                <h3 className="font-semibold text-base">Light / Dark Mode</h3>
+                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                    Toggle between{" "}
+                                    <span className="inline-flex items-center gap-1">
+                                        <Monitor className="inline h-3.5 w-3.5 align-text-bottom" />
+                                        System
+                                    </span>
+                                    ,{" "}
+                                    <span className="inline-flex items-center gap-1">
+                                        <Sun className="inline h-3.5 w-3.5 align-text-bottom" />
+                                        Light
+                                    </span>
+                                    , and{" "}
+                                    <span className="inline-flex items-center gap-1">
+                                        <Moon className="inline h-3.5 w-3.5 align-text-bottom" />
+                                        Dark
+                                    </span>{" "}
+                                    modes using the theme toggle in the header.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Interaction */}
+                        <div className="flex gap-4">
+                            <div className="flex-shrink-0 mt-1">
+                                <div className="rounded-lg bg-primary/10 p-3">
+                                    <MousePointer2 className="h-5 w-5 text-primary" />
+                                </div>
+                            </div>
+                            <div className="flex-1 space-y-1">
+                                <h3 className="font-semibold text-base">Interactive Controls</h3>
+                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                    All components are fully interactive. Try dragging with your mouse or finger,
+                                    scrolling with the mouse wheel, and using keyboard arrow keys for precise control.
+                                </p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
             </section>
 
-            {/* Generic Components Section */}
-            <section className="mb-16">
-                <div className="flex items-center gap-3 mb-6">
-                    <Layers className="h-6 w-6 text-primary" />
-                    <h2 className="text-3xl font-bold">Generic Components</h2>
-                    <Button asChild variant="ghost" size="sm" className="ml-auto">
-                        <Link href="/generic">
-                            View All
-                            <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                    </Button>
-                </div>
-                <p className="text-muted-foreground mb-6 max-w-3xl">
-                    Components that support industry-standard control representations using bitmap sprite sheets
-                    (filmstrips) and image-based visuals. While bitmap-based visualization is more constrained than SVG,
-                    these components provide full access to all library features: complete layout system, full parameter
-                    model, complete interaction system, and all accessibility features.
-                </p>
-                <div className="border rounded-lg overflow-hidden">
-                    <table className="w-full">
-                        <thead className="bg-muted/50">
-                            <tr>
-                                <th className="text-left p-4 font-semibold">Component</th>
-                                <th className="text-left p-4 font-semibold">Description</th>
-                                <th className="text-right p-4 font-semibold">Link</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {genericComponents.map((component, index) => (
-                                <tr key={component.name} className={index % 2 === 0 ? "bg-background" : "bg-muted/20"}>
-                                    <td className="p-4 font-medium">{component.name}</td>
-                                    <td className="p-4 text-muted-foreground">{component.description}</td>
-                                    <td className="p-4 text-right">
-                                        <Button asChild variant="ghost" size="sm">
-                                            <Link href={component.url}>
-                                                View
-                                                <ArrowRight className="ml-2 h-4 w-4" />
-                                            </Link>
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            {/* Primitives Section */}
-            <section className="mb-16">
-                <div className="flex items-center gap-3 mb-6">
-                    <Box className="h-6 w-6 text-primary" />
-                    <h2 className="text-3xl font-bold">Primitive Components</h2>
-                    <Button asChild variant="ghost" size="sm" className="ml-auto">
-                        <Link href="/primitives">
-                            View All
-                            <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                    </Button>
-                </div>
-                <p className="text-muted-foreground mb-6 max-w-3xl">
-                    Low-level building blocks for composing custom controls. These primitives provide the foundation for
-                    building audio and MIDI interfaces. SVG primitives handle rendering, control primitives handle
-                    interaction logic, and layout primitives manage responsive sizing and positioning.
-                </p>
-                <div className="border rounded-lg overflow-hidden">
-                    <table className="w-full">
-                        <thead className="bg-muted/50">
-                            <tr>
-                                <th className="text-left p-4 font-semibold">Primitive</th>
-                                <th className="text-left p-4 font-semibold">Description</th>
-                                <th className="text-right p-4 font-semibold">Link</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {/* Layout Primitives */}
-                            <tr className="bg-primary/5 border-t border-b border-primary/10">
-                                <td
-                                    colSpan={3}
-                                    className="p-3 font-semibold text-sm uppercase tracking-wide text-primary/90"
-                                >
-                                    Layout Primitives
-                                </td>
-                            </tr>
-                            <tr className="bg-background">
-                                <td className="p-4 font-medium">AdaptiveBox</td>
-                                <td className="p-4 text-muted-foreground">
-                                    CSS/SVG-based layout system for SVG controls with labels. Supports multiple display
-                                    modes, container queries, and HTML overlay support.
-                                </td>
-                                <td className="p-4 text-right">
-                                    <Button asChild variant="ghost" size="sm">
-                                        <Link href="/primitives/adaptive-box">
+            {/* Main Sections */}
+            <section>
+                <h2 className="text-2xl font-bold mb-6">Explore Components</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {sections.map((section) => {
+                        const Icon = section.icon;
+                        return (
+                            <Card key={section.name} className="flex flex-col">
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2 text-lg">
+                                        <Icon className="h-5 w-5 text-primary" />
+                                        {section.name}
+                                    </CardTitle>
+                                    <CardDescription>{section.description}</CardDescription>
+                                </CardHeader>
+                                <CardContent className="mt-auto">
+                                    <Button asChild variant="outline" className="w-full">
+                                        <Link href={section.url}>
                                             View
                                             <ArrowRight className="ml-2 h-4 w-4" />
                                         </Link>
                                     </Button>
-                                </td>
-                            </tr>
-                            {/* SVG Primitives */}
-                            <tr className="bg-primary/5 border-t border-b border-primary/10">
-                                <td
-                                    colSpan={3}
-                                    className="p-3 font-semibold text-sm uppercase tracking-wide text-primary/90"
-                                >
-                                    SVG Primitives
-                                </td>
-                            </tr>
-                            <tr className="bg-muted/20">
-                                <td className="p-4 font-medium">ValueRing</td>
-                                <td className="p-4 text-muted-foreground">
-                                    Arc/ring indicator showing value progress. Supports bipolar mode, configurable
-                                    thickness, openness, and roundness.
-                                </td>
-                                <td className="p-4 text-right">
-                                    <Button asChild variant="ghost" size="sm">
-                                        <Link href="/primitives/ring">
-                                            View
-                                            <ArrowRight className="ml-2 h-4 w-4" />
-                                        </Link>
-                                    </Button>
-                                </td>
-                            </tr>
-                            <tr className="bg-background">
-                                <td className="p-4 font-medium">RotaryImage</td>
-                                <td className="p-4 text-muted-foreground">
-                                    Rotates children or an image based on normalized value. Shares angle logic with
-                                    ValueRing, ideal for rotating knob graphics and images.
-                                </td>
-                                <td className="p-4 text-right">
-                                    <Button asChild variant="ghost" size="sm">
-                                        <Link href="/primitives/rotary">
-                                            View
-                                            <ArrowRight className="ml-2 h-4 w-4" />
-                                        </Link>
-                                    </Button>
-                                </td>
-                            </tr>
-                            <tr className="bg-muted/20">
-                                <td className="p-4 font-medium">FilmstripImage</td>
-                                <td className="p-4 text-muted-foreground">
-                                    Displays a specific frame from a bitmap sprite sheet based on normalized value.
-                                    Supports frame rotation and configurable frame dimensions.
-                                </td>
-                                <td className="p-4 text-right">
-                                    <Button asChild variant="ghost" size="sm">
-                                        <Link href="/primitives/filmstrip">
-                                            View
-                                            <ArrowRight className="ml-2 h-4 w-4" />
-                                        </Link>
-                                    </Button>
-                                </td>
-                            </tr>
-                            <tr className="bg-background">
-                                <td className="p-4 font-medium">TickRing</td>
-                                <td className="p-4 text-muted-foreground">
-                                    Decorative primitive for rendering tick marks around radial controls. Supports
-                                    count-based or step-based positioning and custom render functions.
-                                </td>
-                                <td className="p-4 text-right">
-                                    <Button asChild variant="ghost" size="sm">
-                                        <Link href="/primitives/tick-ring">
-                                            View
-                                            <ArrowRight className="ml-2 h-4 w-4" />
-                                        </Link>
-                                    </Button>
-                                </td>
-                            </tr>
-                            <tr className="bg-muted/20">
-                                <td className="p-4 font-medium">LabelRing</td>
-                                <td className="p-4 text-muted-foreground">
-                                    Wrapper primitive for rendering text or icon labels at radial positions. Supports
-                                    numeric scales, text labels, icons, and configurable orientation.
-                                </td>
-                                <td className="p-4 text-right">
-                                    <Button asChild variant="ghost" size="sm">
-                                        <Link href="/primitives/label-ring">
-                                            View
-                                            <ArrowRight className="ml-2 h-4 w-4" />
-                                        </Link>
-                                    </Button>
-                                </td>
-                            </tr>
-                            <tr className="bg-background">
-                                <td className="p-4 font-medium">LinearStrip</td>
-                                <td className="p-4 text-muted-foreground">
-                                    A linear rectangle strip for linear controls. Positioned at a center point (cx, cy)
-                                    with configurable length, thickness, rotation, and rounded corners. Used for slider
-                                    tracks, faders, and pitch/mod wheels.
-                                </td>
-                                <td className="p-4 text-right">—</td>
-                            </tr>
-                            <tr className="bg-muted/20">
-                                <td className="p-4 font-medium">ValueStrip</td>
-                                <td className="p-4 text-muted-foreground">
-                                    The active (foreground) portion of a linear strip. Renders the filled portion based
-                                    on normalized value, supporting unipolar (fills from bottom) and bipolar (fills from
-                                    center) modes. Used for slider value indicators and fader fills.
-                                </td>
-                                <td className="p-4 text-right">—</td>
-                            </tr>
-                            <tr className="bg-background">
-                                <td className="p-4 font-medium">LinearCursor</td>
-                                <td className="p-4 text-muted-foreground">
-                                    A cursor that slides along a linear strip. Position driven by normalized value (0.0
-                                    = bottom, 1.0 = top). Supports image or SVG shape (rectangle/ellipse based on
-                                    roundness). Rotates around strip center along with the virtual bar. Used for slider
-                                    cursors and fader handles.
-                                </td>
-                                <td className="p-4 text-right">—</td>
-                            </tr>
-                            <tr className="bg-muted/20">
-                                <td className="p-4 font-medium">RadialImage</td>
-                                <td className="p-4 text-muted-foreground">
-                                    Displays static content at radial coordinates. Content is sized to fit within the
-                                    specified radius and centered at (cx, cy). Useful for icons or static images within
-                                    knob compositions.
-                                </td>
-                                <td className="p-4 text-right">—</td>
-                            </tr>
-                            <tr className="bg-muted/20">
-                                <td className="p-4 font-medium">RadialHtmlOverlay</td>
-                                <td className="p-4 text-muted-foreground">
-                                    Renders HTML content inside an SVG at a radial position using foreignObject.
-                                    Preferred way to render text inside knobs, leveraging native HTML text rendering.
-                                </td>
-                                <td className="p-4 text-right">—</td>
-                            </tr>
-                            <tr className="bg-background">
-                                <td className="p-4 font-medium">Image</td>
-                                <td className="p-4 text-muted-foreground">
-                                    Displays static content at rectangular coordinates. Positioned at (x, y) with
-                                    specified width and height. Designed for straightforward rectangular image placement
-                                    without radial positioning.
-                                </td>
-                                <td className="p-4 text-right">—</td>
-                            </tr>
-                            <tr className="bg-muted/20">
-                                <td className="p-4 font-medium">RevealingPath</td>
-                                <td className="p-4 text-muted-foreground">
-                                    Reveals a path from start to end using CSS stroke-dashoffset. Uses SVG pathLength
-                                    attribute to normalize path length calculation, enabling performant filling
-                                    animations.
-                                </td>
-                                <td className="p-4 text-right">—</td>
-                            </tr>
-                            {/* Control Primitives */}
-                            <tr className="bg-primary/5 border-t border-b border-primary/10">
-                                <td
-                                    colSpan={3}
-                                    className="p-3 font-semibold text-sm uppercase tracking-wide text-primary/90"
-                                >
-                                    Control Primitives
-                                </td>
-                            </tr>
-                            <tr className="bg-background">
-                                <td className="p-4 font-medium">ContinuousControl</td>
-                                <td className="p-4 text-muted-foreground">
-                                    Generic continuous control that connects a data model (AudioParameter) to a
-                                    visualization view. Handles parameter resolution, value management, and interaction
-                                    handling for continuous controls like knobs and sliders.
-                                </td>
-                                <td className="p-4 text-right">—</td>
-                            </tr>
-                            <tr className="bg-muted/20">
-                                <td className="p-4 font-medium">DiscreteControl</td>
-                                <td className="p-4 text-muted-foreground">
-                                    Generic discrete control that connects a data model (DiscreteParameter) to a
-                                    visualization view. Handles parameter resolution, value management, and interaction
-                                    handling for discrete controls like cycle buttons and selectors.
-                                </td>
-                                <td className="p-4 text-right">—</td>
-                            </tr>
-                            <tr className="bg-background">
-                                <td className="p-4 font-medium">BooleanControl</td>
-                                <td className="p-4 text-muted-foreground">
-                                    Generic boolean control that connects a data model (BooleanParameter) to a
-                                    visualization view. Handles parameter resolution, value management, and interaction
-                                    handling for boolean controls like buttons and toggles.
-                                </td>
-                                <td className="p-4 text-right">—</td>
-                            </tr>
-                            <tr className="bg-muted/20">
-                                <td className="p-4 font-medium">OptionView</td>
-                                <td className="p-4 text-muted-foreground">
-                                    Component for defining visual content for discrete control options. Used as children
-                                    of DiscreteControl to provide ReactNodes (icons, styled text, custom components) for
-                                    rendering.
-                                </td>
-                                <td className="p-4 text-right">—</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            {/* Layout Section */}
-            <section className="mb-16">
-                <div className="flex items-center gap-3 mb-6">
-                    <Layout className="h-6 w-6 text-primary" />
-                    <h2 className="text-3xl font-bold">Layout & Sizing</h2>
-                </div>
-                <p className="text-muted-foreground mb-6 max-w-3xl">
-                    Explore the layout system and sizing capabilities of AudioUI components. Learn how components adapt
-                    to different container sizes and how the consistent sizing system ensures harmonious layouts.
-                </p>
-                <div className="border rounded-lg overflow-hidden">
-                    <table className="w-full">
-                        <thead className="bg-muted/50">
-                            <tr>
-                                <th className="text-left p-4 font-semibold">Page</th>
-                                <th className="text-left p-4 font-semibold">Description</th>
-                                <th className="text-right p-4 font-semibold">Link</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {layoutPages.map((page, index) => (
-                                <tr key={page.name} className={index % 2 === 0 ? "bg-background" : "bg-muted/20"}>
-                                    <td className="p-4 font-medium">{page.name}</td>
-                                    <td className="p-4 text-muted-foreground">{page.description}</td>
-                                    <td className="p-4 text-right">
-                                        <Button asChild variant="ghost" size="sm">
-                                            <Link href={page.url}>
-                                                View
-                                                <ArrowRight className="ml-2 h-4 w-4" />
-                                            </Link>
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            {/* Examples Section */}
-            <section className="mb-16">
-                <div className="flex items-center gap-3 mb-6">
-                    <Sparkles className="h-6 w-6 text-primary" />
-                    <h2 className="text-3xl font-bold">Examples</h2>
-                </div>
-                <p className="text-muted-foreground mb-6 max-w-3xl">
-                    Real-world examples demonstrating AudioUI components in action. From complete control surfaces to
-                    Web Audio API integration, these examples show how to build professional audio interfaces.
-                </p>
-                <div className="border rounded-lg overflow-hidden">
-                    <table className="w-full">
-                        <thead className="bg-muted/50">
-                            <tr>
-                                <th className="text-left p-4 font-semibold">Example</th>
-                                <th className="text-left p-4 font-semibold">Description</th>
-                                <th className="text-right p-4 font-semibold">Link</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {examples.map((example, index) => (
-                                <tr key={example.name} className={index % 2 === 0 ? "bg-background" : "bg-muted/20"}>
-                                    <td className="p-4 font-medium">{example.name}</td>
-                                    <td className="p-4 text-muted-foreground">{example.description}</td>
-                                    <td className="p-4 text-right">
-                                        <Button asChild variant="ghost" size="sm">
-                                            <Link href={example.url}>
-                                                View
-                                                <ArrowRight className="ml-2 h-4 w-4" />
-                                            </Link>
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                </CardContent>
+                            </Card>
+                        );
+                    })}
                 </div>
             </section>
         </div>

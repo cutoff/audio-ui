@@ -36,27 +36,27 @@ const examplesData = [
  */
 const navData = [
     {
-        title: "Defaults",
-        url: "/defaults",
+        title: "Vector Components",
+        url: "/vector-components",
         items: [
-            { title: "Knob", url: "/defaults/knob" },
-            { title: "Slider (V)", url: "/defaults/vslider" },
-            { title: "Slider (H)", url: "/defaults/hslider" },
-            { title: "CycleButton", url: "/defaults/cyclebutton" },
-            { title: "Button", url: "/defaults/button" },
-            { title: "Keys", url: "/defaults/keys" },
+            { title: "Knob", url: "/vector-components/knob" },
+            { title: "Slider (V)", url: "/vector-components/vslider" },
+            { title: "Slider (H)", url: "/vector-components/hslider" },
+            { title: "CycleButton", url: "/vector-components/cyclebutton" },
+            { title: "Button", url: "/vector-components/button" },
+            { title: "Keys", url: "/vector-components/keys" },
         ],
     },
     {
-        title: "Generic",
-        url: "/generic",
+        title: "Raster Components",
+        url: "/raster-components",
         items: [
-            { title: "Image Knob", url: "/generic/image-knob" },
-            { title: "Image Rotary Switch", url: "/generic/image-rotary-switch" },
-            { title: "Image Switch", url: "/generic/image-switch" },
-            { title: "FilmStrip Continuous", url: "/generic/filmstrip-continuous" },
-            { title: "FilmStrip Discrete", url: "/generic/filmstrip-discrete" },
-            { title: "FilmStrip Boolean", url: "/generic/filmstrip-boolean" },
+            { title: "Image Knob", url: "/raster-components/image-knob" },
+            { title: "Image Rotary Switch", url: "/raster-components/image-rotary-switch" },
+            { title: "Image Switch", url: "/raster-components/image-switch" },
+            { title: "FilmStrip Continuous", url: "/raster-components/filmstrip-continuous" },
+            { title: "FilmStrip Discrete", url: "/raster-components/filmstrip-discrete" },
+            { title: "FilmStrip Boolean", url: "/raster-components/filmstrip-boolean" },
         ],
     },
     {

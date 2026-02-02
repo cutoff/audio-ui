@@ -12,7 +12,7 @@ import { RotaryImage, ControlComponentViewProps, ControlComponent } from "@cutof
 export type GuitarPixelKnobProps = ControlComponentViewProps;
 
 // Pixel image URL for vintage knob (from RotaryImage demo example 3)
-const VINTAGE_KNOB_IMAGE = "/knob-volume.png";
+const VINTAGE_KNOB_IMAGE = "/images/demo/knob-volume.png";
 
 /**
  * A control component that renders a vintage knob using a pixel image with custom rotation.

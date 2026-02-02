@@ -8,8 +8,8 @@
 
 import { useState, useMemo } from "react";
 import {
-    ImageKnob,
-    ImageKnobProps,
+    FilmStripContinuousControl,
+    FilmStripContinuousControlProps,
     AudioControlEvent,
     ValueLabelMode,
     InteractionMode,
@@ -22,9 +22,9 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const KNOB_IMAGE = "/knob-volume.png";
-const KNOB_TONE_IMAGE = "/knob-tone.png";
-const FINGER_POINTING_IMAGE = "/finger-pointing.png";
+const VU3_IMAGE = "/images/demo/vu3.png";
+const GUITAR_IMAGE = "/images/demo/guitar_strat_tone-2.png";
+const ABS_IMAGE = "/images/demo/ABS.png";
 
 function generateCodeSnippet(
     value: number,
@@ -34,15 +34,17 @@ function generateCodeSnippet(
     bipolar: boolean,
     frameWidth: number,
     frameHeight: number,
+    frameCount: number,
     imageHref: string,
-    rotation: number,
-    openness: number,
+    orientation: "vertical" | "horizontal",
+    frameRotation: number,
     label: string,
     interactionMode: InteractionMode | undefined,
     interactionDirection: InteractionDirection | undefined,
     interactionSensitivity: number | undefined,
     valueAsLabel: ValueLabelMode | undefined,
     unit: string | undefined,
+    invertValue: boolean,
     defaultValue: number | undefined
 ): string {
     let props = `value={${value}} min={${min}} max={${max}} label="${label}"`;
@@ -50,103 +52,112 @@ function generateCodeSnippet(
     if (step !== undefined) props += ` step={${step}}`;
     if (unit !== undefined) props += ` unit="${unit}"`;
     if (defaultValue !== undefined) props += ` defaultValue={${defaultValue}}`;
-    props += `\n  frameWidth={${frameWidth}} frameHeight={${frameHeight}}`;
+    props += `\n  frameWidth={${frameWidth}} frameHeight={${frameHeight}} frameCount={${frameCount}}`;
     props += `\n  imageHref="${imageHref}"`;
-    if (rotation !== 0) props += ` rotation={${rotation}}`;
-    if (openness !== 90) props += ` openness={${openness}}`;
+    if (orientation !== "vertical") props += ` orientation="${orientation}"`;
+    if (frameRotation !== 0) props += ` frameRotation={${frameRotation}}`;
     if (interactionMode !== undefined) props += ` interactionMode="${interactionMode}"`;
     if (interactionDirection !== undefined) props += ` interactionDirection="${interactionDirection}"`;
     if (interactionSensitivity !== undefined) props += ` interactionSensitivity={${interactionSensitivity}}`;
     if (valueAsLabel !== undefined) props += ` valueAsLabel="${valueAsLabel}"`;
-    return `<ImageKnob ${props}\n  onChange={(e) => setValue(e.value)}\n/>`;
+    if (invertValue) props += ` invertValue={${invertValue}}`;
+    return `<FilmStripContinuousControl ${props}\n  onChange={(e) => setValue(e.value)}\n/>`;
 }
 
-export default function ImageKnobDemoPage() {
-    // Default props match Volume Knob example
-    const [value, setValue] = useState(50);
-    const [defaultValue, setDefaultValue] = useState<number | undefined>(50);
-    const [min, setMin] = useState(0);
-    const [max, setMax] = useState(100);
-    const [step, setStep] = useState<number | undefined>(undefined);
+export default function FilmStripContinuousDemoPage() {
+    // Default props match VU Meter example
+    const [value, setValue] = useState(-2);
+    const [defaultValue, setDefaultValue] = useState<number | undefined>(-2);
+    const [min, setMin] = useState(-7);
+    const [max, setMax] = useState(3);
+    const [step, setStep] = useState<number | undefined>(1);
     const [bipolar, setBipolar] = useState(false);
-    const [frameWidth, setFrameWidth] = useState(100);
-    const [frameHeight, setFrameHeight] = useState(100);
-    const [imageHref, setImageHref] = useState(KNOB_IMAGE);
-    const [rotation, setRotation] = useState(0);
-    const [openness, setOpenness] = useState(90);
-    const [label, setLabel] = useState("Volume");
+    const [frameWidth, setFrameWidth] = useState(120);
+    const [frameHeight, setFrameHeight] = useState(80);
+    const [frameCount, setFrameCount] = useState(48);
+    const [imageHref, setImageHref] = useState(VU3_IMAGE);
+    const [orientation, setOrientation] = useState<"vertical" | "horizontal">("vertical");
+    const [frameRotation, setFrameRotation] = useState(0);
+    const [label, setLabel] = useState("VU Meter");
     const [interactionMode, setInteractionMode] = useState<InteractionMode | undefined>(undefined);
-    const [interactionDirection, setInteractionDirection] = useState<InteractionDirection | undefined>("circular");
+    const [interactionDirection, setInteractionDirection] = useState<InteractionDirection | undefined>("horizontal");
     const [interactionSensitivity, setInteractionSensitivity] = useState<number | undefined>(undefined);
     const [valueAsLabel, setValueAsLabel] = useState<ValueLabelMode | undefined>("interactive");
-    const [unit, setUnit] = useState<string | undefined>("%");
+    const [unit, setUnit] = useState<string | undefined>("VU");
+    const [invertValue, setInvertValue] = useState(false);
 
     const handleExampleClick = (num: 0 | 1 | 2): void => {
         switch (num) {
             case 0:
-                // Volume Knob
-                setValue(50);
-                setDefaultValue(50);
-                setMin(0);
-                setMax(100);
-                setStep(undefined);
+                // VU Meter
+                setValue(-2);
+                setDefaultValue(-2);
+                setMin(-7);
+                setMax(3);
+                setStep(1);
                 setBipolar(false);
-                setFrameWidth(100);
-                setFrameHeight(100);
-                setImageHref(KNOB_IMAGE);
-                setRotation(0);
-                setOpenness(90);
-                setLabel("Volume");
+                setFrameWidth(120);
+                setFrameHeight(80);
+                setFrameCount(48);
+                setImageHref(VU3_IMAGE);
+                setOrientation("vertical");
+                setFrameRotation(0);
+                setLabel("VU Meter");
                 setInteractionMode(undefined);
-                setInteractionDirection("circular");
+                setInteractionDirection("horizontal");
                 setInteractionSensitivity(undefined);
                 setValueAsLabel("interactive");
-                setUnit("%");
+                setUnit("VU");
+                setInvertValue(false);
                 break;
             case 1:
-                // Tone Knob
-                setValue(5);
-                setDefaultValue(5);
+                // Guitar Tone
+                setValue(1);
+                setDefaultValue(1);
                 setMin(1);
                 setMax(10);
                 setStep(1);
                 setBipolar(false);
-                setFrameWidth(100);
-                setFrameHeight(100);
-                setImageHref(KNOB_TONE_IMAGE);
-                setRotation(0);
-                setOpenness(90);
+                setFrameWidth(80);
+                setFrameHeight(80);
+                setFrameCount(31);
+                setImageHref(GUITAR_IMAGE);
+                setOrientation("vertical");
+                setFrameRotation(0);
                 setLabel("Tone");
                 setInteractionMode(undefined);
                 setInteractionDirection("circular");
                 setInteractionSensitivity(undefined);
                 setValueAsLabel("interactive");
                 setUnit(undefined);
+                setInvertValue(false);
                 break;
             case 2:
-                // Finger Pointing
-                setValue(3);
-                setDefaultValue(3);
+                // ABS Knob
+                setValue(150);
+                setDefaultValue(150);
                 setMin(0);
-                setMax(10);
+                setMax(199);
                 setStep(1);
                 setBipolar(false);
-                setFrameWidth(100);
-                setFrameHeight(100);
-                setImageHref(FINGER_POINTING_IMAGE);
-                setRotation(0);
-                setOpenness(90);
-                setLabel("Direction");
+                setFrameWidth(128);
+                setFrameHeight(128);
+                setFrameCount(200);
+                setImageHref(ABS_IMAGE);
+                setOrientation("vertical");
+                setFrameRotation(0);
+                setLabel("ABS Knob");
                 setInteractionMode(undefined);
                 setInteractionDirection("circular");
                 setInteractionSensitivity(undefined);
                 setValueAsLabel(undefined);
                 setUnit(undefined);
+                setInvertValue(false);
                 break;
         }
     };
 
-    const componentProps: ImageKnobProps = useMemo(
+    const componentProps: FilmStripContinuousControlProps = useMemo(
         () => ({
             value,
             defaultValue,
@@ -157,14 +168,16 @@ export default function ImageKnobDemoPage() {
             label,
             frameWidth,
             frameHeight,
+            frameCount,
             imageHref,
-            rotation,
-            openness,
+            orientation,
+            frameRotation,
             interactionMode,
             interactionDirection,
             interactionSensitivity,
             valueAsLabel,
             unit,
+            invertValue,
             onChange: (e: AudioControlEvent<number>) => setValue(e.value),
         }),
         [
@@ -177,14 +190,16 @@ export default function ImageKnobDemoPage() {
             label,
             frameWidth,
             frameHeight,
+            frameCount,
             imageHref,
-            rotation,
-            openness,
+            orientation,
+            frameRotation,
             interactionMode,
             interactionDirection,
             interactionSensitivity,
             valueAsLabel,
             unit,
+            invertValue,
         ]
     );
 
@@ -196,15 +211,17 @@ export default function ImageKnobDemoPage() {
         bipolar,
         frameWidth,
         frameHeight,
+        frameCount,
         imageHref,
-        rotation,
-        openness,
+        orientation,
+        frameRotation,
         label,
         interactionMode,
         interactionDirection,
         interactionSensitivity,
         valueAsLabel,
         unit,
+        invertValue,
         defaultValue
     );
 
@@ -255,7 +272,7 @@ export default function ImageKnobDemoPage() {
                 Bipolar
             </Label>
         </div>,
-        <div key="dimensions" className="grid grid-cols-2 gap-2">
+        <div key="dimensions" className="grid grid-cols-3 gap-2">
             <div className="space-y-2">
                 <Label>Frame Width</Label>
                 <Input type="number" value={frameWidth} onChange={(e) => setFrameWidth(Number(e.target.value))} />
@@ -264,18 +281,30 @@ export default function ImageKnobDemoPage() {
                 <Label>Frame Height</Label>
                 <Input type="number" value={frameHeight} onChange={(e) => setFrameHeight(Number(e.target.value))} />
             </div>
+            <div className="space-y-2">
+                <Label>Frame Count</Label>
+                <Input type="number" value={frameCount} onChange={(e) => setFrameCount(Number(e.target.value))} />
+            </div>
         </div>,
         <div key="imageHref" className="space-y-2">
             <Label>Image URL</Label>
             <Input value={imageHref} onChange={(e) => setImageHref(e.target.value)} />
         </div>,
-        <div key="rotation" className="grid gap-2">
-            <Label>Rotation (degrees)</Label>
-            <Input type="number" value={rotation} onChange={(e) => setRotation(Number(e.target.value))} />
+        <div key="orientation" className="grid gap-2">
+            <Label>Orientation</Label>
+            <Select value={orientation} onValueChange={(value) => setOrientation(value as "vertical" | "horizontal")}>
+                <SelectTrigger>
+                    <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="vertical">Vertical</SelectItem>
+                    <SelectItem value="horizontal">Horizontal</SelectItem>
+                </SelectContent>
+            </Select>
         </div>,
-        <div key="openness" className="grid gap-2">
-            <Label>Openness (degrees)</Label>
-            <Input type="number" value={openness} onChange={(e) => setOpenness(Number(e.target.value))} />
+        <div key="frameRotation" className="grid gap-2">
+            <Label>Frame Rotation (degrees)</Label>
+            <Input type="number" value={frameRotation} onChange={(e) => setFrameRotation(Number(e.target.value))} />
         </div>,
         <div key="label" className="space-y-2">
             <Label>Label</Label>
@@ -320,7 +349,7 @@ export default function ImageKnobDemoPage() {
                     <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="default">Default (Circular)</SelectItem>
+                    <SelectItem value="default">Default</SelectItem>
                     <SelectItem value="vertical">Vertical</SelectItem>
                     <SelectItem value="horizontal">Horizontal</SelectItem>
                     <SelectItem value="circular">Circular</SelectItem>
@@ -375,48 +404,61 @@ export default function ImageKnobDemoPage() {
                 placeholder="None"
             />
         </div>,
+        <div key="invertValue" className="flex items-center gap-2">
+            <Checkbox
+                id="invertValueProp"
+                checked={invertValue}
+                onCheckedChange={(checked) => setInvertValue(checked === true)}
+            />
+            <Label htmlFor="invertValueProp" className="cursor-pointer">
+                Invert Value
+            </Label>
+        </div>,
     ];
 
     const examples = useMemo(
         () => [
-            <ImageKnob
-                key="volume"
-                value={50}
-                min={0}
-                max={100}
-                label="Volume"
-                frameWidth={100}
-                frameHeight={100}
-                imageHref={KNOB_IMAGE}
-                interactionDirection="circular"
+            <FilmStripContinuousControl
+                key="vu3"
+                value={-2}
+                min={-7}
+                max={3}
+                label="VU Meter"
+                frameWidth={120}
+                frameHeight={80}
+                frameCount={48}
+                imageHref={VU3_IMAGE}
+                interactionDirection="horizontal"
                 valueAsLabel="interactive"
-                unit="%"
+                unit="VU"
                 size="large"
                 onClick={() => handleExampleClick(0)}
             />,
-            <ImageKnob
-                key="tone"
-                value={5}
+            <FilmStripContinuousControl
+                key="guitar"
+                value={1}
                 min={1}
                 max={10}
                 label="Tone"
-                frameWidth={100}
-                frameHeight={100}
-                imageHref={KNOB_TONE_IMAGE}
+                frameWidth={80}
+                frameHeight={80}
+                frameCount={31}
+                imageHref={GUITAR_IMAGE}
                 interactionDirection="circular"
                 valueAsLabel="interactive"
                 size="large"
                 onClick={() => handleExampleClick(1)}
             />,
-            <ImageKnob
-                key="finger-pointing"
-                value={3}
+            <FilmStripContinuousControl
+                key="abs"
+                value={150}
                 min={0}
-                max={10}
-                label="Direction"
-                frameWidth={100}
-                frameHeight={100}
-                imageHref={FINGER_POINTING_IMAGE}
+                max={199}
+                label="ABS Knob"
+                frameWidth={128}
+                frameHeight={128}
+                frameCount={200}
+                imageHref={ABS_IMAGE}
                 interactionDirection="circular"
                 size="large"
                 onClick={() => handleExampleClick(2)}
@@ -427,9 +469,9 @@ export default function ImageKnobDemoPage() {
 
     return (
         <ControlSkeletonPage<number>
-            componentName="ImageKnob"
+            componentName="FilmStripContinuousControl"
             codeSnippet={codeSnippet}
-            PageComponent={ImageKnob}
+            PageComponent={FilmStripContinuousControl}
             componentProps={componentProps}
             properties={properties}
             examples={examples}

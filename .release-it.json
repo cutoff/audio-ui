@@ -1,31 +1,23 @@
 {
-  "git": {
-    "commitMessage": "Release version ${version}",
-    "tagName": "release/${version}",
-    "requireCleanWorkingDir": false,
-    "requireUpstream": false,
-    "push": false
-  },
-  "npm": {
-    "publish": false,
-    "publishPath": "./packages/react"
-  },
-  "plugins": {
-    "@release-it/bumper": {
-      "in": [
-        "package.json",
-        "packages/*/package.json",
-        "apps/*/package.json"
-      ],
-      "out": [
-        "package.json",
-        "packages/*/package.json",
-        "apps/*/package.json"
-      ]
+    "git": {
+        "commitMessage": "Release version ${version}",
+        "tagName": "release/${version}",
+        "requireCleanWorkingDir": false,
+        "requireUpstream": false,
+        "push": false
+    },
+    "npm": {
+        "publish": false,
+        "publishPath": "./packages/react"
+    },
+    "plugins": {
+        "@release-it/bumper": {
+            "in": ["package.json", "packages/*/package.json", "apps/*/package.json"],
+            "out": ["package.json", "packages/*/package.json", "apps/*/package.json"]
+        }
+    },
+    "hooks": {
+        "before:init": ["pnpm check"],
+        "after:bump": "tsx scripts/sync-monorepo-versions.ts"
     }
-  },
-  "hooks": {
-    "before:init": ["pnpm check"],
-    "after:bump": "tsx scripts/sync-monorepo-versions.ts"
-  }
 }

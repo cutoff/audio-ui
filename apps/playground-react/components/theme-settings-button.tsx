@@ -108,7 +108,7 @@ export function ThemeSettingsButton() {
                     <SheetHeader>
                         <SheetTitle>Theme Settings</SheetTitle>
                         <SheetDescription>
-                            Customize the default theme settings for default components. Generic components, primitives,
+                            Customize the default theme settings for vector components. Raster components, primitives,
                             and other specialized components are not controlled by these settings.
                         </SheetDescription>
                     </SheetHeader>

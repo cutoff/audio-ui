@@ -12,15 +12,15 @@
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
 | Scripts      | `pnpm dev`, `pnpm build`, `pnpm typecheck`, `pnpm lint`                                                                              |
 | Env Vars     | None                                                                                                                                 |
-| Routing      | Next.js app router; pages in app/[route]/page.tsx; categories: examples, defaults, generic, primitives, layout                       |
+| Routing      | Next.js app router; pages in app/[route]/page.tsx; categories: examples, vector-components, raster-components, primitives, layout    |
 | Theming      | next-themes for theme switching; theme controls in header (ThemeSettingsButton, ThemeModeToggle); responsive sheet for customization |
 | Integrations | Import library components for showcases; Radix via shadcn; forms, routing                                                            |
 
 ## Key File Structure
 
 - `app/layout.tsx`: Root layout with header containing theme controls
-- `app/page.tsx`: Home page
-- `app/[route]/page.tsx`: Demo pages (e.g., app/defaults/button/page.tsx for Button demo)
+- `app/page.tsx`: Home page (simplified entry: hero with external links, Getting Started card with theme/navigation tips, Explore Components card grid linking to vector-components, raster-components, primitives, layout, examples)
+- `app/[route]/page.tsx`: Demo pages (e.g., app/vector-components/button/page.tsx for Button demo)
 - `app/layout/sizing/page.tsx`: Centralized sizing system showcase (all components, all sizes)
 - `app/providers.tsx`: Next.js ThemeProvider (light/dark mode) and ThemeInitializer (CSS variable initialization, global theme state)
 - `components/ui/`: **shadcn components ONLY** - do not add custom components here; **NEVER modify shadcn components** - they are third-party stabilized code; work around type issues with type assertions/ts-expect-error if needed
@@ -34,6 +34,7 @@
 ## Workflow Patterns (Bullets)
 
 - Add new playground page: Create app/[route]/[component]/page.tsx; import from @cutoff/audio-ui-react; add examples with props; use shadcn for UI
+- Component demo placement: Library built-in controls (Knob, Slider, Button, CycleButton, Keys) go under `app/vector-components/`; image/filmstrip controls (ImageKnob, FilmStrip*, etc.) go under `app/raster-components/`. Sync sidebar (app-sidebar.tsx) and breadcrumb (breadcrumb-nav.tsx) when adding entries.
 - Control demo pages: Use `ControlSkeletonPage` component; examples use `size="large"` for visibility; no individual Size showcases (centralized in `/layout/sizing`)
 - Sizing showcase: Centralized at `/layout/sizing`; showcases all components (Button, Knob, CycleButton, Slider, Keys) with all sizes (xsmall through xlarge)
 - Theming: next-themes ThemeProvider (light/dark mode) and ThemeInitializer (CSS variable-based Audio UI theming); theme controls in header (ThemeSettingsButton, ThemeModeToggle); responsive sheet for theme customization
@@ -50,7 +51,7 @@ Validate components imported from library; ensure playground showcases accuratel
 
 Theme customization controls are located in the header (not in the sidebar):
 
-**Important**: Theme settings affect only default components (default theme/skin). Generic components, primitives, and other specialized components are not controlled by these settings.
+**Important**: Theme settings affect only vector components (default theme/skin). Raster components, primitives, and other specialized components are not controlled by these settings.
 
 - **ThemeSettingsButton**: Header button that opens a responsive sheet with theme customization options
   - Desktop/Tablet: Right-side sheet (no overlay for real-time preview)
@@ -66,7 +67,7 @@ Theme customization controls are located in the header (not in the sidebar):
   - Used inside the theme settings sheet
   - Reads from and writes to global theme state (`audioUiThemeState`)
   - Initializes with default adaptive theme if no theme is set
-  - Affects only default components; generic components and primitives are not controlled
+  - Affects only vector components; raster components and primitives are not controlled
 
 - **Implementation Details**:
   - Theme settings are stored in global state (`app/providers.tsx`)

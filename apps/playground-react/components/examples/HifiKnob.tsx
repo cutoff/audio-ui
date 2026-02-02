@@ -19,7 +19,7 @@ import {
 export type ImageBackgroundKnobProps = ControlComponentViewProps;
 
 // Constants & Styles
-const KNOB_BACKGROUND_IMAGE = "/knob-metal.png";
+const KNOB_BACKGROUND_IMAGE = "/images/demo/knob-metal.png";
 
 const FG_ARC_STYLE = { stroke: "#FCC969" };
 const TICKS_STYLE = { stroke: "#FCC969", strokeWidth: 1 };
@@ -86,7 +86,7 @@ HifiKnob.viewBox = {
 /**
  * Label height for the ImageBackgroundKnob component.
  */
-HifiKnob.labelHeightUnits = 15;
+HifiKnob.labelHeightUnits = 10;
 
 /**
  * Interaction contract for the ImageBackgroundKnob component.

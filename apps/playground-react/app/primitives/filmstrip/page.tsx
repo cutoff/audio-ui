@@ -45,10 +45,10 @@ const SAMPLE_WIDTH = 100;
 const SAMPLE_HEIGHT = 100;
 const SAMPLE_FILMSTRIP = generateFilmstripSvg(SAMPLE_FRAMES, SAMPLE_WIDTH, SAMPLE_HEIGHT);
 
-const ABS_IMAGE = "/ABS.png";
-const GUITAR_IMAGE = "/guitar_strat_tone-2.png";
-const VU3_IMAGE = "/vu3.png";
-const IMAGE_101 = "/101.png";
+const ABS_IMAGE = "/images/demo/ABS.png";
+const GUITAR_IMAGE = "/images/demo/guitar_strat_tone-2.png";
+const VU3_IMAGE = "/images/demo/vu3.png";
+const IMAGE_101 = "/images/demo/101.png";
 
 // Wrapper to render the FilmstripImage inside an SVG
 type FilmstripWrapperProps = {

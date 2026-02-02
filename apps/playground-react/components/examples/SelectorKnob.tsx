@@ -19,8 +19,8 @@ import {
 export type SelectorKnobProps = ControlComponentViewProps;
 
 // Image assets
-const KNOB_SELECTOR_IMAGE = "/knob-selector.png";
-const KNOB_SELECTOR_BODY_IMAGE = "/knob-selector-body.png";
+const KNOB_SELECTOR_IMAGE = "/images/demo/knob-selector.png";
+const KNOB_SELECTOR_BODY_IMAGE = "/images/demo/knob-selector-body.png";
 const TICKS_STYLE = { stroke: "var(--audioui-adaptive-default-color)", strokeWidth: 0.5 };
 
 /**

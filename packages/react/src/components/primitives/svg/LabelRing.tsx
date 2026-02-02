@@ -114,7 +114,11 @@ function LabelRing({
                     } else {
                         // Heuristic: Try to find size from props
                         // This works for Lucide, Radix, and many other icon libraries
-                        const props = (content as React.ReactElement).props as { size?: string | number; width?: string | number; height?: string | number };
+                        const props = (content as React.ReactElement).props as {
+                            size?: string | number;
+                            width?: string | number;
+                            height?: string | number;
+                        };
                         const size = props?.size ?? props?.width ?? props?.height;
                         const numericSize = Number(size);
                         if (!isNaN(numericSize) && numericSize > 0) {

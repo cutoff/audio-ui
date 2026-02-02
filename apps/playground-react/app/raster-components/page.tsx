@@ -12,42 +12,42 @@ import { ArrowRight, Film, Grid3x3, ToggleLeft, RotateCw, Settings, Power } from
 const components = [
     {
         name: "Image Knob",
-        url: "/generic/image-knob",
+        url: "/raster-components/image-knob",
         description:
             "A rotary knob control that rotates a bitmap image based on continuous parameter values. Supports configurable rotation range and openness, perfect for custom knob designs using bitmap graphics.",
         icon: RotateCw,
     },
     {
         name: "Image Rotary Switch",
-        url: "/generic/image-rotary-switch",
+        url: "/raster-components/image-rotary-switch",
         description:
             "A discrete rotary switch control that rotates a bitmap image to discrete positions. Maps discrete values to rotation angles, ideal for multi-position rotary selectors with custom bitmap graphics.",
         icon: Settings,
     },
     {
         name: "Image Switch",
-        url: "/generic/image-switch",
+        url: "/raster-components/image-switch",
         description:
             "A boolean switch control that displays one of two bitmap images based on state. Supports both momentary and latch (toggle) modes, perfect for on/off switches and buttons with custom bitmap graphics.",
         icon: ToggleLeft,
     },
     {
         name: "FilmStrip Continuous",
-        url: "/generic/filmstrip-continuous",
+        url: "/raster-components/filmstrip-continuous",
         description:
             "A continuous control using bitmap sprite sheets (filmstrips) for visualization. Maps continuous values to frame indices, ideal for VU meters, rotary knobs, and other continuous parameter controls with custom bitmap graphics.",
         icon: Film,
     },
     {
         name: "FilmStrip Discrete",
-        url: "/generic/filmstrip-discrete",
+        url: "/raster-components/filmstrip-discrete",
         description:
             "A discrete control using bitmap sprite sheets for visualization. Maps discrete values to frame indices based on option count, perfect for multi-position switches, selectors, and discrete parameter controls with custom bitmap graphics.",
         icon: Grid3x3,
     },
     {
         name: "FilmStrip Boolean",
-        url: "/generic/filmstrip-boolean",
+        url: "/raster-components/filmstrip-boolean",
         description:
             "A boolean control using bitmap sprite sheets for visualization. Maps boolean values to frames (typically 2 frames: false/off, true/on), ideal for on/off switches, buttons, and toggle controls with custom bitmap graphics.",
         icon: Power,
@@ -55,17 +55,17 @@ const components = [
 ];
 
 /**
- * Generic components overview page.
- * Provides an overview of all generic components and links to their individual demo pages.
+ * Raster components overview page.
+ * Provides an overview of all raster components and links to their individual demo pages.
  *
- * @returns Generic components overview page
+ * @returns {JSX.Element} Raster components overview page
  */
-export default function GenericPage() {
+export default function RasterComponentsPage() {
     return (
         <div className="container mx-auto px-4 py-8 max-w-6xl">
             {/* Header Section */}
             <div className="flex flex-col gap-4 mb-8 text-center">
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Generic Components</h1>
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Raster Components</h1>
                 <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">
                     These components support industry-standard control representations using bitmap sprite sheets
                     (filmstrips) and image-based visuals. While bitmap-based visualization is more constrained than SVG,

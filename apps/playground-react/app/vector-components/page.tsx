@@ -19,14 +19,14 @@ const noOpHandler = () => {};
 const components = [
     {
         name: "Knob",
-        url: "/defaults/knob",
+        url: "/vector-components/knob",
         description:
             "A rotary control for continuous parameter adjustment. Supports bipolar and unipolar modes, customizable value formatting, and multiple visual variants including icon caps.",
         preview: <Knob min={0} max={100} value={50} label="Volume" adaptiveSize={true} onChange={noOpHandler} />,
     },
     {
         name: "Slider (V)",
-        url: "/defaults/vslider",
+        url: "/vector-components/vslider",
         description:
             "A vertical slider control for continuous parameter adjustment. Ideal for level controls, faders, and vertical parameter adjustment with customizable ranges and units.",
         preview: (
@@ -43,7 +43,7 @@ const components = [
     },
     {
         name: "Slider (H)",
-        url: "/defaults/hslider",
+        url: "/vector-components/hslider",
         description:
             "A horizontal slider control for continuous parameter adjustment. Perfect for pan controls, horizontal parameter adjustment, and intuitive left-to-right value manipulation.",
         preview: (
@@ -60,7 +60,7 @@ const components = [
     },
     {
         name: "CycleButton",
-        url: "/defaults/cyclebutton",
+        url: "/vector-components/cyclebutton",
         description:
             "A button that cycles through discrete options on each click. Supports keyboard navigation with arrow keys and space/enter for cycling through predefined values.",
         preview: (
@@ -79,14 +79,14 @@ const components = [
     },
     {
         name: "Button",
-        url: "/defaults/button",
+        url: "/vector-components/button",
         description:
             "A versatile button control supporting both momentary and latch (toggle) modes. Features drag-in/drag-out behavior for step sequencer patterns and hardware-like interactions.",
         preview: <AudioButton value={false} label="Mute" adaptiveSize={true} onChange={noOpHandler} />,
     },
     {
         name: "Keys",
-        url: "/defaults/keys",
+        url: "/vector-components/keys",
         description:
             "A piano-style keyboard component for MIDI note input and visualization. Supports configurable key ranges, octave shifts, and multiple visual styles including classic and theme-based designs.",
         preview: <Keys nbKeys={13} startKey="C" octaveShift={0} notesOn={[60, 64, 67]} adaptiveSize={true} />,
@@ -94,21 +94,21 @@ const components = [
 ];
 
 /**
- * Default components overview page.
- * Provides an overview of all default components and links to their individual demo pages.
+ * Vector components overview page.
+ * Provides an overview of all vector components and links to their individual demo pages.
  *
- * @returns Default components overview page
+ * @returns {JSX.Element} Vector components overview page
  */
-export default function DefaultsPage() {
+export default function VectorComponentsPage() {
     return (
         <div className="container mx-auto px-4 py-8 max-w-6xl">
             {/* Header Section */}
             <div className="flex flex-col gap-4 mb-8 text-center">
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Default Components</h1>
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Vector Components</h1>
                 <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">
                     These are opinionated, production-ready components designed to cover 90% of use cases for audio
                     applications and plugins. Each component includes ad-hoc properties for common customization needs,
-                    uses adaptive sizing to fit seamlessly into layouts, and responds to global theme settings. Generic
+                    uses adaptive sizing to fit seamlessly into layouts, and responds to global theme settings. Raster
                     components, primitives, and other specialized components are not controlled by the theme settings.
                 </p>
             </div>
