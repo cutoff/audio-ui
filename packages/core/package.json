@@ -1,48 +1,48 @@
 {
-    "name": "@cutoff/audio-ui-core",
-    "version": "1.0.0-dev",
-    "description": "Core logic and models for AudioUI by Cutoff",
-    "private": false,
-    "author": "Renaud Denis <mail@renauddenis.com> (https://renauddenis.com)",
-    "license": "GPL-3.0-only",
-    "type": "module",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "sideEffects": [
-        "**/*.css"
-    ],
-    "exports": {
-        ".": {
-            "import": "./dist/index.js",
-            "types": "./dist/index.d.ts"
-        },
-        "./styles.css": "./dist/styles/styles.css",
-        "./themes.css": "./dist/styles/themes.css"
+  "name": "@cutoff/audio-ui-core",
+  "version": "1.0.0-preview.20260202.1007",
+  "description": "Core logic and models for AudioUI by Cutoff",
+  "private": false,
+  "author": "Renaud Denis <mail@renauddenis.com> (https://renauddenis.com)",
+  "license": "GPL-3.0-only",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     },
-    "files": [
-        "dist"
-    ],
-    "publishConfig": {
-        "access": "public"
-    },
-    "scripts": {
-        "build": "pnpm exec vite build",
-        "typecheck": "tsc --noEmit",
-        "test": "vitest run",
-        "test:watch": "vitest",
-        "test:coverage": "vitest run --coverage",
-        "lint": "eslint \"src/**/*.ts\"",
-        "lint:fix": "eslint \"src/**/*.ts\" --fix || true",
-        "clean": "rm -rf node_modules dist .turbo"
-    },
-    "dependencies": {
-        "fast-deep-equal": "^3.1.3"
-    },
-    "devDependencies": {
-        "jsdom": "^24.1.3",
-        "typescript": "^5.9.3",
-        "vite": "^5.4.21",
-        "vite-plugin-dts": "^3.9.1",
-        "vitest": "^1.6.1"
-    }
+    "./styles.css": "./dist/styles/styles.css",
+    "./themes.css": "./dist/styles/themes.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "pnpm exec vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint \"src/**/*.ts\"",
+    "lint:fix": "eslint \"src/**/*.ts\" --fix || true",
+    "clean": "rm -rf node_modules dist .turbo"
+  },
+  "dependencies": {
+    "fast-deep-equal": "^3.1.3"
+  },
+  "devDependencies": {
+    "jsdom": "^24.1.3",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.21",
+    "vite-plugin-dts": "^3.9.1",
+    "vitest": "^1.6.1"
+  }
 }
