@@ -95,7 +95,7 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 - **Framework-Agnostic Architecture**: The core package (`packages/core/`) is designed to be framework-agnostic, enabling potential implementations for other frameworks. Any future framework-specific packages would follow the same architectural pattern: depend on `@cutoff/audio-ui-core` for shared logic and provide framework-specific components and adapters.
 
 - `apps/playground-react/`: Next.js playground; showcases components; routes: examples, vector-components, raster-components, primitives, layout; app/components for pages (inferred)
-- `agents/`: Shared conventions (coding-conventions-2.0.md, typescript-guidelines-2.0.md, react-conventions-2.0.md, documentation-standards-2.0.md, coding-agent-commands-1.0.md)
+- `agents/`: Shared conventions (coding-conventions-2.0.md, typescript-guidelines-2.0.md, react-conventions-2.0.md, documentation-standards-2.0.md, coding-agent-commands-1.0.md, github-issues-guidelines-1.0.md)
 - `packages/react/docs/`: Specialized tech docs (e.g., adaptive-box-layout.md)
 - `links/`: Symbolic links to external repositories (Read-Only, Ignored by Git). Use for reference only.
 - Sub-AGENTS.md: Optional extensions for details
@@ -109,8 +109,11 @@ Available commands:
 - **Review**: Comprehensive code review procedure (documentation, readability, performance, unused imports, prettier, and `pnpm check`)
 - **Check**: Iterate on `pnpm check` until no errors remain
 - **Release**: Release procedure using release-it for version management, changelog generation, and git tagging
+- **Create Issue**: Report a discussed topic to GitHub Issues; procedure in `agents/github-issues-guidelines-1.0.md`
+- **Update Issue**: Update an existing GitHub issue with progression and decisions; procedure in `agents/github-issues-guidelines-1.0.md`
+- **Close Issue**: Add final comment and close issue as completed; procedure in `agents/github-issues-guidelines-1.0.md`
 
-See `agents/coding-agent-commands-1.0.md` for complete command definitions and procedures.
+See `agents/coding-agent-commands-1.0.md` for complete command definitions and procedures. GitHub issue commands (Create Issue, Update Issue, Close Issue) follow `agents/github-issues-guidelines-1.0.md` for repository resolution, labels, description style, and writing conventions.
 
 ## Agent Workflow Template
 
@@ -326,6 +329,7 @@ Agents docs are living documentation; update continuously for agent efficiency. 
 - `./agents/audioui-licensing-strategy.md`: Outlines the dual-licensing model and legal framework.
 - `./agents/audioui-versioning-guidelines.md`: Details the SemVer-based versioning strategy, including developer preview conventions.
 - `./agents/audioui-styling-system.md`: Comprehensive styling system guidelines covering namespace isolation, naming conventions, constants usage, Stylelint enforcement, and best practices.
+- `./agents/github-issues-guidelines-1.0.md`: Guidelines for agent-driven GitHub issue create/update/close via GitHub MCP; labels, description style, repository resolution, writing conventions.
 - `./packages/react/AGENTS.md`: Library specifics (exports, build, env, interaction system, generic control architecture, size system).
 - `./apps/playground-react/AGENTS.md`: Playground app details (routing, integrations, env, sizing showcase).
 - `./packages/react/docs/interaction-system.md`: Complete interaction system architecture, design decisions, sensitivity tuning, and implementation details for all interactive controls.
