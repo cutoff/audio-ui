@@ -116,3 +116,31 @@ See `agents/documentation-standards-2.0.md` for comprehensive examples of:
 - Release tags follow the format: `release/{version}` (e.g., `release/1.0.0-preview.20260123.1117`)
 - All package.json files (root, packages, apps) are automatically synchronized to the same version
 - Publishing to npm is disabled by default in release-it config; enable with `--npm.publish` flag if needed
+
+---
+
+**Reference**: See `agents/github-issues-guidelines-1.0.md` for philosophy (labels, description, assignation, writing style), repository resolution (`git remote -v`), and full procedures. Follow the corresponding section for each command below.
+
+### Create Issue
+
+**Invocation**: "Execute Create Issue"
+
+**Description**: Report a previously discussed issue to GitHub Issues using the GitHub MCP server. Use when the user wants to turn a discussed topic into a tracked issue.
+
+**Procedure**: Follow the **Create Issue** section in `agents/github-issues-guidelines-1.0.md`.
+
+### Update Issue
+
+**Invocation**: "Execute Update Issue"
+
+**Description**: Update an existing GitHub issue so that progression is visible and decisions are documented, using the GitHub MCP server.
+
+**Procedure**: Follow the **Update Issue** section in `agents/github-issues-guidelines-1.0.md`.
+
+### Close Issue
+
+**Invocation**: "Execute Close Issue"
+
+**Description**: Add a final comment summarizing the work done and close the issue as completed, using the GitHub MCP server.
+
+**Procedure**: Follow the **Close Issue** section in `agents/github-issues-guidelines-1.0.md`.
