@@ -220,7 +220,7 @@ function ControlSurfacePage() {
                                     <div className="flex-1 flex items-center justify-center">
                                         <AudioSlider
                                             adaptiveSize={false}
-                                            size="large"
+                                            size="normal"
                                             orientation="vertical"
                                             label="Level"
                                             min={FADER_MIN_DB}
@@ -296,7 +296,7 @@ function ControlSurfacePage() {
                                 <div className="flex-1 flex items-center justify-center">
                                     <AudioSlider
                                         adaptiveSize={false}
-                                        size="large"
+                                        size="normal"
                                         orientation="vertical"
                                         label="Level"
                                         min={FADER_MIN_DB}

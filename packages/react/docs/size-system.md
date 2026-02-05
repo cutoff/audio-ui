@@ -14,15 +14,17 @@ The size system uses CSS variables and utility classes to provide consistent siz
 
 ## Base Unit System
 
-All component sizes derive from a single base unit:
+All component sizes derive from a single base unit. The scale is anchored so that **normal = 1.0** (1× base unit) and uses a **Root Phi (√φ)** scale for consistent steps.
 
-- **Base Unit**: `--audioui-unit` (default: 48px)
-- **Size Multipliers**:
-  - `xsmall`: 1x base unit
-  - `small`: 1.25x base unit
-  - `normal`: 1.5x base unit (default)
-  - `large`: 2x base unit
-  - `xlarge`: 2.5x base unit
+- **Base Unit**: `--audioui-unit` (default: 96px). With normal = 1.0, "normal" size = 96px.
+- **Size Multipliers** (Root Phi scale; φ ≈ 1.618, √φ ≈ 1.272):
+  - `xsmall`: 0.618 (1/φ)
+  - `small`: 0.786 (1/√φ)
+  - `normal`: 1 (anchor, default)
+  - `large`: 1.272 (√φ)
+  - `xlarge`: 1.618 (φ)
+
+Consecutive steps differ by √φ (up) or 1/√φ (down).
 
 ## Component Aspect Ratios
 
@@ -37,32 +39,32 @@ Each component type has a fixed aspect ratio that defines its shape:
 
 ## CSS Variable Structure
 
-Size dimensions are defined in `themes.css` using CSS variables:
+Size dimensions are defined in `themes.css` using CSS variables. All sizes (including xsmall) use the same formula: `calc(var(--audioui-unit) * var(--audioui-size-mult-{size}))`.
 
 ```css
-/* Base unit */
---audioui-unit: 48px;
+/* Base unit (normal = 1× unit) */
+--audioui-unit: 96px;
 
-/* Size multipliers */
---audioui-size-mult-xsmall: 1;
---audioui-size-mult-small: 1.25;
---audioui-size-mult-normal: 1.5;
---audioui-size-mult-large: 2;
---audioui-size-mult-xlarge: 2.5;
+/* Size multipliers — Root Phi scale (normal = 1) */
+--audioui-size-mult-xsmall: 0.618;  /* 1/φ */
+--audioui-size-mult-small: 0.786;   /* 1/√φ */
+--audioui-size-mult-normal: 1;
+--audioui-size-mult-large: 1.272;  /* √φ */
+--audioui-size-mult-xlarge: 1.618; /* φ */
 
 /* Square components (Button, Knob, CycleButton) */
 --audioui-size-square-{size}: calc(var(--audioui-unit) * var(--audioui-size-mult-{size}));
 
 /* Horizontal Slider (1x2) */
---audioui-size-hslider-height-{size}: var(--audioui-unit) * multiplier;
+--audioui-size-hslider-height-{size}: calc(var(--audioui-unit) * var(--audioui-size-mult-{size}));
 --audioui-size-hslider-width-{size}: calc(height * 2);
 
 /* Vertical Slider (2x1) */
---audioui-size-vslider-width-{size}: var(--audioui-unit) * multiplier;
+--audioui-size-vslider-width-{size}: calc(var(--audioui-unit) * var(--audioui-size-mult-{size}));
 --audioui-size-vslider-height-{size}: calc(width * 2);
 
 /* Keys (1x5) */
---audioui-size-keys-height-{size}: var(--audioui-unit) * multiplier;
+--audioui-size-keys-height-{size}: calc(var(--audioui-unit) * var(--audioui-size-mult-{size}));
 --audioui-size-keys-width-{size}: calc(height * 5);
 ```
 
@@ -186,7 +188,7 @@ To scale the entire size system, modify the base unit in `themes.css`:
 
 ```css
 :root {
-  --audioui-unit: 60px; /* Increase from 48px to 60px */
+  --audioui-unit: 72px; /* Scale from default 96px */
 }
 ```
 

@@ -123,7 +123,7 @@ export default function ImageSwitchDemoPage() {
                 frameHeight={100}
                 imageHrefFalse={STAR_OFF_IMAGE}
                 imageHrefTrue={STAR_ON_IMAGE}
-                size="large"
+                size="normal"
                 onClick={() => handleExampleClick()}
             />,
         ],
