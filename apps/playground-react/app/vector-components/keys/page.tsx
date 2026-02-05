@@ -262,7 +262,7 @@ export default function KeysPage() {
                                     notesOn={["C4", 64, 67]}
                                     color={undefined}
                                     roundness={undefined}
-                                    size="large"
+                                    size="normal"
                                     adaptiveSize={false}
                                 />
                                 <span className="text-xs text-muted-foreground text-center">Default</span>
@@ -275,7 +275,7 @@ export default function KeysPage() {
                                     keyStyle="classic"
                                     notesOn={["C4", "E4", "G4"]}
                                     color={undefined}
-                                    size="large"
+                                    size="normal"
                                     adaptiveSize={false}
                                 />
                                 <span className="text-xs text-muted-foreground text-center">Classic Style</span>
@@ -288,7 +288,7 @@ export default function KeysPage() {
                                     keyStyle="classic-inverted"
                                     notesOn={["C4", "E4", "G4"]}
                                     color="#ff3366"
-                                    size="large"
+                                    size="normal"
                                     adaptiveSize={false}
                                 />
                                 <span className="text-xs text-muted-foreground text-center">Classic Inverted</span>
@@ -302,7 +302,7 @@ export default function KeysPage() {
                                     notesOn={[]}
                                     color="#33cc66"
                                     roundness={0.3}
-                                    size="large"
+                                    size="normal"
                                     adaptiveSize={false}
                                 />
                                 <span className="text-xs text-muted-foreground text-center">With Roundness</span>
@@ -315,7 +315,7 @@ export default function KeysPage() {
                                     keyStyle="classic"
                                     notesOn={["C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4"]}
                                     color="#9966ff"
-                                    size="large"
+                                    size="normal"
                                     adaptiveSize={false}
                                 />
                                 <span className="text-xs text-muted-foreground text-center">Scale (C Major)</span>
@@ -328,7 +328,7 @@ export default function KeysPage() {
                                     keyStyle="theme"
                                     notesOn={[60, 64, 67]}
                                     color="#ff9933"
-                                    size="large"
+                                    size="normal"
                                     adaptiveSize={false}
                                 />
                                 <span className="text-xs text-muted-foreground text-center">Small (MIDI Notes)</span>

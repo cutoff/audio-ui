@@ -585,7 +585,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 step={1}
                 value={42}
                 label="Default"
-                size="large"
+                size="normal"
                 orientation={orientation}
                 onClick={() => handleExampleClick(0)}
             />
@@ -597,7 +597,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 step={1}
                 value={75}
                 label="Volume"
-                size="large"
+                size="normal"
                 orientation={orientation}
                 valueAsLabel="interactive"
                 unit="%"
@@ -612,7 +612,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 step={1}
                 value={0}
                 label="Pan"
-                size="large"
+                size="normal"
                 orientation={orientation}
                 bipolar={true}
                 valueAsLabel="interactive"
@@ -627,7 +627,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 step={1}
                 value={64}
                 label="Cutoff"
-                size="large"
+                size="normal"
                 orientation={orientation}
                 valueAsLabel="interactive"
                 onClick={() => handleExampleClick(3)}
@@ -641,7 +641,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 step={0.1}
                 value={0}
                 label="Gain"
-                size="large"
+                size="normal"
                 orientation={orientation}
                 bipolar={true}
                 valueAsLabel="interactive"
@@ -656,7 +656,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 step={10}
                 value={500}
                 label="Delay"
-                size="large"
+                size="normal"
                 orientation={orientation}
                 valueAsLabel="interactive"
                 unit="ms"
@@ -671,7 +671,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 step={1}
                 value={0}
                 label="Tuning"
-                size="large"
+                size="normal"
                 orientation={orientation}
                 bipolar={true}
                 valueAsLabel="interactive"
@@ -687,7 +687,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 step={1}
                 value={60}
                 label="Track Variant"
-                size="large"
+                size="normal"
                 orientation={orientation}
                 variant="trackless"
                 cursorSize="Track"
@@ -719,7 +719,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 step={1}
                 value={40}
                 label="Strip Cursor"
-                size="large"
+                size="normal"
                 orientation={orientation}
                 variant="trackfull"
                 cursorSize="Strip"
@@ -751,7 +751,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 step={1}
                 value={80}
                 label="No Cursor"
-                size="large"
+                size="normal"
                 orientation={orientation}
                 variant="trackless"
                 cursorSize="None"
@@ -783,7 +783,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 step={1}
                 value={50}
                 label="Wide Cursor"
-                size="large"
+                size="normal"
                 orientation={orientation}
                 variant="trackfull"
                 cursorSize="Track"
@@ -816,7 +816,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 step={1}
                 value={30}
                 label="Round Cursor"
-                size="large"
+                size="normal"
                 orientation={orientation}
                 variant="trackless"
                 cursorSize="Strip"
@@ -849,7 +849,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 step={1}
                 value={70}
                 label="Tall Cursor"
-                size="large"
+                size="normal"
                 orientation={orientation}
                 variant="abstract"
                 cursorSize="Track"
@@ -883,7 +883,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
                 step={1}
                 value={55}
                 label="Stripless"
-                size="large"
+                size="normal"
                 orientation={orientation}
                 variant="stripless"
                 cursorSize="Track"

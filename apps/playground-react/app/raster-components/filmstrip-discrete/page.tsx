@@ -160,7 +160,7 @@ export default function FilmStripDiscreteDemoPage() {
                 frameHeight={260}
                 frameCount={8}
                 imageHref={TRAFFIC_LIGHT_FILMSTRIP}
-                size="large"
+                size="normal"
             >
                 {trafficLightOptions.map((opt) => (
                     <OptionView key={opt.value} value={opt.value}>

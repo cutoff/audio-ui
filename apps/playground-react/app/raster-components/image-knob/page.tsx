@@ -391,7 +391,7 @@ export default function ImageKnobDemoPage() {
                 interactionDirection="circular"
                 valueAsLabel="interactive"
                 unit="%"
-                size="large"
+                size="normal"
                 onClick={() => handleExampleClick(0)}
             />,
             <ImageKnob
@@ -405,7 +405,7 @@ export default function ImageKnobDemoPage() {
                 imageHref={KNOB_TONE_IMAGE}
                 interactionDirection="circular"
                 valueAsLabel="interactive"
-                size="large"
+                size="normal"
                 onClick={() => handleExampleClick(1)}
             />,
             <ImageKnob
@@ -418,7 +418,7 @@ export default function ImageKnobDemoPage() {
                 frameHeight={100}
                 imageHref={FINGER_POINTING_IMAGE}
                 interactionDirection="circular"
-                size="large"
+                size="normal"
                 onClick={() => handleExampleClick(2)}
             />,
         ],

@@ -238,7 +238,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 
 ## Size System
 
-- **Base Unit System**: All component sizes derive from `--audioui-unit` (48px default) with size multipliers (xsmall: 1x, small: 1.25x, normal: 1.5x, large: 2x, xlarge: 2.5x)
+- **Base Unit System**: All component sizes derive from `--audioui-unit` (96px default). Scale is Root Phi with normal = 1.0; multipliers: xsmall 0.618 (1/φ), small 0.786 (1/√φ), normal 1, large 1.272 (√φ), xlarge 1.618 (φ)
 - **Component Aspect Ratios**:
 - Button, Knob, CycleButton: 1x1 (square)
 - Horizontal Slider: 1x2 (width:height) - width > height

@@ -217,7 +217,7 @@ export default function CycleButtonDemoPage() {
     ];
 
     const examples = [
-        <CycleButton key="0" value={0} label="Waveform" size="large" onClick={handleExampleClick}>
+        <CycleButton key="0" value={0} label="Waveform" size="normal" onClick={handleExampleClick}>
             {sampleOptions}
         </CycleButton>,
     ];

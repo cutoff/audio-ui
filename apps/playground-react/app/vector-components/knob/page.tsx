@@ -561,7 +561,7 @@ export default function KnobDemoPage() {
             step={1}
             value={42}
             label="Default"
-            size="large"
+            size="normal"
             // Use undefined color and roundness to inherit from theme
             onClick={() => handleExampleClick(0)}
         />,
@@ -573,7 +573,7 @@ export default function KnobDemoPage() {
             step={1}
             value={64}
             label="Bipolar"
-            size="large"
+            size="normal"
             onClick={() => handleExampleClick(1)}
         />,
         <Knob
@@ -584,7 +584,7 @@ export default function KnobDemoPage() {
             step={1}
             value={0}
             label="Bipolar0"
-            size="large"
+            size="normal"
             onClick={() => handleExampleClick(2)}
         />,
         <Knob
@@ -594,7 +594,7 @@ export default function KnobDemoPage() {
             step={1}
             value={64}
             label="MIDI Bipolar"
-            size="large"
+            size="normal"
             bipolar={true}
             valueFormatter={midiBipolarFormatter}
             onClick={() => handleExampleClick(4)}
@@ -605,7 +605,7 @@ export default function KnobDemoPage() {
             max={100}
             step={1}
             value={0}
-            size="large"
+            size="normal"
             label="Tuning"
             variant="plainCap"
             bipolar={true}
@@ -619,7 +619,7 @@ export default function KnobDemoPage() {
             max={100}
             step={1}
             value={0}
-            size="large"
+            size="normal"
             label="Tuning"
             variant="plainCap"
             bipolar={true}
@@ -633,7 +633,7 @@ export default function KnobDemoPage() {
             max={127}
             step={1}
             value={64}
-            size="large"
+            size="normal"
             label="Oscillator"
             variant="iconCap"
             valueAsLabel="interactive"
@@ -647,7 +647,7 @@ export default function KnobDemoPage() {
             max={64}
             step={1}
             value={0}
-            size="large"
+            size="normal"
             label="LFO"
             variant="iconCap"
             bipolar={true}

@@ -200,7 +200,7 @@ export default function FilmStripBooleanDemoPage() {
                 frameCount={2}
                 imageHref={SWITCH_METAL_IMAGE}
                 invertValue={true}
-                size="large"
+                size="normal"
                 onClick={() => handleExampleClick(0)}
             />,
             <FilmStripBooleanControl
@@ -212,7 +212,7 @@ export default function FilmStripBooleanDemoPage() {
                 frameHeight={128}
                 frameCount={2}
                 imageHref={BIG_BUTTON_IMAGE}
-                size="large"
+                size="normal"
                 onClick={() => handleExampleClick(1)}
             />,
             <FilmStripBooleanControl
@@ -225,7 +225,7 @@ export default function FilmStripBooleanDemoPage() {
                 frameCount={2}
                 imageHref={POWER_SWITCH_IMAGE}
                 invertValue={true}
-                size="large"
+                size="normal"
                 onClick={() => handleExampleClick(2)}
             />,
         ],

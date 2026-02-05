@@ -201,7 +201,7 @@ export default function ImageRotarySwitchDemoPage() {
                 frameWidth={100}
                 frameHeight={100}
                 imageHref={KNOB_IMAGE}
-                size="large"
+                size="normal"
                 onClick={() => handleExampleClick(0)}
             >
                 {volumeOptions.map((opt) => (
@@ -217,7 +217,7 @@ export default function ImageRotarySwitchDemoPage() {
                 frameWidth={100}
                 frameHeight={100}
                 imageHref={KNOB_TONE_IMAGE}
-                size="large"
+                size="normal"
                 onClick={() => handleExampleClick(1)}
             >
                 {toneOptions.map((opt) => (
@@ -233,7 +233,7 @@ export default function ImageRotarySwitchDemoPage() {
                 frameWidth={100}
                 frameHeight={100}
                 imageHref={KNOB_SELECTOR_IMAGE}
-                size="large"
+                size="normal"
                 onClick={() => handleExampleClick(2)}
             >
                 {selectorOptions.map((opt) => (
