@@ -112,8 +112,9 @@ Available commands:
 - **Create Issue**: Report a discussed topic to GitHub Issues; procedure in `agents/github-issues-guidelines-1.0.md`
 - **Update Issue**: Update an existing GitHub issue with progression and decisions; procedure in `agents/github-issues-guidelines-1.0.md`
 - **Close Issue**: Add final comment and close issue as completed; procedure in `agents/github-issues-guidelines-1.0.md`
+- **Fix Issue**: Read issue description, status, and history; produce a fix plan (no code/commit/GitHub write without explicit request); procedure in `agents/coding-agent-commands-1.0.md`
 
-See `agents/coding-agent-commands-1.0.md` for complete command definitions and procedures. GitHub issue commands (Create Issue, Update Issue, Close Issue) follow `agents/github-issues-guidelines-1.0.md` for repository resolution, labels, description style, and writing conventions.
+See `agents/coding-agent-commands-1.0.md` for complete command definitions and procedures. GitHub issue commands (Create Issue, Update Issue, Close Issue, Fix Issue) follow `agents/github-issues-guidelines-1.0.md` for repository resolution, labels, description style, and writing conventions where applicable.
 
 ## Agent Workflow Template
 
