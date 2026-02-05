@@ -144,3 +144,30 @@ See `agents/documentation-standards-2.0.md` for comprehensive examples of:
 **Description**: Add a final comment summarizing the work done and close the issue as completed, using the GitHub MCP server.
 
 **Procedure**: Follow the **Close Issue** section in `agents/github-issues-guidelines-1.0.md`.
+
+### Fix Issue
+
+**Invocation**: "Execute Fix Issue" with an issue number or issue URL (e.g. "Execute Fix Issue 42" or "Execute Fix Issue https://github.com/owner/repo/issues/42").
+
+**Description**: Read the GitHub issue (description, status, history), then produce a concrete plan to fix it. No code changes, commits, or GitHub updates are performed unless the user explicitly requests them.
+
+**Reference**: Repository resolution and git/GitHub rules as in `agents/github-issues-guidelines-1.0.md` and root `AGENTS.md` (Git Operations, GitHub Operations).
+
+**Procedure**:
+
+1. **Resolve repository and issue**:
+   - **Repository**: Current git repo from `git remote -v` unless the user provides an issue URL that implies another repository. Derive `owner` and `repo` from the remote URL. See `agents/github-issues-guidelines-1.0.md` (Repository).
+   - **Issue**: Parse the user input for an issue number or a full issue URL; if URL is given, extract `owner`, `repo`, and issue number from it.
+
+2. **Read the issue** (GitHub MCP):
+   - Fetch issue details: `issue_read` with `method: "get"` (title, body, state, labels, assignees, etc.).
+   - Fetch comments and history: `issue_read` with `method: "get_comments"` (and optionally further methods such as `get_labels` if needed).
+   - If the issue references a pull request, optionally fetch PR details (e.g. `pull_request_read` with `method: "get"` or `get_files`) for context.
+
+3. **Summarize and plan**:
+   - Summarize the issue: problem statement, expected vs actual (if applicable), current status (open/closed), and any decisions or constraints from comments.
+   - Propose a **fix plan**: ordered steps (e.g. files to touch, approach, tests), assumptions, and any open questions. Do not execute git commands (branch, commit, push) or GitHub write operations (comment, close, assign) unless the user explicitly asks to do so.
+
+4. **Git and GitHub guidelines**:
+   - Follow root `AGENTS.md` git and GitHub rules: do not run modifying git commands (`commit`, `merge`, `reset`, etc.) or update GitHub (comments, close issue, create/update PR) without explicit user request.
+   - After presenting the plan, the user may ask to proceed with implementation or with specific git/GitHub actions; only then perform those actions with confirmation as per project rules.
