@@ -1,6 +1,6 @@
 <!--
  Copyright (c) 2026 Tylium.
- SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF
  See LICENSE.md for details.
 -->
 
@@ -52,3 +52,8 @@ The complete legal framework is located in the `/license` directory at the root 
 ### 3.3. `LICENSE.md` Files
 
 - The `LICENSE.md` file at the root and within each package contains a header followed by the full text of the GPL-3.0. This ensures license visibility on platforms like GitHub and npm.
+
+### 3.4. Source File Headers
+
+- Source files use the SPDX line: `SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF`.
+- `LicenseRef-TELF` is intentionally unversioned so that TELF license text updates do not require mass header changes across the repo. The current TELF version (e.g. 1.1) is specified in `license-telf/LICENSE.md`.

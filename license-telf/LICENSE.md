@@ -2,9 +2,9 @@
 
 # License Agreement
 
-Version 1.0 - February 7, 2025
+Version 1.1 - February 1, 2026
 
-TELF-LICENSE-1.0
+TELF-LICENSE-1.1
 
 ---
 
@@ -44,7 +44,7 @@ The user of the Software ("Licensee")
 
 ### 2.1 Open Source Option
 
-The Software is licensed under the GNU General Public License version 3 (GPL-3.0). A copy of the GPL-3.0 license is included in the Software distribution.
+The Software is licensed under either the GNU General Public License version 3 (GPL-3.0) or the GNU Affero General Public License version 3 (AGPL-3.0), as specified in the Software distribution. A copy of the applicable license is included in the Software distribution.
 
 ### 2.2 Commercial Option
 
@@ -52,10 +52,12 @@ Subject to payment of applicable fees, Licensor grants to Licensee a non-exclusi
 
 ### 2.3 License Evolution Clause
 
-The Licensor reserves the right to make any part or the entirety of the Software, including all contributions to that part, available under either:
+The Licensor reserves the right to make any part or the entirety of the Software, including all contributions to that part, available under more permissive licensing terms. The evolution framework supports the following transitions from more restrictive to less restrictive licenses:
 
-- Mozilla Public License 2.0 (MPL-2.0), or
-- A combination of MIT License and Apache License 2.0
+- a) AGPL-3.0 to GPL-3.0
+- b) GPL-3.0 or AGPL-3.0 to MPL-2.0
+- c) GPL-3.0 or AGPL-3.0 to a combination of MIT License and Apache License 2.0
+- d) MPL-2.0 to a combination of MIT License and Apache License 2.0
 
 Such availability of more permissive licensing:
 
@@ -63,7 +65,7 @@ Such availability of more permissive licensing:
 - b) Does not affect existing commercial licenses or service levels
 - c) Provides additional rights to commercial licensees while maintaining all their existing rights and services
 - d) May occur at different times for different components
-- e) May use different destination licenses (MPL-2.0 or MIT+Apache-2.0) for different components
+- e) May use different evolution paths for different components
 - f) Automatically grants commercial licensees all rights under the new license terms when they become available
 
 The Licensor will:
@@ -77,9 +79,9 @@ The Licensor will:
 
 The Software is protected by patent rights under terms compatible with:
 
-- a) GPL-3.0 for the open source option
+- a) GPL-3.0 or AGPL-3.0 for the open source option
 - b) The commercial terms specified in Section 3.1 (License Grant and Scope)
-- c) Future MPL-2.0 or MIT+Apache-2.0 licensing as described in Section 2.3
+- c) Future GPL-3.0, MPL-2.0, or MIT+Apache-2.0 licensing as described in Section 2.3
 
 Any patent rights granted under this Agreement:
 
@@ -318,10 +320,10 @@ Documentation is an integral part of the Software and is licensed under identica
 
 - a) Under Open Source Option:
 
-  - Licensed under GNU General Public License version 3 (GPL-3.0)
+  - Licensed under GNU General Public License version 3 (GPL-3.0) or GNU Affero General Public License version 3 (AGPL-3.0), as applicable to the Software
   - Subject to the same copyleft requirements as the Software
   - Must be provided alongside any distribution of the Software
-  - Modifications must be shared under GPL-3.0
+  - Modifications must be shared under the same license as the Software
 
 - b) Under Commercial Option:
 
@@ -376,7 +378,7 @@ All contributors must sign the Contributor License Agreement (CLA) that includes
 
 All contributions are licensed under the same terms as the original Software, meaning:
 
-- a) Automatically available under GPL-3.0
+- a) Automatically available under GPL-3.0 or AGPL-3.0, as applicable to the Software
 - b) Available for commercial licensing by the Licensor
 - c) Subject to the same evolution framework as described in Section 2.3
 - d) May be used by commercial licensees under their existing license terms
@@ -416,7 +418,7 @@ Throughout the evolution of component licenses:
 
 ### 8.1 Open Source Option Warranties
 
-Under the GPL-3.0 license option, the Software is provided "as is" and without any warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement. The entire risk as to the quality and performance of the Software is with you.
+Under the GPL-3.0 or AGPL-3.0 license option, the Software is provided "as is" and without any warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement. The entire risk as to the quality and performance of the Software is with you.
 
 ### 8.2 Commercial Option Warranties
 
@@ -430,7 +432,7 @@ Under the commercial license option, and subject to having an active support sub
 
 #### 8.3.1 Open Source Option
 
-Under the GPL-3.0 license option, in no event shall the Licensor be liable for any damages of any kind arising from the use of the Software.
+Under the GPL-3.0 or AGPL-3.0 license option, in no event shall the Licensor be liable for any damages of any kind arising from the use of the Software.
 
 #### 8.3.2 Commercial Option
 
@@ -517,7 +519,7 @@ Upon termination or expiration:
 
 #### 9.3.2 Open Source Continuation
 
-- a) GPL-3.0 rights continue if in compliance with its terms
+- a) GPL-3.0 or AGPL-3.0 rights continue if in compliance with their respective terms
 - b) Any rights under more permissive licenses (per Section 2.3) continue if in compliance
 - c) Contributions remain under their existing licenses
 
@@ -619,6 +621,18 @@ If any provision of this Agreement is found void and unenforceable, such provisi
 Each version of the Software is governed by the license terms provided with that version. Support services are governed by a separate Service Level Agreement. Any custom commercial terms must be agreed in writing.
 
 ## Document History
+
+### Version 1.1 (2026-02-01)
+
+- Enhanced license evolution framework with multiple transition paths:
+  - Added AGPL-3.0 → GPL-3.0 evolution path
+  - Added MPL-2.0 → MIT+Apache-2.0 evolution path
+  - Clarified GPL-3.0 and AGPL-3.0 as supported base licenses
+- Updated Section 2.1 to support both GPL-3.0 and AGPL-3.0
+- Updated Section 2.3 to document all four evolution paths
+- Updated Section 2.4 patent rights to cover GPL-3.0 and AGPL-3.0
+- Updated Sections 5.2, 6.2, 8.1, 8.3.1, 9.3.2 to support both base licenses
+- Clarified product-specific license applications (AudioUI: GPL-3.0, Fusion: AGPL-3.0)
 
 ### Version 1.0 (2025-02-07)
 

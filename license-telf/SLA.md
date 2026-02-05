@@ -2,9 +2,9 @@
 
 # Service Level Agreement
 
-Version 1.0 - February 7, 2025
+Version 1.1 - February 1, 2026
 
-TELF-SLA-1.0
+TELF-SLA-1.1
 
 ---
 
@@ -54,25 +54,65 @@ The commercial licensee of the Software ("Customer")
 - Integration questions
 - Response within 2-3 business days
 
-### 2.2 Support Channel
+### 2.2 Support Channels
 
-- Discord community support channel access
-- Premium user role with distinctive identification
-- Clear issue priority flagging system
+Customer support is provided through the following channels:
 
-### 2.3 Premium Benefits
+#### GitHub Issues
 
-- Distinctive Discord role
-- Priority attention in support discussions
-- Enhanced weight in feature priority voting
+- a) Defect reporting and bug tracking with SLA coverage
+- b) SLA response times apply to issues from verified commercial customers
+- c) To enable verification, link your GitHub account at https://cutoff.dev/account
+- d) GitHub Issues are the preferred channel for suspected software defects
+
+#### Discord Support
+
+- a) General questions, implementation guidance, and community discussions
+- b) Real-time support access via public #support channel
+- c) Private support available upon request for proprietary code discussions
+- d) Verified commercial customers receive role-based identification
+
+#### Email Policy
+
+Email support is not available. Use GitHub Issues or Discord for all support requests. For legal matters only, contact legal@tylium.io.
+
+### 2.3 Account Linking Requirements
+
+To receive SLA support through GitHub Issues or Discord, commercial customers must:
+
+- a) Link their GitHub account in the customer portal at https://cutoff.dev/account
+- b) Link their Discord account in the customer portal at https://cutoff.dev/account
+- c) Maintain an active subscription (either as a personal account holder or as a member of an organization with an active subscription)
+
+SLA response time calculations begin when the customer is properly verified through linked accounts and an active subscription is confirmed.
+
+### 2.4 Private Support
+
+Private support channels are available upon request for discussions involving:
+
+- a) Proprietary code or confidential business information
+- b) Competitive use restriction questions
+- c) Other sensitive commercial matters
+
+Customers may request private support through Discord or GitHub Issues. Public support channels are encouraged for non-confidential topics to benefit the broader community.
+
+### 2.5 Premium Benefits
+
+Commercial customers with active subscriptions receive:
+
+- a) Distinctive Discord role for verified identification
+- b) Priority attention in support discussions
+- c) Enhanced input into feature prioritization through GitHub Discussions
+- d) Access to private support channels when needed
+
+Feature voting and prioritization remain advisory. All roadmap decisions and feature implementation remain at Tylium's sole discretion.
 
 ## 3. Amendments
 
 Provider may modify this Agreement by providing notice through:
 
-- Email to designated customer contact
-- Support channel announcement
-- Package registry documentation
+- a) Email to the personal account holder or organization administrator(s)
+- b) Support channel announcement
 
 Changes become effective 60 days after notification. Customers may terminate service and receive pro-rata refund if they do not accept changes.
 
@@ -81,6 +121,15 @@ Changes become effective 60 days after notification. Customers may terminate ser
 This Agreement supplements the Software License Agreement but does not modify it. Support services under this Agreement apply to any version of the Software used under a valid commercial license.
 
 ## Document History
+
+### Version 1.1 (2026-02-01)
+
+- Updated support channels to include GitHub Issues
+- Added account linking requirements for SLA verification
+- Clarified private support availability
+- Enhanced feature voting benefits description
+- Added email policy clarification
+- Updated customer portal URL references
 
 ### Version 1.0 (2025-02-07)
 
