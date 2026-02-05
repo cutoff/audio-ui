@@ -1,9 +1,12 @@
 # AudioUI by Cutoff
 
-<a href="https://playground.cutoff.dev" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Playground-Try%20It%20Live-blue?style=for-the-badge" alt="Playground" /></a>
-<a href="https://discord.gg/7RB6t2xqYW" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord" /></a>
+[![CI](https://github.com/cutoff/audio-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/cutoff/audio-ui/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/@cutoff/audio-ui-react.svg)](https://www.npmjs.com/package/@cutoff/audio-ui-react)
+[![License](https://img.shields.io/badge/License-GPL--3.0%20%7C%20Commercial-blue)](https://github.com/cutoff/audio-ui#licensing)
 
 AudioUI is a professional, open-source React component library for building high-performance user interfaces for audio and MIDI applications. It provides a meticulously crafted set of components designed to meet the demanding needs of music software, digital audio workstations (DAWs), audio plugins with a web UI, and other audio-centric web applications.
+
+<a href="https://playground.cutoff.dev" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Playground-Try%20It%20Live-blue?style=for-the-badge" alt="Playground" /></a>
 
 ## Design Philosophy
 
@@ -34,7 +37,7 @@ AudioUI is built on a few core principles designed to address the unique challen
 
 **Note:** As a Developer Preview release, breaking changes may occur as we refine the API and architecture. We recommend pinning to specific versions for production use.
 
-**We're eager for community feedback before the first stable release!** Your input on APIs, features, and use cases is invaluable in shaping AudioUI. Join our [Discord server](https://discord.gg/7RB6t2xqYW) to share your thoughts, report issues, or request features.
+**We're eager for community feedback before the first stable release!** Your input on APIs, features, and use cases is invaluable in shaping AudioUI. Share your thoughts on [Discord](https://discord.gg/7RB6t2xqYW); request features or vote on the wishlist in [GitHub Discussions](https://github.com/cutoff/audio-ui/discussions); report bugs in [GitHub Issues](https://github.com/cutoff/audio-ui/issues). See the [Community](#community) section below.
 
 ## Core Components
 
@@ -74,6 +77,8 @@ This monorepo contains the following packages:
 **Architecture Note**: The library is designed with a clear separation between framework-agnostic core logic (`packages/core/`) and framework-specific implementations (`packages/react/`). The framework-agnostic architecture enables potential implementations for other frameworks that would share the same core logic.
 
 ## Getting Started
+
+<a href="https://cutoff.dev/audio-ui/docs" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Documentation-Read%20the%20Docs-blue?style=for-the-badge" alt="Documentation" /></a>
 
 ### Using the Component Library
 
@@ -158,9 +163,11 @@ We welcome contributions to AudioUI. If you would like to contribute, please for
 
 ## Community
 
-Join our [Discord server](https://discord.gg/7RB6t2xqYW) for:
+<a href="https://discord.gg/7RB6t2xqYW" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord" /></a>
+<a href="https://github.com/cutoff/audio-ui/issues" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/GitHub-Issues-24292e?style=for-the-badge&logo=github" alt="GitHub Issues" /></a>
 
-- **Support**: Get help with using AudioUI in your projects
-- **Wish List**: Share feature requests and vote on upcoming additions
-- **General Discussions**: Connect with other developers building audio applications
-- **Announcements**: Stay updated on new releases and important updates
+- **Discord**: [Join the server](https://discord.gg/7RB6t2xqYW) for discussions, general questions, and real-time support. Announcements and release updates are posted there.
+- **GitHub Discussions**: [Wishlist and discussions](https://github.com/cutoff/audio-ui/discussions) — request features and vote on upcoming additions.
+- **GitHub Issues**: [Open an issue](https://github.com/cutoff/audio-ui/issues) for bug reports and defect tracking (preferred channel for suspected software defects).
+
+For a concise overview of resources (playground, docs, support channels), see the [documentation – Introduction, Resources](https://cutoff.dev/audio-ui/docs/latest/getting-started/introduction#resources).
