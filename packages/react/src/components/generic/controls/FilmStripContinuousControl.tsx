@@ -133,7 +133,7 @@ function FilmStripContinuousControl({
     className,
     style,
 }: FilmStripContinuousControlProps) {
-    const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
+    const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "square");
 
     return (
         <ContinuousControl

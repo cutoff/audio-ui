@@ -96,7 +96,7 @@ function FilmStripDiscreteControl({
     className,
     style,
 }: FilmStripDiscreteControlProps) {
-    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
+    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "square");
 
     return (
         <DiscreteControl

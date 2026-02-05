@@ -92,7 +92,7 @@ function ImageRotarySwitch({
     className,
     style,
 }: ImageRotarySwitchProps) {
-    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
+    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "square");
 
     // Get derivedParameter to determine the number of options for positions
     const { derivedParameter } = useDiscreteParameterResolution({
