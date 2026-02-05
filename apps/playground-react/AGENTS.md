@@ -35,7 +35,7 @@
 
 - Add new playground page: Create app/[route]/[component]/page.tsx; import from @cutoff/audio-ui-react; add examples with props; use shadcn for UI
 - Component demo placement: Library built-in controls (Knob, Slider, Button, CycleButton, Keys) go under `app/vector-components/`; image/filmstrip controls (ImageKnob, FilmStrip\*, etc.) go under `app/raster-components/`. Sync sidebar (app-sidebar.tsx) and breadcrumb (breadcrumb-nav.tsx) when adding entries.
-- Control demo pages: Use `ControlSkeletonPage` component; examples use `size="large"` for visibility; no individual Size showcases (centralized in `/layout/sizing`)
+- Control demo pages: Use `ControlSkeletonPage` component; examples use `size="normal"`; no individual Size showcases (centralized in `/layout/sizing`)
 - Sizing showcase: Centralized at `/layout/sizing`; showcases all components (Button, Knob, CycleButton, Slider, Keys) with all sizes (xsmall through xlarge)
 - Theming: next-themes ThemeProvider (light/dark mode) and ThemeInitializer (CSS variable-based Audio UI theming); theme controls in header (ThemeSettingsButton, ThemeModeToggle); responsive sheet for theme customization
 - Testing demos: Run pnpm dev; validate components from library

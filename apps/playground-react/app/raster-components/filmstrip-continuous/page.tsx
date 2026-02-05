@@ -431,7 +431,7 @@ export default function FilmStripContinuousDemoPage() {
                 interactionDirection="horizontal"
                 valueAsLabel="interactive"
                 unit="VU"
-                size="large"
+                size="normal"
                 onClick={() => handleExampleClick(0)}
             />,
             <FilmStripContinuousControl
@@ -446,7 +446,7 @@ export default function FilmStripContinuousDemoPage() {
                 imageHref={GUITAR_IMAGE}
                 interactionDirection="circular"
                 valueAsLabel="interactive"
-                size="large"
+                size="normal"
                 onClick={() => handleExampleClick(1)}
             />,
             <FilmStripContinuousControl
@@ -460,7 +460,7 @@ export default function FilmStripContinuousDemoPage() {
                 frameCount={200}
                 imageHref={ABS_IMAGE}
                 interactionDirection="circular"
-                size="large"
+                size="normal"
                 onClick={() => handleExampleClick(2)}
             />,
         ],
