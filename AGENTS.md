@@ -1,6 +1,6 @@
 <!--
  Copyright (c) 2026 Tylium.
- SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF
  See LICENSE.md for details.
 -->
 
@@ -317,7 +317,7 @@ Agents docs are living documentation; update continuously for agent efficiency. 
 
 ## Licensing & Distribution
 
-- License Model: Tylium Evolutive License Framework (see `license-telf/LICENSE.md`), with accompanying `SLA.md` and `CLA.md` in `license-telf/`.
+- License Model: Tylium Evolutive License Framework (see `license-telf/LICENSE.md`), with accompanying `SLA.md` and `CLA.md` in `license-telf/`. Source file headers use `SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF`; the TELF version (e.g. 1.1) is defined in `license-telf/LICENSE.md`.
 - Compatibility: A GPL-3.0 variant is available in `license-telf/LICENSE-GPL3.md` for open-source alignment when needed; Tylium terms govern unless explicitly stated otherwise in releases.
 - Source Availability: Full source code is public.
 - Distribution: Packages and releases are distributed through classical channels (e.g., public Git hosting for source; package registries/artifacts for builds where applicable).

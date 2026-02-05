@@ -2,7 +2,7 @@
 
 /*
  * Copyright (c) 2026 Tylium.
- * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF
  * See LICENSE.md for details.
  */
 
@@ -39,7 +39,7 @@ function generateVersion() {
     // Generate version.ts content
     const content = `/*
  * Copyright (c) 2026 Tylium.
- * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF-1.0
+ * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF
  * See LICENSE.md for details.
  */
 

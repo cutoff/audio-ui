@@ -2,9 +2,9 @@
 
 # Contributor License Agreement
 
-Version 1.0 - February 7, 2025
+Version 1.1 - February 1, 2026
 
-TELF-CLA-1.0
+TELF-CLA-1.1
 
 ---
 
@@ -42,11 +42,12 @@ The individual identified as the Contributor below ("Contributor").
 
 Subject to the terms and conditions of this Agreement, You hereby grant to the Licensor and to recipients of software distributed by the Licensor a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare derivative works of, publicly display, publicly perform, sublicense, and distribute Your Contributions and such derivative works under:
 
-- a) The GNU General Public License version 3 (GPL-3.0)
+- a) The GNU General Public License version 3 (GPL-3.0) or the GNU Affero General Public License version 3 (AGPL-3.0), as applicable to the Software
 - b) Commercial licensing terms as determined by the Licensor
-- c) At the Licensor's discretion, either:
+- c) At the Licensor's discretion, any of the following more permissive licenses:
 
-  - The Mozilla Public License 2.0 (MPL-2.0), or
+  - The GNU General Public License version 3 (GPL-3.0) for components initially under AGPL-3.0
+  - The Mozilla Public License 2.0 (MPL-2.0)
   - A combination of the MIT License and Apache License 2.0
 
 You acknowledge and agree that the Licensor may exercise these rights independently for different components of the Software at different times, as part of the Licensor's license evolution framework described in the Software License Agreement.
@@ -100,7 +101,7 @@ You understand and agree that:
 
 - a) The Licensor is not obligated to include Your Contributions in any version of the Software
 
-- b) You will not be compensated for Your Contributions
+- b) Contributions are made on a voluntary basis without guaranteed compensation, though the Licensor may offer discretionary rewards, recognition, or other benefits at its sole discretion
 
 - c) The Licensor may relicense Your Contributions as specified in Section 2.1(c) without additional permission from You
 
@@ -166,6 +167,15 @@ Date: ______________________________________
 ```
 
 ## Document History
+
+### Version 1.1 (2026-02-01)
+
+- Enhanced copyright license grant (Section 2.1) to support:
+  - Both GPL-3.0 and AGPL-3.0 as base licenses
+  - AGPL-3.0 → GPL-3.0 evolution path
+  - Complete multi-path evolution framework (AGPL→GPL, GPL/AGPL→MPL, GPL/AGPL→MIT+Apache, MPL→MIT+Apache)
+- Clarified contributor grants cover all evolution scenarios
+- Aligned with License Agreement version 1.1 evolution framework enhancements
 
 ### Version 1.0 (2025-02-07)
 
