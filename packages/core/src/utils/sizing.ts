@@ -52,19 +52,18 @@ export const keysSizeClassMap: Record<SizeType, string> = {
 
 /**
  * Gets the appropriate size class name for a component
- * @param componentType The type of component ('knob', 'button', 'keys', or 'slider')
+ * @param componentType The type of component ('square', 'keys', or 'slider')
  * @param size The size value
  * @param orientation The orientation for slider components ('vertical' or 'horizontal')
- * @returns The CSS class name for the component size
+ * @returns {string} The CSS class name for the component size
  */
 export function getSizeClassForComponent(
-    componentType: "knob" | "button" | "keys" | "slider",
+    componentType: "square" | "keys" | "slider",
     size: SizeType = "normal",
     orientation: "vertical" | "horizontal" = "vertical"
 ): string {
     switch (componentType) {
-        case "knob":
-        case "button":
+        case "square":
             return squareSizeClassMap[size];
         case "keys":
             return keysSizeClassMap[size];
@@ -78,19 +77,18 @@ export function getSizeClassForComponent(
 /**
  * Gets the CSS variable references for a component's size dimensions.
  * Used to apply size as inline styles (which override AdaptiveBox's default 100%).
- * @param componentType The type of component ('knob', 'button', 'keys', or 'slider')
+ * @param componentType The type of component ('square', 'keys', or 'slider')
  * @param size The size value
  * @param orientation The orientation for slider components ('vertical' or 'horizontal')
- * @returns An object with width and height CSS variable references
+ * @returns {{ width: string, height: string }} Object with width and height CSS variable references
  */
 export function getSizeStyleForComponent(
-    componentType: "knob" | "button" | "keys" | "slider",
+    componentType: "square" | "keys" | "slider",
     size: SizeType = "normal",
     orientation: "vertical" | "horizontal" = "vertical"
 ): { width: string; height: string } {
     switch (componentType) {
-        case "knob":
-        case "button":
+        case "square":
             return {
                 width: `var(--audioui-size-square-${size})`,
                 height: `var(--audioui-size-square-${size})`,

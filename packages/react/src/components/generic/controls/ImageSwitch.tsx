@@ -96,7 +96,7 @@ function ImageSwitch({
     className,
     style,
 }: ImageSwitchComponentProps) {
-    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "button");
+    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "square");
 
     return (
         <BooleanControl

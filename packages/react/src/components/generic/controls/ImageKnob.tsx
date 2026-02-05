@@ -123,7 +123,7 @@ function ImageKnob({
     className,
     style,
 }: ImageKnobProps) {
-    const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
+    const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "square");
 
     return (
         <ContinuousControl

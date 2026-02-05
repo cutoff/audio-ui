@@ -9,13 +9,10 @@ import { getSizeClassForComponent, getSizeStyleForComponent } from "./sizing";
 
 describe("sizing", () => {
     describe("getSizeClassForComponent", () => {
-        it("returns correct class for knob", () => {
-            expect(getSizeClassForComponent("knob", "small")).toBe("audioui-size-square-small");
-            expect(getSizeClassForComponent("knob", "large")).toBe("audioui-size-square-large");
-        });
-
-        it("returns correct class for button", () => {
-            expect(getSizeClassForComponent("button", "normal")).toBe("audioui-size-square-normal");
+        it("returns correct class for square", () => {
+            expect(getSizeClassForComponent("square", "small")).toBe("audioui-size-square-small");
+            expect(getSizeClassForComponent("square", "large")).toBe("audioui-size-square-large");
+            expect(getSizeClassForComponent("square", "normal")).toBe("audioui-size-square-normal");
         });
 
         it("returns correct class for keys", () => {
@@ -29,8 +26,8 @@ describe("sizing", () => {
     });
 
     describe("getSizeStyleForComponent", () => {
-        it("returns correct style variables for knob", () => {
-            const style = getSizeStyleForComponent("knob", "normal");
+        it("returns correct style variables for square", () => {
+            const style = getSizeStyleForComponent("square", "normal");
             expect(style.width).toBe("var(--audioui-size-square-normal)");
             expect(style.height).toBe("var(--audioui-size-square-normal)");
         });

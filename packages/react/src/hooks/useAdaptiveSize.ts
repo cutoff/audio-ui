@@ -16,23 +16,23 @@ import { getSizeClassForComponent, getSizeStyleForComponent, SizeType } from "@c
  *
  * @param adaptiveSize - Whether the component should stretch to fill its container
  * @param size - The size value (ignored when adaptiveSize is true)
- * @param componentType - The type of component ('knob', 'button', 'keys', or 'slider')
+ * @param componentType - The type of component ('square', 'keys', or 'slider')
  * @param orientation - Optional orientation for slider components ('vertical' or 'horizontal')
- * @returns Object containing `sizeClassName` and `sizeStyle`
+ * @returns {{ sizeClassName: string | undefined, sizeStyle: { width: string; height: string } | undefined }} Size class and inline style for the component
  *
  * @example
  * ```tsx
  * const { sizeClassName, sizeStyle } = useAdaptiveSize(
  *   adaptiveSize,
  *   size,
- *   "knob"
+ *   "square"
  * );
  * ```
  */
 export function useAdaptiveSize(
     adaptiveSize: boolean = false,
     size: SizeType = "normal",
-    componentType: "knob" | "button" | "keys" | "slider",
+    componentType: "square" | "keys" | "slider",
     orientation?: "vertical" | "horizontal"
 ) {
     return useMemo(() => {

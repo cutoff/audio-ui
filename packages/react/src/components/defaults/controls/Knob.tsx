@@ -173,7 +173,7 @@ function Knob({
 
     const { formattedValue } = useAudioParameter(value, onChange, parameterDef, valueFormatter);
 
-    const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
+    const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "square");
 
     // Uses container query units (cqmin) so text scales with component size
     const displayValueOverlay =

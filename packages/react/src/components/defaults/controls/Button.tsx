@@ -90,7 +90,7 @@ function Button({
         roundness,
         style,
     });
-    const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "button");
+    const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "square");
 
     return (
         <BooleanControl
