@@ -251,7 +251,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - **When `adaptiveSize=false`**: Size class and inline size styles apply; user `style` prop spreads last (takes precedence)
 - **When `adaptiveSize=true`**: No size constraints from the size system; component fills its container (AdaptiveBox default `width: 100%; height: 100%`)
 - **User Override**: User `className` and `style` props take precedence over size classes/styles
-- **Utilities**: `getSizeClassForComponent()` returns CSS class names; `getSizeStyleForComponent()` returns inline style objects with CSS variable references
+- **Utilities**: `getSizeClassForComponent()` and `getSizeStyleForComponent()` take component type `"square"` (1x1: Button, Knob, CycleButton), `"keys"`, or `"slider"`; return CSS class names and inline style objects with CSS variable references
 - **Location**: Size mappings in `packages/core/src/utils/sizing.ts`; CSS variables in `packages/core/src/styles/themes.css`; size classes in `packages/core/src/styles/styles.css`
 
 ## SVG View Primitives

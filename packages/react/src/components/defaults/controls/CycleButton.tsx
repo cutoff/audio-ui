@@ -209,7 +209,7 @@ function CycleButton({
         return formattedValue;
     }, [visualContentMap, effectiveValue, renderOption, derivedParameter.options, formattedValue]);
 
-    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "knob");
+    const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "square");
 
     return (
         <DiscreteControl

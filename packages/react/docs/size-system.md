@@ -127,17 +127,17 @@ When `adaptiveSize={true}`:
 
 ### Utility Functions
 
-**`getSizeClassForComponent()`**: Returns the CSS class name for a given component type, size, and orientation.
+**`getSizeClassForComponent()`**: Returns the CSS class name for a given component type, size, and orientation. Component type is `"square"` (1x1 components: Button, Knob, CycleButton), `"keys"`, or `"slider"`.
 
 ```typescript
-getSizeClassForComponent("knob", "large"); // "audioui-size-square-large"
+getSizeClassForComponent("square", "large"); // "audioui-size-square-large"
 getSizeClassForComponent("slider", "normal", "vertical"); // "audioui-size-vslider-normal"
 ```
 
 **`getSizeStyleForComponent()`**: Returns an object with `width` and `height` CSS variable references for inline style application.
 
 ```typescript
-getSizeStyleForComponent("knob", "large");
+getSizeStyleForComponent("square", "large");
 // { width: "var(--audioui-size-square-large)", height: "var(--audioui-size-square-large)" }
 
 getSizeStyleForComponent("slider", "normal", "vertical");
@@ -154,20 +154,20 @@ All built-in controls (Button, Knob, Slider, CycleButton, Keys) implement size s
 2. Merge size class with user className (user takes precedence)
 3. Apply to AdaptiveBox root element
 
-### Example: Knob Component
+### Example: Square Component (Knob, Button, CycleButton)
 
 ```typescript
 // Determine sizing behavior from adaptiveSize
 const isStretch = adaptiveSize === true;
 
-// Get the size class name based on the size prop
-const sizeClassName = isStretch ? undefined : getSizeClassForComponent("knob", size);
+// Get the size class name based on the size prop (square = 1x1 aspect ratio)
+const sizeClassName = isStretch ? undefined : getSizeClassForComponent("square", size);
 
 // Merge class names: size class first, then user className (user takes precedence)
 const mergedClassName = classNames(sizeClassName, className);
 
 // Build merged style: size style (when not stretching), then user style (user takes precedence)
-const sizeStyle = isStretch ? undefined : getSizeStyleForComponent("knob", size);
+const sizeStyle = isStretch ? undefined : getSizeStyleForComponent("square", size);
 
 return (
   <ContinuousControl

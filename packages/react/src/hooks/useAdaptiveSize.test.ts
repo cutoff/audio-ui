@@ -12,15 +12,15 @@ import { getSizeClassForComponent, getSizeStyleForComponent } from "@cutoff/audi
 describe("useAdaptiveSize", () => {
     describe("Adaptive Size Mode", () => {
         it("returns undefined for both class and style when adaptiveSize is true", () => {
-            const { result } = renderHook(() => useAdaptiveSize(true, "normal", "knob"));
+            const { result } = renderHook(() => useAdaptiveSize(true, "normal", "square"));
 
             expect(result.current.sizeClassName).toBeUndefined();
             expect(result.current.sizeStyle).toBeUndefined();
         });
 
         it("returns undefined regardless of size value when adaptiveSize is true", () => {
-            const { result: result1 } = renderHook(() => useAdaptiveSize(true, "xsmall", "knob"));
-            const { result: result2 } = renderHook(() => useAdaptiveSize(true, "xlarge", "knob"));
+            const { result: result1 } = renderHook(() => useAdaptiveSize(true, "xsmall", "square"));
+            const { result: result2 } = renderHook(() => useAdaptiveSize(true, "xlarge", "square"));
 
             expect(result1.current.sizeClassName).toBeUndefined();
             expect(result1.current.sizeStyle).toBeUndefined();
@@ -29,13 +29,11 @@ describe("useAdaptiveSize", () => {
         });
 
         it("returns undefined for all component types when adaptiveSize is true", () => {
-            const { result: knobResult } = renderHook(() => useAdaptiveSize(true, "normal", "knob"));
-            const { result: buttonResult } = renderHook(() => useAdaptiveSize(true, "normal", "button"));
+            const { result: squareResult } = renderHook(() => useAdaptiveSize(true, "normal", "square"));
             const { result: keysResult } = renderHook(() => useAdaptiveSize(true, "normal", "keys"));
             const { result: sliderResult } = renderHook(() => useAdaptiveSize(true, "normal", "slider"));
 
-            expect(knobResult.current.sizeClassName).toBeUndefined();
-            expect(buttonResult.current.sizeClassName).toBeUndefined();
+            expect(squareResult.current.sizeClassName).toBeUndefined();
             expect(keysResult.current.sizeClassName).toBeUndefined();
             expect(sliderResult.current.sizeClassName).toBeUndefined();
         });
@@ -43,15 +41,15 @@ describe("useAdaptiveSize", () => {
 
     describe("Fixed Size Mode", () => {
         it("calls getSizeClassForComponent when adaptiveSize is false", () => {
-            const { result } = renderHook(() => useAdaptiveSize(false, "normal", "knob"));
+            const { result } = renderHook(() => useAdaptiveSize(false, "normal", "square"));
 
-            expect(result.current.sizeClassName).toBe(getSizeClassForComponent("knob", "normal"));
+            expect(result.current.sizeClassName).toBe(getSizeClassForComponent("square", "normal"));
         });
 
         it("calls getSizeStyleForComponent when adaptiveSize is false", () => {
-            const { result } = renderHook(() => useAdaptiveSize(false, "normal", "knob"));
+            const { result } = renderHook(() => useAdaptiveSize(false, "normal", "square"));
 
-            expect(result.current.sizeStyle).toEqual(getSizeStyleForComponent("knob", "normal"));
+            expect(result.current.sizeStyle).toEqual(getSizeStyleForComponent("square", "normal"));
         });
 
         it("handles all size values", () => {
@@ -64,26 +62,19 @@ describe("useAdaptiveSize", () => {
             ];
 
             sizes.forEach((size) => {
-                const { result } = renderHook(() => useAdaptiveSize(false, size, "knob"));
-                expect(result.current.sizeClassName).toBe(getSizeClassForComponent("knob", size));
-                expect(result.current.sizeStyle).toEqual(getSizeStyleForComponent("knob", size));
+                const { result } = renderHook(() => useAdaptiveSize(false, size, "square"));
+                expect(result.current.sizeClassName).toBe(getSizeClassForComponent("square", size));
+                expect(result.current.sizeStyle).toEqual(getSizeStyleForComponent("square", size));
             });
         });
     });
 
     describe("Component Types", () => {
-        it("handles knob component type", () => {
-            const { result } = renderHook(() => useAdaptiveSize(false, "normal", "knob"));
+        it("handles square component type", () => {
+            const { result } = renderHook(() => useAdaptiveSize(false, "normal", "square"));
 
-            expect(result.current.sizeClassName).toBe(getSizeClassForComponent("knob", "normal"));
-            expect(result.current.sizeStyle).toEqual(getSizeStyleForComponent("knob", "normal"));
-        });
-
-        it("handles button component type", () => {
-            const { result } = renderHook(() => useAdaptiveSize(false, "normal", "button"));
-
-            expect(result.current.sizeClassName).toBe(getSizeClassForComponent("button", "normal"));
-            expect(result.current.sizeStyle).toEqual(getSizeStyleForComponent("button", "normal"));
+            expect(result.current.sizeClassName).toBe(getSizeClassForComponent("square", "normal"));
+            expect(result.current.sizeStyle).toEqual(getSizeStyleForComponent("square", "normal"));
         });
 
         it("handles keys component type", () => {
@@ -134,18 +125,20 @@ describe("useAdaptiveSize", () => {
         });
 
         it("ignores orientation for non-slider components", () => {
-            const { result: knobResult } = renderHook(() => useAdaptiveSize(false, "normal", "knob", "vertical"));
-            const { result: knobResultNoOrientation } = renderHook(() => useAdaptiveSize(false, "normal", "knob"));
+            const { result: squareWithOrientation } = renderHook(() =>
+                useAdaptiveSize(false, "normal", "square", "vertical")
+            );
+            const { result: squareNoOrientation } = renderHook(() => useAdaptiveSize(false, "normal", "square"));
 
-            // Orientation should be ignored for knob, so results should be the same
-            expect(knobResult.current.sizeClassName).toBe(knobResultNoOrientation.current.sizeClassName);
-            expect(knobResult.current.sizeStyle).toEqual(knobResultNoOrientation.current.sizeStyle);
+            // Orientation should be ignored for square, so results should be the same
+            expect(squareWithOrientation.current.sizeClassName).toBe(squareNoOrientation.current.sizeClassName);
+            expect(squareWithOrientation.current.sizeStyle).toEqual(squareNoOrientation.current.sizeStyle);
         });
     });
 
     describe("Memoization", () => {
         it("returns same object reference when dependencies don't change", () => {
-            const { result, rerender } = renderHook(() => useAdaptiveSize(false, "normal", "knob"));
+            const { result, rerender } = renderHook(() => useAdaptiveSize(false, "normal", "square"));
 
             const firstResult = result.current;
             rerender();
@@ -157,7 +150,7 @@ describe("useAdaptiveSize", () => {
 
         it("returns new object when adaptiveSize changes", () => {
             const { result, rerender } = renderHook(
-                ({ adaptiveSize }) => useAdaptiveSize(adaptiveSize, "normal", "knob"),
+                ({ adaptiveSize }) => useAdaptiveSize(adaptiveSize, "normal", "square"),
                 { initialProps: { adaptiveSize: false } }
             );
 
@@ -171,7 +164,7 @@ describe("useAdaptiveSize", () => {
 
         it("returns new object when size changes", () => {
             const { result, rerender } = renderHook(
-                ({ size }: { size: "normal" | "large" }) => useAdaptiveSize(false, size, "knob"),
+                ({ size }: { size: "normal" | "large" }) => useAdaptiveSize(false, size, "square"),
                 { initialProps: { size: "normal" as const } }
             );
 
@@ -180,22 +173,22 @@ describe("useAdaptiveSize", () => {
             const secondResult = result.current;
 
             expect(firstResult).not.toBe(secondResult);
-            expect(secondResult.sizeClassName).toBe(getSizeClassForComponent("knob", "large"));
+            expect(secondResult.sizeClassName).toBe(getSizeClassForComponent("square", "large"));
         });
 
         it("returns new object when componentType changes", () => {
             const { result, rerender } = renderHook(
-                ({ componentType }: { componentType: "knob" | "button" }) =>
+                ({ componentType }: { componentType: "square" | "keys" }) =>
                     useAdaptiveSize(false, "normal", componentType),
-                { initialProps: { componentType: "knob" as const } }
+                { initialProps: { componentType: "square" as const } }
             );
 
             const firstResult = result.current;
-            rerender({ componentType: "button" });
+            rerender({ componentType: "keys" });
             const secondResult = result.current;
 
             expect(firstResult).not.toBe(secondResult);
-            expect(secondResult.sizeClassName).toBe(getSizeClassForComponent("button", "normal"));
+            expect(secondResult.sizeClassName).toBe(getSizeClassForComponent("keys", "normal"));
         });
 
         it("returns new object when orientation changes", () => {
@@ -216,12 +209,12 @@ describe("useAdaptiveSize", () => {
         it("does not recalculate when unrelated props change", () => {
             const { result, rerender } = renderHook(
                 ({ adaptiveSize, size, componentType }) => useAdaptiveSize(adaptiveSize, size, componentType),
-                { initialProps: { adaptiveSize: false, size: "normal" as const, componentType: "knob" as const } }
+                { initialProps: { adaptiveSize: false, size: "normal" as const, componentType: "square" as const } }
             );
 
             const firstResult = result.current;
             // Change something unrelated (not a dependency)
-            rerender({ adaptiveSize: false, size: "normal", componentType: "knob" });
+            rerender({ adaptiveSize: false, size: "normal", componentType: "square" });
             const secondResult = result.current;
 
             // Should be same reference (memoized)
@@ -231,7 +224,7 @@ describe("useAdaptiveSize", () => {
 
     describe("Default Parameters", () => {
         it("uses default adaptiveSize=false when not provided", () => {
-            const { result } = renderHook(() => useAdaptiveSize(undefined, "normal", "knob"));
+            const { result } = renderHook(() => useAdaptiveSize(undefined, "normal", "square"));
 
             // Should behave as if adaptiveSize=false
             expect(result.current.sizeClassName).toBeDefined();
@@ -239,16 +232,16 @@ describe("useAdaptiveSize", () => {
         });
 
         it("uses default size=normal when not provided", () => {
-            const { result } = renderHook(() => useAdaptiveSize(false, undefined, "knob"));
+            const { result } = renderHook(() => useAdaptiveSize(false, undefined, "square"));
 
-            expect(result.current.sizeClassName).toBe(getSizeClassForComponent("knob", "normal"));
-            expect(result.current.sizeStyle).toEqual(getSizeStyleForComponent("knob", "normal"));
+            expect(result.current.sizeClassName).toBe(getSizeClassForComponent("square", "normal"));
+            expect(result.current.sizeStyle).toEqual(getSizeStyleForComponent("square", "normal"));
         });
     });
 
     describe("Integration with Core Functions", () => {
         it("correctly integrates with getSizeClassForComponent for all component types", () => {
-            const componentTypes: Array<"knob" | "button" | "keys" | "slider"> = ["knob", "button", "keys", "slider"];
+            const componentTypes: Array<"square" | "keys" | "slider"> = ["square", "keys", "slider"];
 
             componentTypes.forEach((componentType) => {
                 const { result } = renderHook(() => useAdaptiveSize(false, "normal", componentType));
@@ -257,7 +250,7 @@ describe("useAdaptiveSize", () => {
         });
 
         it("correctly integrates with getSizeStyleForComponent for all component types", () => {
-            const componentTypes: Array<"knob" | "button" | "keys" | "slider"> = ["knob", "button", "keys", "slider"];
+            const componentTypes: Array<"square" | "keys" | "slider"> = ["square", "keys", "slider"];
 
             componentTypes.forEach((componentType) => {
                 const { result } = renderHook(() => useAdaptiveSize(false, "normal", componentType));
