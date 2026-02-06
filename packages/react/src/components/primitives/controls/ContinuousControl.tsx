@@ -109,6 +109,7 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         valueAsLabel = "labelOnly",
         midiResolution,
         defaultValue,
+        ariaOrientation,
     } = props;
 
     const bipolar = props.bipolar ?? false;
@@ -244,7 +245,11 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
                 tabIndex={interactiveProps.tabIndex}
                 role={interactiveProps.role}
                 aria-valuenow={value}
+                aria-valuemin={derivedParameter.min}
+                aria-valuemax={derivedParameter.max}
                 aria-label={effectiveLabel}
+                aria-disabled={interactiveProps["aria-disabled"]}
+                aria-orientation={ariaOrientation}
             >
                 <View normalizedValue={normalizedValue} {...viewProps} />
             </AdaptiveBox.Svg>

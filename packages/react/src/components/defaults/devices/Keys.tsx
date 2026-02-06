@@ -67,6 +67,9 @@ export type KeysProps = BaseProps &
         /** Callback triggered when a key is pressed or released.
          * Only active if this prop is provided. */
         onChange?: (event: AudioControlEvent<{ note: number; active: boolean }>) => void;
+        /** Accessible label for the keyboard container (e.g. for screen readers).
+         * @default "Piano keyboard" */
+        ariaLabel?: string;
     };
 
 /**
@@ -150,6 +153,7 @@ function Keys({
     style = {},
     onChange,
     onClick,
+    ariaLabel = "Piano keyboard",
 }: KeysProps) {
     // Ensure nbKeys is within valid range (1-128)
     const validNbKeys = Math.max(1, Math.min(128, nbKeys));
@@ -536,6 +540,8 @@ function Keys({
             viewBoxHeight={keysDimensions.whiteHeight + keysDimensions.innerStrokeWidth}
             minWidth={40}
             minHeight={40}
+            role="group"
+            aria-label={ariaLabel}
         >
             <AdaptiveBox.Svg
                 className={svgClassNames}
