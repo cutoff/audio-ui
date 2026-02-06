@@ -24,6 +24,10 @@ export type ImageSwitchViewProps = {
     imageHrefFalse: string;
     /** URL to the image for true/on state */
     imageHrefTrue: string;
+    /** Optional dark mode image URL for false/off state */
+    imageHrefFalseDark?: string;
+    /** Optional dark mode image URL for true/on state */
+    imageHrefTrueDark?: string;
     /** Additional CSS class name */
     className?: string;
     /** Content to render (unused in image view but required by generic props) */
@@ -34,12 +38,17 @@ export type ImageSwitchViewProps = {
  * Pure SVG presentation component for an image switch control.
  * Renders one of two images based on normalized value (false = 0, true = 1).
  *
+ * Supports optional dark mode images. When provided, CSS automatically switches
+ * between light and dark images based on the .dark class or prefers-color-scheme.
+ *
  * @param {ImageSwitchViewProps} props - Component props
  * @param {number} props.normalizedValue - Value between 0 and 1 (0 = false, 1 = true)
  * @param {number} props.frameWidth - Width of the viewBox
  * @param {number} props.frameHeight - Height of the viewBox
  * @param {string} props.imageHrefFalse - URL to the image for false/off state
  * @param {string} props.imageHrefTrue - URL to the image for true/on state
+ * @param {string} [props.imageHrefFalseDark] - Optional dark mode image for false/off state
+ * @param {string} [props.imageHrefTrueDark] - Optional dark mode image for true/on state
  * @param {string} [props.className] - Optional CSS class
  * @returns {JSX.Element} SVG image element
  */
@@ -49,12 +58,26 @@ function ImageSwitchView({
     frameHeight,
     imageHrefFalse,
     imageHrefTrue,
+    imageHrefFalseDark,
+    imageHrefTrueDark,
     className,
 }: ImageSwitchViewProps): React.JSX.Element {
-    // Determine which image to show based on normalized value (threshold at 0.5)
-    const imageHref = normalizedValue > 0.5 ? imageHrefTrue : imageHrefFalse;
+    // Determine which images to show based on normalized value (threshold at 0.5)
+    const isTrue = normalizedValue > 0.5;
+    const imageHref = isTrue ? imageHrefTrue : imageHrefFalse;
+    const imageDarkHref = isTrue ? imageHrefTrueDark : imageHrefFalseDark;
 
-    return <Image x={0} y={0} width={frameWidth} height={frameHeight} imageHref={imageHref} className={className} />;
+    return (
+        <Image
+            x={0}
+            y={0}
+            width={frameWidth}
+            height={frameHeight}
+            imageHref={imageHref}
+            imageDarkHref={imageDarkHref}
+            className={className}
+        />
+    );
 }
 
 const ImageSwitchViewMemo = React.memo(ImageSwitchView);

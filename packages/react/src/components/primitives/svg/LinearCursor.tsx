@@ -26,6 +26,8 @@ export type LinearCursorProps = {
     aspectRatio: number;
     /** Optional image URL to display as cursor. When provided, roundness and aspectRatio are ignored (image preserves its natural aspect ratio). */
     imageHref?: string;
+    /** Optional dark mode image URL for the cursor (used when dark mode is active) */
+    imageDarkHref?: string;
     /** Corner roundness (normalized 0.0-1.0, maps to 0-20, or CSS variable string). 1.0 = ellipse/circle, 0.0-1.0 (excl.) = rounded rectangle. Ignored when imageHref is provided. */
     roundness?: number | string;
     /** CSS class name */
@@ -49,6 +51,9 @@ export type LinearCursorProps = {
  * - An image (via imageHref)
  * - An SVG shape (rectangle or ellipse based on roundness)
  *
+ * Supports optional dark mode images via imageDarkHref. When provided, CSS automatically
+ * switches between light and dark cursor images based on the .dark class or prefers-color-scheme.
+ *
  * This component is designed to be used inside an <svg> element.
  *
  * @param {number} cx - X coordinate of the center point of the strip
@@ -59,6 +64,7 @@ export type LinearCursorProps = {
  * @param {number} width - Width of the cursor (x axis)
  * @param {number} aspectRatio - Aspect ratio of the cursor (numeric value, e.g., 1 = 1:1, 1.5 = 1.5:1). Height = width / aspectRatio. Ignored when imageHref is provided.
  * @param {string} [imageHref] - Optional image URL to display as cursor. When provided, roundness and aspectRatio are ignored (image preserves its natural aspect ratio).
+ * @param {string} [imageDarkHref] - Optional dark mode image URL for the cursor
  * @param {number | string} [roundness] - Corner roundness (normalized 0.0-1.0, maps to 0-20, or CSS variable string). 1.0 = ellipse/circle. Ignored when imageHref is provided.
  * @param {string} [className] - CSS class name
  * @param {CSSProperties} [style] - Inline styles
@@ -74,6 +80,9 @@ export type LinearCursorProps = {
  *
  * // Image-based cursor (aspectRatio and roundness ignored, image preserves natural aspect ratio)
  * <LinearCursor cx={50} cy={150} length={260} normalizedValue={0.5} width={20} aspectRatio={1} imageHref="/cursor.png" />
+ *
+ * // Image-based cursor with dark mode
+ * <LinearCursor cx={50} cy={150} length={260} normalizedValue={0.5} width={20} aspectRatio={1} imageHref="/cursor.png" imageDarkHref="/cursor-dark.png" />
  * ```
  */
 function LinearCursor({
@@ -85,6 +94,7 @@ function LinearCursor({
     width,
     aspectRatio,
     imageHref,
+    imageDarkHref,
     roundness = DEFAULT_ROUNDNESS,
     className,
     style,
@@ -149,17 +159,28 @@ function LinearCursor({
         // Use a square bounding box (width x width) and let preserveAspectRatio maintain the image's natural aspect ratio
         // The image will be centered and scaled to fit within the square while preserving its aspect ratio
         return (
-            <image
-                href={imageHref}
-                x={cx - width / 2}
-                y={cursorY - width / 2}
-                width={width}
-                height={width}
-                transform={transform}
-                className={className}
-                style={style}
-                preserveAspectRatio="xMidYMid meet"
-            />
+            <g transform={transform} className={className} style={style}>
+                <image
+                    href={imageHref}
+                    x={cx - width / 2}
+                    y={cursorY - width / 2}
+                    width={width}
+                    height={width}
+                    className="audioui-image-light"
+                    preserveAspectRatio="xMidYMid meet"
+                />
+                {imageDarkHref && (
+                    <image
+                        href={imageDarkHref}
+                        x={cx - width / 2}
+                        y={cursorY - width / 2}
+                        width={width}
+                        height={width}
+                        className="audioui-image-dark"
+                        preserveAspectRatio="xMidYMid meet"
+                    />
+                )}
+            </g>
         );
     }
 

@@ -23,6 +23,8 @@ export type RotaryImageProps = {
     frameHeight: number;
     /** URL to the image to rotate */
     imageHref: string;
+    /** Optional dark mode image URL (used when dark mode is active) */
+    imageDarkHref?: string;
     /** Optional rotation angle offset in degrees (default: 0) */
     rotation?: number;
     /** Openness of the arc in degrees (value between 0-360º; 0º: closed; 90º: 3/4 open; 180º: half-circle;)
@@ -60,6 +62,9 @@ export type ImageKnobProps = ContinuousControlProps &
  *
  * The image rotation is determined by the normalized value (0-1 maps to rotation based on openness and rotation offset).
  *
+ * Supports optional dark mode images via imageDarkHref. When provided, CSS automatically
+ * switches between light and dark images based on the .dark class or prefers-color-scheme.
+ *
  * Supports two modes of operation:
  * 1. Parameter model mode: Provide `parameter` (ContinuousParameter) - all range/label info comes from the model
  * 2. Ad-hoc mode: Provide `min`, `max`, `step`, `label` directly as props
@@ -80,6 +85,7 @@ export type ImageKnobProps = ContinuousControlProps &
  *   frameWidth={100}
  *   frameHeight={100}
  *   imageHref="/knob-image.png"
+ *   imageDarkHref="/knob-image-dark.png"
  *   openness={90}
  *   rotation={0}
  * />
@@ -103,6 +109,7 @@ function ImageKnob({
     frameWidth,
     frameHeight,
     imageHref,
+    imageDarkHref,
     rotation = 0,
     openness = 90,
     parameter,
@@ -163,6 +170,7 @@ function ImageKnob({
                 frameWidth,
                 frameHeight,
                 imageHref,
+                imageDarkHref,
                 rotation,
                 openness,
                 bipolar,

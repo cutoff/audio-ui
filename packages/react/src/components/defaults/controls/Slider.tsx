@@ -56,6 +56,8 @@ export type SliderProps = ContinuousControlProps &
         cursorRoundness?: number | string;
         /** Optional image URL to display as cursor */
         cursorImageHref?: string;
+        /** Optional dark mode image URL for the cursor (used when dark mode is active) */
+        cursorImageDarkHref?: string;
         /** Optional CSS class name for the cursor */
         cursorClassName?: string;
         /** Optional inline styles for the cursor */
@@ -142,6 +144,7 @@ function Slider({
     cursorAspectRatio,
     cursorRoundness,
     cursorImageHref,
+    cursorImageDarkHref,
     cursorClassName,
     cursorStyle,
 }: SliderProps) {
@@ -205,6 +208,7 @@ function Slider({
                 cursorAspectRatio: cursorAspectRatio,
                 cursorRoundness: cursorRoundness,
                 cursorImageHref: cursorImageHref,
+                cursorImageDarkHref: cursorImageDarkHref,
                 cursorClassName: cursorClassName,
                 cursorStyle: cursorStyle,
             }}

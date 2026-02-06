@@ -25,6 +25,8 @@ export type FilmstripProps = {
     frameCount: number;
     /** URL to the sprite sheet/filmstrip image */
     imageHref: string;
+    /** Optional dark mode filmstrip URL (used when dark mode is active) */
+    imageDarkHref?: string;
     /** Orientation of the strip (default: "vertical") */
     orientation?: "vertical" | "horizontal";
     /** Optional frame rotation in degrees (default: 0) */
@@ -69,6 +71,10 @@ export type FilmStripContinuousControlProps = ContinuousControlProps &
  *
  * The frame displayed is determined by the normalized value (0-1 maps to frame 0 to frameCount-1).
  *
+ * Supports optional dark mode filmstrips via imageDarkHref. When provided, CSS automatically
+ * switches between light and dark filmstrips based on the .dark class or prefers-color-scheme.
+ * Both filmstrips must have identical frame properties (dimensions, count, orientation).
+ *
  * Supports two modes of operation:
  * 1. Parameter model mode: Provide `parameter` (ContinuousParameter) - all range/label info comes from the model
  * 2. Ad-hoc mode: Provide `min`, `max`, `step`, `label` directly as props
@@ -90,6 +96,7 @@ export type FilmStripContinuousControlProps = ContinuousControlProps &
  *   frameHeight={100}
  *   frameCount={64}
  *   imageHref="/knob-frames.png"
+ *   imageDarkHref="/knob-frames-dark.png"
  * />
  * ```
  */
@@ -112,6 +119,7 @@ function FilmStripContinuousControl({
     frameHeight,
     frameCount,
     imageHref,
+    imageDarkHref,
     orientation = "vertical",
     frameRotation = 0,
     parameter,
@@ -174,6 +182,7 @@ function FilmStripContinuousControl({
                 frameHeight,
                 frameCount,
                 imageHref,
+                imageDarkHref,
                 orientation,
                 frameRotation,
                 invertValue,
