@@ -1,0 +1,8 @@
+/*
+ * Copyright (c) 2026 Tylium.
+ * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-TELF
+ * See LICENSE.md for details.
+ */
+
+/* Default library font: Oxanium (Google Fonts). Weights 400, 500, 600, 700. */
+@import url("https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700&display=swap");

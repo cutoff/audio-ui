@@ -26,9 +26,11 @@ export default defineConfig({
     },
     build: {
         lib: {
-            entry: resolve(__dirname, "src/index.ts"),
+            entry: {
+                index: resolve(__dirname, "src/index.ts"),
+                "style-no-font": resolve(__dirname, "src/style-no-font.entry.ts"),
+            },
             formats: ["es"],
-            fileName: "index",
         },
         rollupOptions: {
             external: [
@@ -40,6 +42,15 @@ export default defineConfig({
                 "@cutoff/audio-ui-core",
             ],
             output: {
+                /* Predictable names: main bundle → style.css (with font), second entry → style-no-font.css. */
+                entryFileNames: (chunkInfo) => (chunkInfo.name === "style-no-font" ? "style-no-font.js" : "index.js"),
+                assetFileNames: (assetInfo) => {
+                    const name = assetInfo.name || "";
+                    if (name.endsWith(".css")) {
+                        return name.startsWith("style-no-font") ? "style-no-font.css" : "style.css";
+                    }
+                    return "assets/[name]-[hash][extname]";
+                },
                 globals: {
                     react: "React",
                     "react-dom": "ReactDOM",
@@ -48,7 +59,7 @@ export default defineConfig({
             },
         },
         sourcemap: true,
-        cssCodeSplit: false,
+        cssCodeSplit: true,
         minify: "esbuild",
         target: "es2020",
     },

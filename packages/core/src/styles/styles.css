@@ -7,32 +7,20 @@
 @import url("themes.css");
 
 /* ==========================================================================
-   Base Element Styles
-   ========================================================================== */
-
-/* Form input elements - inherit theme text color and font size */
-textarea,
-input {
-    color: var(--audioui-text-color);
-    background-color: transparent;
-    font-size: var(--audioui-default-font-size);
-}
-
-/* ==========================================================================
    SVG and Icon Styles
    ========================================================================== */
 
-/* Prevent text selection in SVG content */
-svg text,
-svg foreignObject div {
+/* Prevent text selection in SVG content (scoped to library components only) */
+.audioui svg text,
+.audioui svg foreignObject div {
     -webkit-user-select: none;
     user-select: none;
     cursor: default;
 }
 
-/* Make inline SVGs in knob content inherit text color */
+/* Make inline SVGs in knob content inherit text color (scoped to library components only) */
 /* This works for inline <svg> elements and SVG components from libraries like react-icons */
-svg foreignObject div svg {
+.audioui svg foreignObject div svg {
     fill: currentColor;
     color: inherit;
     /* Ensure SVG icons scale down to fit, creating a visual margin */
@@ -63,6 +51,9 @@ svg foreignObject div svg {
 
 /* Root class for all AudioUI components */
 .audioui {
+    font-family: var(--audioui-font-family);
+    font-size: var(--audioui-font-size);
+    font-weight: var(--audioui-font-weight);
     -webkit-user-select: none;
     user-select: none;
     cursor: default;
