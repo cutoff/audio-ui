@@ -5,7 +5,7 @@
  */
 
 import React, { useMemo } from "react";
-import { clampNormalized, generateTransparencyVariant } from "@cutoff/audio-ui-core";
+import { clampNormalized } from "@cutoff/audio-ui-core";
 
 /**
  * Options for useThemableProps hook
@@ -34,10 +34,13 @@ export interface UseThemablePropsResult {
  *
  * This hook handles:
  * - Clamping normalized roundness values to valid ranges
- * - Generating CSS variables from themable props (color, roundness)
+ * - Setting CSS variables from themable props (color, roundness)
  * - Automatically inferring linecap from roundness (0.0 = square, >0.0 = round)
- * - Computing color variants (primary-50, primary-20) when color is provided
  * - Merging with user-provided style (user style takes precedence)
+ * 
+ * **Color Cascade:** When a color is set, only `--audioui-primary-color` is written.
+ * Derived variants (primary-50, primary-20, primary-lighter, primary-darker) are defined
+ * in themes.css and automatically recompute via CSS `color-mix()` expressions.
  *
  * **Roundness and Linecap Relationship:**
  * The roundness attribute serves as a single source of truth for the overall "feeling" of the UI.
@@ -89,12 +92,12 @@ export function useThemableProps({ color, roundness, style }: UseThemablePropsOp
             vars["--audioui-linecap-base"] = clampedRoundness === 0 ? "square" : "round";
         }
 
-        // Handle color and generate variants
+        // Handle color - only set the base color, let CSS cascade handle derived variants
+        // The derived variants (primary-50, primary-20, primary-lighter, primary-darker) are defined
+        // in themes.css in terms of var(--audioui-primary-color), so they will automatically
+        // recompute when we override the base color here.
         if (color !== undefined) {
             vars["--audioui-primary-color"] = color;
-            // Compute variants for this component instance
-            vars["--audioui-primary-50"] = generateTransparencyVariant(color, 50);
-            vars["--audioui-primary-20"] = generateTransparencyVariant(color, 20);
         }
 
         // Merge CSS variables with user style (user style takes precedence)
