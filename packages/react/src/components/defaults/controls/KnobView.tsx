@@ -32,8 +32,6 @@ export type KnobViewProps = {
     openness?: number;
     /** Optional rotation angle offset in degrees */
     rotation?: number;
-    /** Resolved color string */
-    color?: string;
     /** Additional CSS class name */
     className?: string;
     /**
@@ -67,7 +65,6 @@ export type KnobViewProps = {
  * @param roundness - Normalized roundness 0.0-1.0 (default 0.3, 0.0 = square, >0.0 = round)
  * @param openness - Openness of the ring in degrees (default 90)
  * @param rotation - Optional rotation angle offset in degrees (default 0)
- * @param color - Resolved color string
  * @param className - Optional CSS class
  * @param svgOverlayRotary - Whether to use RotaryImage (true) or RadialImage (false) for iconCap overlay (default false)
  * @param svgOverlay - SVG content to display as overlay in iconCap variant (typically an icon component)
@@ -80,7 +77,6 @@ function KnobView({
     roundness,
     openness = 90,
     rotation = 0,
-    color: _color, // Prefixed with _ to indicate intentionally unused (kept for API compatibility)
     className,
     svgOverlayRotary = false,
     svgOverlay,

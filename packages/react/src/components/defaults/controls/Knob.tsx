@@ -230,7 +230,6 @@ function Knob({
             valueAsLabel={valueAsLabel}
             view={KnobView}
             viewProps={{
-                color: color ?? "var(--audioui-primary-color)",
                 variant: variant,
                 thickness: clampedThickness,
                 roundness: roundness ?? "var(--audioui-roundness-knob)",
