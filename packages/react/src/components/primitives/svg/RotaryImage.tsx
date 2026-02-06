@@ -25,6 +25,8 @@ export type RotaryImageProps = {
     openness?: number;
     /** Optional image URL to display */
     imageHref?: string;
+    /** Optional dark mode image URL (used when dark mode is active) */
+    imageDarkHref?: string;
     /** Optional SVG content to rotate */
     children?: React.ReactNode;
     /** Optional rotation angle offset in degrees (default 0) */
@@ -47,6 +49,9 @@ export type RotaryImageProps = {
  *
  * This component wraps RadialImage and applies rotation based on the normalized value.
  * It can display an image (via imageHref) or arbitrary SVG content (via children).
+ *
+ * Supports optional dark mode images via imageDarkHref, which is passed through to RadialImage.
+ * CSS automatically switches between light and dark images based on the .dark class or prefers-color-scheme.
  */
 function RotaryImage({
     cx,
@@ -56,6 +61,7 @@ function RotaryImage({
     bipolar = false,
     openness = 90,
     imageHref,
+    imageDarkHref,
     children,
     rotation = 0,
     positions,
@@ -77,6 +83,7 @@ function RotaryImage({
             cy={cy}
             radius={radius}
             imageHref={imageHref}
+            imageDarkHref={imageDarkHref}
             transform={`rotate(${valueToAngle}, ${rotateX}, ${rotateY})`}
             className={className}
             style={{ ...style, willChange: "transform" }}

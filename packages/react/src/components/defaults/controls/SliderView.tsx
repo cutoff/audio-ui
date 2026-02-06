@@ -42,6 +42,8 @@ export type SliderViewProps = {
     cursorRoundness?: number | string;
     /** Optional image URL to display as cursor */
     cursorImageHref?: string;
+    /** Optional dark mode image URL for the cursor (used when dark mode is active) */
+    cursorImageDarkHref?: string;
     /** Optional CSS class name for the cursor */
     cursorClassName?: string;
     /** Optional inline styles for the cursor */
@@ -75,6 +77,7 @@ export type SliderViewProps = {
  * @param {number} [cursorAspectRatio] - Aspect ratio of the cursor
  * @param {number | string} [cursorRoundness] - Overrides cursor roundness (defaults to roundness prop)
  * @param {string} [cursorImageHref] - Optional image URL for cursor
+ * @param {string} [cursorImageDarkHref] - Optional dark mode image URL for cursor
  * @param {string} [cursorClassName] - Optional CSS class name for cursor
  * @param {React.CSSProperties} [cursorStyle] - Optional inline styles for cursor
  * @param {string} [className] - Optional CSS class name
@@ -91,6 +94,7 @@ function SliderView({
     cursorAspectRatio,
     cursorRoundness,
     cursorImageHref,
+    cursorImageDarkHref,
     cursorClassName,
     cursorStyle,
     className,
@@ -252,6 +256,7 @@ function SliderView({
                     aspectRatio={cursorAspectRatio ?? 1}
                     roundness={effectiveCursorRoundness}
                     imageHref={cursorImageHref}
+                    imageDarkHref={cursorImageDarkHref}
                     className={cursorClassName}
                     style={cursorStyleMemo}
                 />

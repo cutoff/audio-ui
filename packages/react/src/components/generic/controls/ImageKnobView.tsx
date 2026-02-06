@@ -22,6 +22,8 @@ export type ImageKnobViewProps = {
     frameHeight: number;
     /** URL to the image to rotate */
     imageHref: string;
+    /** Optional dark mode image URL (used when dark mode is active) */
+    imageDarkHref?: string;
     /** Optional rotation angle offset in degrees (default: 0) */
     rotation?: number;
     /** Openness of the arc in degrees (value between 0-360º; 0º: closed; 90º: 3/4 open; 180º: half-circle;)
@@ -46,11 +48,15 @@ export type ImageKnobViewProps = {
  * Pure SVG presentation component for a rotary image control.
  * Renders a rotating image based on normalized value.
  *
+ * Supports optional dark mode images via imageDarkHref. CSS automatically
+ * switches between light and dark images based on the .dark class or prefers-color-scheme.
+ *
  * @param {ImageKnobViewProps} props - Component props
  * @param {number} props.normalizedValue - Value between 0 and 1
  * @param {number} props.frameWidth - Width of the viewBox
  * @param {number} props.frameHeight - Height of the viewBox
  * @param {string} props.imageHref - URL to the image to rotate
+ * @param {string} [props.imageDarkHref] - Optional dark mode image URL
  * @param {number} [props.rotation=0] - Optional rotation angle offset in degrees
  * @param {number} [props.openness=90] - Openness of the arc in degrees
  * @param {boolean} [props.bipolar=false] - Whether to start the arc from center (bipolar mode)
@@ -63,6 +69,7 @@ function ImageKnobView({
     frameWidth,
     frameHeight,
     imageHref,
+    imageDarkHref,
     rotation = 0,
     openness = 90,
     bipolar = false,
@@ -82,6 +89,7 @@ function ImageKnobView({
             radius={radius}
             normalizedValue={normalizedValue}
             imageHref={imageHref}
+            imageDarkHref={imageDarkHref}
             rotation={rotation}
             openness={openness}
             bipolar={bipolar}

@@ -37,6 +37,10 @@ export type FilmStripDiscreteControlProps = DiscreteControlProps &
  *
  * The frame displayed is determined by mapping the current value to a frame index.
  *
+ * Supports optional dark mode filmstrips via imageDarkHref. When provided, CSS automatically
+ * switches between light and dark filmstrips based on the .dark class or prefers-color-scheme.
+ * Both filmstrips must have identical frame properties (dimensions, count, orientation).
+ *
  * Supports three modes of operation:
  * 1. Ad-Hoc Mode (Children only): Model inferred from OptionView children.
  * 2. Strict Mode (Parameter only): Model provided via parameter prop. View via renderOption.
@@ -57,6 +61,7 @@ export type FilmStripDiscreteControlProps = DiscreteControlProps &
  *   frameHeight={100}
  *   frameCount={4}
  *   imageHref="/waveform-frames.png"
+ *   imageDarkHref="/waveform-frames-dark.png"
  * >
  *   <Option value="sine">Sine</Option>
  *   <Option value="square">Square</Option>
@@ -80,6 +85,7 @@ function FilmStripDiscreteControl({
     frameHeight,
     frameCount,
     imageHref,
+    imageDarkHref,
     orientation = "vertical",
     frameRotation = 0,
     parameter,
@@ -128,6 +134,7 @@ function FilmStripDiscreteControl({
                 frameHeight,
                 frameCount,
                 imageHref,
+                imageDarkHref,
                 orientation,
                 frameRotation,
             }}
