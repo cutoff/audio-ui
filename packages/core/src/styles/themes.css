@@ -36,8 +36,8 @@
     --audioui-primary-50: color-mix(in srgb, var(--audioui-primary-color) 50%, transparent);
     --audioui-primary-20: color-mix(in srgb, var(--audioui-primary-color) 20%, transparent);
     /* Primary luminosity variants - lighter and darker versions */
-    --audioui-primary-light: color-mix(in srgb, var(--audioui-primary-color) 80%, white);
-    --audioui-primary-dark: color-mix(in srgb, var(--audioui-primary-color) 80%, black);
+    --audioui-primary-lighter: color-mix(in srgb, var(--audioui-primary-color) 80%, white);
+    --audioui-primary-darker: color-mix(in srgb, var(--audioui-primary-color) 80%, black);
 
     /* Text and typography */
     --audioui-text-color: var(--audioui-nearblack);
@@ -91,7 +91,7 @@
     --audioui-slider-strip-color: var(--audioui-primary-color); /* Foreground value strip color */
     --audioui-slider-cursor-color: var(--audioui-primary-color); /* Cursor fill color */
     --audioui-slider-cursor-border-color: var(
-        --audioui-primary-light
+        --audioui-primary-lighter
     ); /* Cursor border color (luminosity variant for visibility) */
     --audioui-slider-cursor-border-width: 5px; /* Cursor border width */
 
@@ -188,6 +188,6 @@
     --audioui-knob-cap-fill: #4a4d50;
 
     --audioui-slider-cursor-border-color: var(
-        --audioui-primary-dark
+        --audioui-primary-darker
     ); /* Cursor border color (luminosity variant for visibility) */
 }

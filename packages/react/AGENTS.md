@@ -235,7 +235,7 @@ The Slider component provides linear fader controls with multiple visual variant
   - `--audioui-slider-track-color`: Background track color (defaults to `--audioui-adaptive-20`)
   - `--audioui-slider-strip-color`: Foreground value strip color (defaults to `--audioui-primary-color`)
   - `--audioui-slider-cursor-color`: Cursor fill color (defaults to `--audioui-primary-color`)
-  - `--audioui-slider-cursor-border-color`: Cursor border color (uses luminosity variants: `--audioui-primary-light` in light mode, `--audioui-primary-dark` in dark mode)
+  - `--audioui-slider-cursor-border-color`: Cursor border color (uses luminosity variants: `--audioui-primary-lighter` in light mode, `--audioui-primary-darker` in dark mode)
   - `--audioui-slider-cursor-border-width`: Cursor border width (defaults to `1px`)
 - **Location**: `packages/react/src/components/defaults/controls/Slider.tsx` (wrapper) and `SliderView.tsx` (SVG view component)
 
