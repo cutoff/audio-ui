@@ -20,8 +20,8 @@ export const CSS_VARS = {
     adaptiveDark: "--audioui-adaptive-dark",
     primary50: "--audioui-primary-50",
     primary20: "--audioui-primary-20",
-    primaryLight: "--audioui-primary-light",
-    primaryDark: "--audioui-primary-dark",
+    primaryLighter: "--audioui-primary-lighter",
+    primaryDarker: "--audioui-primary-darker",
 
     // Text and typography
     textColor: "--audioui-text-color",
