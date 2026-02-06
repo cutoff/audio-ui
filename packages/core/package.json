@@ -17,7 +17,9 @@
             "types": "./dist/index.d.ts"
         },
         "./styles.css": "./dist/styles/styles.css",
-        "./themes.css": "./dist/styles/themes.css"
+        "./themes.css": "./dist/styles/themes.css",
+        "./fonts.css": "./dist/styles/fonts.css",
+        "./styles-with-font.css": "./dist/styles/styles-with-font.css"
     },
     "files": [
         "dist"

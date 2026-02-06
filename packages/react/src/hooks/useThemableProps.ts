@@ -37,7 +37,7 @@ export interface UseThemablePropsResult {
  * - Setting CSS variables from themable props (color, roundness)
  * - Automatically inferring linecap from roundness (0.0 = square, >0.0 = round)
  * - Merging with user-provided style (user style takes precedence)
- * 
+ *
  * **Color Cascade:** When a color is set, only `--audioui-primary-color` is written.
  * Derived variants (primary-50, primary-20, primary-lighter, primary-darker) are defined
  * in themes.css and automatically recompute via CSS `color-mix()` expressions.

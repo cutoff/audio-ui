@@ -28,7 +28,8 @@
             "import": "./dist/index.js",
             "types": "./dist/index.d.ts"
         },
-        "./style.css": "./dist/style.css"
+        "./style.css": "./dist/style.css",
+        "./style-no-font.css": "./dist/style-no-font.css"
     },
     "files": [
         "dist"

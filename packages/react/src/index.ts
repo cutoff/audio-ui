@@ -4,6 +4,8 @@
  * See LICENSE.md for details.
  */
 
+import "@cutoff/audio-ui-core/styles-with-font.css";
+
 export { default as OptionView } from "./components/primitives/controls/OptionView";
 
 export { default as Button } from "./components/defaults/controls/Button";

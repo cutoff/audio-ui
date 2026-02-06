@@ -15,9 +15,10 @@ The AudioUI library uses a comprehensive namespace isolation strategy to prevent
 ## Core Principles
 
 1. **Complete Namespace Isolation**: All styles must be prefixed with `audioui-`
-2. **Centralized Constants**: Use shared constants from `styles/classNames.ts` and `styles/cssVars.ts`
-3. **Automated Enforcement**: Stylelint validates naming conventions
-4. **Type Safety**: TypeScript types for class names and CSS variables
+2. **No client impact**: Library styles must never affect the host application. Every selector in `packages/core/src/styles/styles.css` (and any library CSS) must be scoped to `.audioui` or a class prefixed with `.audioui-`. Do not use unqualified element selectors (e.g. `input`, `textarea`, `svg`, `text`, `div`) that would apply to elements outside library components.
+3. **Centralized Constants**: Use shared constants from `packages/core/src/constants/styles.ts` and `packages/core/src/constants/cssVars.ts`
+4. **Automated Enforcement**: Stylelint validates naming conventions
+5. **Type Safety**: TypeScript types for class names and CSS variables
 
 ## Naming Conventions
 
@@ -50,24 +51,25 @@ The AudioUI library uses a comprehensive namespace isolation strategy to prevent
 - `--audioui-adaptive-default-color` - Adaptive default color
 - `--audioui-text-color` - Text color variable
 - `--audioui-primary-color` - Optional primary color (user-defined)
-- `--audioui-default-font-size` - Font size variable
+- `--audioui-font-size` - Font size variable
+- `--audioui-font-weight` - Font weight variable
 
 **Rules:**
 
 - Always use kebab-case
-- Category prefixes: `theme-*`, `adaptive-default-color`, `text-color`, `bg-color`, `primary-color`, `default-font-size`
+- Category prefixes: `theme-*`, `adaptive-default-color`, `text-color`, `bg-color`, `primary-color`, `font-size`, `font-weight`
 - Theme colors: `--audioui-theme-{name}` (blue, orange, pink, green, purple, yellow, default)
 
 ## Using Constants
 
 ### Class Names
 
-**Location**: `packages/react/src/styles/classNames.ts`
+**Location**: `packages/core/src/constants/styles.ts`
 
 **Usage:**
 
 ```typescript
-import { CLASSNAMES } from "../../styles/classNames";
+import { CLASSNAMES } from "@cutoff/audio-ui-core";
 
 // In component
 const className = classNames(CLASSNAMES.root, CLASSNAMES.highlight, customClassName);
@@ -88,12 +90,12 @@ const className = classNames(CLASSNAMES.root, CLASSNAMES.highlight, customClassN
 
 ### CSS Variables
 
-**Location**: `packages/react/src/styles/cssVars.ts`
+**Location**: `packages/core/src/constants/cssVars.ts`
 
 **Usage:**
 
 ```typescript
-import { CSS_VARS } from "../../styles/cssVars";
+import { CSS_VARS } from "@cutoff/audio-ui-core";
 
 // In component or utility
 const defaultColor = CSS_VARS.adaptiveDefaultColor;
@@ -114,6 +116,8 @@ const defaultColor = CSS_VARS.adaptiveDefaultColor;
 
 **Important**: When adding new styles, follow the [CSS Conventions](#css-conventions) section for color formats, units, layout techniques, and performance best practices.
 
+**Selector scope**: When adding or changing rules, use only `.audioui` or `.audioui-*` as the scope (e.g. `.audioui svg text`, `.audioui-icon-wrapper svg`). Any component that renders library UI must apply `CLASSNAMES.root` from `@cutoff/audio-ui-core` on its root element so these selectors apply. Constants live in `packages/core/src/constants/styles.ts` and `packages/core/src/constants/cssVars.ts`.
+
 ### Adding a New CSS Class
 
 1. **Define in CSS file** (`styles.css` or component-specific CSS):
@@ -126,7 +130,7 @@ const defaultColor = CSS_VARS.adaptiveDefaultColor;
    }
    ```
 
-2. **Add to constants** (`styles/classNames.ts`):
+2. **Add to constants** (`packages/core/src/constants/styles.ts`):
 
    ```typescript
    export const CLASSNAMES = {
@@ -138,7 +142,7 @@ const defaultColor = CSS_VARS.adaptiveDefaultColor;
 3. **Use in components**:
 
    ```typescript
-   import { CLASSNAMES } from "../../styles/classNames";
+   import { CLASSNAMES } from "@cutoff/audio-ui-core";
    // Use CLASSNAMES.myNewClass
    ```
 
@@ -157,7 +161,7 @@ const defaultColor = CSS_VARS.adaptiveDefaultColor;
    }
    ```
 
-2. **Add to constants** (`styles/cssVars.ts`):
+2. **Add to constants** (`packages/core/src/constants/cssVars.ts`):
 
    ```typescript
    export const CSS_VARS = {
@@ -169,7 +173,7 @@ const defaultColor = CSS_VARS.adaptiveDefaultColor;
 3. **Use in code**:
 
    ```typescript
-   import { CSS_VARS } from "../../styles/cssVars";
+   import { CSS_VARS } from "@cutoff/audio-ui-core";
    // Use CSS_VARS.myNewVariable
    ```
 

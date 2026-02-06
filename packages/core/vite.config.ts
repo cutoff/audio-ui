@@ -19,6 +19,11 @@ function copyCSSPlugin() {
             await mkdir(distStylesDir, { recursive: true });
             await copyFile(resolve(srcStylesDir, "styles.css"), resolve(distStylesDir, "styles.css"));
             await copyFile(resolve(srcStylesDir, "themes.css"), resolve(distStylesDir, "themes.css"));
+            await copyFile(resolve(srcStylesDir, "fonts.css"), resolve(distStylesDir, "fonts.css"));
+            await copyFile(
+                resolve(srcStylesDir, "styles-with-font.css"),
+                resolve(distStylesDir, "styles-with-font.css")
+            );
         },
     };
 }

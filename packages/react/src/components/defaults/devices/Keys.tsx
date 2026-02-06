@@ -23,7 +23,6 @@ import {
     WHITE_KEY_POSITIONS,
     WHITE_KEY_TO_CHROMATIC,
 } from "@cutoff/audio-ui-core";
-import "@cutoff/audio-ui-core/styles.css";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import { CSS_VARS } from "@cutoff/audio-ui-core";
 import { translateKeysRoundness } from "@cutoff/audio-ui-core";
