@@ -25,7 +25,7 @@
 | Component Structure | Props with JSDoc; default params; function ComponentName() {}; arrow functions for handlers; SVG for graphics                                                                                                                                                                                                                                                                      |
 | Exports             | All from src/index.ts: Components (Button, Knob, Slider, Keys, AdaptiveBox, ContinuousControl, FilmStripContinuousControl, FilmStripDiscreteControl, FilmStripBooleanControl, etc.), Theme utilities (setThemeColor, setThemeRoundness, etc.), Types (including ControlComponent, ControlComponentView, AdaptiveBoxLogicalSizeProps), Utils (formatters, note utils), Theme colors |
 | Testing             | Vitest; .test.tsx alongside; mock deps; React 18/19 compat                                                                                                                                                                                                                                                                                                                         |
-| Build               | Vite; generates dist/index.js, index.d.ts, style.css; ES modules                                                                                                                                                                                                                                                                                                                   |
+| Build               | Vite; generates dist/index.js, index.d.ts, style.css (with default font), style-no-font.css (opt-out); ES modules                                                                                                                                                                                                                                                                  |
 | Path Aliases        | Use `@/primitives/*`, `@/hooks/*`, `@/defaults/*`, `@/utils/*`, `@/types` instead of relative paths (configured in tsconfig.json and vite.config.ts)                                                                                                                                                                                                                               |
 
 ## Key File Structure
@@ -82,7 +82,7 @@
 - This separation allows custom controls to opt into theming only if needed
 - `src/index.ts`: Export all components, types, utilities, and theme colors
 - `src/hooks/`: React adapters for Core logic (`useAudioParameter`, `useContinuousInteraction`)
-- `dist/`: Built output (index.js, index.d.ts, style.css)
+- `dist/`: Built output (index.js, index.d.ts, style.css, style-no-font.css)
 - `docs/`: Technical documentation (see Documentation section below)
 
 ## TypeScript Path Aliases

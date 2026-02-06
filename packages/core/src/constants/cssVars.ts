@@ -25,7 +25,9 @@ export const CSS_VARS = {
 
     // Text and typography
     textColor: "--audioui-text-color",
-    defaultFontSize: "--audioui-default-font-size",
+    fontFamily: "--audioui-font-family",
+    fontSize: "--audioui-font-size",
+    fontWeight: "--audioui-font-weight",
 
     // Interactive highlight
     highlightEffect: "--audioui-highlight-effect",

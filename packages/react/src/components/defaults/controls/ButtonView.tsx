@@ -37,12 +37,7 @@ export type ButtonViewProps = {
  * @param roundness - Normalized roundness 0.0-1.0 (default 0.3, maps to 0-50)
  * @param className - Optional CSS class
  */
-function ButtonView({
-    normalizedValue,
-    threshold = 0.5,
-    roundness,
-    className,
-}: ButtonViewProps): React.JSX.Element {
+function ButtonView({ normalizedValue, threshold = 0.5, roundness, className }: ButtonViewProps): React.JSX.Element {
     // Determine if button is "on" based on threshold
     const isOn = useMemo(() => normalizedValue > threshold, [normalizedValue, threshold]);
 
