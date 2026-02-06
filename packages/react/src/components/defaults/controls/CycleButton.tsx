@@ -242,7 +242,6 @@ function CycleButton({
                 roundness: clampedRoundness ?? DEFAULT_ROUNDNESS,
                 openness: openness,
                 rotation: rotation,
-                color: color ?? "var(--audioui-primary-color)",
             }}
             htmlOverlay={<div style={CONTENT_WRAPPER_STYLE}>{content}</div>}
         >

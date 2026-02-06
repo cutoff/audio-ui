@@ -21,8 +21,6 @@ export type ButtonViewProps = {
     threshold?: number;
     /** Corner roundness (normalized 0.0-1.0, maps to 0-50, or CSS variable string) */
     roundness?: number | string;
-    /** Color prop (kept for API compatibility, but colors are read from CSS variables) */
-    color: string;
     /** Additional CSS class name */
     className?: string;
 };
@@ -32,19 +30,17 @@ export type ButtonViewProps = {
  * Renders a rectangle with conditional styling based on normalized value vs threshold.
  *
  * Colors are read from CSS variables (`--audioui-primary-color`, `--audioui-primary-50`, `--audioui-primary-20`)
- * which are set by the parent Button component based on the `color` prop.
+ * which are set by the parent Button component via useThemableProps from the `color` prop.
  *
  * @param normalizedValue - Value between 0 and 1
  * @param threshold - Threshold value (default 0.5), determines "on" state
  * @param roundness - Normalized roundness 0.0-1.0 (default 0.3, maps to 0-50)
- * @param color - Color prop (kept for API compatibility, but not used - CSS variables are used instead)
  * @param className - Optional CSS class
  */
 function ButtonView({
     normalizedValue,
     threshold = 0.5,
     roundness,
-    color: _color, // Prefixed with _ to indicate intentionally unused (kept for API compatibility)
     className,
 }: ButtonViewProps): React.JSX.Element {
     // Determine if button is "on" based on threshold

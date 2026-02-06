@@ -196,7 +196,6 @@ function Slider({
             valueAsLabel={valueAsLabel}
             view={ViewComponent}
             viewProps={{
-                color: color ?? "var(--audioui-primary-color)",
                 variant: variant,
                 thickness: clampedThickness,
                 roundness: roundness ?? "var(--audioui-roundness-slider)",
