@@ -23,6 +23,8 @@ export type FilmstripImageProps = {
     normalizedValue: number;
     /** URL to the sprite sheet/filmstrip image */
     imageHref: string;
+    /** Optional dark mode filmstrip URL (used when dark mode is active) */
+    imageDarkHref?: string;
     /** Orientation of the strip (default: "vertical") */
     orientation?: "vertical" | "horizontal";
     /** Optional frame rotation in degrees (default: 0) */
@@ -48,6 +50,10 @@ export type FilmstripImageProps = {
  *
  * The filmstrip image should contain all frames stacked vertically (default) or horizontally.
  *
+ * Supports optional dark mode filmstrips via imageDarkHref. When provided, CSS automatically
+ * switches between light and dark filmstrips based on the .dark class or prefers-color-scheme.
+ * Both filmstrips must have identical frame properties (dimensions, count, orientation).
+ *
  * @param {FilmstripImageProps} props - Component props
  * @param {number} [props.x=0] - X coordinate of the top-left corner
  * @param {number} [props.y=0] - Y coordinate of the top-left corner
@@ -56,6 +62,7 @@ export type FilmstripImageProps = {
  * @param {number} props.frameCount - Total number of frames in the strip
  * @param {number} props.normalizedValue - Normalized value between 0 and 1 (determines which frame to display)
  * @param {string} props.imageHref - URL to the sprite sheet/filmstrip image
+ * @param {string} [props.imageDarkHref] - Optional dark mode filmstrip URL
  * @param {"vertical" | "horizontal"} [props.orientation="vertical"] - Orientation of the strip
  * @param {number} [props.frameRotation=0] - Optional frame rotation in degrees
  * @param {boolean} [props.invertValue=false] - If true, inverts the normalized value (0.0 -> 1.0 and 1.0 -> 0.0)
@@ -71,6 +78,7 @@ function FilmstripImage({
     frameCount,
     normalizedValue,
     imageHref,
+    imageDarkHref,
     orientation = "vertical",
     frameRotation = 0,
     invertValue = false,
@@ -97,6 +105,12 @@ function FilmstripImage({
     const centerX = x + frameWidth / 2;
     const centerY = y + frameHeight / 2;
 
+    // Shared transform style for both images
+    const imageTransformStyle = {
+        transform: `translate(${-viewBoxX}px, ${-viewBoxY}px)`,
+        willChange: "transform",
+    };
+
     return (
         <g className={className} style={style} transform={`rotate(${frameRotation}, ${centerX}, ${centerY})`}>
             <svg
@@ -113,11 +127,19 @@ function FilmstripImage({
                     width={totalWidth}
                     height={totalHeight}
                     preserveAspectRatio="none"
-                    style={{
-                        transform: `translate(${-viewBoxX}px, ${-viewBoxY}px)`,
-                        willChange: "transform",
-                    }}
+                    className="audioui-image-light"
+                    style={imageTransformStyle}
                 />
+                {imageDarkHref && (
+                    <image
+                        href={imageDarkHref}
+                        width={totalWidth}
+                        height={totalHeight}
+                        preserveAspectRatio="none"
+                        className="audioui-image-dark"
+                        style={imageTransformStyle}
+                    />
+                )}
             </svg>
         </g>
     );

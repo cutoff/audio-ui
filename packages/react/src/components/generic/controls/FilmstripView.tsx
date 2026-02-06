@@ -24,6 +24,8 @@ export type FilmstripViewProps = {
     frameCount: number;
     /** URL to the sprite sheet/filmstrip image */
     imageHref: string;
+    /** Optional dark mode filmstrip URL (used when dark mode is active) */
+    imageDarkHref?: string;
     /** Orientation of the strip (default: "vertical") */
     orientation?: "vertical" | "horizontal";
     /** Optional frame rotation in degrees (default: 0) */
@@ -44,12 +46,16 @@ export type FilmstripViewProps = {
  * Pure SVG presentation component for a filmstrip control.
  * Renders a single frame from a sprite sheet based on normalized value.
  *
+ * Supports optional dark mode filmstrips via imageDarkHref. CSS automatically
+ * switches between light and dark filmstrips based on the .dark class or prefers-color-scheme.
+ *
  * @param {FilmstripViewProps} props - Component props
  * @param {number} props.normalizedValue - Value between 0 and 1
  * @param {number} props.frameWidth - Width of a single frame in the filmstrip
  * @param {number} props.frameHeight - Height of a single frame in the filmstrip
  * @param {number} props.frameCount - Total number of frames in the strip
  * @param {string} props.imageHref - URL to the sprite sheet/filmstrip image
+ * @param {string} [props.imageDarkHref] - Optional dark mode filmstrip URL
  * @param {"vertical" | "horizontal"} [props.orientation="vertical"] - Orientation of the strip
  * @param {number} [props.frameRotation=0] - Optional frame rotation in degrees
  * @param {boolean} [props.invertValue=false] - If true, inverts the normalized value (0.0 -> 1.0 and 1.0 -> 0.0)
@@ -62,6 +68,7 @@ function FilmstripView({
     frameHeight,
     frameCount,
     imageHref,
+    imageDarkHref,
     orientation = "vertical",
     frameRotation = 0,
     invertValue = false,
@@ -76,6 +83,7 @@ function FilmstripView({
             frameCount={frameCount}
             normalizedValue={normalizedValue}
             imageHref={imageHref}
+            imageDarkHref={imageDarkHref}
             orientation={orientation}
             frameRotation={frameRotation}
             invertValue={invertValue}

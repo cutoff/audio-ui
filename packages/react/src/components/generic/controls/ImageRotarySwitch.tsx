@@ -33,6 +33,9 @@ export type ImageRotarySwitchProps = DiscreteControlProps & AdaptiveSizeProps & 
  * The image rotation is determined by mapping the current value to a normalized position,
  * with snapping to discrete positions based on the number of options.
  *
+ * Supports optional dark mode images via imageDarkHref. When provided, CSS automatically
+ * switches between light and dark images based on the .dark class or prefers-color-scheme.
+ *
  * Supports three modes of operation:
  * 1. Ad-Hoc Mode (Children only): Model inferred from OptionView children.
  * 2. Strict Mode (Parameter only): Model provided via parameter prop. View via renderOption.
@@ -52,6 +55,7 @@ export type ImageRotarySwitchProps = DiscreteControlProps & AdaptiveSizeProps & 
  *   frameWidth={100}
  *   frameHeight={100}
  *   imageHref="/waveform-knob.png"
+ *   imageDarkHref="/waveform-knob-dark.png"
  *   openness={90}
  *   rotation={0}
  * >
@@ -76,6 +80,7 @@ function ImageRotarySwitch({
     frameWidth,
     frameHeight,
     imageHref,
+    imageDarkHref,
     rotation = 0,
     openness = 90,
     parameter,
@@ -138,6 +143,7 @@ function ImageRotarySwitch({
                 frameWidth,
                 frameHeight,
                 imageHref,
+                imageDarkHref,
                 rotation,
                 openness,
                 positions,

@@ -19,6 +19,8 @@ export type ImageProps = {
     height: number;
     /** Optional image URL to display */
     imageHref?: string;
+    /** Optional dark mode image URL (used when dark mode is active) */
+    imageDarkHref?: string;
     /** Optional SVG content to display (e.g., icon components) */
     children?: React.ReactNode;
     /** Optional SVG transform attribute */
@@ -39,6 +41,9 @@ export type ImageProps = {
  * This component can display an image (via imageHref) or arbitrary SVG content (via children).
  * It is designed for straightforward rectangular image placement without radial/centered positioning.
  *
+ * Supports optional dark mode images via imageDarkHref. When provided, CSS automatically
+ * switches between light and dark images based on the .dark class or prefers-color-scheme.
+ *
  * Useful for displaying images or icons at specific positions and sizes.
  *
  * @param {ImageProps} props - Component props
@@ -47,17 +52,48 @@ export type ImageProps = {
  * @param {number} props.width - Width of the image
  * @param {number} props.height - Height of the image
  * @param {string} [props.imageHref] - Optional image URL to display
+ * @param {string} [props.imageDarkHref] - Optional dark mode image URL
  * @param {React.ReactNode} [props.children] - Optional SVG content to display
  * @param {string} [props.transform] - Optional SVG transform attribute
  * @param {string} [props.className] - Additional CSS class name
  * @param {CSSProperties} [props.style] - Inline styles
  * @returns {JSX.Element} SVG group element containing the image
  */
-function Image({ x = 0, y = 0, width, height, imageHref, children, transform, className, style }: ImageProps) {
+function Image({
+    x = 0,
+    y = 0,
+    width,
+    height,
+    imageHref,
+    imageDarkHref,
+    children,
+    transform,
+    className,
+    style,
+}: ImageProps) {
     return (
         <g className={className} style={style} transform={transform}>
             {imageHref && (
-                <image href={imageHref} x={x} y={y} width={width} height={height} preserveAspectRatio="xMidYMid meet" />
+                <image
+                    href={imageHref}
+                    x={x}
+                    y={y}
+                    width={width}
+                    height={height}
+                    preserveAspectRatio="xMidYMid meet"
+                    className="audioui-image-light"
+                />
+            )}
+            {imageDarkHref && (
+                <image
+                    href={imageDarkHref}
+                    x={x}
+                    y={y}
+                    width={width}
+                    height={height}
+                    preserveAspectRatio="xMidYMid meet"
+                    className="audioui-image-dark"
+                />
             )}
             {children && (
                 <svg

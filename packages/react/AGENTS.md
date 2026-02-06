@@ -63,6 +63,7 @@
 - Use bitmap sprite sheets where each frame represents a control state
 - No themable props (color, roundness, thickness) - visuals are determined by the image content
 - Filmstrip-specific props: `frameWidth`, `frameHeight`, `frameCount`, `imageHref`, `orientation`, `frameRotation`
+- Dark mode support: Optional `imageDarkHref` prop (or `imageHrefFalseDark`/`imageHrefTrueDark` for ImageSwitch) with CSS-based switching
 - Location: `packages/react/src/components/generic/controls/`
 - View component: `FilmstripView` (uses `FilmstripImage` primitive)
 
@@ -289,6 +290,16 @@ The library provides filmstrip-based controls that support the widely-used curre
 - `FilmStripBooleanControl`: Maps boolean values to frames (typically 2 frames: false/off, true/on)
 
 **Props**: Filmstrip-specific props (`frameWidth`, `frameHeight`, `frameCount`, `imageHref`, `orientation`, `frameRotation`) are defined in `FilmstripProps` type. These components do NOT support themable props (color, roundness, thickness) as visuals are entirely determined by the image content.
+
+**Dark Mode Support**: All raster components (filmstrip, image-based, and slider cursors) support optional dark mode variants:
+- Filmstrip controls: Use `imageDarkHref` prop to specify an alternate filmstrip for dark mode
+- ImageSwitch: Use `imageHrefFalseDark` and `imageHrefTrueDark` props for dark mode variants of both states
+- ImageKnob/ImageRotarySwitch: Use `imageDarkHref` prop to specify an alternate image for dark mode
+- Slider cursor: Use `cursorImageDarkHref` prop to specify an alternate cursor image for dark mode
+- When provided, CSS automatically switches between light and dark assets based on `.dark` class or `prefers-color-scheme` media query
+- Zero JavaScript overhead: Pure CSS-based switching with no hooks, observers, or runtime detection
+- Both light and dark assets must have identical frame properties (dimensions, count, orientation)
+- Backward compatible: Dark mode props are optional; omitting them uses the light asset in both modes
 
 **View Component**: `FilmstripView` (located in `generic/controls/`) uses the `FilmstripImage` primitive to render frames from sprite sheets. The view component has a default viewBox of 100x100, but generic controls pass `viewBoxWidthUnits` and `viewBoxHeightUnits` props to override these defaults with the actual frame dimensions. This allows per-instance customization without needing factory functions.
 

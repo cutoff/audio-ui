@@ -25,6 +25,10 @@ export type ImageSwitchProps = {
     imageHrefFalse: string;
     /** URL to the image for true/on state */
     imageHrefTrue: string;
+    /** Optional dark mode image URL for false/off state */
+    imageHrefFalseDark?: string;
+    /** Optional dark mode image URL for true/on state */
+    imageHrefTrueDark?: string;
 };
 
 /**
@@ -43,8 +47,11 @@ export type ImageSwitchComponentProps = BooleanControlProps & AdaptiveSizeProps 
  * - Full accessibility: ARIA attributes, focus management, keyboard navigation
  *
  * The image displayed is determined by the boolean value:
- * - `false` (normalized 0.0) displays `imageHrefFalse`
- * - `true` (normalized 1.0) displays `imageHrefTrue`
+ * - `false` (normalized 0.0) displays `imageHrefFalse` (or `imageHrefFalseDark` in dark mode)
+ * - `true` (normalized 1.0) displays `imageHrefTrue` (or `imageHrefTrueDark` in dark mode)
+ *
+ * Supports optional dark mode images. When provided, CSS automatically switches
+ * between light and dark images based on the .dark class or prefers-color-scheme.
  *
  * Supports two modes of operation:
  * 1. Strict Mode (Parameter only): Model provided via parameter prop.
@@ -67,6 +74,8 @@ export type ImageSwitchComponentProps = BooleanControlProps & AdaptiveSizeProps 
  *   frameHeight={100}
  *   imageHrefFalse="/star-off.png"
  *   imageHrefTrue="/star-on.png"
+ *   imageHrefFalseDark="/star-off-dark.png"
+ *   imageHrefTrueDark="/star-on-dark.png"
  * />
  * ```
  */
@@ -85,6 +94,8 @@ function ImageSwitch({
     frameHeight,
     imageHrefFalse,
     imageHrefTrue,
+    imageHrefFalseDark,
+    imageHrefTrueDark,
     parameter,
     paramId,
     midiResolution,
@@ -126,6 +137,8 @@ function ImageSwitch({
                 frameHeight,
                 imageHrefFalse,
                 imageHrefTrue,
+                imageHrefFalseDark,
+                imageHrefTrueDark,
             }}
         />
     );

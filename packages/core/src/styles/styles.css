@@ -139,6 +139,38 @@
 }
 
 /* ==========================================================================
+   Image Dark Mode Support
+   ========================================================================== */
+
+/* Light mode: show light image, hide dark image */
+.audioui-image-light {
+    display: block;
+}
+
+.audioui-image-dark {
+    display: none;
+}
+
+/* Dark mode (.dark class): hide light image, show dark image */
+.dark .audioui-image-dark {
+    display: block;
+}
+
+.dark .audioui-image-light {
+    display: none;
+}
+
+/* Also support system preference when .dark class not present */
+@media (prefers-color-scheme: dark) {
+    :root:not(.dark) .audioui-image-dark {
+        display: block;
+    }
+    :root:not(.dark) .audioui-image-light {
+        display: none;
+    }
+}
+
+/* ==========================================================================
    Size Utility Classes
    ========================================================================== */
 

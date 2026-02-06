@@ -44,6 +44,10 @@ export type FilmStripBooleanControlProps = BooleanControlProps &
  *
  * Typically uses 2 frames: frame 0 for false/off, frame 1 for true/on.
  *
+ * Supports optional dark mode filmstrips via imageDarkHref. When provided, CSS automatically
+ * switches between light and dark filmstrips based on the .dark class or prefers-color-scheme.
+ * Both filmstrips must have identical frame properties (dimensions, count, orientation).
+ *
  * Supports two modes of operation:
  * 1. Strict Mode (Parameter only): Model provided via parameter prop.
  * 2. Ad-Hoc Mode (Props only): Model created from individual props (label, latch, etc.).
@@ -65,6 +69,7 @@ export type FilmStripBooleanControlProps = BooleanControlProps &
  *   frameHeight={100}
  *   frameCount={2}
  *   imageHref="/button-frames.png"
+ *   imageDarkHref="/button-frames-dark.png"
  * />
  * ```
  */
@@ -83,6 +88,7 @@ function FilmStripBooleanControl({
     frameHeight,
     frameCount,
     imageHref,
+    imageDarkHref,
     orientation = "vertical",
     frameRotation = 0,
     invertValue = false,
@@ -127,6 +133,7 @@ function FilmStripBooleanControl({
                 frameHeight,
                 frameCount,
                 imageHref,
+                imageDarkHref,
                 orientation,
                 frameRotation,
                 invertValue,

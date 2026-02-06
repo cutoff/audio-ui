@@ -17,6 +17,8 @@ export type RadialImageProps = {
     radius: number;
     /** Optional image URL to display */
     imageHref?: string;
+    /** Optional dark mode image URL (used when dark mode is active) */
+    imageDarkHref?: string;
     /** Optional SVG content to display (e.g., icon components) */
     children?: React.ReactNode;
     /** Optional SVG transform attribute */
@@ -37,9 +39,22 @@ export type RadialImageProps = {
  * This component can display an image (via imageHref) or arbitrary SVG content (via children).
  * It is designed to work alongside ValueRing and RotaryImage components in composing knobs.
  *
+ * Supports optional dark mode images via imageDarkHref. When provided, CSS automatically
+ * switches between light and dark images based on the .dark class or prefers-color-scheme.
+ *
  * Useful for displaying icons or static images within knob compositions.
  */
-function RadialImage({ cx, cy, radius, imageHref, children, transform, className, style }: RadialImageProps) {
+function RadialImage({
+    cx,
+    cy,
+    radius,
+    imageHref,
+    imageDarkHref,
+    children,
+    transform,
+    className,
+    style,
+}: RadialImageProps) {
     return (
         <g className={className} style={style} transform={transform}>
             {imageHref && (
@@ -50,6 +65,18 @@ function RadialImage({ cx, cy, radius, imageHref, children, transform, className
                     width={radius * 2}
                     height={radius * 2}
                     preserveAspectRatio="xMidYMid meet"
+                    className="audioui-image-light"
+                />
+            )}
+            {imageDarkHref && (
+                <image
+                    href={imageDarkHref}
+                    x={cx - radius}
+                    y={cy - radius}
+                    width={radius * 2}
+                    height={radius * 2}
+                    preserveAspectRatio="xMidYMid meet"
+                    className="audioui-image-dark"
                 />
             )}
             {children && (

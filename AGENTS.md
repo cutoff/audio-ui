@@ -98,6 +98,7 @@ Do not waste effort on compatibility layers, deprecation warnings, or gradual mi
 
 - `apps/playground-react/`: Next.js playground; showcases components; routes: examples, vector-components, raster-components, primitives, layout; app/components for pages (inferred)
 - `agents/`: Shared conventions (coding-conventions-2.0.md, typescript-guidelines-2.0.md, react-conventions-2.0.md, documentation-standards-2.0.md, coding-agent-commands-1.0.md, github-issues-guidelines-1.0.md)
+- `docs/releases/`: Release notes for the next and versioned releases; see `docs/releases/AGENTS.md`. Updated as part of the Check command.
 - `packages/react/docs/`: Specialized tech docs (e.g., adaptive-box-layout.md)
 - `links/`: Symbolic links to external repositories (Read-Only, Ignored by Git). Use for reference only.
 - Sub-AGENTS.md: Optional extensions for details
@@ -109,7 +110,7 @@ The file `agents/coding-agent-commands-1.0.md` contains executable commands that
 Available commands:
 
 - **Review**: Comprehensive code review procedure (documentation, readability, performance, unused imports, prettier, and `pnpm check`)
-- **Check**: Iterate on `pnpm check` until no errors remain
+- **Check**: Iterate on `pnpm check` until no errors remain; ensure `docs/releases/next.md` is up to date (see `agents/coding-agent-commands-1.0.md` and `docs/releases/AGENTS.md`)
 - **Release**: Release procedure using release-it for version management, changelog generation, and git tagging
 - **Create Issue**: Report a discussed topic to GitHub Issues; procedure in `agents/github-issues-guidelines-1.0.md`
 - **Update Issue**: Update an existing GitHub issue with progression and decisions; procedure in `agents/github-issues-guidelines-1.0.md`
@@ -169,7 +170,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - **Core Architecture**: Interaction logic is centralized in `packages/core/src/controller/ContinuousInteractionController.ts` (pure TS class).
 - **React Adapter**: `useContinuousInteraction` hook in `packages/react` wraps `ContinuousInteractionController` to bind it to React events.
 - **Generic Control Architecture**: `Knob` and `Slider` are implemented using `ContinuousControl`, a generic component that decouples behavior (AudioParameter, interaction logic) from visualization (SVG rendering). This architecture allows easy customization by providing custom view components that implement the `ControlComponentView` contract.
-- **Filmstrip-Based Controls**: The library provides filmstrip-based controls (`FilmStripContinuousControl`, `FilmStripDiscreteControl`, `FilmStripBooleanControl`) that support the widely-used current industry standard for control representation: bitmap sprite sheets (filmstrips). While bitmap-based visualization is more constrained than SVG, these components provide full access to all library features: complete layout system (AdaptiveBox), full parameter model (AudioParameter), complete interaction system (drag/wheel/keyboard), and all accessibility features. Filmstrip controls do not support themable props (color, roundness, thickness) as visuals are determined by the image content.
+- **Filmstrip-Based Controls**: The library provides filmstrip-based controls (`FilmStripContinuousControl`, `FilmStripDiscreteControl`, `FilmStripBooleanControl`) that support the widely-used current industry standard for control representation: bitmap sprite sheets (filmstrips). While bitmap-based visualization is more constrained than SVG, these components provide full access to all library features: complete layout system (AdaptiveBox), full parameter model (AudioParameter), complete interaction system (drag/wheel/keyboard), and all accessibility features. Filmstrip controls do not support themable props (color, roundness, thickness) as visuals are determined by the image content. **Dark Mode Support**: All raster components and slider cursors support optional dark mode variants via `imageDarkHref` (or `imageHrefFalseDark`/`imageHrefTrueDark` for ImageSwitch, or `cursorImageDarkHref` for Slider cursors). When provided, CSS automatically switches between light and dark images based on `.dark` class or `prefers-color-scheme` media query, with zero JavaScript overhead.
 - **Unified Interaction Hooks**:
   - Continuous controls (Knob, Slider) use `useContinuousInteraction` hook.
   - Boolean controls (Button) use `useBooleanInteraction` hook.
@@ -334,6 +335,7 @@ Agents docs are living documentation; update continuously for agent efficiency. 
 - `./agents/audioui-versioning-guidelines.md`: Details the SemVer-based versioning strategy, including developer preview conventions.
 - `./agents/audioui-styling-system.md`: Comprehensive styling system guidelines covering namespace isolation, naming conventions, constants usage, Stylelint enforcement, and best practices.
 - `./agents/github-issues-guidelines-1.0.md`: Guidelines for agent-driven GitHub issue create/update/close via GitHub MCP; labels, description style, repository resolution, writing conventions.
+- `./docs/releases/AGENTS.md`: Release notes purpose, when to update `next.md`, format; release note update is part of the Check command.
 - `./packages/react/AGENTS.md`: Library specifics (exports, build, env, interaction system, generic control architecture, size system).
 - `./apps/playground-react/AGENTS.md`: Playground app details (routing, integrations, env, sizing showcase).
 - `./packages/react/docs/interaction-system.md`: Complete interaction system architecture, design decisions, sensitivity tuning, and implementation details for all interactive controls.

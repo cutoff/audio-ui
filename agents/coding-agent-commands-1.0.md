@@ -72,13 +72,14 @@ See `agents/documentation-standards-2.0.md` for comprehensive examples of:
 
 **Invocation**: "Execute Check"
 
-**Description**: Iterate on `pnpm check` until no errors remain.
+**Description**: Iterate on `pnpm check` until no errors remain, and ensure release notes are up to date.
 
 **Procedure**:
 
 - Run `pnpm check` to identify errors.
 - Fix all errors found.
-- Repeat until `pnpm check` passes with no errors.
+- Ensure `docs/releases/next.md` is updated for the latest changes (new features, breaking changes, improvements, fixes). If recent work is not yet reflected there, add or amend the relevant section(s). See `docs/releases/AGENTS.md`.
+- Repeat until `pnpm check` passes with no errors and release notes are current.
 
 ### Release
 
