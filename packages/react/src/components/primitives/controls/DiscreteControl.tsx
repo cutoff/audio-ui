@@ -161,6 +161,15 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
 
     const effectiveLabel = label ?? derivedParameter.name;
 
+    const optionCount = derivedParameter.options.length;
+    const optionIndex =
+        optionCount > 0
+            ? derivedParameter.options.findIndex((opt) => opt.value === effectiveValue)
+            : -1;
+    const ariaValueNow = optionIndex >= 0 ? optionIndex : undefined;
+    const ariaValueMin = 0;
+    const ariaValueMax = Math.max(0, optionCount - 1);
+
     const componentClassNames = useMemo(() => {
         return classNames(className, CLASSNAMES.root, CLASSNAMES.container);
     }, [className]);
@@ -200,7 +209,9 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
                 onMouseLeave={onMouseLeave}
                 tabIndex={0}
                 role="spinbutton"
-                aria-valuenow={typeof effectiveValue === "number" ? effectiveValue : undefined}
+                aria-valuenow={ariaValueNow}
+                aria-valuemin={ariaValueMin}
+                aria-valuemax={ariaValueMax}
                 aria-valuetext={formattedValue}
                 aria-label={effectiveLabel}
             >

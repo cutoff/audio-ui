@@ -6,6 +6,7 @@ import tseslint from "@typescript-eslint/eslint-plugin";
 import tsparser from "@typescript-eslint/parser";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
+import jsxA11y from "eslint-plugin-jsx-a11y";
 import licenseHeader from "eslint-plugin-license-header";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -95,6 +96,7 @@ export default [
             "@typescript-eslint": tseslint,
             react,
             "react-hooks": reactHooks,
+            "jsx-a11y": jsxA11y,
             "license-header": licenseHeader,
         },
         settings: {
@@ -106,6 +108,7 @@ export default [
             ...tseslint.configs.recommended.rules,
             ...react.configs.recommended.rules,
             ...reactHooks.configs.recommended.rules,
+            ...jsxA11y.configs.recommended.rules,
             "react/react-in-jsx-scope": "off", // Not needed in React 17+
             "react/prop-types": "off", // Using TypeScript for prop validation
             "@typescript-eslint/no-unused-vars": [

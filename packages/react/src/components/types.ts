@@ -347,6 +347,12 @@ export type ContinuousControlProps = BaseProps &
 
         /** Default value for the parameter (ad-hoc mode, ignored if parameter provided) */
         defaultValue?: number;
+
+        /**
+         * Orientation for slider role (accessibility).
+         * Pass "horizontal" or "vertical" for linear sliders; omit for radial controls (e.g. Knob).
+         */
+        ariaOrientation?: "horizontal" | "vertical";
     };
 
 /**

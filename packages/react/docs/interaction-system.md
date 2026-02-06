@@ -208,7 +208,11 @@ It returns pointer event handlers (`onPointerDown`, `onPointerMove`, `onPointerU
 
 - **Highlight Class**: `.audioui-highlight` provides the standard interaction visual (hover/focus).
 - **Focus**: Uses `:focus-visible` and `:focus-within` to apply the highlight style when focused, replacing the default outline.
-- **ARIA**: Components automatically receive `role="slider"` (or `button`), `aria-valuenow`, `aria-valuemin`, `aria-valuemax`, and `aria-label`.
+- **ARIA**:
+  - **Continuous (Knob, Slider)**: `role="slider"`, `aria-valuenow`, `aria-valuemin`, `aria-valuemax`, `aria-label`. When a `disabled` prop is supported and set, `aria-disabled` and `tabIndex={-1}`. Slider also receives `aria-orientation` (horizontal/vertical) via the `ariaOrientation` prop.
+  - **Discrete (CycleButton)**: `role="spinbutton"`, `aria-valuenow` (option index), `aria-valuemin`, `aria-valuemax` (option indices), `aria-valuetext`, `aria-label`.
+  - **Boolean (Button)**: `role="button"`, `aria-pressed`, `aria-label`.
+  - **Keys**: Container has `role="group"` and `aria-label` (default "Piano keyboard", configurable via `ariaLabel` prop).
 
 ## Cursor Behavior
 

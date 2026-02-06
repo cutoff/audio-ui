@@ -194,6 +194,7 @@ function Slider({
             interactionSensitivity={interactionSensitivity}
             valueFormatter={valueFormatter}
             valueAsLabel={valueAsLabel}
+            ariaOrientation={orientation}
             view={ViewComponent}
             viewProps={{
                 variant: variant,
