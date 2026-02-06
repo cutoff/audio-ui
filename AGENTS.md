@@ -226,7 +226,7 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 - CSS variables: --audioui-primary-color, --audioui-roundness-base
 - Color variants computed via CSS color-mix():
   - **Transparency variants**: --audioui-primary-50, --audioui-primary-20 (50% and 20% opacity)
-  - **Luminosity variants**: --audioui-primary-light, --audioui-primary-dark (80% color + 20% white/black for lighter/darker versions)
+  - **Luminosity variants**: --audioui-primary-lighter, --audioui-primary-darker (80% color + 20% white/black for lighter/darker versions)
   - **Adaptive variants**: --audioui-adaptive-50, --audioui-adaptive-20, --audioui-adaptive-light, --audioui-adaptive-dark (same patterns for adaptive colors)
 - Luminosity variants are essential for borders and outlines where transparency doesn't provide sufficient visibility
 - Classes: .audioui-stroke-primary, .audioui-fill-primary, .audioui-border-primary, .audioui-text-primary (all prefixed with `audioui-`)
