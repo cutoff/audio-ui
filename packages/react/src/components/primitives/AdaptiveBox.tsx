@@ -81,6 +81,10 @@ export interface AdaptiveBoxProps extends PropsWithChildren {
     minWidth?: number;
     minHeight?: number;
     debug?: boolean; // Enables visual debugging aids (scaler border, svg background). Defaults to false
+    /** Accessible role for the container (e.g. "group") */
+    role?: string;
+    /** Accessible name for the container (e.g. "Piano keyboard") */
+    "aria-label"?: string;
 }
 
 /**
@@ -119,6 +123,8 @@ export function AdaptiveBox({
     minWidth,
     minHeight,
     debug = false,
+    role,
+    "aria-label": ariaLabel,
     children,
 }: AdaptiveBoxProps) {
     const [svgInfo, setSvgInfo] = useState<{ hAlign?: FlexAlign; vAlign?: FlexAlign } | null>(null);
@@ -216,6 +222,8 @@ export function AdaptiveBox({
             <div
                 data-name="Control+Label Wrapper"
                 className={className}
+                role={role}
+                aria-label={ariaLabel}
                 style={{
                     width: "100%",
                     height: "100%",

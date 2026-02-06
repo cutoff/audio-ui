@@ -1,4 +1,8 @@
 import { vi } from "vitest";
+import { toHaveNoViolations } from "jest-axe";
+import { expect } from "vitest";
+
+expect.extend(toHaveNoViolations);
 
 // Mock window.matchMedia
 Object.defineProperty(window, "matchMedia", {
