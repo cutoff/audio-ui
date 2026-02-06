@@ -34,8 +34,6 @@ export type SliderViewProps = {
     thickness?: number;
     /** Corner roundness (normalized 0.0-1.0, maps to 0-20, or CSS variable string) */
     roundness?: number | string;
-    /** Color prop (kept for API compatibility, but colors are read from CSS variables) */
-    color?: string;
     /** Cursor size option - determines which component's width is used for the cursor */
     cursorSize?: SliderCursorSize;
     /** Aspect ratio of the cursor */
@@ -59,7 +57,7 @@ export type SliderViewProps = {
  * Renders background and filled rectangles based on normalized value.
  *
  * Colors are read from CSS variables (`--audioui-primary-color`, `--audioui-primary-50`)
- * which are set by the parent Slider component based on the `color` prop.
+ * which are set by the parent Slider component via useThemableProps from the `color` prop.
  *
  * **Performance Optimizations:**
  * - Memoized calculations: thickness translation, layout coordinates, strip padding, cursor dimensions, style objects
@@ -73,7 +71,6 @@ export type SliderViewProps = {
  * @param {"horizontal" | "vertical"} [orientation="vertical"] - Orientation of the slider
  * @param {number} [thickness=0.4] - Normalized thickness 0.0-1.0 (maps to 1-50)
  * @param {number | string} [roundness] - Normalized roundness 0.0-1.0 (maps to 0-20) or CSS variable string
- * @param {string} [color] - Color prop (kept for API compatibility, but not used - CSS variables are used instead)
  * @param {SliderCursorSize} [cursorSize] - Cursor size option (None, Strip, Track, Tick, Label)
  * @param {number} [cursorAspectRatio] - Aspect ratio of the cursor
  * @param {number | string} [cursorRoundness] - Overrides cursor roundness (defaults to roundness prop)
@@ -200,14 +197,14 @@ function SliderView({
 
     const valueStripStyle = useMemo(
         () => ({
-            fill: `var(${CSS_VARS.sliderStripColor})`,
+            fill: `var(${CSS_VARS.primaryColor})`,
         }),
         []
     );
 
     const cursorStyleMemo = useMemo(
         () => ({
-            fill: `var(${CSS_VARS.sliderCursorColor})`,
+            fill: `var(${CSS_VARS.primaryColor})`,
             stroke: `var(${CSS_VARS.sliderCursorBorderColor})`,
             strokeWidth: `var(${CSS_VARS.sliderCursorBorderWidth})`,
             ...cursorStyle,

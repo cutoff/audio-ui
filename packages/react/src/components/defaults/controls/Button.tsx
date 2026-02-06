@@ -118,7 +118,6 @@ function Button({
             viewProps={{
                 threshold: 0.5,
                 roundness: roundness ?? "var(--audioui-roundness-button)",
-                color: color ?? "var(--audioui-primary-color)",
             }}
         />
     );
