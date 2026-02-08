@@ -115,6 +115,8 @@ function FilmStripContinuousControl({
     labelMode,
     labelPosition,
     labelAlign,
+    labelOverflow,
+    labelHeightUnits,
     frameWidth,
     frameHeight,
     frameCount,
@@ -155,6 +157,8 @@ function FilmStripContinuousControl({
             labelMode={labelMode}
             labelPosition={labelPosition}
             labelAlign={labelAlign}
+            labelOverflow={labelOverflow}
+            labelHeightUnits={labelHeightUnits}
             className={classNames(sizeClassName, className)}
             style={{ ...adaptiveSizeStyle, ...style }}
             onChange={onChange}

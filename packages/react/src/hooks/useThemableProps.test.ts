@@ -22,77 +22,52 @@ describe("useThemableProps", () => {
 
     describe("Color", () => {
         it("sets --audioui-primary-color when color is provided", () => {
-            const { result } = renderHook(() =>
-                useThemableProps({ color: "#ff0000" })
-            );
+            const { result } = renderHook(() => useThemableProps({ color: "#ff0000" }));
 
-            expect(result.current.style).toHaveProperty(
-                "--audioui-primary-color",
-                "#ff0000"
-            );
+            expect(result.current.style).toHaveProperty("--audioui-primary-color", "#ff0000");
             expect(result.current.clampedRoundness).toBeUndefined();
         });
 
         it("accepts any valid CSS color value", () => {
-            const { result } = renderHook(() =>
-                useThemableProps({ color: "rgb(0, 128, 255)" })
-            );
+            const { result } = renderHook(() => useThemableProps({ color: "rgb(0, 128, 255)" }));
 
-            expect(result.current.style["--audioui-primary-color"]).toBe(
-                "rgb(0, 128, 255)"
-            );
+            expect(result.current.style["--audioui-primary-color"]).toBe("rgb(0, 128, 255)");
         });
     });
 
     describe("Roundness", () => {
         it("sets --audioui-roundness-base and --audioui-linecap-base when roundness is provided", () => {
-            const { result } = renderHook(() =>
-                useThemableProps({ roundness: 0.5 })
-            );
+            const { result } = renderHook(() => useThemableProps({ roundness: 0.5 }));
 
-            expect(result.current.style["--audioui-roundness-base"]).toBe(
-                "0.5"
-            );
+            expect(result.current.style["--audioui-roundness-base"]).toBe("0.5");
             expect(result.current.style["--audioui-linecap-base"]).toBe("round");
             expect(result.current.clampedRoundness).toBe(0.5);
         });
 
         it("sets linecap to square when roundness is 0", () => {
-            const { result } = renderHook(() =>
-                useThemableProps({ roundness: 0 })
-            );
+            const { result } = renderHook(() => useThemableProps({ roundness: 0 }));
 
             expect(result.current.style["--audioui-roundness-base"]).toBe("0");
-            expect(result.current.style["--audioui-linecap-base"]).toBe(
-                "square"
-            );
+            expect(result.current.style["--audioui-linecap-base"]).toBe("square");
             expect(result.current.clampedRoundness).toBe(0);
         });
 
         it("sets linecap to round when roundness is greater than 0", () => {
-            const { result } = renderHook(() =>
-                useThemableProps({ roundness: 0.001 })
-            );
+            const { result } = renderHook(() => useThemableProps({ roundness: 0.001 }));
 
             expect(result.current.style["--audioui-linecap-base"]).toBe("round");
         });
 
         it("clamps roundness to 0 when below 0", () => {
-            const { result } = renderHook(() =>
-                useThemableProps({ roundness: -0.5 })
-            );
+            const { result } = renderHook(() => useThemableProps({ roundness: -0.5 }));
 
             expect(result.current.style["--audioui-roundness-base"]).toBe("0");
-            expect(result.current.style["--audioui-linecap-base"]).toBe(
-                "square"
-            );
+            expect(result.current.style["--audioui-linecap-base"]).toBe("square");
             expect(result.current.clampedRoundness).toBe(0);
         });
 
         it("clamps roundness to 1 when above 1", () => {
-            const { result } = renderHook(() =>
-                useThemableProps({ roundness: 1.5 })
-            );
+            const { result } = renderHook(() => useThemableProps({ roundness: 1.5 }));
 
             expect(result.current.style["--audioui-roundness-base"]).toBe("1");
             expect(result.current.style["--audioui-linecap-base"]).toBe("round");
@@ -109,9 +84,7 @@ describe("useThemableProps", () => {
                 })
             );
 
-            expect(result.current.style["--audioui-primary-color"]).toBe(
-                "blue"
-            );
+            expect(result.current.style["--audioui-primary-color"]).toBe("blue");
             expect(result.current.style.width).toBe(100);
             expect(result.current.style.height).toBe(100);
         });
@@ -124,24 +97,16 @@ describe("useThemableProps", () => {
                 })
             );
 
-            expect(result.current.style["--audioui-primary-color"]).toBe(
-                "green"
-            );
+            expect(result.current.style["--audioui-primary-color"]).toBe("green");
         });
     });
 
     describe("Combined options", () => {
         it("handles color and roundness together", () => {
-            const { result } = renderHook(() =>
-                useThemableProps({ color: "#00ff00", roundness: 0.25 })
-            );
+            const { result } = renderHook(() => useThemableProps({ color: "#00ff00", roundness: 0.25 }));
 
-            expect(result.current.style["--audioui-primary-color"]).toBe(
-                "#00ff00"
-            );
-            expect(result.current.style["--audioui-roundness-base"]).toBe(
-                "0.25"
-            );
+            expect(result.current.style["--audioui-primary-color"]).toBe("#00ff00");
+            expect(result.current.style["--audioui-roundness-base"]).toBe("0.25");
             expect(result.current.style["--audioui-linecap-base"]).toBe("round");
             expect(result.current.clampedRoundness).toBe(0.25);
         });
@@ -155,9 +120,7 @@ describe("useThemableProps", () => {
                 })
             );
 
-            expect(result.current.style["--audioui-primary-color"]).toBe(
-                "black"
-            );
+            expect(result.current.style["--audioui-primary-color"]).toBe("black");
             expect(result.current.style["--audioui-roundness-base"]).toBe("1");
             expect(result.current.style["--audioui-linecap-base"]).toBe("round");
             expect(result.current.style.opacity).toBe(0.8);

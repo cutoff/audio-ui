@@ -77,6 +77,8 @@ function ImageRotarySwitch({
     labelMode,
     labelPosition,
     labelAlign,
+    labelOverflow,
+    labelHeightUnits,
     frameWidth,
     frameHeight,
     imageHref,
@@ -129,6 +131,8 @@ function ImageRotarySwitch({
             labelMode={labelMode}
             labelPosition={labelPosition}
             labelAlign={labelAlign}
+            labelOverflow={labelOverflow}
+            labelHeightUnits={labelHeightUnits}
             className={classNames(sizeClassName, className)}
             style={{ ...sizeStyle, ...style }}
             onClick={onClick}

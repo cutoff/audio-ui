@@ -16,25 +16,19 @@ import Keys from "./defaults/devices/Keys";
 
 describe("Accessibility (axe)", () => {
     it("Button has no axe violations when labeled", async () => {
-        const { container } = render(
-            <Button value={false} onChange={() => {}} label="Power" />
-        );
+        const { container } = render(<Button value={false} onChange={() => {}} label="Power" />);
         const results = await axe(container);
         expect(results).toHaveNoViolations();
     });
 
     it("Knob has no axe violations when labeled", async () => {
-        const { container } = render(
-            <Knob value={0.5} min={0} max={1} label="Volume" />
-        );
+        const { container } = render(<Knob value={0.5} min={0} max={1} label="Volume" />);
         const results = await axe(container);
         expect(results).toHaveNoViolations();
     });
 
     it("Slider has no axe violations when labeled", async () => {
-        const { container } = render(
-            <Slider value={0.5} min={0} max={1} label="Pan" />
-        );
+        const { container } = render(<Slider value={0.5} min={0} max={1} label="Pan" />);
         const results = await axe(container);
         expect(results).toHaveNoViolations();
     });

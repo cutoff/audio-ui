@@ -16,9 +16,7 @@ describe("Component integration tests", () => {
     describe("Slider", () => {
         it("calls onChange when user drags (vertical)", () => {
             const onChange = vi.fn();
-            render(
-                <Slider value={0.5} onChange={onChange} orientation="vertical" />
-            );
+            render(<Slider value={0.5} onChange={onChange} orientation="vertical" />);
 
             const slider = screen.getByRole("slider");
             expect(slider).toBeDefined();
@@ -41,14 +39,7 @@ describe("Component integration tests", () => {
     describe("Button", () => {
         it("calls onChange when user presses (toggle)", () => {
             const onChange = vi.fn();
-            render(
-                <Button
-                    value={false}
-                    onChange={onChange}
-                    label="Test"
-                    latch={true}
-                />
-            );
+            render(<Button value={false} onChange={onChange} label="Test" latch={true} />);
 
             const button = screen.getByRole("button", { name: /test/i });
             fireEvent.mouseDown(button, { button: 0 });

@@ -106,6 +106,8 @@ function ImageKnob({
     labelMode,
     labelPosition,
     labelAlign,
+    labelOverflow,
+    labelHeightUnits,
     frameWidth,
     frameHeight,
     imageHref,
@@ -144,6 +146,8 @@ function ImageKnob({
             labelMode={labelMode}
             labelPosition={labelPosition}
             labelAlign={labelAlign}
+            labelOverflow={labelOverflow}
+            labelHeightUnits={labelHeightUnits}
             className={classNames(sizeClassName, className)}
             style={{ ...adaptiveSizeStyle, ...style }}
             onChange={onChange}

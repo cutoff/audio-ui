@@ -84,6 +84,8 @@ function FilmStripBooleanControl({
     labelMode,
     labelPosition,
     labelAlign,
+    labelOverflow,
+    labelHeightUnits,
     frameWidth,
     frameHeight,
     frameCount,
@@ -114,6 +116,8 @@ function FilmStripBooleanControl({
             labelMode={labelMode}
             labelPosition={labelPosition}
             labelAlign={labelAlign}
+            labelOverflow={labelOverflow}
+            labelHeightUnits={labelHeightUnits}
             className={classNames(sizeClassName, className)}
             style={{ ...sizeStyle, ...style }}
             parameter={parameter}

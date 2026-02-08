@@ -24,13 +24,7 @@ describe("Component smoke tests", () => {
         });
 
         it("has role button and accessible name when label provided", () => {
-            render(
-                <Button
-                    value={false}
-                    onChange={() => {}}
-                    label="Power"
-                />
-            );
+            render(<Button value={false} onChange={() => {}} label="Power" />);
             const button = screen.getByRole("button", { name: /power/i });
             expect(button).toBeDefined();
             expect(document.body.contains(button)).toBe(true);

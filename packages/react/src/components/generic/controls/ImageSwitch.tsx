@@ -90,6 +90,8 @@ function ImageSwitch({
     labelMode,
     labelPosition,
     labelAlign,
+    labelOverflow,
+    labelHeightUnits,
     frameWidth,
     frameHeight,
     imageHrefFalse,
@@ -118,6 +120,8 @@ function ImageSwitch({
             labelMode={labelMode}
             labelPosition={labelPosition}
             labelAlign={labelAlign}
+            labelOverflow={labelOverflow}
+            labelHeightUnits={labelHeightUnits}
             className={classNames(sizeClassName, className)}
             style={{ ...sizeStyle, ...style }}
             parameter={parameter}
