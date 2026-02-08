@@ -32,21 +32,10 @@
     --audioui-theme-default: var(--audioui-nearblack); /* Light mode: near-black */
     /* CSS variable for adaptive default - resolves correctly on both server and client */
     --audioui-adaptive-default-color: var(--audioui-theme-default);
-    --audioui-adaptive-50: color-mix(in srgb, var(--audioui-adaptive-default-color) 50%, transparent);
-    --audioui-adaptive-20: color-mix(in srgb, var(--audioui-adaptive-default-color) 20%, transparent);
-    /* Adaptive luminosity variants - lighter for dark mode, darker for light mode */
-    --audioui-adaptive-light: color-mix(in srgb, var(--audioui-adaptive-default-color) 80%, white);
-    --audioui-adaptive-dark: color-mix(in srgb, var(--audioui-adaptive-default-color) 80%, black);
-
-    /* Color variants (computed via color-mix) */
-    --audioui-primary-50: color-mix(in srgb, var(--audioui-primary-color) 50%, transparent);
-    --audioui-primary-20: color-mix(in srgb, var(--audioui-primary-color) 20%, transparent);
-    /* Primary luminosity variants - lighter and darker versions */
-    --audioui-primary-lighter: color-mix(in srgb, var(--audioui-primary-color) 80%, white);
-    --audioui-primary-darker: color-mix(in srgb, var(--audioui-primary-color) 80%, black);
 
     /* Interactive highlight effect - users can customize or disable entirely */
     /* Set to 'none' to disable, or any valid CSS filter value for custom effects */
+    /* Note: The drop-shadow color-mix() is embedded in the filter value, not a separate variable */
     --audioui-highlight-effect: brightness(1.15) contrast(1.05)
         drop-shadow(
             0 0 0.5em color-mix(in srgb, var(--audioui-primary-color, var(--audioui-text-color)) 35%, transparent)
@@ -86,22 +75,10 @@
     --audioui-knob-cap-fill: #303030;
     --audioui-button-stroke-width: 5px;
 
-    /* Slider component colors */
-    --audioui-slider-track-color: var(
-        --audioui-adaptive-20
-    ); /* Background track color (for all variants except abstract) */
-    --audioui-slider-strip-color: var(--audioui-primary-color); /* Foreground value strip color */
-    --audioui-slider-cursor-color: var(--audioui-primary-color); /* Cursor fill color */
-    --audioui-slider-cursor-border-color: var(
-        --audioui-primary-lighter
-    ); /* Cursor border color (luminosity variant for visibility) */
-    --audioui-slider-cursor-border-width: 5px; /* Cursor border width */
-
-    /* Component-specific roundness (calculated from base) */
-    --audioui-roundness-button: calc(var(--audioui-roundness-base) * 50px);
-    --audioui-roundness-knob: var(--audioui-roundness-base); /* Used as boolean in JS or linecap in CSS */
-    --audioui-roundness-slider: calc(var(--audioui-roundness-base) * 20px);
-    --audioui-roundness-keys: calc(var(--audioui-roundness-base) * 12px);
+    /* Slider component - Base values only; track and cursor border color live in reactive engine (styles.css) */
+    --audioui-slider-strip-color: var(--audioui-primary-color);
+    --audioui-slider-cursor-color: var(--audioui-primary-color);
+    --audioui-slider-cursor-border-width: 5px;
 
     /* Derived Internal Variables - Not intended for direct customization */
     /* These variables are automatically managed by the roundness attribute via theme setters and hooks */
@@ -120,52 +97,6 @@
     --audioui-size-mult-normal: 1;
     --audioui-size-mult-large: 1.272; /* √φ */
     --audioui-size-mult-xlarge: 1.618; /* φ */
-
-    /* Square Components (1x1): Button, Knob, CycleButton */
-    --audioui-size-square-xsmall: calc(var(--audioui-unit) * var(--audioui-size-mult-xsmall));
-    --audioui-size-square-small: calc(var(--audioui-unit) * var(--audioui-size-mult-small));
-    --audioui-size-square-normal: calc(var(--audioui-unit) * var(--audioui-size-mult-normal));
-    --audioui-size-square-large: calc(var(--audioui-unit) * var(--audioui-size-mult-large));
-    --audioui-size-square-xlarge: calc(var(--audioui-unit) * var(--audioui-size-mult-xlarge));
-
-    /* Horizontal Slider (1x2): height = base, width = 2 * base (width > height) */
-    --audioui-size-hslider-height-xsmall: calc(var(--audioui-unit) * var(--audioui-size-mult-xsmall));
-    --audioui-size-hslider-height-small: calc(var(--audioui-unit) * var(--audioui-size-mult-small));
-    --audioui-size-hslider-height-normal: calc(var(--audioui-unit) * var(--audioui-size-mult-normal));
-    --audioui-size-hslider-height-large: calc(var(--audioui-unit) * var(--audioui-size-mult-large));
-    --audioui-size-hslider-height-xlarge: calc(var(--audioui-unit) * var(--audioui-size-mult-xlarge));
-
-    --audioui-size-hslider-width-xsmall: calc(var(--audioui-size-hslider-height-xsmall) * 2);
-    --audioui-size-hslider-width-small: calc(var(--audioui-size-hslider-height-small) * 2);
-    --audioui-size-hslider-width-normal: calc(var(--audioui-size-hslider-height-normal) * 2);
-    --audioui-size-hslider-width-large: calc(var(--audioui-size-hslider-height-large) * 2);
-    --audioui-size-hslider-width-xlarge: calc(var(--audioui-size-hslider-height-xlarge) * 2);
-
-    /* Vertical Slider (2x1): width = base, height = 2 * base (height > width) */
-    --audioui-size-vslider-width-xsmall: calc(var(--audioui-unit) * var(--audioui-size-mult-xsmall));
-    --audioui-size-vslider-width-small: calc(var(--audioui-unit) * var(--audioui-size-mult-small));
-    --audioui-size-vslider-width-normal: calc(var(--audioui-unit) * var(--audioui-size-mult-normal));
-    --audioui-size-vslider-width-large: calc(var(--audioui-unit) * var(--audioui-size-mult-large));
-    --audioui-size-vslider-width-xlarge: calc(var(--audioui-unit) * var(--audioui-size-mult-xlarge));
-
-    --audioui-size-vslider-height-xsmall: calc(var(--audioui-size-vslider-width-xsmall) * 2);
-    --audioui-size-vslider-height-small: calc(var(--audioui-size-vslider-width-small) * 2);
-    --audioui-size-vslider-height-normal: calc(var(--audioui-size-vslider-width-normal) * 2);
-    --audioui-size-vslider-height-large: calc(var(--audioui-size-vslider-width-large) * 2);
-    --audioui-size-vslider-height-xlarge: calc(var(--audioui-size-vslider-width-xlarge) * 2);
-
-    /* Keys (1x5): height = base, width = 5 * base (width > height) */
-    --audioui-size-keys-height-xsmall: calc(var(--audioui-unit) * var(--audioui-size-mult-xsmall));
-    --audioui-size-keys-height-small: calc(var(--audioui-unit) * var(--audioui-size-mult-small));
-    --audioui-size-keys-height-normal: calc(var(--audioui-unit) * var(--audioui-size-mult-normal));
-    --audioui-size-keys-height-large: calc(var(--audioui-unit) * var(--audioui-size-mult-large));
-    --audioui-size-keys-height-xlarge: calc(var(--audioui-unit) * var(--audioui-size-mult-xlarge));
-
-    --audioui-size-keys-width-xsmall: calc(var(--audioui-size-keys-height-xsmall) * 5);
-    --audioui-size-keys-width-small: calc(var(--audioui-size-keys-height-small) * 5);
-    --audioui-size-keys-width-normal: calc(var(--audioui-size-keys-height-normal) * 5);
-    --audioui-size-keys-width-large: calc(var(--audioui-size-keys-height-large) * 5);
-    --audioui-size-keys-width-xlarge: calc(var(--audioui-size-keys-height-xlarge) * 5);
 }
 
 /* Dark mode overrides */
@@ -188,8 +119,4 @@
 
     /* Other component style customization */
     --audioui-knob-cap-fill: #4a4d50;
-
-    --audioui-slider-cursor-border-color: var(
-        --audioui-primary-darker
-    ); /* Cursor border color (luminosity variant for visibility) */
 }

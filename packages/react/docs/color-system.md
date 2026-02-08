@@ -124,29 +124,78 @@ SVG Component Rendering (reads CSS variables)
 
 ### Key Files
 
-- **`themes.css`**: Defines CSS theme variables for primary colors, variants, roundness, and adaptive default
-- **`styles.css`**: Base styles and optional utility classes
+- **`themes.css`**: **Public API** - Defines ONLY raw input CSS variables at `:root` (base colors, units, multipliers). Guaranteed backward compatibility. No `calc()` or `color-mix()` expressions.
+- **`styles.css`**: **Private Reactive Engine** - Contains ALL derived calculations using compound selector `.audioui, :root` (color variants, size calculations, roundness calculations). Applies to both global context and component scope. Not guaranteed backward compatible (internal implementation).
 - **`colorUtils.ts`**: Legacy utility for color variant generation (used by Keys component for luminosity variants)
 - **`themeColors.ts`**: Exports predefined theme colors as CSS color values
 - **`utils/theme.ts`**: Utility functions for programmatic theme management (setThemeColor, setThemeRoundness, etc.)
 - **Component files**: Read CSS variables directly, props set CSS variables as convenience API
 
+### Reactive Scoping Architecture
+
+**Critical Design**: The library uses a two-file architecture with compound selectors to enable per-component theming with automatic variant recalculation:
+
+1. **`themes.css` (Public API at `:root`)**: Contains ONLY base input variables (colors, units, multipliers). These are the "knobs" users turn. No calculations allowed.
+
+2. **`styles.css` (Private Engine using `.audioui, :root`)**: Contains ALL derived calculations using `calc()` and `color-mix()`. The compound selector applies variables to both `:root` (global availability) and `.audioui` (per-component reactivity) with a single definition.
+
+**Why The Compound Selector Works**:
+
+- Applied to `:root` = Global availability for non-component contexts
+- Applied to `.audioui` = Per-component reactivity when base variables are overridden
+- Single definition = DRY principle, smaller CSS, easier maintenance
+
+**How Reactivity Works**: When a component overrides a base variable via `style={{ "--audioui-primary-color": "red" }}`, the browser uses the `.audioui` rule (matches the component's class) and re-evaluates formulas against the new base value in the component's scope, automatically updating all derived variants.
+
+**Example Flow**:
+
+```tsx
+// Component overrides primary color
+<Knob color="red" style={{ "--audioui-primary-color": "red" }} />
+
+// Browser evaluates using .audioui rule from compound selector:
+// .audioui, :root { --audioui-primary-50: color-mix(var(--audioui-primary-color) 50%, transparent) }
+// = color-mix(red 50%, transparent)  ✅ Reactive!
+```
+
+Without this architecture, the variants would inherit pre-computed values from `:root` and wouldn't update.
+
+**Reactive pointer variables**: Component-specific variables that reference reactive variants (e.g. `--audioui-slider-cursor-border-color: var(--audioui-primary-lighter)`) must also be defined in the same compound selector. Otherwise the pointer is evaluated at `:root` and resolves the variant from root scope, so the cursor border (or track color) would not update when a component overrides `--audioui-primary-color`. The reactive engine in `styles.css` defines both the variants and these pointers in `.audioui, :root`.
+
 ## CSS Theme Variables
 
 ### Theme Variable Structure
 
-The library defines theme variables in `themes.css`:
+The library defines theme variables across two files for reactive scoping:
+
+**Base Inputs** (in `themes.css` at `:root` - Public API):
 
 ```css
---audioui-theme-{name}  /* Predefined theme colors */
---audioui-adaptive-default-color  /* CSS variable for adaptive default */
---audioui-primary-color  /* Current theme color (set by user or defaults to adaptive) */
---audioui-primary-50  /* 50% variant (computed via color-mix) */
---audioui-primary-20  /* 20% variant (computed via color-mix) */
---audioui-roundness-base  /* Base roundness (normalized 0.0-1.0) */
+--audioui-theme-{name}               /* Predefined theme colors */
+--audioui-adaptive-default-color     /* CSS variable for adaptive default */
+--audioui-primary-color              /* Current theme color (set by user or defaults to adaptive) */
+--audioui-roundness-base             /* Base roundness (normalized 0.0-1.0) */
+--audioui-unit                       /* Base size unit (96px default) */
+--audioui-size-mult-{size}           /* Size multipliers (xsmall, small, normal, large, xlarge) */
 ```
 
-**Note**: Variants (`primary50`, `primary20`) are computed automatically in CSS using `color-mix()` for optimal performance.
+**Derived Calculations and Reactive Pointers** (in `styles.css` in `.audioui, :root` - Private Reactive Engine):
+
+```css
+/* Color variants (color-mix) */
+--audioui-primary-50, --audioui-primary-20, --audioui-primary-lighter, --audioui-primary-darker
+--audioui-adaptive-50, --audioui-adaptive-20, --audioui-adaptive-light, --audioui-adaptive-dark
+
+/* Reactive pointer variables – reference reactive variants; must live in reactive engine */
+--audioui-slider-track-color: var(--audioui-adaptive-20);
+--audioui-slider-cursor-border-color: var(--audioui-primary-lighter);
+
+/* Size and roundness (calc) */
+--audioui-size-square-{size}, --audioui-size-hslider-*, --audioui-size-vslider-*, --audioui-size-keys-*
+--audioui-roundness-{component}
+```
+
+**Note**: Derived variants and any variable that references them (reactive pointers) are defined in the compound selector so they re-evaluate in component scope when base variables are overridden. If a pointer like `--audioui-slider-cursor-border-color` were defined only at `:root`, it would resolve `--audioui-primary-lighter` from root and would not react to per-component color overrides.
 
 ### Adaptive Default Color
 
