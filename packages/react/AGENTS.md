@@ -292,6 +292,7 @@ The library provides filmstrip-based controls that support the widely-used curre
 **Props**: Filmstrip-specific props (`frameWidth`, `frameHeight`, `frameCount`, `imageHref`, `orientation`, `frameRotation`) are defined in `FilmstripProps` type. These components do NOT support themable props (color, roundness, thickness) as visuals are entirely determined by the image content.
 
 **Dark Mode Support**: All raster components (filmstrip, image-based, and slider cursors) support optional dark mode variants:
+
 - Filmstrip controls: Use `imageDarkHref` prop to specify an alternate filmstrip for dark mode
 - ImageSwitch: Use `imageHrefFalseDark` and `imageHrefTrueDark` props for dark mode variants of both states
 - ImageKnob/ImageRotarySwitch: Use `imageDarkHref` prop to specify an alternate image for dark mode

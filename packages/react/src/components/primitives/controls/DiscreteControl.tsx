@@ -163,9 +163,7 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
 
     const optionCount = derivedParameter.options.length;
     const optionIndex =
-        optionCount > 0
-            ? derivedParameter.options.findIndex((opt) => opt.value === effectiveValue)
-            : -1;
+        optionCount > 0 ? derivedParameter.options.findIndex((opt) => opt.value === effectiveValue) : -1;
     const ariaValueNow = optionIndex >= 0 ? optionIndex : undefined;
     const ariaValueMin = 0;
     const ariaValueMax = Math.max(0, optionCount - 1);

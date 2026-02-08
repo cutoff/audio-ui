@@ -203,6 +203,27 @@ In `@cutoff/audio-ui-core`, the constants have been updated: `CSS_VARS.primaryLi
 
 ---
 
+## Raster components – label layout props propagation
+
+Generic (raster) components now forward **`labelOverflow`** and **`labelHeightUnits`** to their underlying control primitives. These props were already part of the component types (via `AdaptiveBoxProps`) but were not previously passed through, so they had no effect.
+
+### Affected components
+
+- **FilmStripContinuousControl**, **FilmStripDiscreteControl**, **FilmStripBooleanControl**
+- **ImageKnob**, **ImageSwitch**, **ImageRotarySwitch**
+
+### Behavior
+
+- **`labelOverflow`** – Controls how label text overflow is handled (`"ellipsis"`, `"abbreviate"`, or `"auto"`). When set on any of the above components, it is now forwarded to the inner AdaptiveBox layout.
+- **`labelHeightUnits`** – Label row height in viewBox units. When set, it is now forwarded so the layout uses the requested label height.
+
+### Client app upgrades
+
+- **No breaking changes.** Existing usage is unchanged.
+- To control label overflow or label height on filmstrip or image-based controls, set `labelOverflow` and/or `labelHeightUnits` on the component; they now take effect.
+
+---
+
 ## Other changes
 
 _(Add further sections here for future releases, e.g. “Layout”, “Theming”, “Breaking changes”, “Fixes”.)_

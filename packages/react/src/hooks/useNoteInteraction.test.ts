@@ -34,9 +34,7 @@ describe("useNoteInteraction", () => {
 
     describe("Initialization", () => {
         it("returns all required handlers and style", () => {
-            const { result } = renderHook(() =>
-                useNoteInteraction({ onNoteOn, onNoteOff })
-            );
+            const { result } = renderHook(() => useNoteInteraction({ onNoteOn, onNoteOff }));
 
             expect(result.current).toHaveProperty("onPointerDown");
             expect(result.current).toHaveProperty("onPointerMove");
@@ -51,9 +49,7 @@ describe("useNoteInteraction", () => {
         });
 
         it("includes touchAction none in style", () => {
-            const { result } = renderHook(() =>
-                useNoteInteraction({ onNoteOn, onNoteOff })
-            );
+            const { result } = renderHook(() => useNoteInteraction({ onNoteOn, onNoteOff }));
             expect(result.current.style.touchAction).toBe("none");
         });
     });
@@ -62,9 +58,7 @@ describe("useNoteInteraction", () => {
         it("calls onNoteOn when pointer down on a key", () => {
             vi.spyOn(document, "elementFromPoint").mockReturnValue(mockKeyElement);
 
-            const { result } = renderHook(() =>
-                useNoteInteraction({ onNoteOn, onNoteOff })
-            );
+            const { result } = renderHook(() => useNoteInteraction({ onNoteOn, onNoteOff }));
 
             const target = document.createElement("div");
             target.setPointerCapture = vi.fn();
@@ -86,9 +80,7 @@ describe("useNoteInteraction", () => {
         it("calls onNoteOff when pointer up after note on", () => {
             vi.spyOn(document, "elementFromPoint").mockReturnValue(mockKeyElement);
 
-            const { result } = renderHook(() =>
-                useNoteInteraction({ onNoteOn, onNoteOff })
-            );
+            const { result } = renderHook(() => useNoteInteraction({ onNoteOn, onNoteOff }));
 
             const target = document.createElement("div");
             target.setPointerCapture = vi.fn();
@@ -120,9 +112,7 @@ describe("useNoteInteraction", () => {
         it("does not call onNoteOn when pointer down and elementFromPoint returns null", () => {
             vi.spyOn(document, "elementFromPoint").mockReturnValue(null);
 
-            const { result } = renderHook(() =>
-                useNoteInteraction({ onNoteOn, onNoteOff })
-            );
+            const { result } = renderHook(() => useNoteInteraction({ onNoteOn, onNoteOff }));
 
             const target = document.createElement("div");
             target.setPointerCapture = vi.fn();
@@ -144,9 +134,7 @@ describe("useNoteInteraction", () => {
             const el = document.createElement("div");
             vi.spyOn(document, "elementFromPoint").mockReturnValue(el);
 
-            const { result } = renderHook(() =>
-                useNoteInteraction({ onNoteOn, onNoteOff })
-            );
+            const { result } = renderHook(() => useNoteInteraction({ onNoteOn, onNoteOff }));
 
             const target = document.createElement("div");
             target.setPointerCapture = vi.fn();
@@ -180,9 +168,7 @@ describe("useNoteInteraction", () => {
                 return key62;
             });
 
-            const { result } = renderHook(() =>
-                useNoteInteraction({ onNoteOn, onNoteOff })
-            );
+            const { result } = renderHook(() => useNoteInteraction({ onNoteOn, onNoteOff }));
 
             const target = document.createElement("div");
             target.setPointerCapture = vi.fn();
@@ -229,9 +215,7 @@ describe("useNoteInteraction", () => {
                 return key64;
             });
 
-            const { result } = renderHook(() =>
-                useNoteInteraction({ onNoteOn, onNoteOff })
-            );
+            const { result } = renderHook(() => useNoteInteraction({ onNoteOn, onNoteOff }));
 
             const target = document.createElement("div");
             target.setPointerCapture = vi.fn();
@@ -277,9 +261,7 @@ describe("useNoteInteraction", () => {
         it("does not call onNoteOn or onNoteOff when disabled", () => {
             vi.spyOn(document, "elementFromPoint").mockReturnValue(mockKeyElement);
 
-            const { result } = renderHook(() =>
-                useNoteInteraction({ onNoteOn, onNoteOff, disabled: true })
-            );
+            const { result } = renderHook(() => useNoteInteraction({ onNoteOn, onNoteOff, disabled: true }));
 
             const target = document.createElement("div");
             target.setPointerCapture = vi.fn();
@@ -374,9 +356,7 @@ describe("useNoteInteraction", () => {
         it("calls onNoteOff when pointer cancel after note on", () => {
             vi.spyOn(document, "elementFromPoint").mockReturnValue(mockKeyElement);
 
-            const { result } = renderHook(() =>
-                useNoteInteraction({ onNoteOn, onNoteOff })
-            );
+            const { result } = renderHook(() => useNoteInteraction({ onNoteOn, onNoteOff }));
 
             const target = document.createElement("div");
             target.setPointerCapture = vi.fn();

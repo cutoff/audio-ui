@@ -81,6 +81,8 @@ function FilmStripDiscreteControl({
     labelMode,
     labelPosition,
     labelAlign,
+    labelOverflow,
+    labelHeightUnits,
     frameWidth,
     frameHeight,
     frameCount,
@@ -119,6 +121,8 @@ function FilmStripDiscreteControl({
             labelMode={labelMode}
             labelPosition={labelPosition}
             labelAlign={labelAlign}
+            labelOverflow={labelOverflow}
+            labelHeightUnits={labelHeightUnits}
             className={classNames(sizeClassName, className)}
             style={{ ...sizeStyle, ...style }}
             onClick={onClick}
