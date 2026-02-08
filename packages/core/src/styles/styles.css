@@ -59,6 +59,99 @@
     cursor: default;
 }
 
+/* ==========================================================================
+   Reactive CSS Variable Engine (Internal - Subject to Change)
+   ========================================================================== */
+
+/*
+ * CRITICAL: These variables use the compound selector `.audioui, :root` to achieve
+ * both global availability AND per-component reactivity with a single definition.
+ *
+ * How the compound selector works:
+ * - Applied to :root = Global availability (computed from root-level base variables)
+ * - Applied to .audioui = Per-component reactivity (recomputed from component-scoped base variables)
+ *
+ * When a component sets style={{ "--audioui-primary-color": "red" }}, the browser:
+ * 1. Uses .audioui rule (matches the component's class)
+ * 2. Re-evaluates formulas against the new base value in the component's scope
+ * 3. Automatically updates all derived variants for that component only
+ *
+ * This is the "reactive engine" that makes per-component theming possible while
+ * maintaining global availability for non-component contexts - all with DRY principle.
+ */
+
+.audioui,
+:root {
+    /* Color Variants - Transparency */
+    --audioui-adaptive-50: color-mix(in srgb, var(--audioui-adaptive-default-color) 50%, transparent);
+    --audioui-adaptive-20: color-mix(in srgb, var(--audioui-adaptive-default-color) 20%, transparent);
+    --audioui-primary-50: color-mix(in srgb, var(--audioui-primary-color) 50%, transparent);
+    --audioui-primary-20: color-mix(in srgb, var(--audioui-primary-color) 20%, transparent);
+
+    /* Color Variants - Luminosity */
+    --audioui-adaptive-light: color-mix(in srgb, var(--audioui-adaptive-default-color) 80%, white);
+    --audioui-adaptive-dark: color-mix(in srgb, var(--audioui-adaptive-default-color) 80%, black);
+    --audioui-primary-lighter: color-mix(in srgb, var(--audioui-primary-color) 80%, white);
+    --audioui-primary-darker: color-mix(in srgb, var(--audioui-primary-color) 80%, black);
+
+    /* Component-Specific Roundness */
+    --audioui-roundness-button: calc(var(--audioui-roundness-base) * 50px);
+    --audioui-roundness-knob: var(--audioui-roundness-base);
+    --audioui-roundness-slider: calc(var(--audioui-roundness-base) * 20px);
+    --audioui-roundness-keys: calc(var(--audioui-roundness-base) * 12px);
+
+    /* Slider Component - Reactive Pointer Variables */
+    /* These pointers reference reactive variants and must be redefined here for reactivity */
+    --audioui-slider-track-color: var(--audioui-adaptive-20);
+    --audioui-slider-cursor-border-color: var(--audioui-primary-lighter);
+
+    /* Size System - Square Components (1x1) */
+    --audioui-size-square-xsmall: calc(var(--audioui-unit) * var(--audioui-size-mult-xsmall));
+    --audioui-size-square-small: calc(var(--audioui-unit) * var(--audioui-size-mult-small));
+    --audioui-size-square-normal: calc(var(--audioui-unit) * var(--audioui-size-mult-normal));
+    --audioui-size-square-large: calc(var(--audioui-unit) * var(--audioui-size-mult-large));
+    --audioui-size-square-xlarge: calc(var(--audioui-unit) * var(--audioui-size-mult-xlarge));
+
+    /* Size System - Horizontal Slider (1x2) */
+    --audioui-size-hslider-height-xsmall: calc(var(--audioui-unit) * var(--audioui-size-mult-xsmall));
+    --audioui-size-hslider-height-small: calc(var(--audioui-unit) * var(--audioui-size-mult-small));
+    --audioui-size-hslider-height-normal: calc(var(--audioui-unit) * var(--audioui-size-mult-normal));
+    --audioui-size-hslider-height-large: calc(var(--audioui-unit) * var(--audioui-size-mult-large));
+    --audioui-size-hslider-height-xlarge: calc(var(--audioui-unit) * var(--audioui-size-mult-xlarge));
+
+    --audioui-size-hslider-width-xsmall: calc(var(--audioui-size-hslider-height-xsmall) * 2);
+    --audioui-size-hslider-width-small: calc(var(--audioui-size-hslider-height-small) * 2);
+    --audioui-size-hslider-width-normal: calc(var(--audioui-size-hslider-height-normal) * 2);
+    --audioui-size-hslider-width-large: calc(var(--audioui-size-hslider-height-large) * 2);
+    --audioui-size-hslider-width-xlarge: calc(var(--audioui-size-hslider-height-xlarge) * 2);
+
+    /* Size System - Vertical Slider (2x1) */
+    --audioui-size-vslider-width-xsmall: calc(var(--audioui-unit) * var(--audioui-size-mult-xsmall));
+    --audioui-size-vslider-width-small: calc(var(--audioui-unit) * var(--audioui-size-mult-small));
+    --audioui-size-vslider-width-normal: calc(var(--audioui-unit) * var(--audioui-size-mult-normal));
+    --audioui-size-vslider-width-large: calc(var(--audioui-unit) * var(--audioui-size-mult-large));
+    --audioui-size-vslider-width-xlarge: calc(var(--audioui-unit) * var(--audioui-size-mult-xlarge));
+
+    --audioui-size-vslider-height-xsmall: calc(var(--audioui-size-vslider-width-xsmall) * 2);
+    --audioui-size-vslider-height-small: calc(var(--audioui-size-vslider-width-small) * 2);
+    --audioui-size-vslider-height-normal: calc(var(--audioui-size-vslider-width-normal) * 2);
+    --audioui-size-vslider-height-large: calc(var(--audioui-size-vslider-width-large) * 2);
+    --audioui-size-vslider-height-xlarge: calc(var(--audioui-size-vslider-width-xlarge) * 2);
+
+    /* Size System - Keys (1x5) */
+    --audioui-size-keys-height-xsmall: calc(var(--audioui-unit) * var(--audioui-size-mult-xsmall));
+    --audioui-size-keys-height-small: calc(var(--audioui-unit) * var(--audioui-size-mult-small));
+    --audioui-size-keys-height-normal: calc(var(--audioui-unit) * var(--audioui-size-mult-normal));
+    --audioui-size-keys-height-large: calc(var(--audioui-unit) * var(--audioui-size-mult-large));
+    --audioui-size-keys-height-xlarge: calc(var(--audioui-unit) * var(--audioui-size-mult-xlarge));
+
+    --audioui-size-keys-width-xsmall: calc(var(--audioui-size-keys-height-xsmall) * 5);
+    --audioui-size-keys-width-small: calc(var(--audioui-size-keys-height-small) * 5);
+    --audioui-size-keys-width-normal: calc(var(--audioui-size-keys-height-normal) * 5);
+    --audioui-size-keys-width-large: calc(var(--audioui-size-keys-height-large) * 5);
+    --audioui-size-keys-width-xlarge: calc(var(--audioui-size-keys-height-xlarge) * 5);
+}
+
 /* Container helper class for components that manage their own SVG sizing */
 .audioui-component-container {
     height: auto;
@@ -276,4 +369,14 @@
 .audioui-size-keys-xlarge {
     width: var(--audioui-size-keys-width-xlarge);
     height: var(--audioui-size-keys-height-xlarge);
+}
+
+/* ==========================================================================
+   Dark Mode Reactive Overrides
+   ========================================================================== */
+
+/* Dark mode reactive overrides for the reactive engine */
+.dark .audioui,
+.dark:root {
+    --audioui-slider-cursor-border-color: var(--audioui-primary-darker);
 }

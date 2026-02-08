@@ -224,13 +224,19 @@ Do not fix unrelated TS errors; many known and ignored; focus on current task.
 
 ## Theme System
 
+- **Two-File Architecture (Reactive Scoping)**:
+  - **`themes.css`** (Public API): Contains ONLY raw input variables at `:root` (base colors, units, multipliers). Guaranteed backward compatibility. No `calc()` or `color-mix()` expressions.
+  - **`styles.css`** (Private Reactive Engine): Contains ALL derived calculations and reactive pointer variables using compound selector `.audioui, :root`. Applies to both global context and component scope for DRY principle. Not guaranteed backward compatible (internal implementation).
+- **Reactive Scoping Mechanism**: Compound selector `.audioui, :root` defines reactive variables in both contexts. When a component sets `style={{ "--audioui-primary-color": "red" }}`, the browser re-evaluates formulas in `.audioui` scope against the new base value, automatically updating all derived variants. This enables true per-component theming while maintaining global availability.
+- **Reactive Pointer Variables**: Any variable that references a reactive variant (e.g. `var(--audioui-primary-lighter)`) must be defined in the reactive engine (`.audioui, :root` in styles.css), not only at `:root`. Otherwise it would resolve the variant from root scope and not react to per-component overrides. Example: `--audioui-slider-cursor-border-color: var(--audioui-primary-lighter)` and `--audioui-slider-track-color: var(--audioui-adaptive-20)` live in the reactive engine.
 - CSS vars for theming; adaptive named themes (blue, orange, pink, green, purple, yellow); .dark hue adjust
 - Default adaptive theme (black-ish light, white-ish dark)
-- CSS variables: --audioui-primary-color, --audioui-roundness-base
-- Color variants computed via CSS color-mix():
-  - **Transparency variants**: --audioui-primary-50, --audioui-primary-20 (50% and 20% opacity)
-  - **Luminosity variants**: --audioui-primary-lighter, --audioui-primary-darker (80% color + 20% white/black for lighter/darker versions)
-  - **Adaptive variants**: --audioui-adaptive-50, --audioui-adaptive-20, --audioui-adaptive-light, --audioui-adaptive-dark (same patterns for adaptive colors)
+- Base CSS variables (in `themes.css`): --audioui-primary-color, --audioui-roundness-base, --audioui-unit, --audioui-size-mult-\*
+- Derived CSS variables (in `styles.css` compound selector `.audioui, :root`):
+  - **Color variants** computed via CSS color-mix(): --audioui-primary-50, --audioui-primary-20, --audioui-primary-lighter, --audioui-primary-darker, --audioui-adaptive-\* (transparency and luminosity variants)
+  - **Reactive pointer variables** (reference reactive variants): --audioui-slider-track-color, --audioui-slider-cursor-border-color
+  - **Size system** computed via CSS calc(): --audioui-size-square-_, --audioui-size-hslider-_, --audioui-size-vslider-_, --audioui-size-keys-_
+  - **Component roundness** computed via CSS calc(): --audioui-roundness-button, --audioui-roundness-knob, --audioui-roundness-slider, --audioui-roundness-keys
 - Luminosity variants are essential for borders and outlines where transparency doesn't provide sufficient visibility
 - Classes: .audioui-stroke-primary, .audioui-fill-primary, .audioui-border-primary, .audioui-text-primary (all prefixed with `audioui-`)
 - Theme utilities: setThemeColor(), setThemeRoundness(), setTheme() for programmatic access

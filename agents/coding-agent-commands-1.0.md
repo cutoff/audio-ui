@@ -33,7 +33,8 @@ When a user requests "Execute [CommandName]", the agent should follow the proced
   - Make sure agents instructions and documentation (AGENTS.md and docs/ directories) are up-to-date with the latest changes.
 - Make sure no unused imports remain.
 - Launch prettier on modified files.
-- Iterate on `pnpm check` until all errors are fixed (if any).
+- Execute "check"
+- Ensure `docs/releases/next.md` is updated for the latest changes (new features, breaking changes, improvements, fixes). If recent work is not yet reflected there, add or amend the relevant section(s). See `docs/releases/AGENTS.md`.
 
 #### Documentation Review Guidelines
 
@@ -78,7 +79,6 @@ See `agents/documentation-standards-2.0.md` for comprehensive examples of:
 
 - Run `pnpm check` to identify errors.
 - Fix all errors found.
-- Ensure `docs/releases/next.md` is updated for the latest changes (new features, breaking changes, improvements, fixes). If recent work is not yet reflected there, add or amend the relevant section(s). See `docs/releases/AGENTS.md`.
 - Repeat until `pnpm check` passes with no errors and release notes are current.
 
 ### Release

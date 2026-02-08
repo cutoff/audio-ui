@@ -224,6 +224,26 @@ Generic (raster) components now forward **`labelOverflow`** and **`labelHeightUn
 
 ---
 
+## Theming – Reactive CSS variables and per-component theming
+
+The theme system uses a two-file CSS architecture so that derived variables (color variants, sizes, roundness) react correctly when a component overrides a base variable (e.g. `style={{ "--audioui-primary-color": "red" }}` or the `color` prop).
+
+### Summary
+
+- **`themes.css`** (public API): Defines only raw input variables at `:root` (base colors, units, multipliers). No `calc()` or `color-mix()`. Backward compatible.
+- **`styles.css`** (reactive engine): Defines all derived calculations and reactive pointer variables using the compound selector `.audioui, :root`. Same variables apply at root (global) and on `.audioui` (per-component). When a component overrides a base variable, the browser re-evaluates formulas in that component's scope, so variants (e.g. `--audioui-primary-20`, `--audioui-primary-lighter`) and any variables that reference them (e.g. slider track color, slider cursor border color) update for that component only.
+
+### Reactive pointer variables
+
+Variables that point to reactive variants (e.g. `--audioui-slider-cursor-border-color: var(--audioui-primary-lighter)`) are defined in the reactive engine. If they were defined only at `:root`, they would resolve the variant from root and would not react to per-component color overrides. Slider background strip and cursor border colors therefore follow per-component theming correctly.
+
+### Client app impact
+
+- **No breaking changes.** Overriding `--audioui-primary-color` (or using the `color` prop) on a component now correctly updates all derived colors for that component, including slider track and cursor border.
+- Documentation: `packages/react/docs/color-system.md` (Reactive Scoping Architecture, pointer variables), root AGENTS.md (Theme System).
+
+---
+
 ## Other changes
 
 _(Add further sections here for future releases, e.g. “Layout”, “Theming”, “Breaking changes”, “Fixes”.)_

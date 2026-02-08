@@ -140,7 +140,7 @@ Technical documentation is located in `docs/`:
 
 - **`docs/adaptive-box-layout.md`**: Comprehensive specification for AdaptiveBox layout system (CSS/SVG-based, replaces AdaptiveContainer + SvgSurface). Covers DOM structure, sizing algorithms, label modes, alignment controls, and React API mapping.
 
-- **`docs/color-system.md`**: Complete color system architecture documentation. Covers axioms & requirements, CSS theme variables, color utilities, component color resolution hierarchy, CSS variable-based theming system, theme utility functions (`setThemeColor`, `setThemeRoundness`, etc.), predefined theme colors, usage examples, and performance optimizations.
+- **`docs/color-system.md`**: Complete color system architecture documentation. Covers axioms & requirements, CSS theme variables, color utilities, component color resolution hierarchy, CSS variable-based theming system, theme utility functions (`setThemeColor`, `setThemeRoundness`, etc.), predefined theme colors, usage examples, and performance optimizations. **Important**: Documents the reactive scoping architecture where `themes.css` (public API, raw inputs) and `styles.css` (private reactive engine, derived calculations and reactive pointer variables) work together to enable per-component theming with automatic variant recalculation; includes why pointer variables (e.g. slider track/cursor border color) must live in the reactive engine.
 
 - **`docs/color-property-examples.md`**: Practical examples of using the `color` property with components. Includes basic usage, color animation, combining with other properties, dynamic colors, and component-specific color handling (Keys luminosity variants).
 
