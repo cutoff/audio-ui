@@ -79,6 +79,7 @@ See `agents/documentation-standards-2.0.md` for comprehensive examples of:
 
 - Run `pnpm check` to identify errors.
 - Fix all errors found.
+- Ensure `docs/releases/next.md` is up to date and sections are in reverse chronological order (most recent first). See `docs/releases/AGENTS.md`.
 - Repeat until `pnpm check` passes with no errors and release notes are current.
 
 ### Release

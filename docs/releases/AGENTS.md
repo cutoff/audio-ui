@@ -11,10 +11,12 @@
 
 ## When to update
 
-- **Execute Check**: As part of the Check command, ensure `docs/releases/next.md` is updated for the latest codebase changes (new features, breaking changes, improvements, fixes). If recent work is not yet reflected in `next.md`, add or amend the relevant section(s).
-- **After implementing a feature or fix**: Add or update a section in `next.md` so the documentation site and client upgrades stay in sync.
+- **Execute Check**: As part of the Check command, ensure `docs/releases/next.md` is updated for the latest codebase changes (new features, breaking changes, improvements, fixes). If recent work is not yet reflected in `next.md`, add or amend the relevant section(s) in reverse chronological order (see Format below).
+- **After implementing a feature or fix**: Add or update a section in `next.md` so the documentation site and client upgrades stay in sync. Place new or updated sections at the top (most recent first).
 
 ## Format of release notes
+
+**Order**: List sections in **reverse chronological order** (most recent first). When adding or updating `next.md`, place new or updated sections at the top, below the title and `---`, and keep the "Other changes" placeholder at the end.
 
 Each release note (e.g. `next.md`) can include:
 
