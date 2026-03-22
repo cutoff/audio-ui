@@ -6,6 +6,7 @@
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { isPublicIndexingAllowed } from "@/lib/indexing-policy";
 import "./globals.css";
 import { Providers } from "@/app/providers";
 import { AppFooter } from "@/components/app-footer";
@@ -34,78 +35,91 @@ const interFont = Inter({
     weight: ["700"],
 });
 
-export const metadata: Metadata = {
-    metadataBase: new URL("https://playground.cutoff.dev"),
-    title: {
-        default: "AudioUI Playground - Interactive Component Showcase",
-        template: "%s | AudioUI Playground",
-    },
-    description:
-        "Interactive playground for AudioUI by Cutoff. Explore and test React components designed for audio and MIDI applications, including knobs, sliders, buttons, piano keyboards, and more.",
-    keywords: [
-        "AudioUI",
-        "Audio UI",
-        "React components",
-        "audio applications",
-        "MIDI",
-        "music software",
-        "DAW",
-        "audio plugins",
-        "interactive controls",
-        "knob",
-        "slider",
-        "piano keyboard",
-        "Cutoff",
-        "TypeScript",
-        "React component library",
-    ],
-    authors: [{ name: "Renaud Denis", url: "https://renauddenis.com" }],
-    creator: "Tylium",
-    publisher: "Tylium",
-    formatDetection: {
-        email: false,
-        address: false,
-        telephone: false,
-    },
-    openGraph: {
-        type: "website",
-        locale: "en_US",
-        url: "https://playground.cutoff.dev",
-        siteName: "AudioUI Playground",
-        title: "AudioUI Playground - Interactive Component Showcase",
-        description:
-            "Explore and test React components designed for audio and MIDI applications. Interactive playground for knobs, sliders, buttons, piano keyboards, and more.",
-    },
-    twitter: {
-        card: "summary_large_image",
-        title: "AudioUI Playground - Interactive Component Showcase",
-        description:
-            "Explore and test React components designed for audio and MIDI applications. Interactive playground for knobs, sliders, buttons, piano keyboards, and more.",
-        creator: "@CutoffDev",
-    },
-    robots: {
-        index: false,
-        follow: false,
-        googleBot: {
-            index: false,
-            follow: false,
-            noimageindex: true,
+export function generateMetadata(): Metadata {
+    const allowIndexing = isPublicIndexingAllowed();
+
+    return {
+        metadataBase: new URL("https://playground.cutoff.dev"),
+        title: {
+            default: "AudioUI Playground - Interactive Component Showcase",
+            template: "%s | AudioUI Playground",
         },
-    },
-    alternates: {
-        canonical: "https://playground.cutoff.dev",
-    },
-    verification: {
-        // Add verification codes here when available
-        // google: "your-google-verification-code",
-        // yandex: "your-yandex-verification-code",
-    },
-    icons: {
-        icon: "/favicon.ico",
-        shortcut: "/favicon.ico",
-        apple: "/favicon.ico",
-    },
-};
+        description:
+            "Interactive playground for AudioUI by Cutoff. Explore and test React components designed for audio and MIDI applications, including knobs, sliders, buttons, piano keyboards, and more.",
+        keywords: [
+            "AudioUI",
+            "Audio UI",
+            "React components",
+            "audio applications",
+            "MIDI",
+            "music software",
+            "DAW",
+            "audio plugins",
+            "interactive controls",
+            "knob",
+            "slider",
+            "piano keyboard",
+            "Cutoff",
+            "TypeScript",
+            "React component library",
+        ],
+        authors: [{ name: "Renaud Denis", url: "https://renauddenis.com" }],
+        creator: "Tylium",
+        publisher: "Tylium",
+        formatDetection: {
+            email: false,
+            address: false,
+            telephone: false,
+        },
+        openGraph: {
+            type: "website",
+            locale: "en_US",
+            url: "https://playground.cutoff.dev",
+            siteName: "AudioUI Playground",
+            title: "AudioUI Playground - Interactive Component Showcase",
+            description:
+                "Explore and test React components designed for audio and MIDI applications. Interactive playground for knobs, sliders, buttons, piano keyboards, and more.",
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: "AudioUI Playground - Interactive Component Showcase",
+            description:
+                "Explore and test React components designed for audio and MIDI applications. Interactive playground for knobs, sliders, buttons, piano keyboards, and more.",
+            creator: "@CutoffDev",
+        },
+        robots: allowIndexing
+            ? {
+                  index: true,
+                  follow: true,
+                  googleBot: {
+                      index: true,
+                      follow: true,
+                  },
+              }
+            : {
+                  index: false,
+                  follow: false,
+                  googleBot: {
+                      index: false,
+                      follow: false,
+                      noimageindex: true,
+                  },
+              },
+        alternates: {
+            canonical: "https://playground.cutoff.dev",
+        },
+        verification: {
+            // Add verification codes here when available
+            // google: "your-google-verification-code",
+            // yandex: "your-yandex-verification-code",
+        },
+        icons: {
+            icon: "/favicon.ico",
+            shortcut: "/favicon.ico",
+            apple: "/favicon.ico",
+        },
+    };
+}
 
 export default function RootLayout({
     children,

@@ -8,17 +8,19 @@
 
 ## Quick Setup Summary (Load This First)
 
-| Category     | Details                                                                                                                              |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Scripts      | `pnpm dev`, `pnpm build`, `pnpm typecheck`, `pnpm lint`                                                                              |
-| Env Vars     | None                                                                                                                                 |
-| Routing      | Next.js app router; pages in app/[route]/page.tsx; categories: examples, vector-components, raster-components, primitives, layout    |
-| Theming      | next-themes for theme switching; theme controls in header (ThemeSettingsButton, ThemeModeToggle); responsive sheet for customization |
-| Integrations | Import library components for showcases; Radix via shadcn; forms, routing                                                            |
+| Category     | Details                                                                                                                                                |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Scripts      | `pnpm dev`, `pnpm build`, `pnpm typecheck`, `pnpm lint`                                                                                                |
+| Env Vars     | Optional `AUDIOUI_PLAYGROUND_ALLOW_INDEXING` (`true` / `1`) when not on Vercel production; `VERCEL_ENV` read for Vercel (see `lib/indexing-policy.ts`) |
+| Routing      | Next.js app router; pages in app/[route]/page.tsx; categories: examples, vector-components, raster-components, primitives, layout                      |
+| Theming      | next-themes for theme switching; theme controls in header (ThemeSettingsButton, ThemeModeToggle); responsive sheet for customization                   |
+| Integrations | Import library components for showcases; Radix via shadcn; forms, routing                                                                              |
 
 ## Key File Structure
 
-- `app/layout.tsx`: Root layout with header containing theme controls
+- `app/layout.tsx`: Root layout with header containing theme controls; `generateMetadata` sets `robots` from `isPublicIndexingAllowed()` (aligned with `app/robots.txt/route.ts`)
+- `app/robots.txt/route.ts`: Dynamic `robots.txt` (allow vs disallow matches indexing policy)
+- `lib/indexing-policy.ts`: `isPublicIndexingAllowed()` — single source of truth for SEO crawling/indexing policy
 - `app/page.tsx`: Home page (simplified entry: hero with external links, Getting Started card with theme/navigation tips, Explore Components card grid linking to vector-components, raster-components, primitives, layout, examples)
 - `app/[route]/page.tsx`: Demo pages (e.g., app/vector-components/button/page.tsx for Button demo)
 - `app/layout/sizing/page.tsx`: Centralized sizing system showcase (all components, all sizes)
@@ -26,7 +28,7 @@
 - `components/ui/`: **shadcn components ONLY** - do not add custom components here; **NEVER modify shadcn components** - they are third-party stabilized code; work around type issues with type assertions/ts-expect-error if needed
 - `components/`: Custom playground components (e.g., ColorPickerField, ComponentSkeletonPage, ControlSkeletonPage, theme-settings-button, theme-settings-panel, theme-mode-toggle)
 - `components/examples/`: Custom library component examples (see `components/examples/README.md` for creation guide)
-- `lib/`: Utils (e.g., cn for clsx)
+- `lib/`: Utils (`cn` for clsx, `indexing-policy` for SEO)
 - `hooks/`: Custom hooks (e.g., use-mobile)
 - `types/`: TypeScript types
 - `public/`: Static assets
@@ -34,7 +36,7 @@
 ## Workflow Patterns (Bullets)
 
 - Add new playground page: Create app/[route]/[component]/page.tsx; import from @cutoff/audio-ui-react; add examples with props; use shadcn for UI
-- Component demo placement: Library built-in controls (Knob, Slider, Button, CycleButton, Keys) go under `app/vector-components/`; image/filmstrip controls (ImageKnob, FilmStrip*, etc.) go under `app/raster-components/`. Sync sidebar (app-sidebar.tsx) and breadcrumb (breadcrumb-nav.tsx) when adding entries.
+- Component demo placement: Library built-in controls (Knob, Slider, Button, CycleButton, Keys) go under `app/vector-components/`; image/filmstrip controls (ImageKnob, FilmStrip\*, etc.) go under `app/raster-components/`. Sync sidebar (app-sidebar.tsx) and breadcrumb (breadcrumb-nav.tsx) when adding entries.
 - Control demo pages: Use `ControlSkeletonPage` component; examples use `size="large"` for visibility; no individual Size showcases (centralized in `/layout/sizing`)
 - Sizing showcase: Centralized at `/layout/sizing`; showcases all components (Button, Knob, CycleButton, Slider, Keys) with all sizes (xsmall through xlarge)
 - Theming: next-themes ThemeProvider (light/dark mode) and ThemeInitializer (CSS variable-based Audio UI theming); theme controls in header (ThemeSettingsButton, ThemeModeToggle); responsive sheet for theme customization

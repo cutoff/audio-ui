@@ -4,14 +4,19 @@
  * See LICENSE.md for details.
  */
 
-export async function GET() {
-    return new Response(
-        `User-agent: *
-Disallow: /`,
-        {
-            headers: {
-                "Content-Type": "text/plain",
-            },
-        }
-    );
+import { isPublicIndexingAllowed } from "@/lib/indexing-policy";
+
+/** Serves `robots.txt`; content follows {@link isPublicIndexingAllowed}. */
+export function GET() {
+    const body = isPublicIndexingAllowed()
+        ? `User-agent: *
+Allow: /`
+        : `User-agent: *
+Disallow: /`;
+
+    return new Response(body, {
+        headers: {
+            "Content-Type": "text/plain",
+        },
+    });
 }
