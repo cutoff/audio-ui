@@ -7,6 +7,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import { isPublicIndexingAllowed } from "@/lib/indexing-policy";
+import { PLAYGROUND_ORIGIN } from "@/lib/playground-sitemap-paths";
 import "./globals.css";
 import { Providers } from "@/app/providers";
 import { AppFooter } from "@/components/app-footer";
@@ -39,7 +40,7 @@ export function generateMetadata(): Metadata {
     const allowIndexing = isPublicIndexingAllowed();
 
     return {
-        metadataBase: new URL("https://playground.cutoff.dev"),
+        metadataBase: new URL(PLAYGROUND_ORIGIN),
         title: {
             default: "AudioUI Playground - Interactive Component Showcase",
             template: "%s | AudioUI Playground",
@@ -74,7 +75,7 @@ export function generateMetadata(): Metadata {
         openGraph: {
             type: "website",
             locale: "en_US",
-            url: "https://playground.cutoff.dev",
+            url: PLAYGROUND_ORIGIN,
             siteName: "AudioUI Playground",
             title: "AudioUI Playground - Interactive Component Showcase",
             description:
@@ -106,7 +107,7 @@ export function generateMetadata(): Metadata {
                   },
               },
         alternates: {
-            canonical: "https://playground.cutoff.dev",
+            canonical: PLAYGROUND_ORIGIN,
         },
         verification: {
             // Add verification codes here when available

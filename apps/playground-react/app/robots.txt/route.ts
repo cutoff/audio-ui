@@ -5,12 +5,22 @@
  */
 
 import { isPublicIndexingAllowed } from "@/lib/indexing-policy";
+import { PLAYGROUND_ORIGIN } from "@/lib/playground-sitemap-paths";
 
-/** Serves `robots.txt`; content follows {@link isPublicIndexingAllowed}. */
+/**
+ * Route handler for `/robots.txt`.
+ *
+ * Body follows {@link isPublicIndexingAllowed}: allow-all plus `Sitemap:` when indexing is on,
+ * otherwise `Disallow: /` with no sitemap line.
+ *
+ * @returns {Response} Plain text `robots.txt` with `Content-Type: text/plain`.
+ */
 export function GET() {
     const body = isPublicIndexingAllowed()
         ? `User-agent: *
-Allow: /`
+Allow: /
+
+Sitemap: ${PLAYGROUND_ORIGIN}/sitemap.xml`
         : `User-agent: *
 Disallow: /`;
 

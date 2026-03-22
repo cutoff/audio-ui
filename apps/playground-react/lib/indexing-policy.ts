@@ -7,7 +7,8 @@
 /**
  * Whether the playground should allow public search-engine indexing and crawling.
  *
- * Drives both `/robots.txt` and root `metadata.robots` so they never contradict.
+ * Drives `/robots.txt`, root `metadata.robots`, and `/sitemap.xml` contents (empty sitemap when
+ * `false`) so they never contradict.
  *
  * **Vercel:** `VERCEL_ENV` is `production` only on the production deployment. Preview
  * deployments use `preview` even though `NODE_ENV` is `production`, so do not rely on
@@ -16,8 +17,9 @@
  * **Self-hosted / non-Vercel:** set `AUDIOUI_PLAYGROUND_ALLOW_INDEXING=true` on the
  * production host when `VERCEL_ENV` is not available.
  *
- * @returns {boolean} `true` when crawling and HTML robots meta should allow indexing; `false`
- *   for preview, local dev, and other non-production deployments (unless opt-in is set).
+ * @returns {boolean} `true` when `robots.txt` allows crawling, root HTML `robots` allows
+ *   index/follow, and the sitemap lists URLs; `false` otherwise (disallow, noindex, empty
+ *   sitemap), except when opt-in env is set on non-Vercel production hosts.
  *
  * @example
  * ```ts
