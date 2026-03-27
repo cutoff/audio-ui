@@ -1,0 +1,82 @@
+name: Publish
+
+on:
+    push:
+        branches: [main]
+
+concurrency:
+    group: publish-${{ github.ref }}
+    cancel-in-progress: false
+
+env:
+    CI: true
+
+jobs:
+    publish:
+        name: Publish to npm
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            id-token: write
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Read version
+              id: version
+              run: |
+                  VERSION=$(node -p "require('./package.json').version")
+                  echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+                  if [[ "$VERSION" == *"-dev" ]]; then
+                    echo "is_release=false" >> "$GITHUB_OUTPUT"
+                    echo "Detected development version ($VERSION) — skipping publish."
+                  else
+                    echo "is_release=true" >> "$GITHUB_OUTPUT"
+                  fi
+
+                  if [[ "$VERSION" == *"-preview."* ]] || [[ "$VERSION" == *"-dp."* ]]; then
+                    echo "dist_tag=preview" >> "$GITHUB_OUTPUT"
+                  else
+                    echo "dist_tag=latest" >> "$GITHUB_OUTPUT"
+                  fi
+
+            - name: Setup pnpm
+              if: steps.version.outputs.is_release == 'true'
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js
+              if: steps.version.outputs.is_release == 'true'
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "pnpm"
+                  registry-url: "https://registry.npmjs.org"
+
+            - name: Install dependencies
+              if: steps.version.outputs.is_release == 'true'
+              run: pnpm install --frozen-lockfile
+
+            - name: Run quality pipeline (typecheck, build, lint, test)
+              if: steps.version.outputs.is_release == 'true'
+              run: pnpm turbo run typecheck build lint test --continue --no-daemon
+
+            - name: Publish @cutoff/audio-ui-core
+              if: steps.version.outputs.is_release == 'true'
+              working-directory: packages/core
+              run: pnpm publish --tag ${{ steps.version.outputs.dist_tag }} --no-git-checks
+
+            - name: Publish @cutoff/audio-ui-react
+              if: steps.version.outputs.is_release == 'true'
+              working-directory: packages/react
+              run: pnpm publish --tag ${{ steps.version.outputs.dist_tag }} --no-git-checks
+
+            - name: Create git tag
+              if: steps.version.outputs.is_release == 'true'
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git tag "release/${{ steps.version.outputs.version }}"
+                  git push origin "release/${{ steps.version.outputs.version }}"

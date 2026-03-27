@@ -27,7 +27,7 @@ During development, the project uses a **single development suffix** following a
 - **Format**: `{next-stable-version}-dev`
 - **Example**: `1.0.0-dev`
 - **Usage**: Set automatically for all development branches
-- **Command**: `pnpm version:dev`
+- **Command**: `pnpm run version dev` (primitive) or `pnpm release:dev` (bumps and auto-commits)
 
 **Breakdown**:
 
@@ -56,7 +56,7 @@ For npm releases, the project uses a **preview channel** with timestamped versio
 - **Example**: `1.0.0-preview.20260123.0958`
 - **npm Dist-Tag**: `preview`
 - **Installation**: `npm install @cutoff/audio-ui-react@preview`
-- **Command**: `pnpm release:preview` (generates timestamped version and creates release using release-it)
+- **Command**: `pnpm release:prepare preview` (runs quality checks, bumps version, and auto-commits)
 
 **Breakdown**:
 
@@ -68,15 +68,10 @@ For npm releases, the project uses a **preview channel** with timestamped versio
 
 **Workflow**:
 
-1. During development: Use branch-based versions (`1.0.0-dev`)
-2. Before npm release: Run `pnpm release:preview` to generate timestamped version and create release
-3. Release-it automatically:
-   - Generates timestamped version (`1.0.0-preview.YYYYMMDD.HHMM`)
-   - Updates all package.json files in the monorepo
-   - Generates changelog entry from git diff
-   - Creates git tag
-4. Publish to npm: Use the timestamped preview version (with `--npm.publish` flag if needed)
-5. After release: Return to branch-based versioning for continued development using `pnpm version:dev`
+1. During development: All branches use `1.0.0-dev`
+2. Prepare release: Run `pnpm release:prepare preview` — runs quality checks, bumps all package.json files, and auto-commits
+3. Push to `main`: The `publish.yml` CI workflow detects the non-`-dev` version and automatically publishes to npm with the `preview` dist-tag and creates the `release/{version}` git tag
+4. After release: Run `pnpm release:dev` to reset to `-dev` and auto-commit
 
 ### 2.3. Developer Preview Releases (dp.0+)
 
@@ -103,33 +98,28 @@ The dot (`.`) separating the identifier (`dp`) from the number (`X`) is **mandat
 ### 2.4. Release Progression
 
 1.  **Development Versions**:
-    - Branch-based versions: `1.0.0-dev`
-    - Used during active development
-    - Set automatically via `pnpm version:dev`
+    - All branches use `1.0.0-dev`
+    - Set via `pnpm release:dev` (bumps and auto-commits) or `pnpm run version dev` (bumps only)
     - Not published to npm
 
 2.  **Preview Releases (npm)**:
     - Timestamped versions: `1.0.0-preview.YYYYMMDD.HHMM`
-    - Created via `pnpm release:preview` using release-it
-    - Automatically generates changelog from git diff
-    - Published to npm with `preview` dist-tag (with `--npm.publish` flag)
+    - Prepared via `pnpm release:prepare preview` (runs quality checks, bumps, auto-commits)
+    - Published automatically by CI on push to `main` with `preview` npm dist-tag
     - Used for continuous releases and testing
     - Working toward first Developer Preview release (dp.0)
 
 3.  **Developer Preview Releases**:
     - When ready, transition to numbered releases: `1.0.0-dp.0`, `1.0.0-dp.1`, etc.
-    - Created via `pnpm release:dp` using release-it
-    - Automatically increments: `1.0.0-dp.0` → `1.0.0-dp.1`
-    - Automatically generates changelog from git diff
-    - Still published with `preview` dist-tag (with `--npm.publish` flag)
+    - Prepared via `pnpm release:prepare dp` (auto-increments from existing git tags)
+    - Published automatically by CI on push to `main` with `preview` npm dist-tag
     - Used for gathering feedback and testing before a stable release
 
 4.  **Stable Release**:
     - To transition from developer preview to the first stable release, remove the entire `-dp.X` pre-release suffix.
-    - The first stable release will be `1.0.0`.
-    - Created via `pnpm release patch|minor|major` using release-it
-    - Automatically generates changelog from git diff
-    - Published with `latest` dist-tag (default, with `--npm.publish` flag)
+    - The first stable release is `1.0.0`.
+    - Prepared via `pnpm release:prepare patch|minor|major`
+    - Published automatically by CI on push to `main` with `latest` npm dist-tag
 
 ## 3. Post-1.0.0 Versioning
 

@@ -82,47 +82,6 @@ See `agents/documentation-standards-2.0.md` for comprehensive examples of:
 - Ensure `docs/releases/next.md` is up to date and sections are in reverse chronological order (most recent first). See `docs/releases/AGENTS.md`.
 - Repeat until `pnpm check` passes with no errors and release notes are current.
 
-### Release
-
-**Invocation**: "Execute Release"
-
-**Description**: Comprehensive release procedure using release-it for version management, changelog generation, and git tagging.
-
-**Procedure**:
-
-1. **Prompt user for release type**:
-   - `preview` - Timestamped preview release (1.0.0-preview.YYYYMMDD.HHMM)
-   - `dp` - Numbered developer preview release (1.0.0-dp.X)
-   - `patch` - Patch release (1.0.0 → 1.0.1)
-   - `minor` - Minor release (1.0.0 → 1.1.0)
-   - `major` - Major release (1.0.0 → 2.0.0)
-
-2. **Run quality checks**:
-   - Execute `pnpm check` to ensure all tests pass, build succeeds, linting passes, and type checking is clean
-   - If checks fail, abort the release and report errors
-
-3. **Execute release-it**:
-   - For `preview`: Generate timestamped version using `scripts/generate-timestamped-preview.js`, then run `release-it --no-increment --preRelease=preview`
-   - For `dp`: Run `release-it --preRelease=dp`
-   - For `patch`/`minor`/`major`: Run `release-it ${type}` (e.g., `release-it patch`)
-   - **Important**: Agent must never execute git modifying commands (commit, push, reset, etc.) without explicit user approval. Release-it will handle git tagging, but the agent should not commit or push automatically.
-
-4. **Post-release cleanup** (if needed):
-   - After successful release, optionally reset to `-dev` version using `pnpm version:dev` if continuing development
-   - This step should be confirmed with the user
-
-**Important Notes**:
-
-- The agent must never execute git modifying commands (commit, push, reset, etc.) without explicit user approval
-- Release-it handles git tagging automatically as part of its workflow
-- Release tags follow the format: `release/{version}` (e.g., `release/1.0.0-preview.20260123.1117`)
-- All package.json files (root, packages, apps) are automatically synchronized to the same version
-- Publishing to npm is disabled by default in release-it config; enable with `--npm.publish` flag if needed
-
----
-
-**Reference**: See `agents/github-issues-guidelines-1.0.md` for philosophy (labels, description, assignation, writing style), repository resolution (`git remote -v`), and full procedures. Follow the corresponding section for each command below.
-
 ### Create Issue
 
 **Invocation**: "Execute Create Issue"

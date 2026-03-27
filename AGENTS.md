@@ -111,7 +111,6 @@ Available commands:
 
 - **Review**: Comprehensive code review procedure (documentation, readability, performance, unused imports, prettier, and `pnpm check`)
 - **Check**: Iterate on `pnpm check` until no errors remain; ensure `docs/releases/next.md` is up to date (see `agents/coding-agent-commands-1.0.md` and `docs/releases/AGENTS.md`)
-- **Release**: Release procedure using release-it for version management, changelog generation, and git tagging
 - **Create Issue**: Report a discussed topic to GitHub Issues; procedure in `agents/github-issues-guidelines-1.0.md`
 - **Update Issue**: Update an existing GitHub issue with progression and decisions; procedure in `agents/github-issues-guidelines-1.0.md`
 - **Close Issue**: Add final comment and close issue as completed; procedure in `agents/github-issues-guidelines-1.0.md`
