@@ -5,7 +5,7 @@
  */
 
 import { execSync } from "child_process";
-import { readFileSync, writeFileSync, readdirSync, statSync } from "fs";
+import { readFileSync, writeFileSync, readdirSync, lstatSync } from "fs";
 import { join } from "path";
 
 export const VERSION_TYPES = ["dev", "preview", "dp", "patch", "minor", "major"] as const;
@@ -23,7 +23,12 @@ export function findPackageJsonFiles(dir: string, fileList: string[] = []): stri
 
     for (const file of files) {
         const filePath = join(dir, file);
-        const stat = statSync(filePath);
+        const stat = lstatSync(filePath);
+
+        // Do not follow symlinked directories (e.g. `links/` → external trees) — avoids ELOOP cycles.
+        if (stat.isSymbolicLink()) {
+            continue;
+        }
 
         if (stat.isDirectory()) {
             if (
@@ -32,6 +37,7 @@ export function findPackageJsonFiles(dir: string, fileList: string[] = []): stri
                 file === "dist" ||
                 file === ".next" ||
                 file === ".turbo" ||
+                file === "links" ||
                 file.startsWith(".")
             ) {
                 continue;
