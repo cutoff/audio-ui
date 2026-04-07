@@ -27,12 +27,9 @@
     "clean": "(pnpm exec turbo clean || true) && rm -rf node_modules .turbo",
     "clean-build": "pnpm clean && pnpm i && pnpm build",
     "format": "prettier --write .",
-    "version:dev": "tsx scripts/set-dev-version.ts",
-    "version:preview": "tsx scripts/generate-preview-version.ts",
-    "release": "release-it",
-    "release:preview": "tsx scripts/generate-timestamped-preview.ts && release-it --no-increment",
-    "release:dp": "release-it --preRelease=dp",
-    "publish:preview": "cd packages && pnpm publish --tag preview"
+    "version": "tsx scripts/version.ts",
+    "release:prepare": "tsx scripts/release-prepare.ts",
+    "release:dev": "tsx scripts/release-dev.ts"
   },
   "keywords": [
     "react",
@@ -46,7 +43,6 @@
   "devDependencies": {
     "@eslint/compat": "^1.4.1",
     "@eslint/js": "^9.39.2",
-    "@release-it/bumper": "^7.0.5",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
     "eslint": "^9.39.2",
@@ -54,7 +50,6 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "prettier": "^3.8.1",
-    "release-it": "^19.2.4",
     "tsx": "^4.21.0",
     "vitest": "^1.6.1"
   }
