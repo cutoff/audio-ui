@@ -15,6 +15,7 @@
 | Routing      | Next.js app router; pages in app/[route]/page.tsx; categories: examples, vector-components, raster-components, primitives, layout                      |
 | Theming      | next-themes for theme switching; theme controls in header (ThemeSettingsButton, ThemeModeToggle); responsive sheet for customization                   |
 | Integrations | Import library components for showcases; Radix via shadcn; forms, routing                                                                              |
+| Dependencies | Most direct deps use semver carets; `next` and `eslint-config-next` track the active Next 15 line. `components/ui/shadcn-io/color-picker/` imports `radix-ui` with a caret range (not `latest`). |
 
 ## Key File Structure
 

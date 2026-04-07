@@ -23,6 +23,8 @@ jobs:
               uses: actions/checkout@v4
               with:
                   fetch-depth: 0
+                  # Explicit SHA avoids provenance signing issues (Missing SourceRepositoryRef) on some runners.
+                  ref: ${{ github.sha }}
 
             - name: Read version
               id: version
@@ -51,9 +53,14 @@ jobs:
               if: steps.version.outputs.is_release == 'true'
               uses: actions/setup-node@v4
               with:
-                  node-version: 20
+                  # Trusted publishing (OIDC) requires Node >= 22.14 and npm >= 11.5.1 (see npm docs).
+                  node-version: 24
                   cache: "pnpm"
                   registry-url: "https://registry.npmjs.org"
+
+            - name: Upgrade npm for OIDC trusted publishing
+              if: steps.version.outputs.is_release == 'true'
+              run: npm install -g npm@^11.5.1
 
             - name: Install dependencies
               if: steps.version.outputs.is_release == 'true'
@@ -66,17 +73,28 @@ jobs:
             - name: Publish @cutoff/audio-ui-core
               if: steps.version.outputs.is_release == 'true'
               working-directory: packages/core
-              run: pnpm publish --tag ${{ steps.version.outputs.dist_tag }} --no-git-checks
+              env:
+                  NPM_CONFIG_PROVENANCE: "true"
+              run: pnpm publish --tag ${{ steps.version.outputs.dist_tag }} --no-git-checks --provenance
 
             - name: Publish @cutoff/audio-ui-react
               if: steps.version.outputs.is_release == 'true'
               working-directory: packages/react
-              run: pnpm publish --tag ${{ steps.version.outputs.dist_tag }} --no-git-checks
+              env:
+                  NPM_CONFIG_PROVENANCE: "true"
+              run: pnpm publish --tag ${{ steps.version.outputs.dist_tag }} --no-git-checks --provenance
 
             - name: Create git tag
               if: steps.version.outputs.is_release == 'true'
+              env:
+                  VERSION: ${{ steps.version.outputs.version }}
               run: |
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
-                  git tag "release/${{ steps.version.outputs.version }}"
-                  git push origin "release/${{ steps.version.outputs.version }}"
+                  TAG="release/${VERSION}"
+                  if git ls-remote --tags origin "refs/tags/${TAG}" | grep -q .; then
+                    echo "Tag ${TAG} already exists on origin — skipping."
+                  else
+                    git tag "${TAG}"
+                    git push origin "refs/tags/${TAG}"
+                  fi
