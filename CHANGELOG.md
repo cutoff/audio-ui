@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-preview.20260407.2212] - 2026-04-07
+
 ### Security
 
 - Dependency and lockfile updates to address known advisories (transitive packages such as `rollup`, `minimatch`, `picomatch`, `lodash`, `yaml`, `ajv`, `flatted`, `brace-expansion`, `defu`, and related chains).
