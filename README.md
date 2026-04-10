@@ -163,6 +163,10 @@ For full details, please see the [LICENSE.md](license-telf/LICENSE.md) file and 
 
 We welcome contributions to AudioUI. If you would like to contribute, please fork the repository and submit a pull request. All contributors must sign our Contributor License Agreement (CLA), which can be found in the `license-telf/` directory.
 
+## Security
+
+Report security vulnerabilities through the process in [SECURITY.md](SECURITY.md). Use [GitHub Issues](https://github.com/cutoff/audio-ui/issues) for ordinary bugs and defects.
+
 ## Community
 
 <a href="https://discord.gg/7RB6t2xqYW" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord" /></a>
