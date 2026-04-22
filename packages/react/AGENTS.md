@@ -131,6 +131,21 @@ The library uses TypeScript path aliases to simplify imports and avoid cluttered
 - Local dev: `pnpm link`; demo imports
 - TS: Prefix unused params with \_; strict
 
+### Adding New Components
+
+1. Create component file in the appropriate folder:
+    - `src/components/defaults/controls/` — built-in controls with theming
+    - `src/components/generic/controls/` — generic components (filmstrip/image-based)
+    - `src/components/primitives/controls/` — control primitives
+    - `src/components/primitives/svg/` — SVG view primitives
+2. Export from `src/index.ts`
+3. Add demo page in `apps/playground-react/app/<category>/<component-name>/page.tsx`
+4. Build and typecheck: `pnpm build && pnpm typecheck`
+
+### Playground pickup
+
+The playground app uses the workspace version of `@cutoff/audio-ui-react` and picks up source changes automatically during `pnpm dev`. If the playground does not reflect a change, rebuild the library explicitly: `pnpm build --filter @cutoff/audio-ui-react`.
+
 Agent Note: Enforce from agents/typescript-guidelines-2.0.md; read docs/ for AdaptiveBox, color system, size system, and component-specific documentation.
 
 ## Documentation
