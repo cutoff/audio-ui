@@ -41,3 +41,5 @@ vitest.config.ts.timestamp-*
 
 /docs/internal
 .vercel
+
+context
