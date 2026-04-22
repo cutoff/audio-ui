@@ -1,6 +1,6 @@
 {
     "name": "@cutoff/audio-ui-core",
-    "version": "1.0.0-dev",
+    "version": "1.0.0-preview.20260422.1925",
     "description": "Core logic and models for AudioUI by Cutoff",
     "private": false,
     "author": "Renaud Denis <mail@renauddenis.com> (https://renauddenis.com)",

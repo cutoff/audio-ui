@@ -4,6 +4,9 @@
  * See LICENSE.md for details.
  */
 
+// Side-effect import: ensures component styles are loaded whenever the library is imported.
+// Lets CDN consumers (esm.sh, jsdelivr) get styles without a separate <link> tag.
+// Preserved through bundlers via `sideEffects: ["**/*.css"]` in package.json.
 import "@cutoff/audio-ui-core/styles-with-font.css";
 
 export { default as OptionView } from "./components/primitives/controls/OptionView";

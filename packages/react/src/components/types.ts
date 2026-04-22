@@ -55,13 +55,30 @@ export type ValueLabelMode = "labelOnly" | "valueOnly" | "interactive";
  * Provides the value in all three domain representations simultaneously.
  */
 export type AudioControlEvent<T = number> = {
-    /** The real-world value (e.g. -6.0 dB, 440 Hz, true/false) */
+    /**
+     * The real-world value in user-facing units — Hz, dB, semitones, seconds, etc.
+     * For `Knob` and `Slider`, this is a `number` in the prop's `[min, max]` range.
+     * For `CycleButton`, this is the option's `value`.
+     * For `Button`, this is a `boolean`.
+     */
     value: T;
-    /** The normalized value (0.0 to 1.0) used for UI rendering and host automation */
+
+    /**
+     * Normalized 0.0-1.0 representation — useful for host automation,
+     * cross-parameter mapping, and rendering scale-agnostic UIs.
+     */
     normalizedValue: number;
-    /** The MIDI value (integer, e.g. 0-127 or 0-16383) used for hardware/protocol communication */
+
+    /**
+     * MIDI integer representation — 0-127 for 7-bit, 0-16383 for 14-bit high-resolution.
+     * Use for hardware/protocol integration.
+     */
     midiValue: number;
-    /** The parameter definition driving this value */
+
+    /**
+     * The parameter definition driving this value, when bound via the `parameter` prop.
+     * Undefined when the control is used in ad-hoc mode (min/max props only).
+     */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     parameter?: any; // To avoid circular deps
 };
@@ -78,7 +95,17 @@ export type AudioControlEvent<T = number> = {
 export type InteractiveControlProps<T = number> = {
     /**
      * Handler for value changes.
-     * Receives a rich event object with real, normalized, and MIDI representations.
+     *
+     * Receives an {@link AudioControlEvent} with three domain representations:
+     * - `e.value`: real-world value (number for Knob/Slider, boolean for Button, custom for CycleButton)
+     * - `e.normalizedValue`: normalized 0.0-1.0 for UI and automation
+     * - `e.midiValue`: MIDI integer for hardware/protocol
+     *
+     * @example
+     * ```tsx
+     * const [cutoff, setCutoff] = useState(440);
+     * <Knob value={cutoff} onChange={(e) => setCutoff(e.value)} />
+     * ```
      */
     onChange?: (event: AudioControlEvent<T>) => void;
 
