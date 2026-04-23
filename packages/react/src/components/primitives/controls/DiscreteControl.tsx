@@ -6,18 +6,24 @@
 
 "use client";
 
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 import { CLASSNAMES } from "@cutoff/audio-ui-core";
-import { AdaptiveBoxProps, AdaptiveBoxLogicalSizeProps, DiscreteControlProps, ControlComponent } from "@/types";
+import {
+    AdaptiveBoxProps,
+    AdaptiveBoxLogicalSizeProps,
+    DiscreteControlPrimitiveProps,
+    ControlComponent,
+} from "@/types";
 import AdaptiveBox from "../AdaptiveBox";
 import { useAudioParameter } from "@/hooks/useAudioParameter";
 import { useDiscreteInteraction } from "@/hooks/useDiscreteInteraction";
 import { useDiscreteParameterResolution } from "@/hooks/useDiscreteParameterResolution";
 
 export type DiscreteControlComponentProps<P extends object = Record<string, unknown>> =
-    // Base Control Props (includes all DiscreteControlProps)
-    DiscreteControlProps &
+    // Base Control Props (permissive — accepts any combination of value-channel props,
+    // with runtime precedence. A strict DiscreteControlProps is assignable to this.)
+    DiscreteControlPrimitiveProps &
         // Layout props that configure AdaptiveBox behavior
         AdaptiveBoxProps &
         // Logical size props that override view component defaults
@@ -66,7 +72,7 @@ export type DiscreteControlComponentProps<P extends object = Record<string, unkn
  * // Ad-Hoc Mode with options prop
  * <DiscreteControl
  *   value="sine"
- *   onChange={(e) => setValue(e.value)}
+ *   onValueChange={setValue}
  *   options={[
  *     { value: "sine", label: "Sine Wave" },
  *     { value: "square", label: "Square Wave" }
@@ -78,7 +84,7 @@ export type DiscreteControlComponentProps<P extends object = Record<string, unkn
  * // Ad-Hoc Mode with children
  * <DiscreteControl
  *   value="sine"
- *   onChange={(e) => setValue(e.value)}
+ *   onValueChange={setValue}
  *   view={KnobView}
  *   viewProps={{ color: "blue", thickness: 0.4 }}
  * >
@@ -93,8 +99,12 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
         viewProps,
         htmlOverlay,
         value,
+        normalizedValue: inputNormalizedValue,
+        midiValue: inputMidiValue,
         defaultValue,
-        onChange,
+        onValueChange,
+        onNormalizedValueChange,
+        onMidiValueChange,
         children,
         options,
         label,
@@ -119,6 +129,8 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
         midiMapping,
     } = props;
 
+    const editable = !!(onValueChange || onNormalizedValueChange || onMidiValueChange);
+
     const { derivedParameter, effectiveDefaultValue } = useDiscreteParameterResolution({
         children,
         options,
@@ -130,26 +142,26 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
         midiMapping,
     });
 
-    const effectiveValue = value !== undefined ? value : effectiveDefaultValue;
+    // Resolve effective value in real-value domain from whichever input channel was supplied.
+    // For uncontrolled mode, fall back to the parameter's default.
+    const anyInputProvided = value !== undefined || inputNormalizedValue !== undefined || inputMidiValue !== undefined;
+    const effectiveValueInput = anyInputProvided ? value : effectiveDefaultValue;
 
-    const { normalizedValue, setNormalizedValue, formattedValue, converter } = useAudioParameter(
-        effectiveValue,
-        onChange,
-        derivedParameter
-    );
-
-    const handleValueChange = useCallback(
-        (val: number | string) => {
-            setNormalizedValue(converter.normalize(val));
-        },
-        [setNormalizedValue, converter]
-    );
+    const { realValue, normalizedValue, formattedValue, commitValue } = useAudioParameter<string | number>({
+        value: effectiveValueInput,
+        normalizedValue: inputNormalizedValue,
+        midiValue: inputMidiValue,
+        onValueChange,
+        onNormalizedValueChange,
+        onMidiValueChange,
+        parameter: derivedParameter,
+    });
 
     const { handleClick, handleKeyDown, handleMouseDown } = useDiscreteInteraction({
-        value: effectiveValue,
+        value: realValue,
         options: derivedParameter.options,
-        onValueChange: handleValueChange,
-        disabled: !onChange,
+        onValueChange: commitValue,
+        disabled: !editable,
         // Type cast needed because onClick prop expects React.MouseEvent<SVGSVGElement>
         // but hook accepts React.MouseEvent
         onClick: onClick
@@ -162,8 +174,7 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
     const effectiveLabel = label ?? derivedParameter.name;
 
     const optionCount = derivedParameter.options.length;
-    const optionIndex =
-        optionCount > 0 ? derivedParameter.options.findIndex((opt) => opt.value === effectiveValue) : -1;
+    const optionIndex = optionCount > 0 ? derivedParameter.options.findIndex((opt) => opt.value === realValue) : -1;
     const ariaValueNow = optionIndex >= 0 ? optionIndex : undefined;
     const ariaValueMin = 0;
     const ariaValueMax = Math.max(0, optionCount - 1);
@@ -173,16 +184,15 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
     }, [className]);
 
     const svgClassNames = useMemo(() => {
-        return onChange || onClick ? CLASSNAMES.highlight : "";
-    }, [onChange, onClick]);
+        return editable || onClick ? CLASSNAMES.highlight : "";
+    }, [editable, onClick]);
 
-    // Add clickable cursor when interactive (onChange or onClick)
-    // Uses CSS variable for customizable cursor type
+    // Add clickable cursor when interactive.
     const svgStyle = useMemo(
         () => ({
-            ...(onClick || onChange ? { cursor: "var(--audioui-cursor-clickable)" as const } : {}),
+            ...(onClick || editable ? { cursor: "var(--audioui-cursor-clickable)" as const } : {}),
         }),
-        [onClick, onChange]
+        [onClick, editable]
     );
 
     return (

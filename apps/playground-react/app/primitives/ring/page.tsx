@@ -448,8 +448,8 @@ export default function RingDemoPage() {
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            // Mock onChange since RingWrapper isn't interactive
-            onChange={(event) => setNormalizedValue(event.value)}
+            // Mock onValueChange since RingWrapper isn't interactive
+            onValueChange={(v) => setNormalizedValue(v)}
         />
     );
 }

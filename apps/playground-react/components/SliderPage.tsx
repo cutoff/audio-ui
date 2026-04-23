@@ -68,7 +68,7 @@ type SliderComponentProps = {
     cursorRoundness?: number;
     orientation: "horizontal" | "vertical";
     adaptiveSize?: boolean;
-    onChange?: (event: AudioControlEvent<number | string>) => void;
+    onValueChange?: (value: number | string, event: AudioControlEvent<number | string>) => void;
     onClick?: () => void;
     style?: React.CSSProperties;
     className?: string;
@@ -95,7 +95,7 @@ function SliderComponent({
     cursorRoundness,
     orientation,
     adaptiveSize,
-    onChange,
+    onValueChange,
     onClick,
     style,
     className,
@@ -115,7 +115,7 @@ function SliderComponent({
             style={style}
             className={className}
             onClick={onClick}
-            onChange={onChange}
+            onValueChange={onValueChange}
             size={size}
             adaptiveSize={adaptiveSize}
             color={color}
@@ -919,7 +919,7 @@ export default function SliderPage({ orientation }: SliderPageProps) {
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(event) => setValue(event.value)}
+            onValueChange={(v) => setValue(v)}
         />
     );
 }

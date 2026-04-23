@@ -121,8 +121,12 @@ export type CycleButtonProps = DiscreteControlProps &
  */
 function CycleButton({
     value,
+    normalizedValue,
+    midiValue,
     defaultValue,
-    onChange,
+    onValueChange,
+    onNormalizedValueChange,
+    onMidiValueChange,
     renderOption,
     label,
     adaptiveSize = false,
@@ -214,8 +218,12 @@ function CycleButton({
     return (
         <DiscreteControl
             value={value}
+            normalizedValue={normalizedValue}
+            midiValue={midiValue}
+            onValueChange={onValueChange}
+            onNormalizedValueChange={onNormalizedValueChange}
+            onMidiValueChange={onMidiValueChange}
             defaultValue={defaultValue}
-            onChange={onChange}
             label={label}
             paramId={paramId}
             parameter={parameter}

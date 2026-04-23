@@ -313,15 +313,19 @@ type KnobProps = {
   // Mode B: Ad-hoc (Implies Continuous)
   min?: number;
   max?: number;
-  value: number;
-  onChange: (val: number) => void;
+
+  // Paired value channel — pick one input + its matching callback
+  value?: number;
+  onValueChange?: (value: number, event: AudioControlEvent<number>) => void;
+  // or: normalizedValue + onNormalizedValueChange
+  // or: midiValue + onMidiValueChange
 };
 
 // Example for Switch
 type SwitchProps = {
   parameter?: BooleanParameter;
-  value: boolean;
-  onChange: (val: boolean) => void;
+  value?: boolean;
+  onValueChange?: (value: boolean, event: AudioControlEvent<boolean>) => void;
 };
 ```
 
@@ -359,8 +363,12 @@ function Knob(props: KnobProps) {
     };
   }, [props.parameter, props.min, props.max, props.step, props.label, props.unit]);
 
-  // Use the hook to handle all math
-  const { normalizedValue, formattedValue, adjustValue } = useAudioParameter(props.value, props.onChange, paramConfig);
+  // Use the hook to handle all math; pass a single options object.
+  const { normalizedValue, formattedValue, adjustValue } = useAudioParameter({
+    value: props.value,
+    onValueChange: props.onValueChange,
+    parameter: paramConfig,
+  });
 
   const handleWheel = (e: WheelEvent) => {
     // Reverse deltaY so scrolling up increases value
@@ -394,7 +402,7 @@ function Knob(props: KnobProps) {
 <CycleButton
   parameter={waveformParam} // type: "discrete"
   value={currentWave}
-  onChange={setWave}
+  onValueChange={setWave}
   renderOption={(opt) => (opt.value === "saw" ? <SawIcon /> : <SquareIcon />)}
 />
 ```
@@ -403,7 +411,7 @@ function Knob(props: KnobProps) {
 The component infers the `DiscreteParameter` from the children structure.
 
 ```tsx
-<CycleButton value={val} onChange={setVal}>
+<CycleButton value={val} onValueChange={setVal}>
   <Option value="saw">
     <SawIcon />
   </Option>
@@ -439,8 +447,8 @@ const unmappedParam = AudioParameterFactory.createMidiStandard7Bit("Mod Wheel");
 return (
   <Knob
     parameter={unmappedParam}
-    value={midiValue}
-    onChange={setMidiValue}
+    midiValue={midiValue}
+    onMidiValueChange={setMidiValue}
   />
 );
 ```

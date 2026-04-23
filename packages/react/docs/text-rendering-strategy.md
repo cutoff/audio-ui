@@ -120,7 +120,7 @@ For built-in controls, pass content as `children`:
 
 ```tsx
 // Text content
-<Knob value={value} onChange={setValue}>
+<Knob value={value} onValueChange={setValue}>
     <div style={{ fontSize: "22cqmin", fontWeight: 500 }}>
         {formattedValue}
     </div>
@@ -139,7 +139,7 @@ For built-in controls, pass content as `children`:
 For custom controls using `ContinuousControl`, the same pattern applies:
 
 ```tsx
-<ContinuousControl view={MyCustomKnob} value={value} onChange={setValue}>
+<ContinuousControl view={MyCustomKnob} value={value} onValueChange={setValue}>
   <div className="text-lg font-bold">{value}</div>
   <div className="text-xs opacity-60">dB</div>
 </ContinuousControl>

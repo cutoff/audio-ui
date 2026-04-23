@@ -111,7 +111,11 @@ function Knob({
     step,
     bipolar = false,
     value,
-    onChange,
+    normalizedValue,
+    midiValue,
+    onValueChange,
+    onNormalizedValueChange,
+    onMidiValueChange,
     valueFormatter,
     label,
     adaptiveSize = false,
@@ -171,7 +175,16 @@ function Knob({
         defaultValue,
     });
 
-    const { formattedValue } = useAudioParameter(value, onChange, parameterDef, valueFormatter);
+    const { formattedValue } = useAudioParameter<number>({
+        value,
+        normalizedValue,
+        midiValue,
+        onValueChange,
+        onNormalizedValueChange,
+        onMidiValueChange,
+        parameter: parameterDef,
+        userValueFormatter: valueFormatter,
+    });
 
     const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "square");
 
@@ -202,6 +215,11 @@ function Knob({
             step={step}
             bipolar={bipolar}
             value={value}
+            normalizedValue={normalizedValue}
+            midiValue={midiValue}
+            onValueChange={onValueChange}
+            onNormalizedValueChange={onNormalizedValueChange}
+            onMidiValueChange={onMidiValueChange}
             label={label}
             displayMode={displayMode}
             labelMode={labelMode}
@@ -211,7 +229,6 @@ function Knob({
             labelHeightUnits={labelHeightUnits}
             className={classNames(sizeClassName, className)}
             style={{ ...adaptiveSizeStyle, ...themableStyle }}
-            onChange={onChange}
             paramId={paramId}
             onClick={onClick}
             onMouseDown={onMouseDown}

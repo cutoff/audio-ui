@@ -7,7 +7,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ImageSwitch, ImageSwitchComponentProps, AudioControlEvent } from "@cutoff/audio-ui-react";
+import { ImageSwitch, ImageSwitchComponentProps } from "@cutoff/audio-ui-react";
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,7 +28,7 @@ function generateCodeSnippet(
     let props = `value={${value}} latch={${latch}} label="${label}"`;
     props += `\n  frameWidth={${frameWidth}} frameHeight={${frameHeight}}`;
     props += `\n  imageHrefFalse="${imageHrefFalse}" imageHrefTrue="${imageHrefTrue}"`;
-    return `<ImageSwitch ${props}\n  onChange={(e) => setValue(e.value)}\n/>`;
+    return `<ImageSwitch ${props}\n  onValueChange={(v) => setValue(v)}\n/>`;
 }
 
 export default function ImageSwitchDemoPage() {
@@ -60,7 +60,6 @@ export default function ImageSwitchDemoPage() {
             frameHeight,
             imageHrefFalse,
             imageHrefTrue,
-            onChange: (e: AudioControlEvent<boolean>) => setValue(e.value),
         }),
         [value, latch, label, frameWidth, frameHeight, imageHrefFalse, imageHrefTrue]
     );
@@ -138,7 +137,7 @@ export default function ImageSwitchDemoPage() {
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(e) => setValue(e.value)}
+            onValueChange={(v) => setValue(v)}
         />
     );
 }

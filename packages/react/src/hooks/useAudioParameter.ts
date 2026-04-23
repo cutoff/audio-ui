@@ -8,7 +8,9 @@ import { useMemo, useCallback, useRef } from "react";
 import { AudioParameter, AudioParameterConverter } from "@cutoff/audio-ui-core";
 import { AudioControlEvent } from "../components/types";
 
-export interface UseAudioParameterResult {
+export interface UseAudioParameterResult<T extends number | boolean | string = number | boolean | string> {
+    /** The resolved real-world value (derived from whichever input channel was supplied). */
+    realValue: T;
     /** The normalized value (0..1) for UI rendering */
     normalizedValue: number;
     /** Formatted string representation of the current value */
@@ -18,8 +20,13 @@ export interface UseAudioParameterResult {
     /** The full parameter model instance */
     converter: AudioParameterConverter;
     /**
+     * Dispatch a new real-value directly through the paired callback for the active channel.
+     * Useful for boolean / discrete controls whose interactions produce full real-values (not deltas).
+     */
+    commitValue: (newRealValue: T) => void;
+    /**
      * Set the value using a normalized (0..1) input.
-     * Automatically denormalizes and calls onChange.
+     * Automatically denormalizes and dispatches the paired callback matching the active channel.
      */
     setNormalizedValue: (normalized: number) => void;
     /**
@@ -41,168 +48,214 @@ export interface UseAudioParameterResult {
     resetToDefault: () => void;
 }
 
+type ActiveChannel = "value" | "normalized" | "midi";
+
 /**
- * Hook to manage audio parameter logic, normalization, and formatting.
+ * Options for {@link useAudioParameter}. Supply exactly one input channel
+ * (`value` | `normalizedValue` | `midiValue`) and — optionally — its matching paired callback.
+ */
+export interface UseAudioParameterOptions<T extends number | boolean | string> {
+    /** Real-world value input (Hz, dB, boolean state, option value, ...). */
+    value?: T;
+    /** Normalized 0..1 input. Takes precedence after `value`. */
+    normalizedValue?: number;
+    /** MIDI integer input. Takes precedence after `normalizedValue`. */
+    midiValue?: number;
+    /** Paired callback for `value` input. First arg: new real value. Second arg: full event. */
+    onValueChange?: (value: T, event: AudioControlEvent<T>) => void;
+    /** Paired callback for `normalizedValue` input. First arg: new normalized value. Second arg: full event. */
+    onNormalizedValueChange?: (value: number, event: AudioControlEvent<T>) => void;
+    /** Paired callback for `midiValue` input. First arg: new MIDI integer. Second arg: full event. */
+    onMidiValueChange?: (value: number, event: AudioControlEvent<T>) => void;
+    /** Parameter definition driving conversions and defaults. */
+    parameter: AudioParameter;
+    /** Optional custom renderer for the value display. If it returns a string, overrides the default formatter. */
+    userValueFormatter?: (value: T, parameterDef: AudioParameter) => string | undefined;
+    /** Optional custom label. Takes precedence over parameter name when `valueAsLabel` is false. */
+    userLabel?: string;
+    /** When true, displays the formatted value as the label instead of the provided label or parameter name. */
+    valueAsLabel?: boolean;
+}
+
+/**
+ * Hook to manage audio parameter logic, normalization, formatting, and paired-channel dispatch.
  *
- * This is the primary hook for connecting audio parameter models to React components.
- * It handles all value conversions (real ↔ normalized ↔ MIDI) and provides formatted
- * display values. The hook ensures that all conversions go through the MIDI pivot,
- * maintaining consistency with hardware standards.
- *
- * The hook provides:
- * - `normalizedValue`: 0..1 value for UI rendering
- * - `formattedValue`: Formatted string for display
- * - `converter`: The AudioParameterConverter instance for advanced operations
- * - `setNormalizedValue`: Set value from normalized input (e.g., from UI slider)
- * - `adjustValue`: Adjust value relatively (e.g., from mouse wheel or drag)
- *
- * @param value The current real-world value (Source of Truth)
- * @param onChange Callback when value changes. Receives an AudioControlEvent with all value representations.
- * @param parameterDef The parameter definition (AudioParameter)
- * @param userValueFormatter Optional custom renderer for the value display. If provided and returns a value, it takes precedence over the default formatter.
- * @param userLabel Optional custom label. If provided and valueAsLabel is false, takes precedence over parameter name.
- * @param valueAsLabel When true, displays the formatted value as the label instead of the provided label or parameter name.
- * @returns Object containing normalizedValue, formattedValue, effectiveLabel, converter, setNormalizedValue, and adjustValue
+ * Resolves the effective real value from whichever input channel was supplied
+ * (precedence: `value` > `normalizedValue` > `midiValue`), converts to a canonical
+ * real + normalized + MIDI triple via {@link AudioParameterConverter}, and — on interaction —
+ * fires the single paired callback matching the active channel. Every callback receives
+ * `(representationValue, event)` where `event` is the full {@link AudioControlEvent}
+ * with all three representations populated.
  *
  * @example
  * ```tsx
- * // Basic usage
- * const { normalizedValue, formattedValue, adjustValue } = useAudioParameter(
- *   volume,
- *   (e) => setVolume(e.value),
- *   volumeParam
- * );
- *
- * // With custom label and value formatter
- * const { normalizedValue, formattedValue, effectiveLabel, adjustValue } = useAudioParameter(
- *   volume,
- *   (e) => setVolume(e.value),
- *   volumeParam,
- *   (val) => `${val.toFixed(1)} dB`, // Custom formatter
- *   "Master Volume", // Custom label
- *   false // Don't use value as label
- * );
- *
- * // Use normalizedValue for rendering
- * <KnobView normalizedValue={normalizedValue} />
- *
- * // Use adjustValue for relative changes
- * <div onWheel={(e) => adjustValue(e.deltaY, 0.001)} />
- *
- * // Use effectiveLabel for display
- * <label>{effectiveLabel}</label>
+ * const { normalizedValue, formattedValue, adjustValue } = useAudioParameter({
+ *   value: cutoffHz,
+ *   onValueChange: setCutoffHz,
+ *   parameter: cutoffParam,
+ * });
  * ```
  */
 export function useAudioParameter<T extends number | boolean | string>(
-    value: T,
-    onChange: undefined | ((event: AudioControlEvent<T>) => void),
-    parameterDef: AudioParameter,
-    userValueFormatter?: (value: T, parameterDef: AudioParameter) => string | undefined,
-    userLabel?: string,
-    valueAsLabel?: boolean
-): UseAudioParameterResult {
+    options: UseAudioParameterOptions<T>
+): UseAudioParameterResult<T> {
+    const {
+        value,
+        normalizedValue: inputNormalized,
+        midiValue: inputMidi,
+        onValueChange,
+        onNormalizedValueChange,
+        onMidiValueChange,
+        parameter,
+        userValueFormatter,
+        userLabel,
+        valueAsLabel,
+    } = options;
+
     const converter = useMemo(() => {
-        return new AudioParameterConverter(parameterDef);
-    }, [parameterDef]);
+        return new AudioParameterConverter(parameter);
+    }, [parameter]);
 
-    const normalizedValue = useMemo(() => {
-        return converter.normalize(value);
-    }, [value, converter]);
+    // Resolve the effective real value and note which channel is active.
+    // Precedence: value > normalizedValue > midiValue (silent; TypeScript's discriminated union
+    // prevents multi-channel inputs under strict mode; this path is only reachable in loose TS / JS).
+    const { realValue, normalizedValue, activeChannel } = useMemo(() => {
+        if (value !== undefined) {
+            return {
+                realValue: value,
+                normalizedValue: converter.normalize(value),
+                activeChannel: "value" as ActiveChannel,
+            };
+        }
+        if (inputNormalized !== undefined) {
+            return {
+                realValue: converter.denormalize(inputNormalized) as T,
+                normalizedValue: inputNormalized,
+                activeChannel: "normalized" as ActiveChannel,
+            };
+        }
+        if (inputMidi !== undefined) {
+            const maxMidi = Math.pow(2, parameter.midiResolution ?? 32) - 1;
+            return {
+                realValue: converter.fromMidi(inputMidi) as T,
+                normalizedValue: inputMidi / maxMidi,
+                activeChannel: "midi" as ActiveChannel,
+            };
+        }
+        // No input provided — fall back to the parameter's normalized default (0.0).
+        // Callers (control primitives) typically ensure one of the three inputs is supplied.
+        return {
+            realValue: converter.denormalize(0) as T,
+            normalizedValue: 0,
+            activeChannel: "value" as ActiveChannel,
+        };
+    }, [value, inputNormalized, inputMidi, converter, parameter.midiResolution]);
 
-    // Track latest value in ref to avoid stale closures during rapid events (e.g., wheel)
-    const valueRef = useRef(value);
-    valueRef.current = value;
+    // Track latest real value in ref to avoid stale closures during rapid events (e.g., wheel).
+    const realValueRef = useRef(realValue);
+    realValueRef.current = realValue;
+
+    const hasCallback = !!(onValueChange ?? onNormalizedValueChange ?? onMidiValueChange);
 
     const commitValue = useCallback(
-        (newValue: T) => {
-            if (!onChange) return;
+        (newRealValue: T) => {
+            if (!hasCallback) return;
 
-            const normalized = converter.normalize(newValue);
-            const midi = converter.toMidi(newValue);
+            const newNormalized = converter.normalize(newRealValue);
+            const newMidi = converter.toMidi(newRealValue);
 
-            onChange({
-                value: newValue,
-                normalizedValue: normalized,
-                midiValue: midi,
-                parameter: parameterDef,
-            });
+            const event: AudioControlEvent<T> = {
+                value: newRealValue,
+                normalizedValue: newNormalized,
+                midiValue: newMidi,
+                parameter,
+            };
+
+            // Fire the single paired callback matching the active channel.
+            switch (activeChannel) {
+                case "value":
+                    onValueChange?.(newRealValue, event);
+                    break;
+                case "normalized":
+                    onNormalizedValueChange?.(newNormalized, event);
+                    break;
+                case "midi":
+                    onMidiValueChange?.(newMidi, event);
+                    break;
+            }
         },
-        [converter, onChange, parameterDef]
+        [converter, parameter, activeChannel, hasCallback, onValueChange, onNormalizedValueChange, onMidiValueChange]
     );
 
     const setNormalizedValue = useCallback(
         (newNormal: number) => {
-            if (!onChange) return;
+            if (!hasCallback) return;
             const clamped = Math.max(0, Math.min(1, newNormal));
-            const realValue = converter.denormalize(clamped) as T;
+            const newReal = converter.denormalize(clamped) as T;
 
-            if (realValue !== valueRef.current) {
-                valueRef.current = realValue;
-                commitValue(realValue);
+            if (newReal !== realValueRef.current) {
+                realValueRef.current = newReal;
+                commitValue(newReal);
             }
         },
-        [converter, onChange, commitValue]
+        [converter, hasCallback, commitValue]
     );
 
     const adjustValue = useCallback(
         (delta: number, sensitivity = 0.001) => {
-            if (!onChange) return;
+            if (!hasCallback) return;
 
-            // Use ref for calculation base to prevent stale closure jitter during rapid events
-            const currentReal = valueRef.current as number;
+            // Use ref for calculation base to prevent stale closure jitter during rapid events.
+            const currentReal = realValueRef.current as number;
             const currentNormal = converter.normalize(currentReal);
 
             const newNormal = Math.max(0, Math.min(1, currentNormal + delta * sensitivity));
             setNormalizedValue(newNormal);
         },
-        [converter, onChange, setNormalizedValue]
+        [converter, hasCallback, setNormalizedValue]
     );
 
-    // Custom valueFormatter takes precedence if provided and returns a value; otherwise fall back to default formatter
     const formattedValue = useMemo(() => {
         if (userValueFormatter) {
-            const customValue = userValueFormatter(value, parameterDef);
+            const customValue = userValueFormatter(realValue, parameter);
             if (customValue !== undefined) {
                 return customValue;
             }
         }
-        return converter.format(value);
-    }, [value, converter, userValueFormatter, parameterDef]);
+        return converter.format(realValue);
+    }, [realValue, converter, userValueFormatter, parameter]);
 
-    // Compute effective label: valueAsLabel takes precedence, then userLabel, then parameter name
     const effectiveLabel = useMemo(() => {
         if (valueAsLabel) {
             return formattedValue;
         }
-        return userLabel ?? parameterDef.name;
-    }, [valueAsLabel, formattedValue, userLabel, parameterDef.name]);
+        return userLabel ?? parameter.name;
+    }, [valueAsLabel, formattedValue, userLabel, parameter.name]);
 
-    // Get default normalized value
     const getDefaultNormalizedValue = useCallback(() => {
-        if (parameterDef.type === "continuous") {
-            if (parameterDef.defaultValue !== undefined) {
-                return converter.normalize(parameterDef.defaultValue);
+        if (parameter.type === "continuous") {
+            if (parameter.defaultValue !== undefined) {
+                return converter.normalize(parameter.defaultValue);
             }
-            // If no defaultValue, use 0.0 for unipolar, 0.5 for bipolar
-            const isBipolar = parameterDef.bipolar === true;
+            const isBipolar = parameter.bipolar === true;
             return isBipolar ? 0.5 : 0.0;
         }
-        // For non-continuous parameters, return 0.0
         return 0.0;
-    }, [converter, parameterDef]);
+    }, [converter, parameter]);
 
-    // Reset to default value
     const resetToDefault = useCallback(() => {
-        if (!onChange) return;
+        if (!hasCallback) return;
         const defaultNormalized = getDefaultNormalizedValue();
         setNormalizedValue(defaultNormalized);
-    }, [onChange, getDefaultNormalizedValue, setNormalizedValue]);
+    }, [hasCallback, getDefaultNormalizedValue, setNormalizedValue]);
 
     return {
+        realValue,
         normalizedValue,
         formattedValue,
         effectiveLabel,
         converter,
+        commitValue,
         setNormalizedValue,
         adjustValue,
         getDefaultNormalizedValue,

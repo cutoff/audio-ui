@@ -113,7 +113,7 @@ export default function Page() {
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(event) => setValue(event.value)}
+            onValueChange={(v) => setValue(v)}
         />
     );
 }

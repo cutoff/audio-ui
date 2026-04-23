@@ -69,7 +69,7 @@ export default function DragInteractionPage() {
                             size="small"
                             latch={false}
                             value={momentary1}
-                            onChange={(e) => setMomentary1(e.value as boolean)}
+                            onValueChange={(v) => setMomentary1(v)}
                             label="Momentary 1"
                         />
                         <span className="text-xs text-muted-foreground">{momentary1 ? "ON" : "OFF"}</span>
@@ -80,7 +80,7 @@ export default function DragInteractionPage() {
                             size="small"
                             latch={false}
                             value={momentary2}
-                            onChange={(e) => setMomentary2(e.value as boolean)}
+                            onValueChange={(v) => setMomentary2(v)}
                             label="Momentary 2"
                         />
                         <span className="text-xs text-muted-foreground">{momentary2 ? "ON" : "OFF"}</span>
@@ -91,7 +91,7 @@ export default function DragInteractionPage() {
                             size="small"
                             latch={false}
                             value={momentary3}
-                            onChange={(e) => setMomentary3(e.value as boolean)}
+                            onValueChange={(v) => setMomentary3(v)}
                             label="Momentary 3"
                         />
                         <span className="text-xs text-muted-foreground">{momentary3 ? "ON" : "OFF"}</span>
@@ -125,7 +125,7 @@ export default function DragInteractionPage() {
                             size="small"
                             latch={true}
                             value={latch1}
-                            onChange={(e) => setLatch1(e.value as boolean)}
+                            onValueChange={(v) => setLatch1(v)}
                             label="Latch 1"
                         />
                         <span className="text-xs text-muted-foreground">{latch1 ? "ON" : "OFF"}</span>
@@ -136,7 +136,7 @@ export default function DragInteractionPage() {
                             size="small"
                             latch={true}
                             value={latch2}
-                            onChange={(e) => setLatch2(e.value as boolean)}
+                            onValueChange={(v) => setLatch2(v)}
                             label="Latch 2"
                         />
                         <span className="text-xs text-muted-foreground">{latch2 ? "ON" : "OFF"}</span>
@@ -147,7 +147,7 @@ export default function DragInteractionPage() {
                             size="small"
                             latch={true}
                             value={latch3}
-                            onChange={(e) => setLatch3(e.value as boolean)}
+                            onValueChange={(v) => setLatch3(v)}
                             label="Latch 3"
                         />
                         <span className="text-xs text-muted-foreground">{latch3 ? "ON" : "OFF"}</span>
@@ -204,7 +204,7 @@ export default function DragInteractionPage() {
                                         adaptiveSize={true}
                                         latch={true}
                                         value={step}
-                                        onChange={(e) => handleSequencerStep(rowIndex, colIndex, e.value as boolean)}
+                                        onValueChange={(v) => handleSequencerStep(rowIndex, colIndex, v as boolean)}
                                         label=""
                                     />
                                 </div>

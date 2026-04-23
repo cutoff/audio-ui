@@ -62,7 +62,7 @@ export type FilmStripBooleanControlProps = BooleanControlProps &
  * ```tsx
  * <FilmStripBooleanControl
  *   value={isOn}
- *   onChange={(e) => setIsOn(e.value)}
+ *   onValueChange={setIsOn}
  *   label="Power"
  *   latch={true}
  *   frameWidth={100}
@@ -75,8 +75,12 @@ export type FilmStripBooleanControlProps = BooleanControlProps &
  */
 function FilmStripBooleanControl({
     latch = false,
-    value = false,
-    onChange,
+    value,
+    normalizedValue,
+    midiValue,
+    onValueChange,
+    onNormalizedValueChange,
+    onMidiValueChange,
     label,
     adaptiveSize = false,
     size = "normal",
@@ -109,8 +113,12 @@ function FilmStripBooleanControl({
 
     return (
         <BooleanControl
-            value={value}
-            onChange={onChange}
+            value={value ?? false}
+            normalizedValue={normalizedValue}
+            midiValue={midiValue}
+            onValueChange={onValueChange}
+            onNormalizedValueChange={onNormalizedValueChange}
+            onMidiValueChange={onMidiValueChange}
             label={label}
             displayMode={displayMode}
             labelMode={labelMode}

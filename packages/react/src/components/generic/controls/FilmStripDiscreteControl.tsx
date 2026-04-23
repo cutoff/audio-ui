@@ -56,7 +56,7 @@ export type FilmStripDiscreteControlProps = DiscreteControlProps &
  * ```tsx
  * <FilmStripDiscreteControl
  *   value="sine"
- *   onChange={(e) => setValue(e.value)}
+ *   onValueChange={setValue}
  *   frameWidth={100}
  *   frameHeight={100}
  *   frameCount={4}
@@ -72,8 +72,12 @@ export type FilmStripDiscreteControlProps = DiscreteControlProps &
  */
 function FilmStripDiscreteControl({
     value,
+    normalizedValue,
+    midiValue,
     defaultValue,
-    onChange,
+    onValueChange,
+    onNormalizedValueChange,
+    onMidiValueChange,
     label,
     adaptiveSize = false,
     size = "normal",
@@ -109,8 +113,12 @@ function FilmStripDiscreteControl({
     return (
         <DiscreteControl
             value={value}
+            normalizedValue={normalizedValue}
+            midiValue={midiValue}
+            onValueChange={onValueChange}
+            onNormalizedValueChange={onNormalizedValueChange}
+            onMidiValueChange={onMidiValueChange}
             defaultValue={defaultValue}
-            onChange={onChange}
             label={label}
             paramId={paramId}
             parameter={parameter}

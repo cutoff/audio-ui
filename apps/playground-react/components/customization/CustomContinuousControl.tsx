@@ -32,7 +32,11 @@ function CustomContinuousControl({
     max = 1,
     step,
     value,
-    onChange,
+    normalizedValue,
+    midiValue,
+    onValueChange,
+    onNormalizedValueChange,
+    onMidiValueChange,
     label,
     displayMode,
     labelMode,
@@ -63,6 +67,11 @@ function CustomContinuousControl({
             step={step}
             bipolar={bipolar}
             value={value}
+            normalizedValue={normalizedValue}
+            midiValue={midiValue}
+            onValueChange={onValueChange}
+            onNormalizedValueChange={onNormalizedValueChange}
+            onMidiValueChange={onMidiValueChange}
             label={label}
             displayMode={displayMode}
             labelMode={labelMode}
@@ -70,7 +79,6 @@ function CustomContinuousControl({
             labelAlign={labelAlign}
             className={className}
             style={style}
-            onChange={onChange}
             paramId={paramId}
             onClick={onClick}
             onMouseDown={onMouseDown}

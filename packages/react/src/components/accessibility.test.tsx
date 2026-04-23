@@ -16,7 +16,7 @@ import Keys from "./defaults/devices/Keys";
 
 describe("Accessibility (axe)", () => {
     it("Button has no axe violations when labeled", async () => {
-        const { container } = render(<Button value={false} onChange={() => {}} label="Power" />);
+        const { container } = render(<Button value={false} onValueChange={() => {}} label="Power" />);
         const results = await axe(container);
         expect(results).toHaveNoViolations();
     });
@@ -37,7 +37,7 @@ describe("Accessibility (axe)", () => {
         const { container } = render(
             <CycleButton
                 value="sine"
-                onChange={() => {}}
+                onValueChange={() => {}}
                 label="Waveform"
                 options={[
                     { value: "sine", label: "Sine" },

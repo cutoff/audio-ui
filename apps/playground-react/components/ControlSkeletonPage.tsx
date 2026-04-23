@@ -23,7 +23,7 @@ export default function ControlSkeletonPage<TValue = number>(props: ControlSkele
         componentProps,
         properties,
         examples,
-        onChange,
+        onValueChange,
         orientation = "vertical",
     } = props;
 
@@ -36,7 +36,7 @@ export default function ControlSkeletonPage<TValue = number>(props: ControlSkele
                 PageComponent={PageComponent}
                 componentProps={componentProps}
                 properties={properties}
-                onChange={onChange}
+                onValueChange={onValueChange}
             />
 
             {/* Right Column */}

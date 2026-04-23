@@ -133,7 +133,7 @@ SVG icons need explicit sizing to render correctly across browsers. The `.audiou
 Pass center content as `children`:
 
 ```tsx
-<Knob value={value} onChange={setValue}>
+<Knob value={value} onValueChange={setValue}>
   <div style={{ fontSize: "22cqmin" }}>{formattedValue}</div>
 </Knob>
 ```
@@ -143,7 +143,7 @@ Pass center content as `children`:
 When building custom controls with `ContinuousControl`:
 
 ```tsx
-<ContinuousControl view={MyCustomView} value={value} onChange={setValue}>
+<ContinuousControl view={MyCustomView} value={value} onValueChange={setValue}>
   <div>Center content</div>
 </ContinuousControl>
 ```

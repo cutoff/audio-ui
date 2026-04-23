@@ -37,10 +37,10 @@ import { Knob } from "@cutoff/audio-ui-react";
 import "@cutoff/audio-ui-react/style.css";
 
 const [cutoff, setCutoff] = useState(75);
-<Knob value={cutoff} onChange={setCutoff} label="Cutoff" min={0} max={100} />
+<Knob value={cutoff} onValueChange={setCutoff} label="Cutoff" min={0} max={100} />;
 ```
 
-Documentation should emphasize: one component import, one CSS import, then standard React state for value/onChange. No provider or theme setup is required for the default look.
+Documentation should emphasize: one component import, one CSS import, then standard React state bound through the paired input/callback props (`value`/`onValueChange`, `normalizedValue`/`onNormalizedValueChange`, `midiValue`/`onMidiValueChange`). No provider or theme setup is required for the default look.
 
 ---
 
@@ -67,7 +67,7 @@ Docs should clearly state: “No Provider needed — use CSS variables or the th
 ## 6. API and Type Safety
 
 - **Props**: All public components have JSDoc on props and use TypeScript interfaces. Optional parameters and defaults are documented.
-- **Events**: Control components use an `onChange` (and where relevant `onNoteOn`/`onNoteOff`) with typed events. Generics are used so that, for example, a boolean control’s `onChange` receives a boolean value.
+- **Events**: Control components use paired input/callback channels — one of `value`/`onValueChange`, `normalizedValue`/`onNormalizedValueChange`, or `midiValue`/`onMidiValueChange`. Keys uses `onNoteChange`. Every callback receives `(value, event)` where the first argument matches the chosen representation and the second is the full `AudioControlEvent` with all three representations populated.
 - **Custom views**: Types such as `ControlComponent`, `ControlComponentView`, and `ControlComponentViewProps` are exported so that developers can build custom view components with correct typing.
 - **Formatters and utilities**: The library exports formatters (e.g. `percentageFormatter`, `frequencyFormatter`, `bipolarFormatter`) and note utilities from core. These support audio-specific UIs out of the box.
 

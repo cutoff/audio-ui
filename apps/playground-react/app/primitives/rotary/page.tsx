@@ -343,7 +343,7 @@ export default function RotaryDemoPage() {
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(e) => setNormalizedValue(e.value)}
+            onValueChange={(v) => setNormalizedValue(v)}
         />
     );
 }

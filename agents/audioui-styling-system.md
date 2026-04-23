@@ -294,14 +294,15 @@ pnpm --filter @cutoff/audio-ui-react lint:css
 import { CLASSNAMES } from "../../styles/classNames";
 import classNames from "classnames";
 
-function MyComponent({ className, onChange, ...props }: MyComponentProps) {
+function MyComponent({ className, onValueChange, ...props }: MyComponentProps) {
+    const editable = !!onValueChange;
     const componentClassName = useMemo(() => {
         return classNames(
-            CLASSNAMES.root,           // Always include root class
-            onChange ? CLASSNAMES.highlight : "",  // Conditional highlight
-            className                          // User-provided classes
+            CLASSNAMES.root,                    // Always include root class
+            editable ? CLASSNAMES.highlight : "", // Conditional highlight
+            className                           // User-provided classes
         );
-    }, [className, onChange]);
+    }, [className, editable]);
 
     return (
         <div className={componentClassName}>

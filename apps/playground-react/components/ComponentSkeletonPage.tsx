@@ -23,9 +23,10 @@ export type ComponentSkeletonPageProps<TValue = number> = {
     /** Property controls to display */
     properties: React.ReactNode[];
     /**
-     * Handler for value changes
+     * Paired-channel value-change handler.
+     * First argument: the new real-world value. Second argument: full event with all three representations.
      */
-    onChange?: (event: AudioControlEvent<TValue>) => void;
+    onValueChange?: (value: TValue, event: AudioControlEvent<TValue>) => void;
     /** Optional children content to render */
     children?: React.ReactNode;
 };
@@ -36,7 +37,7 @@ export default function ComponentSkeletonPage<TValue = number>({
     PageComponent,
     componentProps,
     properties,
-    onChange,
+    onValueChange,
     children,
 }: ComponentSkeletonPageProps<TValue>) {
     return (
@@ -50,7 +51,7 @@ export default function ComponentSkeletonPage<TValue = number>({
                         <PageComponent
                             key={`main-preview-${componentProps.orientation || "default"}`}
                             adaptiveSize={true}
-                            onChange={onChange}
+                            onValueChange={onValueChange}
                             {...componentProps}
                         />
                     </div>

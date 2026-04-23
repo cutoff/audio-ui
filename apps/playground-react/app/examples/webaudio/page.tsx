@@ -212,7 +212,7 @@ export default function WebAudioPage() {
                             <CycleButton
                                 label="Waveform"
                                 value={params.waveform}
-                                onChange={(e) => handleParamChange("waveform", e.value as WaveformType)}
+                                onValueChange={(v) => handleParamChange("waveform", v as WaveformType)}
                                 options={[
                                     { value: "sine", label: "Sine" },
                                     { value: "sawtooth", label: "Saw" },
@@ -243,7 +243,7 @@ export default function WebAudioPage() {
                                 min={0}
                                 max={1}
                                 step={0.01}
-                                onChange={(e) => handleParamChange("gain", e.value)}
+                                onValueChange={(v) => handleParamChange("gain", v)}
                                 valueFormatter={(v, def) =>
                                     def.type === "continuous"
                                         ? percentageFormatter(
@@ -279,7 +279,7 @@ export default function WebAudioPage() {
                                 min={20}
                                 max={10000}
                                 scale="log"
-                                onChange={(e) => handleParamChange("cutoff", e.value)}
+                                onValueChange={(v) => handleParamChange("cutoff", v)}
                                 valueFormatter={(v) => frequencyFormatter(v)}
                                 valueAsLabel="interactive"
                                 adaptiveSize
@@ -293,7 +293,7 @@ export default function WebAudioPage() {
                                 min={0.1}
                                 max={20}
                                 step={0.1}
-                                onChange={(e) => handleParamChange("resonance", e.value)}
+                                onValueChange={(v) => handleParamChange("resonance", v)}
                                 valueFormatter={(v) => v.toFixed(1)}
                                 valueAsLabel="interactive"
                                 adaptiveSize
@@ -318,7 +318,7 @@ export default function WebAudioPage() {
                                 min={0.001}
                                 max={2}
                                 step={0.01}
-                                onChange={(e) => handleParamChange("attack", e.value)}
+                                onValueChange={(v) => handleParamChange("attack", v)}
                                 valueFormatter={(v) => `${v.toFixed(2)}s`}
                                 valueAsLabel="interactive"
                                 labelHeightUnits={25}
@@ -335,7 +335,7 @@ export default function WebAudioPage() {
                                 min={0.001}
                                 max={2}
                                 step={0.01}
-                                onChange={(e) => handleParamChange("decay", e.value)}
+                                onValueChange={(v) => handleParamChange("decay", v)}
                                 valueFormatter={(v) => `${v.toFixed(2)}s`}
                                 valueAsLabel="interactive"
                                 labelHeightUnits={25}
@@ -352,7 +352,7 @@ export default function WebAudioPage() {
                                 min={0}
                                 max={1}
                                 step={0.01}
-                                onChange={(e) => handleParamChange("sustain", e.value)}
+                                onValueChange={(v) => handleParamChange("sustain", v)}
                                 valueFormatter={(v, def) =>
                                     def.type === "continuous"
                                         ? percentageFormatter(
@@ -377,7 +377,7 @@ export default function WebAudioPage() {
                                 min={0.001}
                                 max={3}
                                 step={0.01}
-                                onChange={(e) => handleParamChange("release", e.value)}
+                                onValueChange={(v) => handleParamChange("release", v)}
                                 valueFormatter={(v) => `${v.toFixed(2)}s`}
                                 valueAsLabel="interactive"
                                 labelHeightUnits={25}
@@ -410,7 +410,7 @@ export default function WebAudioPage() {
                             min={-1}
                             max={1}
                             step={0.01}
-                            onChange={(e) => handleParamChange("panning", e.value)}
+                            onValueChange={(v) => handleParamChange("panning", v)}
                             valueFormatter={(v) => v.toFixed(2)}
                             valueAsLabel="interactive"
                             adaptiveSize
@@ -435,7 +435,7 @@ export default function WebAudioPage() {
                                 className="w-6 h-6"
                                 latch={true}
                                 value={isSustainActive}
-                                onChange={(e) => handleSustainChange(e.value)}
+                                onValueChange={(v) => handleSustainChange(v)}
                             />
                         </div>
                     </div>
@@ -446,11 +446,11 @@ export default function WebAudioPage() {
                             nbKeys={61}
                             octaveShift={0}
                             adaptiveSize
-                            onChange={(e) => {
-                                if (e.value.active) {
-                                    handleNoteOn(e.value.note);
+                            onNoteChange={(n) => {
+                                if (n.active) {
+                                    handleNoteOn(n.note);
                                 } else {
-                                    handleNoteOff(e.value.note);
+                                    handleNoteOff(n.note);
                                 }
                             }}
                         />

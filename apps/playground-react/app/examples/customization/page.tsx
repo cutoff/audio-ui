@@ -7,7 +7,7 @@
 "use client";
 
 import { useState, useCallback, useMemo, useEffect } from "react";
-import { AudioControlEvent, ControlComponent } from "@cutoff/audio-ui-react";
+import { ControlComponent } from "@cutoff/audio-ui-react";
 import ComponentCarousel from "@/components/customization/ComponentCarousel";
 import CustomContinuousControl from "@/components/customization/CustomContinuousControl";
 import { componentRegistry } from "@/components/customization/component-registry";
@@ -86,7 +86,7 @@ export default function CustomizationPage() {
                                 step={1}
                                 value={value}
                                 defaultValue={0}
-                                onChange={(event: AudioControlEvent<number>) => setValue(event.value)}
+                                onValueChange={(v) => setValue(v)}
                                 label={selectedComponent.title || "Custom Control"}
                                 className="w-full h-full"
                             />

@@ -65,8 +65,13 @@ export type KeysProps = BaseProps &
          * @default 'theme' */
         keyStyle?: "theme" | "classic" | "classic-inverted";
         /** Callback triggered when a key is pressed or released.
+         * First argument: `{ note, active }` — the note number and whether it's pressed (true) or released (false).
+         * Second argument: full `AudioControlEvent` with `normalizedValue` and `midiValue` populated.
          * Only active if this prop is provided. */
-        onChange?: (event: AudioControlEvent<{ note: number; active: boolean }>) => void;
+        onNoteChange?: (
+            note: { note: number; active: boolean },
+            event: AudioControlEvent<{ note: number; active: boolean }>
+        ) => void;
         /** Accessible label for the keyboard container (e.g. for screen readers).
          * @default "Piano keyboard" */
         ariaLabel?: string;
@@ -151,7 +156,7 @@ function Keys({
     roundness,
     className = "",
     style = {},
-    onChange,
+    onNoteChange,
     onClick,
     ariaLabel = "Piano keyboard",
 }: KeysProps) {
@@ -167,15 +172,17 @@ function Keys({
         style: interactionStyle,
     } = useNoteInteraction({
         onNoteOn: (note) => {
-            onChange?.({
-                value: { note, active: true },
+            const payload = { note, active: true };
+            onNoteChange?.(payload, {
+                value: payload,
                 normalizedValue: note / 127,
                 midiValue: note,
             });
         },
         onNoteOff: (note) => {
-            onChange?.({
-                value: { note, active: false },
+            const payload = { note, active: false };
+            onNoteChange?.(payload, {
+                value: payload,
                 normalizedValue: note / 127,
                 midiValue: note,
             });
@@ -513,20 +520,18 @@ function Keys({
         return classNames(sizeClassName, CLASSNAMES.root, className);
     }, [sizeClassName, className]);
 
-    // Add highlight class when interactive (onChange or onClick)
+    // Add highlight class when interactive (onNoteChange or onClick)
     const svgClassNames = useMemo(() => {
-        return onChange || onClick ? CLASSNAMES.highlight : "";
-    }, [onChange, onClick]);
+        return onNoteChange || onClick ? CLASSNAMES.highlight : "";
+    }, [onNoteChange, onClick]);
 
-    // Add clickable cursor when interactive (onChange or onClick)
-    // Uses CSS variable for customizable cursor type
-    // View-only components (no onChange, no onClick) get default cursor
+    // Add clickable cursor when interactive; view-only components get default cursor.
     const svgStyle = useMemo(
         () => ({
             ...(interactionStyle ?? {}),
-            ...(onClick || onChange ? { cursor: "var(--audioui-cursor-clickable)" as const } : {}),
+            ...(onClick || onNoteChange ? { cursor: "var(--audioui-cursor-clickable)" as const } : {}),
         }),
-        [interactionStyle, onClick, onChange]
+        [interactionStyle, onClick, onNoteChange]
     );
 
     return (

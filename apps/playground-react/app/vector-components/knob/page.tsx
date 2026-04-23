@@ -148,7 +148,7 @@ type KnobComponentProps = {
     selectedIcon?: IconOptionValue;
     valueAsLabel?: ValueLabelMode | undefined;
     unit?: string;
-    onChange?: (event: AudioControlEvent<number | string>) => void;
+    onValueChange?: (value: number | string, event: AudioControlEvent<number | string>) => void;
     onClick?: KnobProps["onClick"];
 };
 
@@ -164,7 +164,7 @@ function KnobComponent({
     roundness,
     thickness,
     adaptiveSize,
-    onChange,
+    onValueChange,
     onClick,
     style,
     className,
@@ -195,7 +195,7 @@ function KnobComponent({
             style={style}
             className={className}
             onClick={onClick}
-            onChange={onChange}
+            onValueChange={(v, e) => onValueChange?.(v, e as AudioControlEvent<number | string>)}
             size={size}
             color={color}
             variant={variant}
@@ -703,7 +703,7 @@ export default function KnobDemoPage() {
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(event) => setValue(event.value)}
+            onValueChange={(v) => setValue(v)}
         />
     );
 }

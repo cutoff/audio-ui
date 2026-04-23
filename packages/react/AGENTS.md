@@ -24,8 +24,8 @@
 | Env Vars            | None                                                                                                                                                                                                                                                                                                                                                                               |
 | Component Structure | Props with JSDoc; default params; function ComponentName() {}; arrow functions for handlers; SVG for graphics                                                                                                                                                                                                                                                                      |
 | Exports             | All from src/index.ts: Components (Button, Knob, Slider, Keys, AdaptiveBox, ContinuousControl, FilmStripContinuousControl, FilmStripDiscreteControl, FilmStripBooleanControl, etc.), Theme utilities (setThemeColor, setThemeRoundness, etc.), Types (including ControlComponent, ControlComponentView, AdaptiveBoxLogicalSizeProps), Utils (formatters, note utils), Theme colors |
-| Testing             | Vitest 3; .test.tsx alongside; mock deps; React 18/19 compat                                                                                                                                                                                                                                                                                                                      |
-| Build               | Vite 6 with declarations (`vite-plugin-dts` 4); outputs `dist/index.js`, `index.d.ts`, `style.css` (default font), `style-no-font.css` (opt-out); ES modules                                                                                                                                                                                                                        |
+| Testing             | Vitest 3; .test.tsx alongside; mock deps; React 18/19 compat                                                                                                                                                                                                                                                                                                                       |
+| Build               | Vite 6 with declarations (`vite-plugin-dts` 4); outputs `dist/index.js`, `index.d.ts`, `style.css` (default font), `style-no-font.css` (opt-out); ES modules                                                                                                                                                                                                                       |
 | Path Aliases        | Use `@/primitives/*`, `@/hooks/*`, `@/defaults/*`, `@/utils/*`, `@/types` instead of relative paths (configured in tsconfig.json and vite.config.ts)                                                                                                                                                                                                                               |
 
 ## Key File Structure
@@ -74,13 +74,20 @@
   - `svg/`: SVG view primitives (ValueRing, RotaryImage, RadialImage, RadialText, FilmstripImage, etc.)
 - No built-in theming - users add their own theming props as needed
 - For building custom controls without theming constraints
-- Props: `ContinuousControlProps`, `BooleanControlProps` (no `ThemableProps` included)
+- Props: `ContinuousControlPrimitiveProps`, `DiscreteControlPrimitiveProps`, `BooleanControlPrimitiveProps` (no `ThemableProps` included; all three value-channel props are independent optionals — see Value Channel below)
 
 **Type System:**
 
-- Primitive types (`ContinuousControlProps`, `BooleanControlProps`) do NOT include `ThemableProps`
-- Built-in control types (`KnobProps`, `SliderProps`, `ButtonProps`) extend primitives with `ThemableProps`
-- This separation allows custom controls to opt into theming only if needed
+- Primitive types (`*ControlPrimitiveProps`) do NOT include `ThemableProps`.
+- Built-in control types (`KnobProps`, `SliderProps`, `ButtonProps`, `CycleButtonProps`) extend the strict end-user types (`ContinuousControlProps`, `BooleanControlProps`, `DiscreteControlProps`) with `ThemableProps`.
+- This separation allows custom controls to opt into theming only if needed.
+
+**Value Channel (strict vs permissive):**
+
+- Strict (`ValueChannel<T>`, `ContinuousControlProps`, `DiscreteControlProps`, `BooleanControlProps`): discriminated union enforcing "pick exactly one of `value` / `normalizedValue` / `midiValue` and its matching paired callback (`onValueChange` / `onNormalizedValueChange` / `onMidiValueChange`)". Used by end-user controls (`Knob`, `Slider`, `Button`, `CycleButton`).
+- Permissive (`ValueChannelAny<T>`, `ContinuousControlPrimitiveProps`, `DiscreteControlPrimitiveProps`, `BooleanControlPrimitiveProps`): all six channel props independent optionals. Runtime precedence (`value` > `normalizedValue` > `midiValue`) picks the active channel. Used by primitives and recommended for custom wrappers that compose primitives. A strict type is structurally assignable to the permissive form, so forwarding from a strict parent to a permissive primitive is direct (no conditional spreads).
+- Every callback receives `(value, event)` where `value` matches the chosen representation and `event` is the full `AudioControlEvent<T>` with all three representations populated.
+- `Keys` opts out of the channel model (it is an event-stream control, not a parameter-bound control); its callback is `onNoteChange?: (note: { note; active }, event) => void`.
 - `src/index.ts`: Export all components, types, utilities, and theme colors
 - `src/hooks/`: React adapters for Core logic (`useAudioParameter`, `useContinuousInteraction`)
 - `dist/`: Built output (`index.js`, `index.d.ts`, `style.css`, `style-no-font.css`). `vite.config.ts` sets `rollupOptions.output.assetFileNames` so the primary bundled stylesheet is named `style.css`, matching the `package.json` `./style.css` export (Vite 6 library mode otherwise names that chunk `index.css`).
@@ -135,10 +142,10 @@ The library uses TypeScript path aliases to simplify imports and avoid cluttered
 ### Adding New Components
 
 1. Create component file in the appropriate folder:
-    - `src/components/defaults/controls/` — built-in controls with theming
-    - `src/components/generic/controls/` — generic components (filmstrip/image-based)
-    - `src/components/primitives/controls/` — control primitives
-    - `src/components/primitives/svg/` — SVG view primitives
+   - `src/components/defaults/controls/` — built-in controls with theming
+   - `src/components/generic/controls/` — generic components (filmstrip/image-based)
+   - `src/components/primitives/controls/` — control primitives
+   - `src/components/primitives/svg/` — SVG view primitives
 2. Export from `src/index.ts`
 3. Add demo page in `apps/playground-react/app/<category>/<component-name>/page.tsx`
 4. Build and typecheck: `pnpm build && pnpm typecheck`

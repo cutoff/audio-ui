@@ -7,7 +7,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ImageRotarySwitch, ImageRotarySwitchProps, OptionView, AudioControlEvent } from "@cutoff/audio-ui-react";
+import { ImageRotarySwitch, ImageRotarySwitchProps, OptionView } from "@cutoff/audio-ui-react";
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -64,7 +64,7 @@ function generateCodeSnippet(
     props += `\n  imageHref="${imageHref}"`;
     if (rotation !== 0) props += ` rotation={${rotation}}`;
     if (openness !== 90) props += ` openness={${openness}}`;
-    return `<ImageRotarySwitch ${props}\n  onChange={(e) => setValue(e.value)}\n>\n${optionsCode}\n</ImageRotarySwitch>`;
+    return `<ImageRotarySwitch ${props}\n  onValueChange={(v) => setValue(v)}\n>\n${optionsCode}\n</ImageRotarySwitch>`;
 }
 
 export default function ImageRotarySwitchDemoPage() {
@@ -124,7 +124,6 @@ export default function ImageRotarySwitchDemoPage() {
             imageHref,
             rotation,
             openness,
-            onChange: (e: AudioControlEvent<string | number>) => setValue(e.value),
             children: options.map((opt) => <OptionView key={opt.value} value={opt.value} />),
         }),
         [value, label, frameWidth, frameHeight, imageHref, rotation, openness, options]
@@ -254,7 +253,7 @@ export default function ImageRotarySwitchDemoPage() {
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(e) => setValue(e.value)}
+            onValueChange={(v) => setValue(v)}
         />
     );
 }
