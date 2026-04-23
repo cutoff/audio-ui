@@ -320,7 +320,7 @@ export default function FilmstripDemoPage() {
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(e) => setNormalizedValue(e.value)}
+            onValueChange={(v) => setNormalizedValue(v)}
         />
     );
 }

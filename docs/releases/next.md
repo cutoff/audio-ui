@@ -4,6 +4,143 @@ Notes for the upcoming release. Use this when updating the documentation site or
 
 ---
 
+## Controls – paired-channel value API (breaking)
+
+Every parameter-bound control (`Knob`, `Slider`, `Button`, `CycleButton`, and the primitives
+`ContinuousControl` / `DiscreteControl` / `BooleanControl`) exposes three mutually-exclusive
+input/output channels. The single `onChange` prop and the `value`-only input are replaced
+by paired channels that carry the value in the representation consumers already think in —
+real-world, normalized 0..1, or MIDI integer — with no round-trip through the real domain.
+
+### Input / output shape
+
+Each control accepts exactly one of three value channels. Every callback receives
+`(value, event)` — the first argument matches the chosen representation; the second is
+the full `AudioControlEvent<T>` with all three representations (`value`, `normalizedValue`,
+`midiValue`) plus the `parameter` reference populated.
+
+| Channel         | Input prop        | Callback prop             | First-arg type                              |
+| --------------- | ----------------- | ------------------------- | ------------------------------------------- |
+| Real value      | `value`           | `onValueChange`           | `T` (the control's native type)             |
+| Normalized 0..1 | `normalizedValue` | `onNormalizedValueChange` | `number`                                    |
+| MIDI integer    | `midiValue`       | `onMidiValueChange`       | `number` (7/14-bit depending on resolution) |
+
+End-user controls (`Knob`, `Slider`, `Button`, `CycleButton`) use a strict discriminated
+union: passing more than one channel at the call site is a TypeScript error. Primitives
+(`ContinuousControl`, `DiscreteControl`, `BooleanControl`) use a permissive variant
+(`ContinuousControlPrimitiveProps` and siblings) where all six props are independent
+optionals, making composition and forwarding ergonomic for custom wrappers. Runtime
+precedence (`value` > `normalizedValue` > `midiValue`) picks the active channel when more
+than one is supplied in the permissive case.
+
+### Examples
+
+```tsx
+// Real-world binding (typical)
+<Knob value={cutoffHz} onValueChange={setCutoffHz} parameter={cutoffParam} />
+
+// Normalized binding (e.g. JUCE WebUI integration)
+<Knob normalizedValue={n} onNormalizedValueChange={setN} parameter={cutoffParam} />
+
+// MIDI binding (e.g. MIDI controller mapping, WebMIDI, Cutoff Fusion)
+<Knob midiValue={cc} onMidiValueChange={setCC} parameter={cutoffParam} />
+
+// Full event access via the second callback argument
+<Knob
+    value={hz}
+    onValueChange={(v, event) => {
+        setHz(v);
+        hardware.sendCc(event.midiValue);
+    }}
+    parameter={cutoffParam}
+/>
+```
+
+### Breaking change — upgrade steps
+
+Existing consumers that use the single `onChange` callback must migrate:
+
+- `onChange={(e) => setX(e.value)}` → `onValueChange={setX}` (or `(v) => setX(v)` if wrapping is still needed).
+- If the callback relied on `event.normalizedValue` or `event.midiValue`, use the second callback argument: `onValueChange={(v, event) => ...}`.
+- To bind directly to MIDI or normalized domain, pass `midiValue` / `normalizedValue` as input and use `onMidiValueChange` / `onNormalizedValueChange` on output.
+
+TypeScript makes the migration self-announcing: every unmigrated site is a compile error
+under the new prop types. No runtime shim is provided; the silent-bug class that
+`onChange={setX}` could previously hide (writing the full event object into state) is
+eliminated structurally by the scalar-first callback signature.
+
+### Keys — `onChange` becomes `onNoteChange`
+
+`Keys` is an event-stream control (polyphonic note on/off), not a parameter-bound control,
+so it opts out of the paired-channel model. Its callback becomes:
+
+```tsx
+<Keys
+  nbKeys={61}
+  onNoteChange={(note, event) => {
+    if (note.active) handleNoteOn(note.note);
+    else handleNoteOff(note.note);
+  }}
+/>
+```
+
+`note` is `{ note: number; active: boolean }`; `event` is the full
+`AudioControlEvent<{ note: number; active: boolean }>` with the note number mirrored into
+`normalizedValue` (note / 127) and `midiValue`.
+
+### Hook — `useAudioParameter` options-object signature
+
+`useAudioParameter` takes a single options object instead of positional arguments:
+
+```tsx
+const { realValue, normalizedValue, formattedValue, commitValue, setNormalizedValue, adjustValue } = useAudioParameter({
+  value,
+  normalizedValue,
+  midiValue,
+  onValueChange,
+  onNormalizedValueChange,
+  onMidiValueChange,
+  parameter,
+  userValueFormatter,
+  userLabel,
+  valueAsLabel,
+});
+```
+
+The hook resolves the effective real value from whichever input channel was supplied,
+computes the canonical triple via `AudioParameterConverter`, and — on interaction — fires
+exactly one paired callback matching the active channel. `commitValue(newRealValue)` is a
+new public method for callers (e.g. boolean / discrete primitives) that produce full
+values rather than deltas.
+
+### Exported types
+
+The library exports both strict and permissive forms so consumers can choose the right
+shape for their wrappers:
+
+- Strict (end-user controls): `ValueChannel<T>`, `InteractiveControlProps<T>`,
+  `ContinuousControlProps`, `DiscreteControlProps`, `BooleanControlProps`.
+- Permissive (primitives, custom wrappers): `ValueChannelAny<T>`,
+  `InteractiveControlPrimitiveProps<T>`, `ContinuousControlPrimitiveProps`,
+  `DiscreteControlPrimitiveProps`, `BooleanControlPrimitiveProps`.
+- Shared: `InteractionTuningProps`.
+
+A strict `ContinuousControlProps` is structurally assignable to the permissive
+`ContinuousControlPrimitiveProps`, so forwarding from a strict parent (e.g. a custom
+end-user control) to a permissive primitive type-checks directly — no conditional spreads
+or manual channel selection needed at the call site.
+
+### Documentation
+
+Design discussion and rationale live in:
+
+- `packages/react/docs/control-value-api-design.md` — design space, options considered,
+  open questions.
+- `packages/react/docs/integration-design.md` — how each of WebMIDI, Web Audio, Tone.js,
+  JUCE WebUI, and Cutoff Fusion maps onto the paired-channel API.
+
+---
+
 ## Raster components – dark mode support
 
 Optional dark-mode variants are supported for all raster assets (filmstrips, images, and slider cursors). When a dark variant is provided, the library switches between light and dark assets based on the current theme, with **no JavaScript**: visibility is controlled by CSS (`.dark` class and/or `prefers-color-scheme: dark`). This keeps behavior predictable and avoids extra re-renders or observers.

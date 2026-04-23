@@ -11,7 +11,6 @@ import {
     FilmStripDiscreteControl,
     FilmStripDiscreteControlProps,
     OptionView,
-    AudioControlEvent,
 } from "@cutoff/audio-ui-react";
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
@@ -45,7 +44,7 @@ function generateCodeSnippet(
     props += `\n  imageHref="${imageHref}"`;
     if (orientation !== "vertical") props += ` orientation="${orientation}"`;
     if (frameRotation !== 0) props += ` frameRotation={${frameRotation}}`;
-    return `<FilmStripDiscreteControl ${props}\n  onChange={(e) => setValue(e.value)}\n>\n${optionsCode}\n</FilmStripDiscreteControl>`;
+    return `<FilmStripDiscreteControl ${props}\n  onValueChange={(v) => setValue(v)}\n>\n${optionsCode}\n</FilmStripDiscreteControl>`;
 }
 
 export default function FilmStripDiscreteDemoPage() {
@@ -69,7 +68,6 @@ export default function FilmStripDiscreteDemoPage() {
             imageHref,
             orientation,
             frameRotation,
-            onChange: (e: AudioControlEvent<string | number>) => setValue(e.value),
             children: options.map((opt) => <OptionView key={opt.value} value={opt.value} />),
         }),
         [value, label, frameWidth, frameHeight, frameCount, imageHref, orientation, frameRotation, options]
@@ -180,7 +178,7 @@ export default function FilmStripDiscreteDemoPage() {
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(e) => setValue(e.value)}
+            onValueChange={(v) => setValue(v)}
         />
     );
 }

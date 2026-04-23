@@ -10,7 +10,6 @@ import { useState, useMemo } from "react";
 import {
     ImageKnob,
     ImageKnobProps,
-    AudioControlEvent,
     ValueLabelMode,
     InteractionMode,
     InteractionDirection,
@@ -58,7 +57,7 @@ function generateCodeSnippet(
     if (interactionDirection !== undefined) props += ` interactionDirection="${interactionDirection}"`;
     if (interactionSensitivity !== undefined) props += ` interactionSensitivity={${interactionSensitivity}}`;
     if (valueAsLabel !== undefined) props += ` valueAsLabel="${valueAsLabel}"`;
-    return `<ImageKnob ${props}\n  onChange={(e) => setValue(e.value)}\n/>`;
+    return `<ImageKnob ${props}\n  onValueChange={(v) => setValue(v)}\n/>`;
 }
 
 export default function ImageKnobDemoPage() {
@@ -165,7 +164,6 @@ export default function ImageKnobDemoPage() {
             interactionSensitivity,
             valueAsLabel,
             unit,
-            onChange: (e: AudioControlEvent<number>) => setValue(e.value),
         }),
         [
             value,
@@ -433,7 +431,7 @@ export default function ImageKnobDemoPage() {
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(e) => setValue(e.value)}
+            onValueChange={(v) => setValue(v)}
         />
     );
 }

@@ -148,10 +148,10 @@ interface ButtonProps {
 
 ```typescript
 // ✅ Good: Explains business logic
-// Add pointer cursor when clickable but not draggable (onClick but no onChange)
+// Add pointer cursor when clickable but not editable (onClick but no paired callback)
 const svgStyle = {
   ...(interactiveProps.style ?? {}),
-  ...(onClick && !onChange ? { cursor: "pointer" as const } : {}),
+  ...(onClick && !editable ? { cursor: "pointer" as const } : {}),
 };
 
 // ✅ Good: Verbose but justified - explains complex domain logic

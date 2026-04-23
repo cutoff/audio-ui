@@ -10,7 +10,6 @@ import { useState, useMemo } from "react";
 import {
     FilmStripContinuousControl,
     FilmStripContinuousControlProps,
-    AudioControlEvent,
     ValueLabelMode,
     InteractionMode,
     InteractionDirection,
@@ -61,7 +60,7 @@ function generateCodeSnippet(
     if (interactionSensitivity !== undefined) props += ` interactionSensitivity={${interactionSensitivity}}`;
     if (valueAsLabel !== undefined) props += ` valueAsLabel="${valueAsLabel}"`;
     if (invertValue) props += ` invertValue={${invertValue}}`;
-    return `<FilmStripContinuousControl ${props}\n  onChange={(e) => setValue(e.value)}\n/>`;
+    return `<FilmStripContinuousControl ${props}\n  onValueChange={(v) => setValue(v)}\n/>`;
 }
 
 export default function FilmStripContinuousDemoPage() {
@@ -178,7 +177,6 @@ export default function FilmStripContinuousDemoPage() {
             valueAsLabel,
             unit,
             invertValue,
-            onChange: (e: AudioControlEvent<number>) => setValue(e.value),
         }),
         [
             value,
@@ -475,7 +473,7 @@ export default function FilmStripContinuousDemoPage() {
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(e) => setValue(e.value)}
+            onValueChange={(v) => setValue(v)}
         />
     );
 }

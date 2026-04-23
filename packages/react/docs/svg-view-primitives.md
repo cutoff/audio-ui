@@ -617,7 +617,7 @@ CustomKnob.interaction = { mode: "both", direction: "circular" };
 ### Usage with Center Content
 
 ```tsx
-<ContinuousControl view={CustomKnob} value={value} onChange={setValue}>
+<ContinuousControl view={CustomKnob} value={value} onValueChange={setValue}>
   {/* Center content rendered as HTML overlay */}
   <div style={{ fontSize: "20px", fontWeight: 700 }}>{formattedValue}</div>
   <div style={{ fontSize: "10px", opacity: 0.6 }}>dB</div>

@@ -12,7 +12,7 @@ import { CLASSNAMES } from "@cutoff/audio-ui-core";
 import {
     AdaptiveBoxProps,
     AdaptiveBoxLogicalSizeProps,
-    ContinuousControlProps,
+    ContinuousControlPrimitiveProps,
     ControlComponent,
     ValueLabelMode,
 } from "@/types";
@@ -22,8 +22,9 @@ import { useContinuousInteraction } from "@/hooks/useContinuousInteraction";
 import { useContinuousParameterResolution } from "@/hooks/useContinuousParameterResolution";
 
 export type ContinuousControlComponentProps<P extends object = Record<string, unknown>> =
-    // Base Control Props (includes all ContinuousControlProps)
-    ContinuousControlProps &
+    // Base Control Props (permissive — accepts any combination of value-channel props,
+    // with runtime precedence. A strict ContinuousControlProps is assignable to this.)
+    ContinuousControlPrimitiveProps &
         // Layout props that configure AdaptiveBox behavior
         AdaptiveBoxProps &
         // Logical size props that override view component defaults
@@ -63,7 +64,8 @@ export type ContinuousControlComponentProps<P extends object = Record<string, un
  * decoupling behavior (AudioParameter, interaction logic) from visualization (SVG rendering).
  * It handles parameter resolution, normalization, interaction, and layout automatically.
  *
- * Supports double-click to reset to default value when editable (onChange provided).
+ * Supports double-click to reset to default value when editable (i.e. at least one of
+ * `onValueChange`, `onNormalizedValueChange`, or `onMidiValueChange` is provided).
  * The default value is determined by the parameter's `defaultValue` property, or
  * calculated as 0.0 for unipolar or 0.5 for bipolar parameters when not specified.
  *
@@ -81,6 +83,8 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         max,
         step,
         value,
+        normalizedValue: inputNormalizedValue,
+        midiValue: inputMidiValue,
         label,
         displayMode,
         labelMode,
@@ -92,7 +96,9 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         labelHeightUnits,
         className,
         style,
-        onChange,
+        onValueChange,
+        onNormalizedValueChange,
+        onMidiValueChange,
         paramId,
         onClick,
         onMouseDown,
@@ -111,6 +117,8 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         defaultValue,
         ariaOrientation,
     } = props;
+
+    const editable = !!(onValueChange || onNormalizedValueChange || onMidiValueChange);
 
     const bipolar = props.bipolar ?? false;
     const { derivedParameter } = useContinuousParameterResolution({
@@ -161,30 +169,34 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
     const showValueAsLabel =
         valueAsLabel === "valueOnly" || (valueAsLabel === "interactive" && (isDragging || isRecentlyActive));
 
-    const { normalizedValue, adjustValue, effectiveLabel, resetToDefault } = useAudioParameter(
+    const { realValue, normalizedValue, adjustValue, effectiveLabel, resetToDefault } = useAudioParameter({
         value,
-        onChange,
-        derivedParameter,
-        valueFormatter,
-        label,
-        showValueAsLabel
-    );
+        normalizedValue: inputNormalizedValue,
+        midiValue: inputMidiValue,
+        onValueChange,
+        onNormalizedValueChange,
+        onMidiValueChange,
+        parameter: derivedParameter,
+        userValueFormatter: valueFormatter,
+        userLabel: label,
+        valueAsLabel: showValueAsLabel,
+    });
 
     // Wrap adjustValue to trigger activity on changes (wheel, keyboard)
     const wrappedAdjustValue = React.useCallback(
         (delta: number, sensitivity?: number) => {
-            if (valueAsLabel === "interactive" && onChange) {
+            if (valueAsLabel === "interactive" && editable) {
                 handleActivity();
             }
             adjustValue(delta, sensitivity);
         },
-        [adjustValue, valueAsLabel, handleActivity, onChange]
+        [adjustValue, valueAsLabel, handleActivity, editable]
     );
 
     const effectiveInteractionMode = interactionMode ?? View.interaction.mode ?? "both";
     const effectiveDirection = interactionDirection ?? View.interaction.direction ?? "both";
 
-    // Only editable when onChange is provided (onClick is not relevant for interaction controller)
+    // Only editable when at least one paired callback is provided.
     const interactiveProps = useContinuousInteraction({
         adjustValue: wrappedAdjustValue,
         interactionMode: effectiveInteractionMode,
@@ -193,10 +205,10 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         min: derivedParameter.min,
         max: derivedParameter.max,
         paramStep: derivedParameter.step,
-        editable: !!onChange,
-        resetToDefault: onChange ? resetToDefault : undefined,
-        onDragStart: valueAsLabel === "interactive" && onChange ? handleDragStart : undefined,
-        onDragEnd: valueAsLabel === "interactive" && onChange ? handleDragEnd : undefined,
+        editable,
+        resetToDefault: editable ? resetToDefault : undefined,
+        onDragStart: valueAsLabel === "interactive" && editable ? handleDragStart : undefined,
+        onDragEnd: valueAsLabel === "interactive" && editable ? handleDragEnd : undefined,
         onMouseDown,
         onTouchStart: undefined, // ContinuousControl doesn't have onTouchStart prop
         onWheel: undefined, // ContinuousControl doesn't have onWheel prop
@@ -208,15 +220,14 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
     }, [className]);
 
     const svgClassNames = useMemo(() => {
-        return onChange || onClick ? CLASSNAMES.highlight : "";
-    }, [onChange, onClick]);
+        return editable || onClick ? CLASSNAMES.highlight : "";
+    }, [editable, onClick]);
 
-    // Add clickable cursor when clickable but not draggable (onClick but no onChange)
-    // Uses CSS variable for customizable cursor type
+    // Add clickable cursor when clickable but not draggable (onClick but no editable callback).
+    // Uses CSS variable for customizable cursor type.
     const svgStyle = {
         ...(interactiveProps.style ?? {}),
-        // Override cursor for click-only controls
-        ...(onClick && !onChange ? { cursor: "var(--audioui-cursor-clickable)" as const } : {}),
+        ...(onClick && !editable ? { cursor: "var(--audioui-cursor-clickable)" as const } : {}),
     };
 
     return (
@@ -244,7 +255,7 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
                 onMouseLeave={onMouseLeave}
                 tabIndex={interactiveProps.tabIndex}
                 role={interactiveProps.role}
-                aria-valuenow={value}
+                aria-valuenow={realValue}
                 aria-valuemin={derivedParameter.min}
                 aria-valuemax={derivedParameter.max}
                 aria-label={effectiveLabel}

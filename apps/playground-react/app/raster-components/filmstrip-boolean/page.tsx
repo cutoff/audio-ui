@@ -7,7 +7,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { FilmStripBooleanControl, FilmStripBooleanControlProps, AudioControlEvent } from "@cutoff/audio-ui-react";
+import { FilmStripBooleanControl, FilmStripBooleanControlProps } from "@cutoff/audio-ui-react";
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,7 +36,7 @@ function generateCodeSnippet(
     if (orientation !== "vertical") props += ` orientation="${orientation}"`;
     if (frameRotation !== 0) props += ` frameRotation={${frameRotation}}`;
     if (invertValue) props += ` invertValue={${invertValue}}`;
-    return `<FilmStripBooleanControl ${props}\n  onChange={(e) => setValue(e.value)}\n/>`;
+    return `<FilmStripBooleanControl ${props}\n  onValueChange={(v) => setValue(v)}\n/>`;
 }
 
 export default function FilmStripBooleanDemoPage() {
@@ -107,7 +107,6 @@ export default function FilmStripBooleanDemoPage() {
             orientation,
             frameRotation,
             invertValue,
-            onChange: (e: AudioControlEvent<boolean>) => setValue(e.value),
         }),
         [value, latch, label, frameWidth, frameHeight, frameCount, imageHref, orientation, frameRotation, invertValue]
     );
@@ -240,7 +239,7 @@ export default function FilmStripBooleanDemoPage() {
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(e) => setValue(e.value)}
+            onValueChange={(v) => setValue(v)}
         />
     );
 }

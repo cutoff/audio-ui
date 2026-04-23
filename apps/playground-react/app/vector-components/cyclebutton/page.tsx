@@ -85,7 +85,7 @@ type CycleButtonComponentProps = {
     className?: string;
     size?: "xsmall" | "small" | "normal" | "large" | "xlarge";
     color?: string;
-    onChange?: (event: AudioControlEvent<number | string>) => void;
+    onValueChange?: (value: number | string, event: AudioControlEvent<number | string>) => void;
     onClick?: CycleButtonProps["onClick"];
 };
 
@@ -97,7 +97,7 @@ function CycleButtonComponent({
     openness,
     rotation,
     adaptiveSize,
-    onChange,
+    onValueChange,
     onClick,
     style,
     className,
@@ -112,7 +112,7 @@ function CycleButtonComponent({
             style={style}
             className={className}
             onClick={onClick}
-            onChange={onChange}
+            onValueChange={onValueChange}
             size={size}
             color={color}
             roundness={roundness}
@@ -241,7 +241,7 @@ export default function CycleButtonDemoPage() {
             componentProps={componentProps}
             properties={properties}
             examples={examples}
-            onChange={(event) => setValue(event.value)}
+            onValueChange={(v) => setValue(v as number)}
         />
     );
 }

@@ -125,7 +125,7 @@ import { CycleButton, Option } from "@cutoff/audio-ui-react";
     label="Filter Type"
     value="lowpass"
     color="orange"
-    onChange={value => handleChange(value)}
+    onValueChange={value => handleChange(value)}
 >
     <Option value="lowpass">LP</Option>
     <Option value="highpass">HP</Option>
@@ -144,7 +144,7 @@ function DynamicColorKnob() {
   // Color changes from blue (0) to red (100)
   const dynamicColor = `hsl(${240 - value * 2.4}, 80%, 50%)`;
 
-  return <Knob value={value} min={0} max={100} label="Dynamic" color={dynamicColor} onChange={setValue} />;
+  return <Knob value={value} min={0} max={100} label="Dynamic" color={dynamicColor} onValueChange={setValue} />;
 }
 ```
 

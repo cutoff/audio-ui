@@ -81,7 +81,7 @@ export type SliderProps = ContinuousControlProps &
  * @example
  * ```tsx
  * // Basic vertical slider
- * <Slider value={50} min={0} max={100} onChange={(e) => setValue(e.value)} />
+ * <Slider value={50} min={0} max={100} onValueChange={setValue} />
  *
  * // Horizontal bipolar slider (pan control)
  * <Slider
@@ -97,7 +97,7 @@ export type SliderProps = ContinuousControlProps &
  * <Slider
  *   parameter={volumeParam}
  *   value={volume}
- *   onChange={handleVolumeChange}
+ *   onValueChange={handleVolumeChange}
  * />
  * ```
  */
@@ -108,7 +108,11 @@ function Slider({
     step,
     bipolar = false,
     value,
-    onChange,
+    normalizedValue,
+    midiValue,
+    onValueChange,
+    onNormalizedValueChange,
+    onMidiValueChange,
     valueFormatter,
     label,
     adaptiveSize = false,
@@ -171,6 +175,11 @@ function Slider({
             step={step}
             bipolar={bipolar}
             value={value}
+            normalizedValue={normalizedValue}
+            midiValue={midiValue}
+            onValueChange={onValueChange}
+            onNormalizedValueChange={onNormalizedValueChange}
+            onMidiValueChange={onMidiValueChange}
             label={label}
             displayMode={displayMode}
             labelMode={labelMode}
@@ -180,7 +189,6 @@ function Slider({
             labelHeightUnits={labelHeightUnits}
             className={mergedClassName}
             style={{ ...sizeStyle, ...themableStyle }}
-            onChange={onChange}
             paramId={paramId}
             onClick={onClick}
             onMouseDown={onMouseDown}

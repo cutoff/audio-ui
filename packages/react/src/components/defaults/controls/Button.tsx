@@ -40,7 +40,7 @@ export type ButtonProps = BooleanControlProps & AdaptiveSizeProps & AdaptiveBoxP
  *   label="Power"
  *   latch={true}
  *   value={isOn}
- *   onChange={(e) => setIsOn(e.value)}
+ *   onValueChange={setIsOn}
  * />
  *
  * // Ad-Hoc Mode - Momentary button
@@ -48,21 +48,25 @@ export type ButtonProps = BooleanControlProps & AdaptiveSizeProps & AdaptiveBoxP
  *   label="Record"
  *   latch={false}
  *   value={isRecording}
- *   onChange={(e) => setIsRecording(e.value)}
+ *   onValueChange={setIsRecording}
  * />
  *
  * // Strict Mode with parameter
  * <Button
  *   parameter={powerParam}
  *   value={isOn}
- *   onChange={(e) => setIsOn(e.value)}
+ *   onValueChange={setIsOn}
  * />
  * ```
  */
 function Button({
     latch = false,
-    value = false,
-    onChange,
+    value,
+    normalizedValue,
+    midiValue,
+    onValueChange,
+    onNormalizedValueChange,
+    onMidiValueChange,
     label,
     adaptiveSize = false,
     size = "normal",
@@ -94,8 +98,12 @@ function Button({
 
     return (
         <BooleanControl
-            value={value}
-            onChange={onChange}
+            value={value ?? false}
+            normalizedValue={normalizedValue}
+            midiValue={midiValue}
+            onValueChange={onValueChange}
+            onNormalizedValueChange={onNormalizedValueChange}
+            onMidiValueChange={onMidiValueChange}
             label={label}
             displayMode={displayMode}
             labelMode={labelMode}

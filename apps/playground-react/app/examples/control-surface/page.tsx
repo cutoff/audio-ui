@@ -177,8 +177,8 @@ function ControlSurfacePage() {
                                         step={0.02}
                                         value={channelPans[id]}
                                         defaultValue={channelPans[id]}
-                                        onChange={(e) =>
-                                            setChannelPans((prev) => ({ ...prev, [id]: e.value as number }))
+                                        onValueChange={(v) =>
+                                            setChannelPans((prev) => ({ ...prev, [id]: v }))
                                         }
                                         // Display as L / C / R with percentage
                                         valueFormatter={(val) => {
@@ -197,8 +197,8 @@ function ControlSurfacePage() {
                                         value={channelGains[id]}
                                         defaultValue={channelGains[id]}
                                         unit="dB"
-                                        onChange={(e) =>
-                                            setChannelGains((prev) => ({ ...prev, [id]: e.value as number }))
+                                        onValueChange={(v) =>
+                                            setChannelGains((prev) => ({ ...prev, [id]: v }))
                                         }
                                         valueFormatter={(val, parameterDef) => {
                                             const v = val as number;
@@ -229,8 +229,8 @@ function ControlSurfacePage() {
                                             value={channelFaderDb[id]}
                                             defaultValue={channelFaderDb[id]}
                                             unit="dB"
-                                            onChange={(e) =>
-                                                setChannelFaderDb((prev) => ({ ...prev, [id]: e.value as number }))
+                                            onValueChange={(v) =>
+                                                setChannelFaderDb((prev) => ({ ...prev, [id]: v }))
                                             }
                                             style={{
                                                 height: "calc(var(--audioui-size-vslider-width-large) * 3)",
@@ -245,8 +245,8 @@ function ControlSurfacePage() {
                                         adaptiveSize={true}
                                         latch={true}
                                         value={channelMutes[id]}
-                                        onChange={(e) =>
-                                            setChannelMutes((prev) => ({ ...prev, [id]: e.value as boolean }))
+                                        onValueChange={(v) =>
+                                            setChannelMutes((prev) => ({ ...prev, [id]: v }))
                                         }
                                         label="Mute"
                                     />
@@ -254,8 +254,8 @@ function ControlSurfacePage() {
                                         adaptiveSize={true}
                                         latch={true}
                                         value={channelSolos[id]}
-                                        onChange={(e) =>
-                                            setChannelSolos((prev) => ({ ...prev, [id]: e.value as boolean }))
+                                        onValueChange={(v) =>
+                                            setChannelSolos((prev) => ({ ...prev, [id]: v }))
                                         }
                                         label="Solo"
                                     />
@@ -280,7 +280,7 @@ function ControlSurfacePage() {
                                     step={0.02}
                                     value={masterPan}
                                     defaultValue={masterPan}
-                                    onChange={(e) => setMasterPan(e.value as number)}
+                                    onValueChange={(v) => setMasterPan(v)}
                                     valueFormatter={(val) => {
                                         if (val === 0) return "C";
                                         const side = (val as number) < 0 ? "L" : "R";
@@ -305,7 +305,7 @@ function ControlSurfacePage() {
                                         value={masterFaderDb}
                                         defaultValue={masterFaderDb}
                                         unit="dB"
-                                        onChange={(e) => setMasterFaderDb(e.value as number)}
+                                        onValueChange={(v) => setMasterFaderDb(v)}
                                         style={{
                                             height: "calc(var(--audioui-size-vslider-width-large) * 3)",
                                         }}
@@ -318,7 +318,7 @@ function ControlSurfacePage() {
                                     adaptiveSize={true}
                                     latch={true}
                                     value={false}
-                                    onChange={() => {
+                                    onValueChange={() => {
                                         // Visual demonstration only
                                     }}
                                     label="Rec"

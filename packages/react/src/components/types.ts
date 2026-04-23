@@ -84,31 +84,124 @@ export type AudioControlEvent<T = number> = {
 };
 
 /**
- * Props for interactive controls (drag, wheel, keyboard)
- * Used by both continuous and enum controls.
+ * Value channel — one of three mutually-exclusive input/output pairs.
  *
- * T is the real value type emitted by the control:
- * - number for continuous controls (Knob, Slider)
- * - boolean for boolean controls (not commonly using this type)
- * - custom types for enum-like controls (e.g. CycleButton)
+ * Pick exactly one representation for a control:
+ * - `value` / `onValueChange`: real-world value (Hz, dB, boolean, option value, ...).
+ * - `normalizedValue` / `onNormalizedValueChange`: normalized 0..1 (JUCE-style hosts, automation).
+ * - `midiValue` / `onMidiValueChange`: MIDI integer (hardware, MIDI-native apps).
+ *
+ * TypeScript enforces mutual exclusion via a discriminated union: providing props from more
+ * than one channel is a compile error. Every paired callback receives `(value, event)` —
+ * the first argument matches the chosen representation; the second is the full
+ * {@link AudioControlEvent} with all three representations populated.
+ *
+ * @example
+ * ```tsx
+ * // Real-world binding (typical)
+ * <Knob value={cutoffHz} onValueChange={setCutoffHz} parameter={cutoffParam} />
+ *
+ * // Normalized binding (e.g. JUCE WebUI)
+ * <Knob normalizedValue={n} onNormalizedValueChange={setN} parameter={cutoffParam} />
+ *
+ * // MIDI binding (e.g. MIDI controller mapping)
+ * <Knob midiValue={cc} onMidiValueChange={setCC} parameter={cutoffParam} />
+ *
+ * // Full event access via the second callback arg
+ * <Knob value={hz} onValueChange={(v, e) => { setHz(v); logMidi(e.midiValue); }} parameter={cutoffParam} />
+ * ```
  */
-export type InteractiveControlProps<T = number> = {
-    /**
-     * Handler for value changes.
-     *
-     * Receives an {@link AudioControlEvent} with three domain representations:
-     * - `e.value`: real-world value (number for Knob/Slider, boolean for Button, custom for CycleButton)
-     * - `e.normalizedValue`: normalized 0.0-1.0 for UI and automation
-     * - `e.midiValue`: MIDI integer for hardware/protocol
-     *
-     * @example
-     * ```tsx
-     * const [cutoff, setCutoff] = useState(440);
-     * <Knob value={cutoff} onChange={(e) => setCutoff(e.value)} />
-     * ```
-     */
-    onChange?: (event: AudioControlEvent<T>) => void;
+export type ValueChannel<T = number> =
+    | {
+          /** Current real-world value (Hz, dB, boolean state, option value, ...). */
+          value?: T;
+          normalizedValue?: never;
+          midiValue?: never;
+          /**
+           * Handler for value changes when bound via `value`.
+           * First argument: the new real-world value. Second argument: full event with all representations.
+           */
+          onValueChange?: (value: T, event: AudioControlEvent<T>) => void;
+          onNormalizedValueChange?: never;
+          onMidiValueChange?: never;
+      }
+    | {
+          value?: never;
+          /** Current normalized 0..1 value. */
+          normalizedValue: number;
+          midiValue?: never;
+          onValueChange?: never;
+          /**
+           * Handler for value changes when bound via `normalizedValue`.
+           * First argument: the new normalized value. Second argument: full event with all representations.
+           */
+          onNormalizedValueChange?: (value: number, event: AudioControlEvent<T>) => void;
+          onMidiValueChange?: never;
+      }
+    | {
+          value?: never;
+          normalizedValue?: never;
+          /** Current MIDI integer value (0-127 for 7-bit, 0-16383 for 14-bit, etc.). */
+          midiValue: number;
+          onValueChange?: never;
+          onNormalizedValueChange?: never;
+          /**
+           * Handler for value changes when bound via `midiValue`.
+           * First argument: the new MIDI integer. Second argument: full event with all representations.
+           */
+          onMidiValueChange?: (value: number, event: AudioControlEvent<T>) => void;
+      };
 
+/**
+ * Permissive value channel — same three input/output pairs as {@link ValueChannel}, but without
+ * mutual-exclusion enforcement. All six props are independently optional. Runtime precedence
+ * picks the active channel (`value` > `normalizedValue` > `midiValue`).
+ *
+ * Use this on composable primitives and custom wrapper components where call-site strictness
+ * is less valuable than forwarding ergonomics. End-user controls (`Knob`, `Slider`, `Button`,
+ * `CycleButton`) use the strict {@link ValueChannel} form instead — a strict `ValueChannel<T>`
+ * is a subset of `ValueChannelAny<T>`, so forwarding from a strict parent to a permissive
+ * primitive type-checks directly.
+ */
+export type ValueChannelAny<T = number> = {
+    /** Current real-world value (Hz, dB, boolean state, option value, ...). */
+    value?: T;
+    /** Current normalized 0..1 value. */
+    normalizedValue?: number;
+    /** Current MIDI integer value (0-127 for 7-bit, 0-16383 for 14-bit, etc.). */
+    midiValue?: number;
+    /** Paired callback for `value` input. First arg: new real-world value. Second arg: full event. */
+    onValueChange?: (value: T, event: AudioControlEvent<T>) => void;
+    /** Paired callback for `normalizedValue` input. First arg: new normalized value. Second arg: full event. */
+    onNormalizedValueChange?: (value: number, event: AudioControlEvent<T>) => void;
+    /** Paired callback for `midiValue` input. First arg: new MIDI integer. Second arg: full event. */
+    onMidiValueChange?: (value: number, event: AudioControlEvent<T>) => void;
+};
+
+/**
+ * Props for interactive controls (drag, wheel, keyboard).
+ * Composes a {@link ValueChannel} (the three mutually-exclusive input/output pairs) with
+ * interaction-tuning props. Used by continuous controls (Knob, Slider) and composable with
+ * custom controls that follow the same interaction model.
+ *
+ * T is the real-value type emitted by the control:
+ * - `number` for continuous controls (Knob, Slider)
+ * - `boolean` for boolean controls (via BooleanControlProps)
+ * - `string | number` for discrete/enum controls (via DiscreteControlProps)
+ */
+export type InteractiveControlProps<T = number> = ValueChannel<T> & InteractionTuningProps;
+
+/**
+ * Permissive sibling of {@link InteractiveControlProps}, using {@link ValueChannelAny} in place of
+ * the strict {@link ValueChannel}. Intended for primitives and custom wrappers where forwarding
+ * ergonomics matter more than call-site mutual-exclusion enforcement.
+ */
+export type InteractiveControlPrimitiveProps<T = number> = ValueChannelAny<T> & InteractionTuningProps;
+
+/**
+ * Interaction-tuning props shared by strict and permissive variants.
+ */
+export type InteractionTuningProps = {
     /**
      * Interaction mode: drag, wheel, or both.
      * @default "both"
@@ -296,91 +389,107 @@ export type BaseProps = {
  *
  * When `parameter` is provided, it takes precedence over ad-hoc props.
  */
-export type ContinuousControlProps = BaseProps &
-    InteractiveControlProps<number> & {
-        /** Current value of the control */
-        value: number;
+/**
+ * Continuous-specific props shared by strict and permissive variants.
+ */
+type ContinuousControlSharedProps = {
+    /** Label displayed below the component */
+    label?: string;
 
-        /** Label displayed below the component */
-        label?: string;
+    /** Identifier for the parameter this control represents
+     * Used when creating ad-hoc parameters
+     */
+    paramId?: string;
 
-        /** Identifier for the parameter this control represents
-         * Used when creating ad-hoc parameters
-         */
-        paramId?: string;
+    /**
+     * Custom renderer for the value display
+     * If provided and returns a value, this function will be used to render the value instead of the default formatter
+     * @param value The current value
+     * @param parameterDef The full parameter definition (includes min, max, unit, scale, etc.)
+     * @returns A string representation of the value, or undefined to fall back to default formatter
+     */
+    valueFormatter?: (value: number, parameterDef: AudioParameter) => string | undefined;
 
-        /**
-         * Custom renderer for the value display
-         * If provided and returns a value, this function will be used to render the value instead of the default formatter
-         * @param value The current value
-         * @param parameterDef The full parameter definition (includes min, max, unit, scale, etc.)
-         * @returns A string representation of the value, or undefined to fall back to default formatter
-         */
-        valueFormatter?: (value: number, parameterDef: AudioParameter) => string | undefined;
+    /**
+     * Controls how the label and value are displayed.
+     * - "labelOnly": Always shows the label (default)
+     * - "valueOnly": Always shows the value
+     * - "interactive": Shows label normally, but temporarily swaps to value during interaction
+     * @default "labelOnly"
+     */
+    valueAsLabel?: ValueLabelMode;
 
-        /**
-         * Controls how the label and value are displayed.
-         * - "labelOnly": Always shows the label (default)
-         * - "valueOnly": Always shows the value
-         * - "interactive": Shows label normally, but temporarily swaps to value during interaction
-         * @default "labelOnly"
-         */
-        valueAsLabel?: ValueLabelMode;
+    /**
+     * Whether the component should operate in bipolar mode
+     * In bipolar mode, the component visualizes values relative to a center point
+     * rather than from minimum to maximum
+     * @default false
+     */
+    bipolar?: boolean;
 
-        /**
-         * Whether the component should operate in bipolar mode
-         * In bipolar mode, the component visualizes values relative to a center point
-         * rather than from minimum to maximum
-         * @default false
-         */
-        bipolar?: boolean;
+    /**
+     * Audio Parameter definition (Model)
+     * If provided, overrides min/max/step/label/bipolar from ad-hoc props
+     */
+    parameter?: ContinuousParameter;
 
-        /**
-         * Audio Parameter definition (Model)
-         * If provided, overrides min/max/step/label/bipolar from ad-hoc props
-         */
-        parameter?: ContinuousParameter;
+    /**
+     * Unit suffix for the value in ad-hoc mode (e.g. "dB", "Hz").
+     * Used only when the internal parameter model is created from the props.
+     * Ignored when a full `parameter` object is provided.
+     */
+    unit?: string;
 
-        /**
-         * Unit suffix for the value in ad-hoc mode (e.g. "dB", "Hz").
-         * Used only when the internal parameter model is created from the props.
-         * Ignored when a full `parameter` object is provided.
-         */
-        unit?: string;
+    /**
+     * Scale function or shortcut for the parameter in ad-hoc mode.
+     * Controls how the normalized 0..1 range maps to the real value domain.
+     * Common shortcuts are "linear", "log", and "exp".
+     * Ignored when a full `parameter` object is provided.
+     */
+    scale?: ScaleType;
 
-        /**
-         * Scale function or shortcut for the parameter in ad-hoc mode.
-         * Controls how the normalized 0..1 range maps to the real value domain.
-         * Common shortcuts are "linear", "log", and "exp".
-         * Ignored when a full `parameter` object is provided.
-         */
-        scale?: ScaleType;
+    /** Minimum value (ad-hoc mode, ignored if parameter provided) */
+    min?: number;
 
-        /** Minimum value (ad-hoc mode, ignored if parameter provided) */
-        min?: number;
+    /** Maximum value (ad-hoc mode, ignored if parameter provided) */
+    max?: number;
 
-        /** Maximum value (ad-hoc mode, ignored if parameter provided) */
-        max?: number;
+    /** Step size for value adjustments (ad-hoc mode, ignored if parameter provided)
+     * @default 1 (or calculated based on range)
+     */
+    step?: number;
 
-        /** Step size for value adjustments (ad-hoc mode, ignored if parameter provided)
-         * @default 1 (or calculated based on range)
-         */
-        step?: number;
+    /** MIDI resolution in bits (ad-hoc mode, ignored if parameter provided)
+     * @default 32
+     */
+    midiResolution?: MidiResolution;
 
-        /** MIDI resolution in bits (ad-hoc mode, ignored if parameter provided)
-         * @default 32
-         */
-        midiResolution?: MidiResolution;
+    /** Default value for the parameter (ad-hoc mode, ignored if parameter provided) */
+    defaultValue?: number;
 
-        /** Default value for the parameter (ad-hoc mode, ignored if parameter provided) */
-        defaultValue?: number;
+    /**
+     * Orientation for slider role (accessibility).
+     * Pass "horizontal" or "vertical" for linear sliders; omit for radial controls (e.g. Knob).
+     */
+    ariaOrientation?: "horizontal" | "vertical";
+};
 
-        /**
-         * Orientation for slider role (accessibility).
-         * Pass "horizontal" or "vertical" for linear sliders; omit for radial controls (e.g. Knob).
-         */
-        ariaOrientation?: "horizontal" | "vertical";
-    };
+/**
+ * Strict props for continuous controls — used by end-user controls (Knob, Slider) and by
+ * any consumer that wants TypeScript to enforce the "pick exactly one value channel" contract.
+ */
+export type ContinuousControlProps = BaseProps & InteractiveControlProps<number> & ContinuousControlSharedProps;
+
+/**
+ * Permissive props for continuous controls — used by the {@link ContinuousControl} primitive
+ * and by custom wrappers that compose it. Independent optionals on every channel prop make
+ * forwarding trivial; runtime precedence (`value` > `normalizedValue` > `midiValue`) picks
+ * the active channel. A strict {@link ContinuousControlProps} is structurally assignable to
+ * this permissive form, so wrappers can forward strict parent props to a permissive child.
+ */
+export type ContinuousControlPrimitiveProps = BaseProps &
+    InteractiveControlPrimitiveProps<number> &
+    ContinuousControlSharedProps;
 
 /**
  * Props for discrete value controls (primitives like DiscreteControl).
@@ -407,15 +516,15 @@ export type ContinuousControlProps = BaseProps &
  *
  * When `parameter` is provided, it takes precedence over ad-hoc props.
  */
-export type DiscreteControlProps = BaseProps & {
-    /** Current value of the control (Controlled mode) */
-    value?: string | number;
-
-    /** Default value of the component (Uncontrolled mode) */
+/**
+ * Discrete-specific props shared by strict and permissive variants.
+ */
+type DiscreteControlSharedProps = {
+    /**
+     * Default value for uncontrolled mode.
+     * Used when no input channel (`value`, `normalizedValue`, `midiValue`) is provided.
+     */
     defaultValue?: string | number;
-
-    /** Handler for value changes */
-    onChange?: (event: AudioControlEvent<string | number>) => void;
 
     /** Label displayed below the component */
     label?: string;
@@ -464,6 +573,17 @@ export type DiscreteControlProps = BaseProps & {
 };
 
 /**
+ * Strict props for discrete controls — used by end-user controls (CycleButton).
+ */
+export type DiscreteControlProps = BaseProps & ValueChannel<string | number> & DiscreteControlSharedProps;
+
+/**
+ * Permissive props for discrete controls — used by the {@link DiscreteControl} primitive
+ * and by custom wrappers that compose it.
+ */
+export type DiscreteControlPrimitiveProps = BaseProps & ValueChannelAny<string | number> & DiscreteControlSharedProps;
+
+/**
  * Props for boolean value controls (primitives).
  *
  * This type is size-agnostic: it does not include AdaptiveSizeProps.
@@ -476,13 +596,10 @@ export type DiscreteControlProps = BaseProps & {
  *
  * When `parameter` is provided, it takes precedence over ad-hoc props.
  */
-export type BooleanControlProps = BaseProps & {
-    /** Current value (must be boolean) */
-    value: boolean;
-
-    /** Handler for value changes */
-    onChange?: (event: AudioControlEvent<boolean>) => void;
-
+/**
+ * Boolean-specific props shared by strict and permissive variants.
+ */
+type BooleanControlSharedProps = {
     /** Label displayed below the component */
     label?: string;
 
@@ -508,6 +625,17 @@ export type BooleanControlProps = BaseProps & {
      */
     midiResolution?: MidiResolution;
 };
+
+/**
+ * Strict props for boolean controls — used by end-user controls (Button).
+ */
+export type BooleanControlProps = BaseProps & ValueChannel<boolean> & BooleanControlSharedProps;
+
+/**
+ * Permissive props for boolean controls — used by the {@link BooleanControl} primitive
+ * and by custom wrappers that compose it.
+ */
+export type BooleanControlPrimitiveProps = BaseProps & ValueChannelAny<boolean> & BooleanControlSharedProps;
 
 // --- GENERIC CONTRACTS ---
 

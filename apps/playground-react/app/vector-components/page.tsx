@@ -22,7 +22,7 @@ const components = [
         url: "/vector-components/knob",
         description:
             "A rotary control for continuous parameter adjustment. Supports bipolar and unipolar modes, customizable value formatting, and multiple visual variants including icon caps.",
-        preview: <Knob min={0} max={100} value={50} label="Volume" adaptiveSize={true} onChange={noOpHandler} />,
+        preview: <Knob min={0} max={100} value={50} label="Volume" adaptiveSize={true} onValueChange={noOpHandler} />,
     },
     {
         name: "Slider (V)",
@@ -37,7 +37,7 @@ const components = [
                 label="Level"
                 orientation="vertical"
                 adaptiveSize={true}
-                onChange={noOpHandler}
+                onValueChange={noOpHandler}
             />
         ),
     },
@@ -54,7 +54,7 @@ const components = [
                 label="Pan"
                 orientation="horizontal"
                 adaptiveSize={true}
-                onChange={noOpHandler}
+                onValueChange={noOpHandler}
             />
         ),
     },
@@ -64,7 +64,7 @@ const components = [
         description:
             "A button that cycles through discrete options on each click. Supports keyboard navigation with arrow keys and space/enter for cycling through predefined values.",
         preview: (
-            <CycleButton value={0} label="Waveform" adaptiveSize={true} onChange={noOpHandler}>
+            <CycleButton value={0} label="Waveform" adaptiveSize={true} onValueChange={noOpHandler}>
                 <OptionView value={0} label="Sine">
                     <SineWaveIcon />
                 </OptionView>
@@ -82,7 +82,7 @@ const components = [
         url: "/vector-components/button",
         description:
             "A versatile button control supporting both momentary and latch (toggle) modes. Features drag-in/drag-out behavior for step sequencer patterns and hardware-like interactions.",
-        preview: <AudioButton value={false} label="Mute" adaptiveSize={true} onChange={noOpHandler} />,
+        preview: <AudioButton value={false} label="Mute" adaptiveSize={true} onValueChange={noOpHandler} />,
     },
     {
         name: "Keys",

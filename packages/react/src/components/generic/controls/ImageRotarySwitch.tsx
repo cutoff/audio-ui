@@ -51,7 +51,7 @@ export type ImageRotarySwitchProps = DiscreteControlProps & AdaptiveSizeProps & 
  * ```tsx
  * <ImageRotarySwitch
  *   value="sine"
- *   onChange={(e) => setValue(e.value)}
+ *   onValueChange={setValue}
  *   frameWidth={100}
  *   frameHeight={100}
  *   imageHref="/waveform-knob.png"
@@ -68,8 +68,12 @@ export type ImageRotarySwitchProps = DiscreteControlProps & AdaptiveSizeProps & 
  */
 function ImageRotarySwitch({
     value,
+    normalizedValue,
+    midiValue,
     defaultValue,
-    onChange,
+    onValueChange,
+    onNormalizedValueChange,
+    onMidiValueChange,
     label,
     adaptiveSize = false,
     size = "normal",
@@ -119,8 +123,12 @@ function ImageRotarySwitch({
     return (
         <DiscreteControl
             value={value}
+            normalizedValue={normalizedValue}
+            midiValue={midiValue}
+            onValueChange={onValueChange}
+            onNormalizedValueChange={onNormalizedValueChange}
+            onMidiValueChange={onMidiValueChange}
             defaultValue={defaultValue}
-            onChange={onChange}
             label={label}
             paramId={paramId}
             parameter={parameter}

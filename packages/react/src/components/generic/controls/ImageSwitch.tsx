@@ -67,7 +67,7 @@ export type ImageSwitchComponentProps = BooleanControlProps & AdaptiveSizeProps 
  * ```tsx
  * <ImageSwitch
  *   value={isFavorite}
- *   onChange={(e) => setIsFavorite(e.value)}
+ *   onValueChange={setIsFavorite}
  *   label="Favorite"
  *   latch={true}
  *   frameWidth={100}
@@ -81,8 +81,12 @@ export type ImageSwitchComponentProps = BooleanControlProps & AdaptiveSizeProps 
  */
 function ImageSwitch({
     latch = false,
-    value = false,
-    onChange,
+    value,
+    normalizedValue,
+    midiValue,
+    onValueChange,
+    onNormalizedValueChange,
+    onMidiValueChange,
     label,
     adaptiveSize = false,
     size = "normal",
@@ -113,8 +117,12 @@ function ImageSwitch({
 
     return (
         <BooleanControl
-            value={value}
-            onChange={onChange}
+            value={value ?? false}
+            normalizedValue={normalizedValue}
+            midiValue={midiValue}
+            onValueChange={onValueChange}
+            onNormalizedValueChange={onNormalizedValueChange}
+            onMidiValueChange={onMidiValueChange}
             label={label}
             displayMode={displayMode}
             labelMode={labelMode}
