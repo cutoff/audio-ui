@@ -59,3 +59,48 @@ jobs:
 
             - name: Run quality pipeline (typecheck, build, lint, test)
               run: pnpm turbo run typecheck build lint test --cache-dir=.turbo --continue --no-daemon
+
+    size:
+        name: Bundle size
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            pull-requests: write
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js 20
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "pnpm"
+
+            # On pull_request: the action builds base + head, posts a diff
+            # comment, and fails the job when an absolute budget is breached.
+            - name: Check bundle size (PR diff + gate)
+              if: github.event_name == 'pull_request'
+              uses: andresz1/size-limit-action@v1
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  package_manager: pnpm
+                  build_script: build
+                  script: size
+
+            # On push: no base to diff against, so run the gate directly.
+            - name: Install dependencies (push)
+              if: github.event_name != 'pull_request'
+              run: pnpm install --frozen-lockfile
+
+            - name: Build (push)
+              if: github.event_name != 'pull_request'
+              run: pnpm build
+
+            - name: Check bundle size (push gate)
+              if: github.event_name != 'pull_request'
+              run: pnpm size
