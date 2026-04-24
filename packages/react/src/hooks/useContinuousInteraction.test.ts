@@ -57,6 +57,21 @@ describe("useContinuousInteraction", () => {
         expect(result.current.style?.cursor).toBe("var(--audioui-cursor-noneditable)");
     });
 
+    it("suppresses drag, wheel and keyboard when editable=false", () => {
+        const { result } = renderHook(() => useContinuousInteraction({ adjustValue, editable: false }));
+
+        act(() => {
+            // @ts-expect-error - simulating event
+            result.current.onMouseDown({ clientX: 0, clientY: 0 });
+            // @ts-expect-error - simulating event
+            result.current.onKeyDown({ key: "ArrowUp", preventDefault: vi.fn() });
+            // @ts-expect-error - simulating event
+            result.current.onWheel({ deltaY: 100, preventDefault: vi.fn(), stopPropagation: vi.fn() });
+        });
+
+        expect(adjustValue).not.toHaveBeenCalled();
+    });
+
     it("handles editable state correctly (with onChange)", () => {
         const { result } = renderHook(() => useContinuousInteraction({ adjustValue, editable: true }));
 

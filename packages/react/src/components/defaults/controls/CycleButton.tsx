@@ -155,6 +155,8 @@ function CycleButton({
     className,
     style,
     children,
+    editable,
+    disabled,
 }: CycleButtonProps) {
     const { style: themableStyle, clampedRoundness } = useThemableProps({
         color,
@@ -243,6 +245,8 @@ function CycleButton({
             onMouseUp={onMouseUp}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
+            editable={editable}
+            disabled={disabled}
             view={KnobView}
             viewProps={{
                 bipolar: false,

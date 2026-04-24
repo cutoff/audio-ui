@@ -11,8 +11,14 @@ export interface DiscreteInteractionConfig {
     options: Array<{ value: string | number }>;
     /** Callback to update the value */
     onValueChange: (value: string | number) => void;
-    /** Whether the control is disabled */
+    /** Whether the control is disabled. When `true`, all gestures are suppressed. Implies non-editable. */
     disabled?: boolean;
+    /**
+     * Whether the control responds to user gestures. When `false`, click/keyboard gestures
+     * produce no value changes. Non-UI sources are unaffected.
+     * @default true
+     */
+    editable?: boolean;
 }
 
 /**
@@ -30,13 +36,23 @@ export class DiscreteInteractionController {
         this.config = config;
     }
 
+    /**
+     * Returns `true` when the controller should treat all gestures as no-ops.
+     * A controller is inert when it is either explicitly disabled or non-editable.
+     *
+     * @returns `true` if `disabled === true` or `editable === false`, else `false`.
+     */
+    private isInert(): boolean {
+        return this.config.disabled === true || this.config.editable === false;
+    }
+
     private getCurrentIndex(): number {
         const idx = this.config.options.findIndex((opt) => opt.value === this.config.value);
         return idx === -1 ? 0 : idx;
     }
 
     private setValueAtIndex(index: number) {
-        if (this.config.disabled) return;
+        if (this.isInert()) return;
         const opt = this.config.options[index];
         if (opt) {
             this.config.onValueChange(opt.value);
@@ -81,7 +97,7 @@ export class DiscreteInteractionController {
      * @param defaultPrevented Whether the event's default action has been prevented.
      */
     public handleClick = (defaultPrevented: boolean) => {
-        if (this.config.disabled) return;
+        if (this.isInert()) return;
         if (!defaultPrevented) {
             this.cycleNext();
         }
@@ -92,7 +108,7 @@ export class DiscreteInteractionController {
      * Returns true if the event was handled (and thus should be prevented), false otherwise.
      */
     public handleKeyDown = (key: string): boolean => {
-        if (this.config.disabled) return false;
+        if (this.isInert()) return false;
 
         switch (key) {
             case " ":

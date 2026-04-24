@@ -67,9 +67,18 @@ export interface ContinuousInteractionConfig {
     onDragEnd?: () => void;
 
     /**
-     * Whether the control is disabled
+     * Whether the control is disabled. When `true`, all gestures are suppressed and the
+     * control is inert at this layer. Implies non-editable.
      */
     disabled?: boolean;
+
+    /**
+     * Whether the control responds to user gestures. When `false`, drag/wheel/keyboard
+     * gestures produce no value changes. Non-UI sources (external state writes) are
+     * unaffected — this layer only gates UI-driven updates.
+     * @default true
+     */
+    editable?: boolean;
 }
 
 /**
@@ -100,6 +109,7 @@ export class ContinuousInteractionController {
             sensitivity: DEFAULT_CONTINUOUS_SENSITIVITY,
             keyboardStep: DEFAULT_KEYBOARD_STEP,
             disabled: false,
+            editable: true,
             // adjustValue is provided in config
             ...config,
         };
@@ -115,6 +125,16 @@ export class ContinuousInteractionController {
      */
     public updateConfig(config: Partial<ContinuousInteractionConfig>) {
         Object.assign(this.config, config);
+    }
+
+    /**
+     * Returns `true` when the controller should treat all gestures as no-ops.
+     * A controller is inert when it is either explicitly disabled or non-editable.
+     *
+     * @returns `true` if `disabled` is `true` or `editable` is `false`, else `false`.
+     */
+    private isInert(): boolean {
+        return this.config.disabled || !this.config.editable;
     }
 
     /**
@@ -142,7 +162,7 @@ export class ContinuousInteractionController {
     };
 
     private startDrag(x: number, y: number, target?: EventTarget) {
-        if (this.config.disabled) return;
+        if (this.isInert()) return;
 
         this.startX = x;
         this.startY = y;
@@ -265,7 +285,7 @@ export class ContinuousInteractionController {
      * @param e The wheel event.
      */
     public handleWheel = (e: WheelEvent) => {
-        if (this.config.disabled) return;
+        if (this.isInert()) return;
         if (this.config.interactionMode !== "wheel" && this.config.interactionMode !== "both") return;
 
         if (e.preventDefault) e.preventDefault();
@@ -299,7 +319,7 @@ export class ContinuousInteractionController {
      * @param e The keyboard event.
      */
     public handleKeyDown = (e: KeyboardEvent) => {
-        if (this.config.disabled) return;
+        if (this.isInert()) return;
 
         let delta = 0;
         switch (e.key) {

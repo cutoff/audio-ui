@@ -13,8 +13,14 @@ export interface BooleanInteractionConfig {
     mode: BooleanInteractionMode;
     /** Callback to update the value */
     onValueChange: (value: boolean) => void;
-    /** Whether the control is disabled */
+    /** Whether the control is disabled. When `true`, all gestures are suppressed. Implies non-editable. */
     disabled?: boolean;
+    /**
+     * Whether the control responds to user gestures. When `false`, pointer/mouse/keyboard
+     * gestures produce no value changes. Non-UI sources are unaffected.
+     * @default true
+     */
+    editable?: boolean;
 }
 
 /**
@@ -56,6 +62,16 @@ export class BooleanInteractionController {
     }
 
     /**
+     * Returns `true` when the controller should treat all gestures as no-ops.
+     * A controller is inert when it is either explicitly disabled or non-editable.
+     *
+     * @returns `true` if `disabled === true` or `editable === false`, else `false`.
+     */
+    private isInert(): boolean {
+        return this.config.disabled === true || this.config.editable === false;
+    }
+
+    /**
      * Handles global pointer down events (mouse or touch).
      *
      * This tracks when a pointer is pressed anywhere on the page, not just on this button.
@@ -64,7 +80,7 @@ export class BooleanInteractionController {
      * @param {boolean} defaultPrevented - Whether the event's default action has been prevented. If true, the handler does nothing.
      */
     public handleGlobalPointerDown = (defaultPrevented: boolean) => {
-        if (this.config.disabled) return;
+        if (this.isInert()) return;
         if (defaultPrevented) return;
         this.isGlobalPointerDown = true;
     };
@@ -79,7 +95,7 @@ export class BooleanInteractionController {
      * @param {boolean} defaultPrevented - Whether the event's default action has been prevented. If true, the handler does nothing.
      */
     public handleMouseDown = (defaultPrevented: boolean) => {
-        if (this.config.disabled) return;
+        if (this.isInert()) return;
         if (defaultPrevented) return;
 
         this.isGlobalPointerDown = true;
@@ -107,7 +123,7 @@ export class BooleanInteractionController {
      * @param {boolean} defaultPrevented - Whether the event's default action has been prevented. If true, the handler does nothing.
      */
     public handleMouseUp = (defaultPrevented: boolean) => {
-        if (this.config.disabled) return;
+        if (this.isInert()) return;
         if (defaultPrevented) return;
 
         // Only handle release for momentary buttons that are currently pressed
@@ -128,7 +144,7 @@ export class BooleanInteractionController {
      * Only affects momentary mode buttons that are currently pressed.
      */
     public handleGlobalPointerUp = () => {
-        if (this.config.disabled) return;
+        if (this.isInert()) return;
 
         this.isGlobalPointerDown = false;
 
@@ -148,7 +164,7 @@ export class BooleanInteractionController {
      * This enables drag-in behavior: pressing outside and dragging into the button activates it.
      */
     public handleMouseEnter = () => {
-        if (this.config.disabled) return;
+        if (this.isInert()) return;
 
         // Only react if pointer is globally pressed (drag-in scenario)
         if (this.isGlobalPointerDown) {
@@ -173,7 +189,7 @@ export class BooleanInteractionController {
      * This enables drag-out behavior: pressing inside and dragging out deactivates momentary buttons.
      */
     public handleMouseLeave = () => {
-        if (this.config.disabled) return;
+        if (this.isInert()) return;
 
         // Only react if pointer is globally pressed (drag-out scenario)
         if (this.isGlobalPointerDown) {
@@ -198,7 +214,7 @@ export class BooleanInteractionController {
      * @returns {boolean} `true` if the event was handled (and should be prevented), `false` otherwise
      */
     public handleKeyDown = (key: string): boolean => {
-        if (this.config.disabled) return false;
+        if (this.isInert()) return false;
 
         if (key === "Enter" || key === " ") {
             if (this.config.mode === "toggle") {
@@ -225,7 +241,7 @@ export class BooleanInteractionController {
      * @returns {boolean} `true` if the event was handled (and should be prevented), `false` otherwise
      */
     public handleKeyUp = (key: string): boolean => {
-        if (this.config.disabled) return false;
+        if (this.isInert()) return false;
 
         if (this.config.mode === "momentary" && (key === "Enter" || key === " ")) {
             this.config.onValueChange(false);

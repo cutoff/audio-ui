@@ -159,6 +159,11 @@ const data = {
             icon: Sparkles,
         },
         {
+            name: "Editable / Disabled",
+            url: "/examples/editable-disabled",
+            icon: Sparkles,
+        },
+        {
             name: "Value Channels",
             url: "/examples/value-channels",
             icon: Sparkles,

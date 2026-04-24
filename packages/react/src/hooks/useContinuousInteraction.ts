@@ -157,6 +157,7 @@ export function useContinuousInteraction({
             wheelSensitivity,
             step: effectiveStep,
             disabled,
+            editable,
             onDragStart,
             onDragEnd,
         });
@@ -172,6 +173,7 @@ export function useContinuousInteraction({
             wheelSensitivity,
             step: effectiveStep,
             disabled,
+            editable,
             onDragStart,
             onDragEnd,
         });
@@ -184,6 +186,7 @@ export function useContinuousInteraction({
         wheelSensitivity,
         effectiveStep,
         disabled,
+        editable,
         onDragStart,
         onDragEnd,
     ]);

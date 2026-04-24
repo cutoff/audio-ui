@@ -309,6 +309,32 @@ describe("useBooleanInteraction", () => {
         });
     });
 
+    describe("Non-editable State (editable=false)", () => {
+        it("does nothing when non-editable", () => {
+            const { result } = renderHook(() =>
+                useBooleanInteraction({
+                    value: false,
+                    mode: "toggle",
+                    onValueChange,
+                    editable: false,
+                })
+            );
+
+            act(() => {
+                result.current.handleMouseDown({
+                    defaultPrevented: false,
+                } as React.MouseEvent);
+                result.current.handleKeyDown({
+                    key: "Enter",
+                    preventDefault: vi.fn(),
+                    defaultPrevented: false,
+                } as unknown as React.KeyboardEvent);
+            });
+
+            expect(onValueChange).not.toHaveBeenCalled();
+        });
+    });
+
     describe("User Handler Composition", () => {
         describe("onMouseDown", () => {
             it("calls user-provided onMouseDown handler before hook handler", () => {

@@ -102,6 +102,8 @@ function ImageRotarySwitch({
     onMouseLeave,
     className,
     style,
+    editable,
+    disabled,
 }: ImageRotarySwitchProps) {
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "square");
 
@@ -148,6 +150,8 @@ function ImageRotarySwitch({
             onMouseUp={onMouseUp}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
+            editable={editable}
+            disabled={disabled}
             viewBoxWidthUnits={frameWidth}
             viewBoxHeightUnits={frameHeight}
             view={ImageKnobView}

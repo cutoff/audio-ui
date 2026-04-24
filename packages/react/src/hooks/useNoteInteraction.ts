@@ -15,8 +15,14 @@ export interface UseNoteInteractionProps {
     onNoteOn: (note: number) => void;
     /** Callback triggered when a note is released */
     onNoteOff: (note: number) => void;
-    /** Whether the interaction is disabled */
+    /** Whether the interaction is disabled. When `true`, Down/Move are suppressed. Implies non-editable. */
     disabled?: boolean;
+    /**
+     * Whether the control responds to user gestures. When `false`, Down/Move produce no
+     * note triggers. Up/Cancel remain active so in-flight pointers can release cleanly.
+     * @default true
+     */
+    editable?: boolean;
     /** Optional user-provided pointer down handler */
     onPointerDown?: React.PointerEventHandler;
     /** Optional user-provided pointer move handler */
@@ -93,6 +99,7 @@ export function useNoteInteraction({
     onNoteOn,
     onNoteOff,
     disabled = false,
+    editable = true,
     onPointerDown: userOnPointerDown,
     onPointerMove: userOnPointerMove,
     onPointerUp: userOnPointerUp,
@@ -105,6 +112,7 @@ export function useNoteInteraction({
             onNoteOn: (note) => onNoteOn(note),
             onNoteOff: (note) => onNoteOff(note),
             disabled,
+            editable,
         });
     }
 
@@ -113,8 +121,9 @@ export function useNoteInteraction({
             onNoteOn: (note) => onNoteOn(note),
             onNoteOff: (note) => onNoteOff(note),
             disabled,
+            editable,
         });
-    }, [onNoteOn, onNoteOff, disabled]);
+    }, [onNoteOn, onNoteOff, disabled, editable]);
 
     useEffect(() => {
         return () => {
@@ -136,7 +145,7 @@ export function useNoteInteraction({
     const handlePointerDown = useCallback(
         (e: React.PointerEvent) => {
             userOnPointerDown?.(e);
-            if (e.defaultPrevented || disabled) return;
+            if (e.defaultPrevented || disabled || !editable) return;
 
             // Capture the pointer to continue receiving events even if it leaves the element
             (e.currentTarget as Element).setPointerCapture(e.pointerId);
@@ -144,38 +153,38 @@ export function useNoteInteraction({
             const note = getNoteFromEvent(e);
             controllerRef.current?.handlePointerDown(e.pointerId, note);
         },
-        [userOnPointerDown, disabled, getNoteFromEvent]
+        [userOnPointerDown, disabled, editable, getNoteFromEvent]
     );
 
     const handlePointerMove = useCallback(
         (e: React.PointerEvent) => {
             userOnPointerMove?.(e);
-            if (e.defaultPrevented || disabled) return;
+            if (e.defaultPrevented || disabled || !editable) return;
 
             const note = getNoteFromEvent(e);
             controllerRef.current?.handlePointerMove(e.pointerId, note);
         },
-        [userOnPointerMove, disabled, getNoteFromEvent]
+        [userOnPointerMove, disabled, editable, getNoteFromEvent]
     );
 
     const handlePointerUp = useCallback(
         (e: React.PointerEvent) => {
             userOnPointerUp?.(e);
-            if (e.defaultPrevented || disabled) return;
+            if (e.defaultPrevented) return;
 
             controllerRef.current?.handlePointerUp(e.pointerId);
         },
-        [userOnPointerUp, disabled]
+        [userOnPointerUp]
     );
 
     const handlePointerCancel = useCallback(
         (e: React.PointerEvent) => {
             userOnPointerCancel?.(e);
-            if (e.defaultPrevented || disabled) return;
+            if (e.defaultPrevented) return;
 
             controllerRef.current?.handlePointerUp(e.pointerId);
         },
-        [userOnPointerCancel, disabled]
+        [userOnPointerCancel]
     );
 
     return {

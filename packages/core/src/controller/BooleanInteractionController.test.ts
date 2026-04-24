@@ -224,6 +224,51 @@ describe("BooleanInteractionController", () => {
         });
     });
 
+    describe("Non-editable (editable=false)", () => {
+        beforeEach(() => {
+            controller = new BooleanInteractionController({
+                value: false,
+                mode: "toggle",
+                onValueChange,
+                editable: false,
+            });
+        });
+
+        it("does nothing on mouse down when non-editable", () => {
+            controller.handleMouseDown(false);
+            expect(onValueChange).not.toHaveBeenCalled();
+        });
+
+        it("does nothing on mouse up when non-editable", () => {
+            controller.updateConfig({ value: false, mode: "momentary", onValueChange, editable: false });
+            controller.handleMouseDown(false);
+            onValueChange.mockClear();
+            controller.handleMouseUp(false);
+            expect(onValueChange).not.toHaveBeenCalled();
+        });
+
+        it("does nothing on global pointer down when non-editable", () => {
+            controller.handleGlobalPointerDown(false);
+            controller.handleMouseEnter();
+            expect(onValueChange).not.toHaveBeenCalled();
+        });
+
+        it("does nothing on mouse enter when non-editable", () => {
+            controller.handleGlobalPointerDown(false);
+            controller.handleMouseEnter();
+            expect(onValueChange).not.toHaveBeenCalled();
+        });
+
+        it("returns false from handleKeyDown when non-editable", () => {
+            expect(controller.handleKeyDown("Enter")).toBe(false);
+            expect(onValueChange).not.toHaveBeenCalled();
+        });
+
+        it("returns false from handleKeyUp when non-editable", () => {
+            expect(controller.handleKeyUp("Enter")).toBe(false);
+        });
+    });
+
     describe("defaultPrevented", () => {
         beforeEach(() => {
             controller = new BooleanInteractionController({

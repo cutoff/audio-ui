@@ -116,4 +116,21 @@ describe("DiscreteInteractionController", () => {
             expect(onValueChange).not.toHaveBeenCalled();
         });
     });
+
+    describe("Non-editable State (editable=false)", () => {
+        beforeEach(() => {
+            controller.updateConfig({ value: 0, options, onValueChange, editable: false });
+        });
+
+        it("ignores all interactions when non-editable", () => {
+            controller.cycleNext();
+            controller.stepNext();
+            controller.stepPrev();
+            controller.handleClick(false);
+            const handled = controller.handleKeyDown("ArrowRight");
+
+            expect(handled).toBe(false);
+            expect(onValueChange).not.toHaveBeenCalled();
+        });
+    });
 });

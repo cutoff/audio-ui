@@ -146,6 +146,8 @@ function FilmStripContinuousControl({
     onMouseLeave,
     className,
     style,
+    editable,
+    disabled,
 }: FilmStripContinuousControlProps) {
     const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "square");
 
@@ -186,6 +188,8 @@ function FilmStripContinuousControl({
             interactionSensitivity={interactionSensitivity}
             valueFormatter={valueFormatter}
             valueAsLabel={valueAsLabel}
+            editable={editable}
+            disabled={disabled}
             viewBoxWidthUnits={frameWidth}
             viewBoxHeightUnits={frameHeight}
             view={FilmstripView}

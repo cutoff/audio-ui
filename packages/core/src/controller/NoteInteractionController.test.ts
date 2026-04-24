@@ -94,4 +94,27 @@ describe("NoteInteractionController", () => {
         controller.handlePointerMove(1, 60);
         expect(onNoteOn).not.toHaveBeenCalled();
     });
+
+    it("should respect non-editable state (editable=false)", () => {
+        controller.updateConfig({ onNoteOn, onNoteOff, editable: false });
+
+        controller.handlePointerDown(1, 60);
+        expect(onNoteOn).not.toHaveBeenCalled();
+
+        controller.handlePointerMove(1, 60);
+        expect(onNoteOn).not.toHaveBeenCalled();
+    });
+
+    it("should still release an in-flight note on pointerUp after becoming non-editable", () => {
+        // Start a note while editable
+        controller.handlePointerDown(1, 60);
+        expect(onNoteOn).toHaveBeenCalledWith(60, 1);
+
+        // Flip to non-editable mid-hold
+        controller.updateConfig({ onNoteOn, onNoteOff, editable: false });
+
+        // Up must still fire onNoteOff to clean up the in-flight note
+        controller.handlePointerUp(1);
+        expect(onNoteOff).toHaveBeenCalledWith(60, 1);
+    });
 });
