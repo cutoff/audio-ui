@@ -48,7 +48,29 @@ During development, the project uses a **single development suffix** following a
 - Professional versioning that reflects the development context
 - Automatic version management without manual updates
 
-### 2.2. Preview Channel (npm Releases)
+### 2.2. Unstable Channel (develop Auto-Publish)
+
+Every qualifying push to `develop` auto-publishes a snapshot to npm under the `unstable` dist-tag.
+
+- **Format**: `1.0.0-unstable.YYYYMMDD.HHMM.<shortsha>`
+- **Example**: `1.0.0-unstable.20260424.1530.a1b2c3d`
+- **npm Dist-Tag**: `unstable`
+- **Installation**: `npm install @cutoff/audio-ui-react@unstable`
+- **Trigger**: the `publish-unstable` job in `.github/workflows/publish.yml` on push to `develop` when `packages/**`, workspace manifests, or build config change.
+- **Committed version on `develop`**: stays at `1.0.0-dev`. The unstable version is computed in CI (`pnpm run version unstable`), applied to all `package.json` files for the publish, and never committed back.
+
+**Why the workflow is consolidated with milestone publishing**: npm allows only one Trusted Publisher per package, so both milestone (`main`) and unstable (`develop`) publishes run from the same workflow file (`publish.yml`) to share that single OIDC authorization. Two branch-gated jobs (`publish-milestone` and `publish-unstable`) keep the two flows logically separate.
+
+**Breakdown**:
+
+- `1.0.0`: Target version for the next stable release.
+- `-unstable`: Pre-release identifier signifying an ephemeral develop snapshot.
+- `.YYYYMMDD.HHMM`: UTC timestamp — ensures a unique, chronologically sortable version even when republishing the same commit.
+- `.<shortsha>`: 7-char git short sha — traceable back to the source commit.
+
+**Reliability**: These builds are ephemeral and may break at any time. They exist to unblock downstream consumers who need bleeding-edge changes. `latest` and `preview` are never updated by this workflow.
+
+### 2.3. Preview Channel (npm Releases)
 
 For npm releases, the project uses a **preview channel** with timestamped versions:
 
@@ -73,7 +95,7 @@ For npm releases, the project uses a **preview channel** with timestamped versio
 3. Push to `main`: The `publish.yml` CI workflow detects the non-`-dev` version and automatically publishes to npm with the `preview` dist-tag and creates the `release/{version}` git tag
 4. After release: Run `pnpm release:dev` to reset to `-dev` and auto-commit
 
-### 2.3. Developer Preview Releases (dp.0+)
+### 2.4. Developer Preview Releases (dp.0+)
 
 When ready for the first Developer Preview release:
 
@@ -95,27 +117,33 @@ The dot (`.`) separating the identifier (`dp`) from the number (`X`) is **mandat
   - **Correct (`-dp.X`)**: `1.0.0-dp.9` is correctly treated as being **less than** `1.0.0-dp.10`.
   - **Incorrect (`-dpX`)**: Without the dot, `1.0.0-dp9` would be incorrectly treated as **greater than** `1.0.0-dp10` due to lexicographical (alphabetical) comparison.
 
-### 2.4. Release Progression
+### 2.5. Release Progression
 
 1.  **Development Versions**:
     - All branches use `1.0.0-dev`
     - Set via `pnpm release:dev` (bumps and auto-commits) or `pnpm run version dev` (bumps only)
-    - Not published to npm
+    - Not published to npm from local / feature branches
 
-2.  **Preview Releases (npm)**:
+2.  **Unstable Snapshots (develop)**:
+    - Auto-published from `develop` by CI
+    - Format: `1.0.0-unstable.YYYYMMDD.HHMM.<shortsha>`
+    - npm dist-tag: `unstable`
+    - The committed version on `develop` remains `1.0.0-dev`; CI computes the unstable version at publish time
+
+3.  **Preview Releases (npm)**:
     - Timestamped versions: `1.0.0-preview.YYYYMMDD.HHMM`
     - Prepared via `pnpm release:prepare preview` (runs quality checks, bumps, auto-commits)
     - Published automatically by CI on push to `main` with `preview` npm dist-tag
     - Used for continuous releases and testing
     - Working toward first Developer Preview release (dp.0)
 
-3.  **Developer Preview Releases**:
+4.  **Developer Preview Releases**:
     - When ready, transition to numbered releases: `1.0.0-dp.0`, `1.0.0-dp.1`, etc.
     - Prepared via `pnpm release:prepare dp` (auto-increments from existing git tags)
     - Published automatically by CI on push to `main` with `preview` npm dist-tag
     - Used for gathering feedback and testing before a stable release
 
-4.  **Stable Release**:
+5.  **Stable Release**:
     - To transition from developer preview to the first stable release, remove the entire `-dp.X` pre-release suffix.
     - The first stable release is `1.0.0`.
     - Prepared via `pnpm release:prepare patch|minor|major`

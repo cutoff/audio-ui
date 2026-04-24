@@ -2,20 +2,32 @@ name: Publish
 
 on:
     push:
-        branches: [main]
+        branches: [main, develop]
         paths:
             - "package.json"
+            - "packages/**"
+            - "pnpm-lock.yaml"
+            - "pnpm-workspace.yaml"
+            - "turbo.json"
+            - "scripts/**"
+            - ".github/workflows/publish.yml"
 
 concurrency:
     group: publish-${{ github.ref }}
-    cancel-in-progress: false
+    # Milestone releases on `main` must never be cancelled mid-publish.
+    # Unstable snapshots on `develop` are ephemeral — only the latest push matters.
+    cancel-in-progress: ${{ github.ref == 'refs/heads/develop' }}
 
 env:
     CI: true
 
 jobs:
-    publish:
-        name: Publish to npm
+    # Milestone publish: fires on pushes to `main` when the root version has changed to a
+    # non-`-dev` value. Routes `-preview.*` / `-dp.*` to the `preview` dist-tag and every
+    # other release to `latest`.
+    publish-milestone:
+        name: Publish milestone to npm
+        if: github.ref == 'refs/heads/main'
         runs-on: ubuntu-latest
         permissions:
             contents: write
@@ -119,3 +131,60 @@ jobs:
                     git tag "${TAG}"
                     git push origin "refs/tags/${TAG}"
                   fi
+
+    # Unstable publish: fires on every qualifying push to `develop`. Computes a unique
+    # `1.0.0-unstable.YYYYMMDD.HHMM.<shortsha>` version at publish time and publishes to the
+    # `unstable` dist-tag. `latest` and `preview` are never affected.
+    publish-unstable:
+        name: Publish unstable to npm
+        if: github.ref == 'refs/heads/develop'
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  ref: ${{ github.sha }}
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: "pnpm"
+                  registry-url: "https://registry.npmjs.org"
+
+            - name: Upgrade npm for OIDC trusted publishing
+              run: npm install -g npm@^11.5.1
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Compute unstable version
+              id: version
+              run: |
+                  set -euo pipefail
+                  pnpm run version unstable
+                  VERSION=$(node -p "require('./package.json').version")
+                  echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+                  echo "Computed unstable version: $VERSION"
+
+            - name: Run quality pipeline (typecheck, build, lint, test)
+              run: pnpm turbo run typecheck build lint test --continue --no-daemon
+
+            - name: Publish @cutoff/audio-ui-core
+              working-directory: packages/core
+              env:
+                  NPM_CONFIG_PROVENANCE: "true"
+              run: pnpm publish --tag unstable --no-git-checks --provenance
+
+            - name: Publish @cutoff/audio-ui-react
+              working-directory: packages/react
+              env:
+                  NPM_CONFIG_PROVENANCE: "true"
+              run: pnpm publish --tag unstable --no-git-checks --provenance

@@ -4,6 +4,17 @@ Notes for the upcoming release. Use this when updating the documentation site or
 
 ---
 
+## Distribution – `unstable` npm dist-tag auto-published from `develop`
+
+Every push to `develop` that touches source or workspace manifests auto-publishes both `@cutoff/audio-ui-core` and `@cutoff/audio-ui-react` to npm under the new `unstable` dist-tag. The `latest` and `preview` dist-tags are not affected and continue to be driven by the milestone job in the same workflow when pushing to `main`.
+
+- **Install**: `pnpm add @cutoff/audio-ui-react@unstable` (or `@cutoff/audio-ui-core@unstable`).
+- **Version format**: `1.0.0-unstable.YYYYMMDD.HHMM.<shortsha>` — UTC timestamp and 7-char HEAD sha. Unique per publish, traceable to the source commit, chronologically sortable.
+- **Reliability**: ephemeral, may break at any time. Intended for downstream consumers who need bleeding-edge changes without waiting for a preview/release.
+- **Committed version**: the committed version on `develop` stays at `1.0.0-dev`. The unstable version is computed in CI (`pnpm run version unstable`) and never committed back.
+
+The `version` script gains a new `unstable` type (`pnpm run version unstable`) used by the workflow; local usage is unnecessary.
+
 ## Controls – explicit `editable` and `disabled` props (breaking)
 
 Every interactive control (`Knob`, `Slider`, `Button`, `CycleButton`, `Keys`, plus the primitives `ContinuousControl` / `DiscreteControl` / `BooleanControl`, and the filmstrip/image generic wrappers) now exposes two explicit boolean props to govern user-gesture editability:

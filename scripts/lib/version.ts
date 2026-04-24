@@ -8,7 +8,7 @@ import { execSync } from "child_process";
 import { readFileSync, writeFileSync, readdirSync, lstatSync } from "fs";
 import { join } from "path";
 
-export const VERSION_TYPES = ["dev", "preview", "dp", "patch", "minor", "major"] as const;
+export const VERSION_TYPES = ["dev", "unstable", "preview", "dp", "patch", "minor", "major"] as const;
 export type VersionType = (typeof VERSION_TYPES)[number];
 
 /**
@@ -91,6 +91,37 @@ function generatePreviewVersion(base: string): string {
 }
 
 /**
+ * Generates a timestamped unstable version for an auto-published develop snapshot.
+ *
+ * @param base - Base version (e.g. "1.0.0")
+ * @returns Timestamped unstable version with a short git sha suffix (e.g. "1.0.0-unstable.20260424.1530.a1b2c3d")
+ */
+function generateUnstableVersion(base: string): string {
+    const now = new Date();
+    const year = now.getUTCFullYear();
+    const month = String(now.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(now.getUTCDate()).padStart(2, "0");
+    const hours = String(now.getUTCHours()).padStart(2, "0");
+    const minutes = String(now.getUTCMinutes()).padStart(2, "0");
+    const timestamp = `${year}${month}${day}.${hours}${minutes}`;
+    const sha = getShortSha();
+    return sha ? `${base}-unstable.${timestamp}.${sha}` : `${base}-unstable.${timestamp}`;
+}
+
+/**
+ * Returns the current HEAD short sha, or an empty string if git is unavailable.
+ *
+ * @returns 7-char short sha, or "" on failure
+ */
+function getShortSha(): string {
+    try {
+        return execSync("git rev-parse --short=7 HEAD", { encoding: "utf-8" }).trim();
+    } catch {
+        return "";
+    }
+}
+
+/**
  * Determines the next dp (developer preview) number by inspecting existing git tags.
  *
  * @param base - Base version (e.g. "1.0.0")
@@ -124,6 +155,8 @@ export function computeVersion(type: VersionType, currentVersion: string): strin
     switch (type) {
         case "dev":
             return `${base}-dev`;
+        case "unstable":
+            return generateUnstableVersion(base);
         case "preview":
             return generatePreviewVersion(base);
         case "dp":

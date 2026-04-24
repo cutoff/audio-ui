@@ -4,7 +4,7 @@
  See LICENSE.md for details.
 -->
 
-**Version**: 2.0 | **Meta**: React component library for audio and MIDI applications (Developer Preview); monorepo structure with library and playground-app. Development versions use Maven-like `-dev` suffix (e.g., `1.0.0-dev`, equivalent to Maven's `-SNAPSHOT`). npm releases use timestamped preview versions (e.g., `1.0.0-preview.YYYYMMDD.HHMM`). Working toward first Developer Preview release (dp.0).
+**Version**: 2.0 | **Meta**: React component library for audio and MIDI applications (Developer Preview); monorepo structure with library and playground-app. Development versions use Maven-like `-dev` suffix (e.g., `1.0.0-dev`, equivalent to Maven's `-SNAPSHOT`). npm releases use timestamped preview versions (e.g., `1.0.0-preview.YYYYMMDD.HHMM`). Pushes to `develop` auto-publish timestamped unstable snapshots (e.g., `1.0.0-unstable.YYYYMMDD.HHMM.<shortsha>`) to the `unstable` dist-tag; `latest` and `preview` are not affected. Working toward first Developer Preview release (dp.0).
 
 **IMPORTANT: Documentation File Structure**
 
