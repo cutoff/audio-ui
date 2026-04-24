@@ -219,6 +219,25 @@ describe("useDiscreteInteraction", () => {
                 expect(onValueChange).not.toHaveBeenCalled();
             });
 
+            it("does nothing when non-editable (editable=false)", () => {
+                const { result } = renderHook(() =>
+                    useDiscreteInteraction({
+                        value: 0,
+                        options,
+                        onValueChange,
+                        editable: false,
+                    })
+                );
+
+                act(() => {
+                    result.current.handleClick({
+                        defaultPrevented: false,
+                    } as React.MouseEvent);
+                });
+
+                expect(onValueChange).not.toHaveBeenCalled();
+            });
+
             it("calls user-provided onClick handler before hook handler", () => {
                 const userOnClick = vi.fn();
                 const { result } = renderHook(() =>

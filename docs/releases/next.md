@@ -4,6 +4,90 @@ Notes for the upcoming release. Use this when updating the documentation site or
 
 ---
 
+## Controls – explicit `editable` and `disabled` props (breaking)
+
+Every interactive control (`Knob`, `Slider`, `Button`, `CycleButton`, `Keys`, plus the primitives `ContinuousControl` / `DiscreteControl` / `BooleanControl`, and the filmstrip/image generic wrappers) now exposes two explicit boolean props to govern user-gesture editability:
+
+- **`editable?: boolean`** (default `true`) — governs user gestures only (mouse, keyboard, touch, wheel). When `false`, gestures produce no value changes, but external `value` prop updates still flow through to the visuals. Useful for display-only controls driven by automation, MIDI, or external state.
+- **`disabled?: boolean`** (default `false`) — genuinely off. Implies non-editable **and** suppresses all value-change callback dispatch (including `onClick`). Removes the control from the tab order. External `value` prop updates still animate the visual so automation can keep driving the display.
+
+Precedence: `disabled=true` wins over `editable`. Effective editability at the primitive layer is `editable && !disabled`.
+
+### Behavior matrix
+
+| State                                     | Gestures              | Callbacks fire                          | Tab order                               | ARIA                                   |
+| ----------------------------------------- | --------------------- | --------------------------------------- | --------------------------------------- | -------------------------------------- |
+| `editable=true, disabled=false` (default) | Yes                   | Yes                                     | In (`0`)                                | none                                   |
+| `editable=false, disabled=false`          | No (no value changes) | No from UI; external updates still flow | Out (`-1`) unless `onClick` is provided | `aria-readonly` where role supports it |
+| `disabled=true`                           | No                    | No (including `onClick`)                | Out (`-1`)                              | `aria-disabled`                        |
+
+When `editable=false` is combined with a bare `onClick` handler, the control stays focusable so Space/Enter can still activate the click — only drag/wheel/value-editing gestures are suppressed.
+
+### Keys specifics
+
+On `Keys`, `editable=false` blocks note triggering on pointer down/move. In-flight pointers still release cleanly (`onNoteOff` fires on pointer up / cancel) so flipping `editable` mid-hold does not leave stuck notes. `disabled=true` fully blocks gestures and suppresses `onClick`; `notesOn` highlights still flow to the visuals in both states.
+
+### ARIA
+
+- Continuous controls (`role="slider"`): emit `aria-readonly="true"` when `editable=false && !disabled`; emit `aria-disabled="true"` when `disabled`.
+- Discrete controls (`role="spinbutton"`): same as above.
+- Boolean controls (`role="button"`): emit `aria-disabled="true"` when `disabled`. No `aria-readonly` (not a valid ARIA attribute for `button`).
+- `Keys` (`role="group"` on the wrapper): emit `aria-disabled="true"` when `disabled`.
+
+### Breaking change — upgrade steps
+
+Previously, omitting the paired value-change callback (`onValueChange`, `onNormalizedValueChange`, or `onMidiValueChange`) implicitly locked the control. That implicit rule is removed — a control with a `value` prop and no callback is now editable by default (drag/wheel/keyboard work, but nothing persists).
+
+- Consumers that relied on "no callback = locked" as a display-only pattern must pass `editable={false}` explicitly.
+- A `disabled` control that previously fired `onClick` on click now suppresses `onClick` (and every value-change callback). This is the correct "disabled" semantic.
+- No type-level breaks: both new props are optional with safe defaults, so existing call sites continue to type-check.
+
+### Example
+
+```tsx
+// Display-only knob driven by automation
+<Knob value={automationValue} editable={false} label="Cutoff" parameter={cutoffParam} />
+
+// Fully disabled knob (tab order excluded, callbacks suppressed)
+<Knob value={value} onValueChange={setValue} disabled label="Cutoff" parameter={cutoffParam} />
+
+// Non-editable with onClick (focusable, Space/Enter triggers click)
+<Knob value={42} editable={false} onClick={() => openMenu()} label="Preset" />
+```
+
+### Cursor behavior
+
+Cursor selection follows observable interactivity, not just the declared intent, to avoid misleading a user into dragging a control that has no callback to dispatch to. A control is considered **truly editable** when `editable && !disabled && (onValueChange || onNormalizedValueChange || onMidiValueChange)` — all three must hold. Without a value-change callback, the cursor falls back to the non-editable or clickable variant.
+
+- `disabled=true` → `--audioui-cursor-disabled`
+- truly editable (continuous) → direction-based cursor (bidirectional / vertical / horizontal / circular)
+- truly editable (boolean / discrete / keys) → `--audioui-cursor-clickable`
+- not truly editable, `onClick` provided → `--audioui-cursor-clickable`
+- not truly editable, no `onClick` → `--audioui-cursor-noneditable`
+
+`Button`, `CycleButton`, and `Keys` now always set an explicit cursor (previously they left the cursor unset when non-interactive, inheriting from user-agent styling and occasionally showing a pointer on SVG).
+
+### CSS variable default – `--audioui-cursor-disabled`
+
+- **Before**: `not-allowed` (the browser "forbidden" cursor).
+- **After**: `default`.
+
+Rationale: the disabled state will be communicated through desaturation and other visual treatments in a follow-up rendering story; the cursor itself should not be the distinguishing signal. Consumers who want the old "forbidden" cursor can still override the variable:
+
+```css
+.audioui {
+  --audioui-cursor-disabled: not-allowed;
+}
+```
+
+`--audioui-cursor-noneditable` and `--audioui-cursor-disabled` remain separate variables so the two states can be customized independently.
+
+### Playground
+
+A new example at `/examples/editable-disabled` showcases all three states (editable, editable=false, disabled) for each interactive control, with a toggle that drives non-editable/disabled visuals from simulated external automation.
+
+---
+
 ## Controls – paired-channel value API (breaking)
 
 Every parameter-bound control (`Knob`, `Slider`, `Button`, `CycleButton`, and the primitives

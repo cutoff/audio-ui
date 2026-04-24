@@ -151,6 +151,8 @@ function Slider({
     cursorImageDarkHref,
     cursorClassName,
     cursorStyle,
+    editable,
+    disabled,
 }: SliderProps) {
     const { style: themableStyle } = useThemableProps({
         color,
@@ -206,6 +208,8 @@ function Slider({
             valueFormatter={valueFormatter}
             valueAsLabel={valueAsLabel}
             ariaOrientation={orientation}
+            editable={editable}
+            disabled={disabled}
             view={ViewComponent}
             viewProps={{
                 variant: variant,

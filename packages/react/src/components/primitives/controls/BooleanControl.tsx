@@ -52,23 +52,21 @@ export type BooleanControlComponentProps<P extends object = Record<string, unkno
  * 1. Strict Mode (Parameter only): Model provided via parameter prop.
  * 2. Ad-Hoc Mode (Props only): Model created from individual props (label, latch, etc.).
  *
- * **Interaction Modes:**
- * - **Editable Control**: When any paired value-change callback (`onValueChange`,
- *   `onNormalizedValueChange`, `onMidiValueChange`) is provided, the control is editable
- *   and responds to all interaction methods (mouse, touch, keyboard) to change the value.
- *   The full interaction system handles complex behaviors like drag-in/drag-out for momentary buttons.
- * - **Clickable View**: When only `onClick` is provided (no value-change callback), the
- *   control is a clickable view that triggers `onClick` but does not change its value.
- *   Touch events are handled to ensure `onClick` works on touch devices.
- * - **Both**: When both a value-change callback and `onClick` are provided, the control is
- *   editable and also triggers `onClick` for mouse clicks; touch events dispatch value changes.
+ * Interactivity is governed by the explicit `editable` (default `true`) and `disabled`
+ * (default `false`) props. `editable=false` blocks pointer/keyboard gestures but keeps the
+ * control "alive" — external `value` updates still animate the visuals. `disabled=true`
+ * implies non-editable, suppresses all callback firing (including `onClick`), and removes
+ * the control from the tab order.
+ *
+ * When `onClick` is provided, the control remains focusable even when `editable=false` so
+ * Space/Enter can still activate the click handler.
  *
  * @param props - Component props including parameter configuration, view component, and layout options
  * @returns Rendered boolean control component
  *
  * @example
  * ```tsx
- * // Editable control
+ * // Editable control (default)
  * <BooleanControl
  *   value={isOn}
  *   onValueChange={setIsOn}
@@ -76,10 +74,10 @@ export type BooleanControlComponentProps<P extends object = Record<string, unkno
  *   viewProps={{ color: "blue", roundness: 0.3 }}
  * />
  *
- * // Clickable view (non-editable)
+ * // Display-only view (value driven externally)
  * <BooleanControl
- *   value={false}
- *   onClick={() => handleClick()}
+ *   value={isOn}
+ *   editable={false}
  *   view={ButtonView}
  *   viewProps={{ color: "gray" }}
  * />
@@ -116,9 +114,20 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
         onMouseEnter,
         onMouseLeave,
         midiResolution,
+        editable = true,
+        disabled = false,
     } = props;
 
-    const editable = !!(onValueChange || onNormalizedValueChange || onMidiValueChange);
+    const effectiveEditable = editable && !disabled;
+    const gatedOnValueChange = disabled ? undefined : onValueChange;
+    const gatedOnNormalizedValueChange = disabled ? undefined : onNormalizedValueChange;
+    const gatedOnMidiValueChange = disabled ? undefined : onMidiValueChange;
+    const gatedOnClick = disabled ? undefined : onClick;
+    // Gestures only have a visible effect when a value-change callback is wired. This drives
+    // cursor/highlight/hook-wiring, so a button with `editable=true` but no callback does not
+    // advertise interactivity through the cursor.
+    const hasAnyChangeCallback = !!(onValueChange || onNormalizedValueChange || onMidiValueChange);
+    const trulyEditable = effectiveEditable && hasAnyChangeCallback;
 
     const { derivedParameter } = useBooleanParameterResolution({
         parameter,
@@ -132,9 +141,9 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
         value,
         normalizedValue: inputNormalizedValue,
         midiValue: inputMidiValue,
-        onValueChange,
-        onNormalizedValueChange,
-        onMidiValueChange,
+        onValueChange: gatedOnValueChange,
+        onNormalizedValueChange: gatedOnNormalizedValueChange,
+        onMidiValueChange: gatedOnMidiValueChange,
         parameter: derivedParameter,
     });
 
@@ -153,18 +162,19 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
         value: realValue,
         mode: derivedParameter.mode ?? (latch ? "toggle" : "momentary"),
         onValueChange: commitValue,
-        disabled: !editable,
+        disabled,
+        editable: trulyEditable,
         onMouseDown,
         onMouseUp,
         onKeyDown: undefined, // BooleanControl doesn't have onKeyDown prop, only uses hook handler
         onKeyUp: undefined, // BooleanControl doesn't have onKeyUp prop, only uses hook handler
     });
 
-    // Handle onClick for touch events when the control is non-editable.
-    // When editable, the interaction system handles touch events for value changes.
+    // Handle onClick for touch events when the control is not truly editable.
+    // When truly editable, the interaction system handles touch events for value changes.
     const handleTouchEndForClick = useCallback(
         (e: React.TouchEvent<SVGSVGElement>) => {
-            if (!editable && onClick) {
+            if (!trulyEditable && gatedOnClick) {
                 e.preventDefault();
                 const touch = e.changedTouches[0];
                 if (touch) {
@@ -175,20 +185,20 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
                         currentTarget: e.currentTarget,
                         type: "click",
                     } as unknown as React.MouseEvent<SVGSVGElement>;
-                    onClick(syntheticEvent);
+                    gatedOnClick(syntheticEvent);
                 }
             }
         },
-        [editable, onClick]
+        [trulyEditable, gatedOnClick]
     );
 
     const handleTouchStartForClick = useCallback(
         (e: React.TouchEvent<SVGSVGElement>) => {
-            if (!editable && onClick) {
+            if (!trulyEditable && gatedOnClick) {
                 e.preventDefault();
             }
         },
-        [editable, onClick]
+        [trulyEditable, gatedOnClick]
     );
 
     const effectiveLabel = label ?? derivedParameter.name;
@@ -198,16 +208,23 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
     }, [className]);
 
     const svgClassNames = useMemo(() => {
-        return editable || onClick ? CLASSNAMES.highlight : "";
-    }, [editable, onClick]);
+        return trulyEditable || gatedOnClick ? CLASSNAMES.highlight : "";
+    }, [trulyEditable, gatedOnClick]);
 
-    // Add clickable cursor when interactive; add touchAction: "none" to prevent default touch behaviors.
+    // Always set an explicit cursor to match ContinuousControl's behavior and avoid surprise
+    // inheritance from user-agent SVG defaults. Order: disabled wins; otherwise clickable when
+    // interactive; otherwise non-editable.
+    const cursor = disabled
+        ? "var(--audioui-cursor-disabled)"
+        : gatedOnClick || trulyEditable
+          ? "var(--audioui-cursor-clickable)"
+          : "var(--audioui-cursor-noneditable)";
     const svgStyle = useMemo(
         () => ({
-            ...(onClick || editable ? { cursor: "var(--audioui-cursor-clickable)" as const } : {}),
+            cursor,
             touchAction: "none" as const,
         }),
-        [onClick, editable]
+        [cursor]
     );
 
     // Wrap handlers to set element reference
@@ -241,30 +258,37 @@ export function BooleanControl<P extends object = Record<string, unknown>>(props
             <AdaptiveBox.Svg
                 className={svgClassNames}
                 style={svgStyle}
-                onClick={onClick}
-                onMouseDown={editable ? handleMouseDownWithRef : undefined}
-                onMouseUp={editable ? handleMouseUp : undefined}
+                onClick={gatedOnClick}
+                onMouseDown={trulyEditable ? handleMouseDownWithRef : undefined}
+                onMouseUp={trulyEditable ? handleMouseUp : undefined}
                 onMouseEnter={(e) => {
-                    if (editable) {
+                    if (trulyEditable) {
                         handleMouseEnter(e);
                     }
                     onMouseEnter?.(e);
                 }}
                 onMouseLeave={(e) => {
-                    if (editable) {
+                    if (trulyEditable) {
                         handleMouseLeave(e);
                     }
                     onMouseLeave?.(e);
                 }}
-                onTouchStart={editable ? handleTouchStartWithRef : onClick ? handleTouchStartForClick : undefined}
-                onTouchEnd={editable ? handleTouchEnd : onClick ? handleTouchEndForClick : undefined}
-                onTouchMove={editable ? handleTouchMove : undefined}
-                onKeyDown={editable ? handleKeyDown : undefined}
-                onKeyUp={editable ? handleKeyUp : undefined}
-                tabIndex={editable || onClick ? 0 : undefined}
+                onTouchStart={
+                    trulyEditable
+                        ? handleTouchStartWithRef
+                        : gatedOnClick
+                          ? handleTouchStartForClick
+                          : undefined
+                }
+                onTouchEnd={trulyEditable ? handleTouchEnd : gatedOnClick ? handleTouchEndForClick : undefined}
+                onTouchMove={trulyEditable ? handleTouchMove : undefined}
+                onKeyDown={trulyEditable ? handleKeyDown : undefined}
+                onKeyUp={trulyEditable ? handleKeyUp : undefined}
+                tabIndex={disabled ? -1 : effectiveEditable || gatedOnClick ? 0 : -1}
                 role="button"
                 aria-pressed={realValue}
                 aria-label={effectiveLabel}
+                aria-disabled={disabled || undefined}
             >
                 <View normalizedValue={normalizedValue} {...viewProps} />
             </AdaptiveBox.Svg>

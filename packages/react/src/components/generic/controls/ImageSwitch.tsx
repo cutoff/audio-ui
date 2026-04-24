@@ -112,6 +112,8 @@ function ImageSwitch({
     onMouseLeave,
     className,
     style,
+    editable,
+    disabled,
 }: ImageSwitchComponentProps) {
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "square");
 
@@ -141,6 +143,8 @@ function ImageSwitch({
             onMouseUp={onMouseUp}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
+            editable={editable}
+            disabled={disabled}
             viewBoxWidthUnits={frameWidth}
             viewBoxHeightUnits={frameHeight}
             view={ImageSwitchView}

@@ -12,8 +12,14 @@ export interface NoteInteractionConfig {
     onNoteOn: (note: number, pointerId: number | string) => void;
     /** Callback triggered when a note is released (off) */
     onNoteOff: (note: number, pointerId: number | string) => void;
-    /** Whether the interaction is disabled */
+    /** Whether the interaction is disabled. When `true`, Down/Move are suppressed. Implies non-editable. */
     disabled?: boolean;
+    /**
+     * Whether the control responds to user gestures. When `false`, Down/Move produce no
+     * new note triggers. Up/cancel remain active so in-flight pointers can release cleanly.
+     * @default true
+     */
+    editable?: boolean;
 }
 
 /**
@@ -62,6 +68,18 @@ export class NoteInteractionController {
     }
 
     /**
+     * Returns `true` when the controller should treat new note triggers as no-ops.
+     * A controller is inert when it is either explicitly disabled or non-editable.
+     * Note: `handlePointerUp` and `cancelAll` intentionally ignore this so in-flight
+     * notes always release cleanly, even when the control becomes inert mid-interaction.
+     *
+     * @returns `true` if `disabled === true` or `editable === false`, else `false`.
+     */
+    private isInert(): boolean {
+        return this.config.disabled === true || this.config.editable === false;
+    }
+
+    /**
      * Handles the start of a pointer interaction (down).
      *
      * Tracks the pointer state globally and triggers onNoteOn if the pointer
@@ -71,7 +89,7 @@ export class NoteInteractionController {
      * @param note The MIDI note number at the pointer location, or null if none
      */
     public handlePointerDown(pointerId: number | string, note: number | null) {
-        if (this.config.disabled) return;
+        if (this.isInert()) return;
 
         // If this pointer was already active, release it first (safety)
         this.handlePointerUp(pointerId);
@@ -94,7 +112,7 @@ export class NoteInteractionController {
      * @param note The MIDI note number at the current pointer location, or null if none
      */
     public handlePointerMove(pointerId: number | string, note: number | null) {
-        if (this.config.disabled) return;
+        if (this.isInert()) return;
 
         // If pointer is not tracked as "down", ignore movement (prevents glissando when mouse is up)
         if (!this.pointerNotes.has(pointerId)) return;

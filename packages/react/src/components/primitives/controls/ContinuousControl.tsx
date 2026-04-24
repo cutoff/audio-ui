@@ -64,10 +64,15 @@ export type ContinuousControlComponentProps<P extends object = Record<string, un
  * decoupling behavior (AudioParameter, interaction logic) from visualization (SVG rendering).
  * It handles parameter resolution, normalization, interaction, and layout automatically.
  *
- * Supports double-click to reset to default value when editable (i.e. at least one of
- * `onValueChange`, `onNormalizedValueChange`, or `onMidiValueChange` is provided).
- * The default value is determined by the parameter's `defaultValue` property, or
- * calculated as 0.0 for unipolar or 0.5 for bipolar parameters when not specified.
+ * Interactivity is governed by the explicit `editable` (default `true`) and `disabled`
+ * (default `false`) props. `editable=false` blocks UI gestures (drag/wheel/keyboard) but
+ * keeps the control "alive" — external `value` updates still animate the visuals.
+ * `disabled=true` is stronger: it implies non-editable, suppresses all callback firing
+ * (including `onClick`), and removes the control from the tab order.
+ *
+ * Supports double-click to reset to default value when interactive. The default value is
+ * determined by the parameter's `defaultValue` property, or calculated as 0.0 for unipolar
+ * or 0.5 for bipolar parameters when not specified.
  *
  * @param props Component props including parameter configuration, view component, and layout props
  * @returns Rendered continuous control with AdaptiveBox layout
@@ -116,9 +121,20 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         midiResolution,
         defaultValue,
         ariaOrientation,
+        editable = true,
+        disabled = false,
     } = props;
 
-    const editable = !!(onValueChange || onNormalizedValueChange || onMidiValueChange);
+    const effectiveEditable = editable && !disabled;
+    const gatedOnValueChange = disabled ? undefined : onValueChange;
+    const gatedOnNormalizedValueChange = disabled ? undefined : onNormalizedValueChange;
+    const gatedOnMidiValueChange = disabled ? undefined : onMidiValueChange;
+    const gatedOnClick = disabled ? undefined : onClick;
+    // Gestures only have a visible effect when a value-change callback is wired. This drives
+    // cursor/highlight/hook-wiring, so a knob with `editable=true` but no callback does not
+    // advertise draggability through the cursor.
+    const hasAnyChangeCallback = !!(onValueChange || onNormalizedValueChange || onMidiValueChange);
+    const trulyEditable = effectiveEditable && hasAnyChangeCallback;
 
     const bipolar = props.bipolar ?? false;
     const { derivedParameter } = useContinuousParameterResolution({
@@ -173,9 +189,9 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         value,
         normalizedValue: inputNormalizedValue,
         midiValue: inputMidiValue,
-        onValueChange,
-        onNormalizedValueChange,
-        onMidiValueChange,
+        onValueChange: gatedOnValueChange,
+        onNormalizedValueChange: gatedOnNormalizedValueChange,
+        onMidiValueChange: gatedOnMidiValueChange,
         parameter: derivedParameter,
         userValueFormatter: valueFormatter,
         userLabel: label,
@@ -185,18 +201,17 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
     // Wrap adjustValue to trigger activity on changes (wheel, keyboard)
     const wrappedAdjustValue = React.useCallback(
         (delta: number, sensitivity?: number) => {
-            if (valueAsLabel === "interactive" && editable) {
+            if (valueAsLabel === "interactive" && trulyEditable) {
                 handleActivity();
             }
             adjustValue(delta, sensitivity);
         },
-        [adjustValue, valueAsLabel, handleActivity, editable]
+        [adjustValue, valueAsLabel, handleActivity, trulyEditable]
     );
 
     const effectiveInteractionMode = interactionMode ?? View.interaction.mode ?? "both";
     const effectiveDirection = interactionDirection ?? View.interaction.direction ?? "both";
 
-    // Only editable when at least one paired callback is provided.
     const interactiveProps = useContinuousInteraction({
         adjustValue: wrappedAdjustValue,
         interactionMode: effectiveInteractionMode,
@@ -205,10 +220,11 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
         min: derivedParameter.min,
         max: derivedParameter.max,
         paramStep: derivedParameter.step,
-        editable,
-        resetToDefault: editable ? resetToDefault : undefined,
-        onDragStart: valueAsLabel === "interactive" && editable ? handleDragStart : undefined,
-        onDragEnd: valueAsLabel === "interactive" && editable ? handleDragEnd : undefined,
+        editable: trulyEditable,
+        disabled,
+        resetToDefault: trulyEditable ? resetToDefault : undefined,
+        onDragStart: valueAsLabel === "interactive" && trulyEditable ? handleDragStart : undefined,
+        onDragEnd: valueAsLabel === "interactive" && trulyEditable ? handleDragEnd : undefined,
         onMouseDown,
         onTouchStart: undefined, // ContinuousControl doesn't have onTouchStart prop
         onWheel: undefined, // ContinuousControl doesn't have onWheel prop
@@ -220,15 +236,17 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
     }, [className]);
 
     const svgClassNames = useMemo(() => {
-        return editable || onClick ? CLASSNAMES.highlight : "";
-    }, [editable, onClick]);
+        return trulyEditable || gatedOnClick ? CLASSNAMES.highlight : "";
+    }, [trulyEditable, gatedOnClick]);
 
-    // Add clickable cursor when clickable but not draggable (onClick but no editable callback).
+    // Add clickable cursor when clickable but not draggable (onClick but no effective value callback).
     // Uses CSS variable for customizable cursor type.
     const svgStyle = {
         ...(interactiveProps.style ?? {}),
-        ...(onClick && !editable ? { cursor: "var(--audioui-cursor-clickable)" as const } : {}),
+        ...(gatedOnClick && !trulyEditable ? { cursor: "var(--audioui-cursor-clickable)" as const } : {}),
     };
+
+    const focusable = !disabled && (effectiveEditable || !!gatedOnClick);
 
     return (
         <AdaptiveBox
@@ -245,7 +263,7 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
                 className={svgClassNames}
                 style={svgStyle}
                 onWheel={interactiveProps.onWheel}
-                onClick={onClick}
+                onClick={gatedOnClick}
                 onMouseDown={interactiveProps.onMouseDown}
                 onTouchStart={interactiveProps.onTouchStart}
                 onKeyDown={interactiveProps.onKeyDown}
@@ -253,13 +271,14 @@ export function ContinuousControl<P extends object = Record<string, unknown>>(
                 onMouseUp={onMouseUp}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
-                tabIndex={interactiveProps.tabIndex}
+                tabIndex={focusable ? 0 : -1}
                 role={interactiveProps.role}
                 aria-valuenow={realValue}
                 aria-valuemin={derivedParameter.min}
                 aria-valuemax={derivedParameter.max}
                 aria-label={effectiveLabel}
-                aria-disabled={interactiveProps["aria-disabled"]}
+                aria-disabled={disabled || undefined}
+                aria-readonly={editable === false && !disabled ? true : undefined}
                 aria-orientation={ariaOrientation}
             >
                 <View normalizedValue={normalizedValue} {...viewProps} />

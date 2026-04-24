@@ -53,6 +53,11 @@ export type DiscreteControlComponentProps<P extends object = Record<string, unkn
  * This component handles parameter resolution, value management, interaction handling,
  * and layout management for discrete controls (CycleButton, Selector, etc.).
  *
+ * Interactivity is governed by the explicit `editable` (default `true`) and `disabled`
+ * (default `false`) props. `editable=false` blocks click/keyboard gestures; `disabled=true`
+ * additionally suppresses all callback firing (including `onClick`) and removes the control
+ * from the tab order. External `value` prop updates always flow through to the visuals.
+ *
  * **Important: Options vs Children**
  *
  * - **`options` prop**: Defines the parameter model (value, label, midiValue). Used for parameter structure.
@@ -127,9 +132,20 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
         onMouseLeave,
         midiResolution,
         midiMapping,
+        editable = true,
+        disabled = false,
     } = props;
 
-    const editable = !!(onValueChange || onNormalizedValueChange || onMidiValueChange);
+    const effectiveEditable = editable && !disabled;
+    const gatedOnValueChange = disabled ? undefined : onValueChange;
+    const gatedOnNormalizedValueChange = disabled ? undefined : onNormalizedValueChange;
+    const gatedOnMidiValueChange = disabled ? undefined : onMidiValueChange;
+    const gatedOnClick = disabled ? undefined : onClick;
+    // Gestures only have a visible effect when a value-change callback is wired. This drives
+    // cursor/highlight/hook-wiring, so a control with `editable=true` but no callback does not
+    // advertise interactivity through the cursor.
+    const hasAnyChangeCallback = !!(onValueChange || onNormalizedValueChange || onMidiValueChange);
+    const trulyEditable = effectiveEditable && hasAnyChangeCallback;
 
     const { derivedParameter, effectiveDefaultValue } = useDiscreteParameterResolution({
         children,
@@ -151,9 +167,9 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
         value: effectiveValueInput,
         normalizedValue: inputNormalizedValue,
         midiValue: inputMidiValue,
-        onValueChange,
-        onNormalizedValueChange,
-        onMidiValueChange,
+        onValueChange: gatedOnValueChange,
+        onNormalizedValueChange: gatedOnNormalizedValueChange,
+        onMidiValueChange: gatedOnMidiValueChange,
         parameter: derivedParameter,
     });
 
@@ -161,11 +177,12 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
         value: realValue,
         options: derivedParameter.options,
         onValueChange: commitValue,
-        disabled: !editable,
+        disabled,
+        editable: trulyEditable,
         // Type cast needed because onClick prop expects React.MouseEvent<SVGSVGElement>
         // but hook accepts React.MouseEvent
-        onClick: onClick
-            ? (e: React.MouseEvent) => onClick(e as unknown as React.MouseEvent<SVGSVGElement>)
+        onClick: gatedOnClick
+            ? (e: React.MouseEvent) => gatedOnClick(e as unknown as React.MouseEvent<SVGSVGElement>)
             : undefined,
         onMouseDown,
         onKeyDown: undefined, // DiscreteControl doesn't have onKeyDown prop, only uses hook handler
@@ -184,15 +201,21 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
     }, [className]);
 
     const svgClassNames = useMemo(() => {
-        return editable || onClick ? CLASSNAMES.highlight : "";
-    }, [editable, onClick]);
+        return trulyEditable || gatedOnClick ? CLASSNAMES.highlight : "";
+    }, [trulyEditable, gatedOnClick]);
 
-    // Add clickable cursor when interactive.
+    // Always set an explicit cursor to match ContinuousControl's behavior. Order: disabled wins;
+    // otherwise clickable when interactive; otherwise non-editable.
+    const cursor = disabled
+        ? "var(--audioui-cursor-disabled)"
+        : gatedOnClick || trulyEditable
+          ? "var(--audioui-cursor-clickable)"
+          : "var(--audioui-cursor-noneditable)";
     const svgStyle = useMemo(
         () => ({
-            ...(onClick || editable ? { cursor: "var(--audioui-cursor-clickable)" as const } : {}),
+            cursor,
         }),
-        [onClick, editable]
+        [cursor]
     );
 
     return (
@@ -215,13 +238,15 @@ export function DiscreteControl<P extends object = Record<string, unknown>>(prop
                 onMouseUp={onMouseUp}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
-                tabIndex={0}
+                tabIndex={disabled ? -1 : effectiveEditable || gatedOnClick ? 0 : -1}
                 role="spinbutton"
                 aria-valuenow={ariaValueNow}
                 aria-valuemin={ariaValueMin}
                 aria-valuemax={ariaValueMax}
                 aria-valuetext={formattedValue}
                 aria-label={effectiveLabel}
+                aria-disabled={disabled || undefined}
+                aria-readonly={editable === false && !disabled ? true : undefined}
             >
                 <View normalizedValue={normalizedValue} {...viewProps} />
             </AdaptiveBox.Svg>

@@ -218,15 +218,17 @@ It returns pointer event handlers (`onPointerDown`, `onPointerMove`, `onPointerU
 
 The interaction system provides intelligent cursor feedback based on the control's interaction capabilities and state. All cursor values use CSS variables (defined in `packages/core/src/styles/themes.css`) for customization.
 
+Cursor selection reflects what a user gesture would visibly do. A control is considered **truly editable** when `editable && !disabled && (onValueChange || onNormalizedValueChange || onMidiValueChange)` — i.e. the explicit `editable` prop is on, not overridden by `disabled`, and at least one value-change callback is wired. Without a callback the control has no observable effect on drag/click, so the cursor falls back to the non-editable or clickable variant.
+
 ### ContinuousControl (Knob, Slider)
 
-Cursor behavior depends on whether the control is editable (`onChange`), clickable (`onClick`), or both:
+Cursor depends on whether the control is truly editable, clickable (`onClick` only), or neither.
 
-**When Editable (`onChange` provided):**
+**When Truly Editable:**
 
 - Uses `useContinuousInteraction` hook which selects cursor based on interaction configuration:
-  - `disabled` → `--audioui-cursor-disabled` (default: `not-allowed`)
-  - `!editable` (no onChange) → `--audioui-cursor-noneditable` (default: `default`)
+  - `disabled` → `--audioui-cursor-disabled` (default: `default` — desaturation and other visuals communicate the state)
+  - `!editable` (explicitly `editable={false}` or callbackless) → `--audioui-cursor-noneditable` (default: `default`)
   - `interactionMode === "wheel"` → `--audioui-cursor-vertical` (default: `ns-resize`)
   - `direction === "horizontal"` → `--audioui-cursor-horizontal` (default: `ew-resize`)
   - `direction === "vertical"` → `--audioui-cursor-vertical` (default: `ns-resize`)
@@ -235,43 +237,37 @@ Cursor behavior depends on whether the control is editable (`onChange`), clickab
   - Otherwise → `--audioui-cursor-clickable` (default: `pointer`)
 - **During drag**: Cursor is applied to `document.body` by the controller to provide consistent feedback even when the pointer moves outside the control boundary.
 
-**When Clickable Only (`onClick` but no `onChange`):**
+**When Clickable Only (`onClick` but not truly editable):**
 
 - Always uses `--audioui-cursor-clickable` (default: `pointer`) regardless of direction/mode configuration.
 
-**When Neither (`!onChange && !onClick`):**
+**When Neither (no `onClick` and not truly editable):**
 
-- No cursor style applied (default browser cursor).
+- Shows `--audioui-cursor-noneditable` (default: `default`) via the hook, or `--audioui-cursor-disabled` when `disabled=true`.
 
-### DiscreteControl (CycleButton)
+### DiscreteControl (CycleButton), BooleanControl (Button), Keys
 
-**When Interactive (`onChange || onClick`):**
+Cursor is always set explicitly (matching ContinuousControl's behavior). Order of precedence:
 
-- Always uses `--audioui-cursor-clickable` (default: `pointer`).
+- `disabled` → `--audioui-cursor-disabled`
+- Interactive (truly editable, or `onClick` provided, or `onNoteChange` on Keys) → `--audioui-cursor-clickable`
+- Otherwise → `--audioui-cursor-noneditable`
 
-**When Neither (`!onChange && !onClick`):**
+### Editable / disabled contract
 
-- No cursor style applied (default browser cursor).
+The cursor follows the component's observable behavior, not just its declared intent:
 
-### BooleanControl (Button)
+| State                                                          | Cursor                                                   |
+| -------------------------------------------------------------- | -------------------------------------------------------- |
+| `disabled=true`                                                | `--audioui-cursor-disabled`                              |
+| `editable=true` + no value-change callback, no `onClick`       | `--audioui-cursor-noneditable`                           |
+| `editable=true` + no value-change callback + `onClick` (continuous) | `--audioui-cursor-clickable`                        |
+| `editable=true` + value-change callback (continuous)            | Direction-based (bidirectional/vertical/horizontal/circular) |
+| `editable=true` + value-change callback (Boolean/Discrete/Keys) | `--audioui-cursor-clickable`                            |
+| `editable=false` + `onClick`                                    | `--audioui-cursor-clickable`                            |
+| `editable=false` + no `onClick`                                 | `--audioui-cursor-noneditable`                          |
 
-**When Interactive (`onChange || onClick`):**
-
-- Always uses `--audioui-cursor-clickable` (default: `pointer`).
-
-**When Neither (`!onChange && !onClick`):**
-
-- No cursor style applied (default browser cursor).
-
-### Keys
-
-**When Interactive (`onChange || onClick`):**
-
-- Always uses `--audioui-cursor-clickable` (default: `pointer`).
-
-**When Neither (`!onChange && !onClick`):**
-
-- No cursor style applied (default browser cursor).
+Keyboard focus (`tabIndex`) and ARIA (`aria-readonly`, `aria-disabled`) follow the explicit `editable`/`disabled` intent, not the callback-presence rule, so a control with `editable=true` but no callback is still focusable and is not announced as `aria-readonly`.
 
 ### Cursor Customization
 
@@ -283,7 +279,7 @@ All cursor values are customizable via CSS variables in `packages/core/src/style
 - `--audioui-cursor-vertical`: Vertical drag (default: SVG data URI for `ns-resize` cursor)
 - `--audioui-cursor-circular`: Circular drag for knobs (custom circular cursor)
 - `--audioui-cursor-noneditable`: Non-editable controls (default: `default`)
-- `--audioui-cursor-disabled`: Disabled controls (default: `not-allowed`)
+- `--audioui-cursor-disabled`: Disabled controls (default: `default` — disabled state is communicated through desaturation / visual treatment rather than a "forbidden" cursor)
 
 **Note on SVG Cursors**: The library uses SVG data URIs for bidirectional, horizontal, and vertical cursors instead of standard CSS keywords (like `ns-resize`) to ensure consistent behavior across browsers, specifically addressing a Safari regression where CSS variable-based keyword cursors were ignored in inline styles.
 

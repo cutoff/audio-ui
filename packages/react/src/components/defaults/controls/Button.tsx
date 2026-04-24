@@ -88,6 +88,8 @@ function Button({
     onMouseLeave,
     className,
     style,
+    editable,
+    disabled,
 }: ButtonProps) {
     const { style: themableStyle } = useThemableProps({
         color,
@@ -122,6 +124,8 @@ function Button({
             onMouseUp={onMouseUp}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
+            editable={editable}
+            disabled={disabled}
             view={ButtonView}
             viewProps={{
                 threshold: 0.5,

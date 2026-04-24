@@ -14,8 +14,14 @@ export interface UseBooleanInteractionProps {
     mode: BooleanInteractionMode;
     /** Callback to update the value */
     onValueChange: (value: boolean) => void;
-    /** Whether the control is disabled */
+    /** Whether the control is disabled. When `true`, all gestures are suppressed. Implies non-editable. */
     disabled?: boolean;
+    /**
+     * Whether the control responds to user gestures. When `false`, pointer/mouse/keyboard
+     * gestures produce no value changes.
+     * @default true
+     */
+    editable?: boolean;
     /** Optional user-provided mouse down handler (composed with hook handler) */
     onMouseDown?: React.MouseEventHandler;
     /** Optional user-provided mouse up handler (composed with hook handler) */
@@ -115,6 +121,7 @@ export function useBooleanInteraction({
     mode,
     onValueChange,
     disabled = false,
+    editable = true,
     onMouseDown: userOnMouseDown,
     onMouseUp: userOnMouseUp,
     onTouchStart: userOnTouchStart,
@@ -133,6 +140,7 @@ export function useBooleanInteraction({
             mode,
             onValueChange,
             disabled,
+            editable,
         });
     }
 
@@ -142,8 +150,9 @@ export function useBooleanInteraction({
             mode,
             onValueChange,
             disabled,
+            editable,
         });
-    }, [value, mode, onValueChange, disabled]);
+    }, [value, mode, onValueChange, disabled, editable]);
 
     // Global pointer down handler - tracks when ANY pointer is pressed anywhere
     // This enables drag-in behavior: pressing outside and dragging into the button
@@ -212,7 +221,7 @@ export function useBooleanInteraction({
     // Attach global pointer listeners for drag-in/drag-out behavior
     // This enables buttons to respond even when press starts outside the button
     useEffect(() => {
-        if (!disabled) {
+        if (!disabled && editable) {
             window.addEventListener("mousedown", handleGlobalMouseDown);
             window.addEventListener("mouseup", handleGlobalMouseUp);
             window.addEventListener("touchstart", handleGlobalTouchStart, { passive: true });
@@ -229,6 +238,7 @@ export function useBooleanInteraction({
         return undefined;
     }, [
         disabled,
+        editable,
         handleGlobalMouseDown,
         handleGlobalMouseUp,
         handleGlobalTouchStart,

@@ -346,4 +346,42 @@ describe("ContinuousInteractionController", () => {
             expect(onDragEnd).toHaveBeenCalled();
         });
     });
+
+    describe("Inert State (disabled or non-editable)", () => {
+        it("suppresses drag, wheel and keyboard when disabled=true", () => {
+            controller.updateConfig({ disabled: true });
+
+            controller.handleMouseDown(100, 100);
+            const moveEvent = new MouseEvent("mousemove", { clientX: 100, clientY: 50 });
+            (controller as unknown as TestController).handleGlobalMouseMove(moveEvent);
+
+            controller.handleWheel(new WheelEvent("wheel", { deltaY: 20 }));
+            controller.handleKeyDown(new KeyboardEvent("keydown", { key: "ArrowUp" }));
+
+            expect(adjustValue).not.toHaveBeenCalled();
+        });
+
+        it("suppresses drag, wheel and keyboard when editable=false", () => {
+            controller.updateConfig({ editable: false });
+
+            controller.handleMouseDown(100, 100);
+            const moveEvent = new MouseEvent("mousemove", { clientX: 100, clientY: 50 });
+            (controller as unknown as TestController).handleGlobalMouseMove(moveEvent);
+
+            controller.handleWheel(new WheelEvent("wheel", { deltaY: 20 }));
+            controller.handleKeyDown(new KeyboardEvent("keydown", { key: "ArrowUp" }));
+
+            expect(adjustValue).not.toHaveBeenCalled();
+        });
+
+        it("resumes interactions after editable is restored to true", () => {
+            controller.updateConfig({ editable: false });
+            controller.handleKeyDown(new KeyboardEvent("keydown", { key: "ArrowUp" }));
+            expect(adjustValue).not.toHaveBeenCalled();
+
+            controller.updateConfig({ editable: true });
+            controller.handleKeyDown(new KeyboardEvent("keydown", { key: "ArrowUp" }));
+            expect(adjustValue).toHaveBeenCalled();
+        });
+    });
 });

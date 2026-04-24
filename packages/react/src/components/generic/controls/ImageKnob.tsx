@@ -135,6 +135,8 @@ function ImageKnob({
     onMouseLeave,
     className,
     style,
+    editable,
+    disabled,
 }: ImageKnobProps) {
     const { sizeClassName, sizeStyle: adaptiveSizeStyle } = useAdaptiveSize(adaptiveSize, size, "square");
 
@@ -175,6 +177,8 @@ function ImageKnob({
             interactionSensitivity={interactionSensitivity}
             valueFormatter={valueFormatter}
             valueAsLabel={valueAsLabel}
+            editable={editable}
+            disabled={disabled}
             viewBoxWidthUnits={frameWidth}
             viewBoxHeightUnits={frameHeight}
             view={ImageKnobView}

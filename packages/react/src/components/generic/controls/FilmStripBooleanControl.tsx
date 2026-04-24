@@ -108,6 +108,8 @@ function FilmStripBooleanControl({
     onMouseLeave,
     className,
     style,
+    editable,
+    disabled,
 }: FilmStripBooleanControlProps) {
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "square");
 
@@ -137,6 +139,8 @@ function FilmStripBooleanControl({
             onMouseUp={onMouseUp}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
+            editable={editable}
+            disabled={disabled}
             viewBoxWidthUnits={frameWidth}
             viewBoxHeightUnits={frameHeight}
             view={FilmstripView}

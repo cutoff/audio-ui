@@ -107,6 +107,8 @@ function FilmStripDiscreteControl({
     onMouseLeave,
     className,
     style,
+    editable,
+    disabled,
 }: FilmStripDiscreteControlProps) {
     const { sizeClassName, sizeStyle } = useAdaptiveSize(adaptiveSize, size, "square");
 
@@ -138,6 +140,8 @@ function FilmStripDiscreteControl({
             onMouseUp={onMouseUp}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
+            editable={editable}
+            disabled={disabled}
             viewBoxWidthUnits={frameWidth}
             viewBoxHeightUnits={frameHeight}
             view={FilmstripView}

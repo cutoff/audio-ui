@@ -472,6 +472,24 @@ type ContinuousControlSharedProps = {
      * Pass "horizontal" or "vertical" for linear sliders; omit for radial controls (e.g. Knob).
      */
     ariaOrientation?: "horizontal" | "vertical";
+
+    /**
+     * Whether the control responds to user gestures (mouse, keyboard, touch, wheel).
+     * When `false`, gesture-driven updates are suppressed but external `value` prop updates
+     * still flow through to the visuals (e.g. automation, MIDI). Emits `aria-readonly` when
+     * the role supports it. Tab focus is preserved only when `onClick` is also provided.
+     * @default true
+     */
+    editable?: boolean;
+
+    /**
+     * Whether the control is fully disabled. When `true`, all gestures are blocked, all
+     * value-change callbacks and `onClick` are suppressed, and the control is removed from
+     * the tab order. External `value` prop updates still flow to the visuals so automation
+     * can continue driving the display. Emits `aria-disabled`. Implies non-editable.
+     * @default false
+     */
+    disabled?: boolean;
 };
 
 /**
@@ -570,6 +588,24 @@ type DiscreteControlSharedProps = {
      * @default "spread"
      */
     midiMapping?: "spread" | "sequential" | "custom";
+
+    /**
+     * Whether the control responds to user gestures (mouse, keyboard, touch).
+     * When `false`, click/keyboard gestures produce no value changes but external `value`
+     * prop updates still flow through to the visuals. Emits `aria-readonly`.
+     * Tab focus is preserved only when `onClick` is also provided.
+     * @default true
+     */
+    editable?: boolean;
+
+    /**
+     * Whether the control is fully disabled. When `true`, all gestures are blocked, all
+     * value-change callbacks and `onClick` are suppressed, and the control is removed from
+     * the tab order. External `value` prop updates still flow to the visuals. Emits
+     * `aria-disabled`. Implies non-editable.
+     * @default false
+     */
+    disabled?: boolean;
 };
 
 /**
@@ -624,6 +660,24 @@ type BooleanControlSharedProps = {
      * @default 7
      */
     midiResolution?: MidiResolution;
+
+    /**
+     * Whether the control responds to user gestures (mouse, keyboard, touch).
+     * When `false`, pointer/keyboard gestures produce no value changes but external `value`
+     * prop updates still flow through to the visuals.
+     * Tab focus is preserved only when `onClick` is also provided.
+     * @default true
+     */
+    editable?: boolean;
+
+    /**
+     * Whether the control is fully disabled. When `true`, all gestures are blocked, all
+     * value-change callbacks and `onClick` are suppressed, and the control is removed from
+     * the tab order. External `value` prop updates still flow to the visuals. Emits
+     * `aria-disabled`. Implies non-editable.
+     * @default false
+     */
+    disabled?: boolean;
 };
 
 /**

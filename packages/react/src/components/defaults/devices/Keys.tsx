@@ -75,6 +75,21 @@ export type KeysProps = BaseProps &
         /** Accessible label for the keyboard container (e.g. for screen readers).
          * @default "Piano keyboard" */
         ariaLabel?: string;
+        /**
+         * Whether the control responds to user gestures (pointer/touch). When `false`,
+         * note triggering is suppressed on press/move, but in-flight pointers still release
+         * cleanly (onNoteOff fires on pointer up/cancel). External highlight updates via
+         * `notesOn` still flow through.
+         * @default true
+         */
+        editable?: boolean;
+        /**
+         * Whether the control is fully disabled. When `true`, all gestures are blocked and
+         * `onClick` is suppressed. External `notesOn` highlights still flow to the visuals.
+         * Emits `aria-disabled`. Implies non-editable.
+         * @default false
+         */
+        disabled?: boolean;
     };
 
 /**
@@ -159,7 +174,11 @@ function Keys({
     onNoteChange,
     onClick,
     ariaLabel = "Piano keyboard",
+    editable = true,
+    disabled = false,
 }: KeysProps) {
+    const effectiveEditable = editable && !disabled;
+    const gatedOnClick = disabled ? undefined : onClick;
     // Ensure nbKeys is within valid range (1-128)
     const validNbKeys = Math.max(1, Math.min(128, nbKeys));
 
@@ -187,6 +206,8 @@ function Keys({
                 midiValue: note,
             });
         },
+        disabled,
+        editable: effectiveEditable,
     });
     // Memoize initial computations
     const keysDimensions = useMemo(() => {
@@ -522,16 +543,22 @@ function Keys({
 
     // Add highlight class when interactive (onNoteChange or onClick)
     const svgClassNames = useMemo(() => {
-        return onNoteChange || onClick ? CLASSNAMES.highlight : "";
-    }, [onNoteChange, onClick]);
+        return (effectiveEditable && onNoteChange) || gatedOnClick ? CLASSNAMES.highlight : "";
+    }, [effectiveEditable, onNoteChange, gatedOnClick]);
 
-    // Add clickable cursor when interactive; view-only components get default cursor.
+    // Always set an explicit cursor consistent with other interactive controls.
+    // Order: disabled wins; otherwise clickable when interactive; otherwise non-editable.
+    const cursor = disabled
+        ? "var(--audioui-cursor-disabled)"
+        : gatedOnClick || (effectiveEditable && onNoteChange)
+          ? "var(--audioui-cursor-clickable)"
+          : "var(--audioui-cursor-noneditable)";
     const svgStyle = useMemo(
         () => ({
             ...(interactionStyle ?? {}),
-            ...(onClick || onNoteChange ? { cursor: "var(--audioui-cursor-clickable)" as const } : {}),
+            cursor,
         }),
-        [interactionStyle, onClick, onNoteChange]
+        [interactionStyle, cursor]
     );
 
     return (
@@ -547,11 +574,12 @@ function Keys({
             minHeight={40}
             role="group"
             aria-label={ariaLabel}
+            aria-disabled={disabled || undefined}
         >
             <AdaptiveBox.Svg
                 className={svgClassNames}
                 style={svgStyle}
-                onClick={onClick}
+                onClick={gatedOnClick}
                 onPointerDown={onPointerDown}
                 onPointerMove={onPointerMove}
                 onPointerUp={onPointerUp}

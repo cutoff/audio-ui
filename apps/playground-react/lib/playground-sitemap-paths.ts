@@ -21,6 +21,7 @@ export const PLAYGROUND_SITEMAP_PATHS: readonly string[] = [
     "/examples/control-surface",
     "/examples/customization",
     "/examples/drag-interaction",
+    "/examples/editable-disabled",
     "/examples/stress-test",
     "/examples/webaudio",
     "/layout/grid-layout",

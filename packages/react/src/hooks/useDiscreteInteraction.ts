@@ -14,8 +14,14 @@ export interface UseDiscreteInteractionProps {
     options: Array<{ value: string | number }>;
     /** Callback to update the value */
     onValueChange: (value: string | number) => void;
-    /** Whether the control is disabled */
+    /** Whether the control is disabled. When `true`, all gestures are suppressed. Implies non-editable. */
     disabled?: boolean;
+    /**
+     * Whether the control responds to user gestures. When `false`, click/keyboard gestures
+     * produce no value changes.
+     * @default true
+     */
+    editable?: boolean;
     /** Optional user-provided click handler (composed with hook handler) */
     onClick?: React.MouseEventHandler;
     /** Optional user-provided mouse down handler (composed with hook handler) */
@@ -78,6 +84,7 @@ export function useDiscreteInteraction({
     options,
     onValueChange,
     disabled = false,
+    editable = true,
     onClick: userOnClick,
     onMouseDown: userOnMouseDown,
     onKeyDown: userOnKeyDown,
@@ -90,6 +97,7 @@ export function useDiscreteInteraction({
             options,
             onValueChange,
             disabled,
+            editable,
         });
     }
 
@@ -99,8 +107,9 @@ export function useDiscreteInteraction({
             options,
             onValueChange,
             disabled,
+            editable,
         });
-    }, [value, options, onValueChange, disabled]);
+    }, [value, options, onValueChange, disabled, editable]);
 
     const cycleNext = useCallback(() => controllerRef.current?.cycleNext(), []);
     const stepNext = useCallback(() => controllerRef.current?.stepNext(), []);

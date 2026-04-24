@@ -151,6 +151,8 @@ function Knob({
     onMouseLeave,
     className,
     style,
+    editable,
+    disabled,
 }: KnobProps) {
     const { style: themableStyle } = useThemableProps({
         color,
@@ -245,6 +247,8 @@ function Knob({
             interactionSensitivity={interactionSensitivity}
             valueFormatter={valueFormatter}
             valueAsLabel={valueAsLabel}
+            editable={editable}
+            disabled={disabled}
             view={KnobView}
             viewProps={{
                 variant: variant,
