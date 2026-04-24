@@ -4,6 +4,19 @@ Notes for the upcoming release. Use this when updating the documentation site or
 
 ---
 
+## CI – bundle-size gate
+
+A `size-limit` gate runs on every push and pull request, enforcing per-entry-point brotli-compressed budgets for the publishable packages (`@cutoff/audio-ui-core`, `@cutoff/audio-ui-react`). This is phase 1 of the pre-1.0 performance baseline (issues [#34](https://github.com/cutoff/audio-ui/issues/34), [#35](https://github.com/cutoff/audio-ui/issues/35), [#36](https://github.com/cutoff/audio-ui/issues/36)) and catches accidental bloat (e.g. a heavy utility library slipping in) before it ships.
+
+- **On PRs**: `andresz1/size-limit-action@v1` builds base and head, posts a diff comment, and fails the job when an absolute budget is breached.
+- **On push**: `pnpm size` runs the gate directly.
+- **Config**: `.size-limit.cjs` at the repo root lists six entries (ESM `index.js` plus CSS entry points for each package). Budgets start at current size plus modest headroom; they tighten once a few PRs have landed cleanly.
+- **Local**: `pnpm size` reports current vs budgeted size per entry; `pnpm size:why` surfaces composition via size-limit's webpack report.
+
+No library API or consumer-facing behavior changes.
+
+---
+
 ## Distribution – `unstable` npm dist-tag auto-published from `develop`
 
 Every push to `develop` that touches source or workspace manifests auto-publishes both `@cutoff/audio-ui-core` and `@cutoff/audio-ui-react` to npm under the new `unstable` dist-tag. The `latest` and `preview` dist-tags are not affected and continue to be driven by the milestone job in the same workflow when pushing to `main`.

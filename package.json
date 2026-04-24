@@ -23,6 +23,8 @@
         "test": "turbo test",
         "lint": "turbo lint --continue",
         "lint:fix": "turbo lint:fix --continue",
+        "size": "size-limit",
+        "size:why": "size-limit --why",
         "check": "pnpm install && turbo run typecheck build lint test",
         "clean": "(pnpm exec turbo clean || true) && rm -rf node_modules .turbo",
         "clean-build": "pnpm clean && pnpm i && pnpm build",
@@ -64,6 +66,8 @@
     "devDependencies": {
         "@eslint/compat": "^1.4.1",
         "@eslint/js": "^9.39.4",
+        "@size-limit/file": "^12.1.0",
+        "@size-limit/preset-small-lib": "^12.1.0",
         "@typescript-eslint/eslint-plugin": "^8.57.2",
         "@typescript-eslint/parser": "^8.57.2",
         "eslint": "^9.39.4",
@@ -72,6 +76,7 @@
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-hooks": "^5.2.0",
         "prettier": "^3.8.1",
+        "size-limit": "^12.1.0",
         "tsx": "^4.21.0",
         "vitest": "^3.2.4"
     }
