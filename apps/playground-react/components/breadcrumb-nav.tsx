@@ -27,6 +27,7 @@ const examplesData = [
     { title: "Customization", url: "/examples/customization" },
     { title: "Control Surface", url: "/examples/control-surface" },
     { title: "Drag Interaction", url: "/examples/drag-interaction" },
+    { title: "Value Channels", url: "/examples/value-channels" },
     { title: "Stress Test", url: "/examples/stress-test" },
 ];
 

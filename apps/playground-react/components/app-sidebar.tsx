@@ -159,6 +159,11 @@ const data = {
             icon: Sparkles,
         },
         {
+            name: "Value Channels",
+            url: "/examples/value-channels",
+            icon: Sparkles,
+        },
+        {
             name: "Stress Test",
             url: "/examples/stress-test",
             icon: Sparkles,
