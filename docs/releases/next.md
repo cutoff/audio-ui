@@ -381,6 +381,14 @@ Variables that point to reactive variants (e.g. `--audioui-slider-cursor-border-
 
 ---
 
+## Playground – value channels example
+
+A new playground example at `/examples/value-channels` documents the paired-channel value API end-to-end. Three `Knob` instances bind through the three mutually-exclusive channels — real-value (`value` / `onValueChange`), normalized (`normalizedValue` / `onNormalizedValueChange`), and MIDI (`midiValue` / `onMidiValueChange`) — each with a live readout of the full `AudioControlEvent` triple delivered as the callback's second argument.
+
+Use this page as a reference when wiring controls to domain code (real value), DAW / JUCE WebUI automation (normalized), or WebMIDI / hardware-controller mappings (MIDI).
+
+---
+
 ## Other changes
 
 _(Add further sections here for future releases, e.g. “Layout”, “Theming”, “Breaking changes”, “Fixes”.)_
