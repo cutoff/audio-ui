@@ -1,0 +1,50 @@
+name: CodSpeed Benchmarks
+
+on:
+    push:
+        branches: [main, develop]
+    workflow_dispatch:
+
+# OIDC auth replaces a CODSPEED_TOKEN secret on public repos. The CodSpeed GitHub
+# App must be installed on the repository for the action to claim the token.
+permissions:
+    contents: read
+    id-token: write
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+env:
+    CI: true
+
+jobs:
+    benchmarks:
+        name: Benchmarks (instrumentation)
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js 20
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "pnpm"
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            # Build core so packages/react bench files importing transitively
+            # via the workspace resolve to compiled output.
+            - name: Build
+              run: pnpm build
+
+            - name: Run benchmarks (CodSpeed)
+              uses: CodSpeedHQ/action@v4
+              with:
+                  run: pnpm bench
+                  mode: instrumentation

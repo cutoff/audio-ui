@@ -31,6 +31,11 @@ When a user requests "Execute [CommandName]", the agent should follow the proced
     - Avoid trivial comments that restate obvious code
   - Make sure the code doesn't feel "vibe-coded"
   - Make sure agents instructions and documentation (AGENTS.md and docs/ directories) are up-to-date with the latest changes.
+- **Performance regression check** — audio/MIDI runtime is performance-critical (see "Performance Mandate" in root `AGENTS.md`). Treat any bench regression as a real issue, not noise — CodSpeed measurements are deterministic.
+  - Open the CodSpeed dashboard for this repo (link in root `AGENTS.md` → "Performance & Benchmarks").
+  - Locate the most recent run for the current branch. Compare against the prior commit on the same branch (or against `develop` if reviewing a feature branch) using **Compare Any Runs**.
+  - Flag any benchmark with > 2% instruction-count regression and investigate before approving the review. Use the flamegraph to attribute the delta to a specific function.
+  - If the touched code path is not yet covered by a benchmark, note it as a follow-up — do not block the review.
 - Make sure no unused imports remain.
 - Launch prettier on modified files.
 - Execute "check"

@@ -17,6 +17,10 @@
         "test": {
             "dependsOn": ["^build"]
         },
+        "bench": {
+            "dependsOn": ["^build"],
+            "cache": false
+        },
         "typecheck": {
             "dependsOn": ["^build"]
         },
