@@ -4,24 +4,27 @@
  * See LICENSE.md for details.
  */
 
-// Render-count regression test utilities.
+// Render-count regression test utilities for scene-level tests.
+//
+// Scene tests verify *prop-stability at the scene/composition level*: when a
+// scene re-renders for an unrelated reason, do its scene-level prop bindings
+// remain referentially stable so memoized children can bail out? This is
+// orthogonal to per-component memo coverage, which is enforced statically by
+// `component-memoization.test.tsx`.
 //
 // Approach: wrap each tracked control in a `React.memo` HOC produced by
 // `trackRenders(Component)`. Because the HOC itself is memoized with a shallow
-// prop comparison, a parent re-render with unchanged props bails out and the
-// wrapper does not re-execute — mirroring the bailout behavior of the memoized
-// library controls underneath. The HOC records an update only when its own
-// body actually runs, i.e. only when props (or the counter identity) change.
+// prop comparison, a parent re-render with stable scene-level props bails out
+// and the wrapper does not re-execute — meaning a regression like "scene
+// author introduced an inline callback" surfaces as a non-zero update count.
 //
 // The scene's root is treated differently: it always re-renders on state
 // changes, so scenes call `record("scene-root", ...)` directly from an effect.
 //
 // Baselines live as inline constants in each *.test.tsx file next to the
-// assertions. To update a baseline, change the constant in the test file.
-//
-// Default mode is informational: divergence from a baseline emits `console.warn`
-// but the test passes. Set `RENDER_COUNT_STRICT=1` to turn divergence into a
-// hard failure (via `expect(actual).toBe(expected)`).
+// assertions. Divergence from a baseline always fails the test — memo
+// behavior is contractual and deterministic, so there is no informational
+// transition period.
 
 import React from "react";
 import { expect } from "vitest";
@@ -131,19 +134,8 @@ export function useRecordRootRenders(record: RecordFn, id: string): void {
 }
 
 /**
- * Strict mode flag: when `true`, baseline divergence becomes a hard test
- * failure via `expect`; when `false` (default), divergence emits
- * `console.warn` and the test passes. Driven by the `RENDER_COUNT_STRICT=1`
- * environment variable. Flip this to graduate the suite from informational
- * to enforcing once baselines are stable across releases.
- */
-export const STRICT: boolean =
-    (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env?.RENDER_COUNT_STRICT ===
-    "1";
-
-/**
- * Asserts a single render count against a baseline, honoring the `STRICT`
- * flag: warn-only in informational mode, hard failure in strict mode.
+ * Asserts a single render count against a baseline. Memo behavior is
+ * contractual; any divergence from baseline is a real regression.
  *
  * @param id The profiled id whose count is being checked.
  * @param actual Measured update count since last `reset()`.
@@ -151,14 +143,7 @@ export const STRICT: boolean =
  * @param context Short human-readable label for the trigger (e.g. `"parent re-render"`).
  */
 export function expectRenderCount(id: string, actual: number, expected: number, context: string): void {
-    if (actual === expected) return;
-
-    if (STRICT) {
-        expect(actual, `[render-count] ${context} id=${id}`).toBe(expected);
-        return;
-    }
-
-    console.warn(`[render-count divergence] ${context} id=${id} expected=${expected} actual=${actual}`);
+    expect(actual, `[render-count] ${context} id=${id}`).toBe(expected);
 }
 
 /**
