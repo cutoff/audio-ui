@@ -64,9 +64,7 @@ export function computeAdaptiveBoxLayout(params: {
         const svgPercent = (viewBoxHeight / combinedHeightUnits) * 100;
         const labelPercent = (labelHeightUnits / combinedHeightUnits) * 100;
         gridTemplateRows =
-            effectiveLabelPosition === "above"
-                ? `${labelPercent}% ${svgPercent}%`
-                : `${svgPercent}% ${labelPercent}%`;
+            effectiveLabelPosition === "above" ? `${labelPercent}% ${svgPercent}%` : `${svgPercent}% ${labelPercent}%`;
     }
 
     return { combinedHeightUnits, showLabelSpace, gridTemplateRows, mainContentGridRow };

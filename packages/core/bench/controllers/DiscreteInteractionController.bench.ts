@@ -45,10 +45,18 @@ describe("DiscreteInteractionController", () => {
 describe("DiscreteInteractionController.handleKeyDown", () => {
     const ctrl = makeController();
 
-    bench("ArrowUp (step)", () => {
-        ctrl.handleKeyDown("ArrowUp");
-    }, BENCH_OPTS);
-    bench("Enter (cycle)", () => {
-        ctrl.handleKeyDown("Enter");
-    }, BENCH_OPTS);
+    bench(
+        "ArrowUp (step)",
+        () => {
+            ctrl.handleKeyDown("ArrowUp");
+        },
+        BENCH_OPTS
+    );
+    bench(
+        "Enter (cycle)",
+        () => {
+            ctrl.handleKeyDown("Enter");
+        },
+        BENCH_OPTS
+    );
 });
