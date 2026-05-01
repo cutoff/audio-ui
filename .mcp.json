@@ -11,6 +11,10 @@
         "vercel": {
             "type": "http",
             "url": "https://mcp.vercel.com"
+        },
+        "codspeed": {
+            "type": "http",
+            "url": "https://mcp.codspeed.io/mcp"
         }
     }
 }
