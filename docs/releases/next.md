@@ -6,7 +6,13 @@ Notes for the upcoming release. Use this when updating the documentation site or
 
 ## Testing – render-count regression tests
 
-The React package ships a new Vitest suite that guards the library's memoization guarantees for dense control scenes (mixer grids, channel strips, step-sequencer rows — the shapes real audio UIs hit first). Each scene is a small test fixture that exercises the `React.memo` boundary on `Knob`, `Slider`, and `Button` under four triggers — single-control value change, parent re-render with no prop changes, theme toggle (CSS variable on scene root), and container resize (inline width/height). Baselines live as inline constants in each `*.test.tsx` file.
+The React package ships a new Vitest suite that guards the library's memoization guarantees on two complementary layers.
+
+**Scene-level tests.** Three small test fixtures (8-knob mixer grid, channel strip, 8-step sequencer row) exercise the `React.memo` boundary on `Knob`, `Slider`, and `Button` under four triggers — single-control value change, parent re-render with no prop changes, theme toggle (CSS variable on scene root), and container resize (inline width/height). Catches *composition* regressions: a scene-level inline callback that defeats memo, a non-stable list of options, and so on.
+
+**Per-component tests.** A parameterized suite covers every interactive component — `Knob`, `Slider`, `Button`, `CycleButton`, `Keys`, `FilmStripContinuousControl`, `FilmStripDiscreteControl`, `FilmStripBooleanControl`, `ImageKnob`, `ImageRotarySwitch`, `ImageSwitch` — plus the three control primitives `ContinuousControl`, `DiscreteControl`, `BooleanControl`. Two assertions per component: a parent re-render with shallow-equal props produces zero updates, and a value-prop change produces exactly one. Catches *leaf* regressions: `React.memo` accidentally removed, an internal hook subscription introduced that defeats bailout, etc. Adding a new interactive component to the library requires one row in the table.
+
+Both layers share the same infrastructure:
 
 - **Informational by default.** When a measured count drifts from the committed baseline, the suite emits a `console.warn` line and the test still passes. This gives baselines a chance to bake before they start blocking merges.
 - **Strict mode on demand.** Setting `RENDER_COUNT_STRICT=1` flips every divergence into a hard `expect(...).toBe(...)` failure, with the id + trigger + expected/actual in the message. Ready to wire into CI once baselines prove stable across a few releases.
