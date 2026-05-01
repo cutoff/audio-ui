@@ -21,6 +21,9 @@ jobs:
     benchmarks:
         name: Run benchmarks
         runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: packages/core
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -36,9 +39,10 @@ jobs:
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
+              working-directory: .
 
             - name: Run benchmarks
               uses: CodSpeedHQ/action@v4
               with:
                   mode: simulation
-                  run: pnpm exec vitest bench --config packages/core/vitest.bench.config.ts --run
+                  run: cd packages/core && pnpm exec vitest bench --config vitest.bench.config.ts --run
