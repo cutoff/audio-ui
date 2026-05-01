@@ -7,6 +7,7 @@
 "use client";
 
 import React, { CSSProperties } from "react";
+import { CLASSNAMES } from "@cutoff/audio-ui-core";
 
 export type ImageProps = {
     /** X coordinate of the top-left corner (default: 0) */
@@ -81,7 +82,7 @@ function Image({
                     width={width}
                     height={height}
                     preserveAspectRatio="xMidYMid meet"
-                    className="audioui-image-light"
+                    className={imageDarkHref ? CLASSNAMES.imageLight : undefined}
                 />
             )}
             {imageDarkHref && (
@@ -92,7 +93,7 @@ function Image({
                     width={width}
                     height={height}
                     preserveAspectRatio="xMidYMid meet"
-                    className="audioui-image-dark"
+                    className={CLASSNAMES.imageDark}
                 />
             )}
             {children && (

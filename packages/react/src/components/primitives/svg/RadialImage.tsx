@@ -7,6 +7,7 @@
 "use client";
 
 import React, { CSSProperties } from "react";
+import { CLASSNAMES } from "@cutoff/audio-ui-core";
 
 export type RadialImageProps = {
     /** X coordinate of the center point */
@@ -65,7 +66,7 @@ function RadialImage({
                     width={radius * 2}
                     height={radius * 2}
                     preserveAspectRatio="xMidYMid meet"
-                    className="audioui-image-light"
+                    className={imageDarkHref ? CLASSNAMES.imageLight : undefined}
                 />
             )}
             {imageDarkHref && (
@@ -76,7 +77,7 @@ function RadialImage({
                     width={radius * 2}
                     height={radius * 2}
                     preserveAspectRatio="xMidYMid meet"
-                    className="audioui-image-dark"
+                    className={CLASSNAMES.imageDark}
                 />
             )}
             {children && (

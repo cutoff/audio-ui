@@ -7,7 +7,12 @@
 "use client";
 
 import React, { CSSProperties, useMemo } from "react";
-import { translateSliderRoundness, DEFAULT_ROUNDNESS, calculateLinearPosition } from "@cutoff/audio-ui-core";
+import {
+    translateSliderRoundness,
+    DEFAULT_ROUNDNESS,
+    calculateLinearPosition,
+    CLASSNAMES,
+} from "@cutoff/audio-ui-core";
 
 export type LinearCursorProps = {
     /** X coordinate of the center point of the strip */
@@ -166,7 +171,7 @@ function LinearCursor({
                     y={cursorY - width / 2}
                     width={width}
                     height={width}
-                    className="audioui-image-light"
+                    className={imageDarkHref ? CLASSNAMES.imageLight : undefined}
                     preserveAspectRatio="xMidYMid meet"
                 />
                 {imageDarkHref && (
@@ -176,7 +181,7 @@ function LinearCursor({
                         y={cursorY - width / 2}
                         width={width}
                         height={width}
-                        className="audioui-image-dark"
+                        className={CLASSNAMES.imageDark}
                         preserveAspectRatio="xMidYMid meet"
                     />
                 )}

@@ -4,6 +4,18 @@ Notes for the upcoming release. Use this when updating the documentation site or
 
 ---
 
+## Fixes – raster components visible without dark variant
+
+Raster controls now correctly render in dark mode (and on dark-OS systems) when no dark asset is supplied, matching the documented behavior "if a dark prop is omitted, the light asset is used in both themes".
+
+Previously, the four image-emitting primitives (`RadialImage`, `Image`, `FilmstripImage`, `LinearCursor`) tagged the light `<image>` with `audioui-image-light` whenever `imageHref` was set, even when no dark sibling was rendered. The CSS hide rules (`.dark .audioui-image-light { display: none }` and the `prefers-color-scheme: dark` equivalent) then fired against an element with no fallback, leaving the control blank. Every consumer-level raster control built on these primitives — `ImageKnob`, `ImageRotarySwitch`, `ImageSwitch`, the three `FilmStrip*` controls, and `Slider` with `cursorImageHref` — was affected.
+
+The light/dark class toggles are now only emitted when both assets are present; single-asset call sites render a plain `<image>` and the CSS toggles never apply. The `audioui-image-light` and `audioui-image-dark` class names are exposed as `CLASSNAMES.imageLight` and `CLASSNAMES.imageDark` in `@cutoff/audio-ui-core` for downstream code that composes its own primitives.
+
+This addresses issue [#39](https://github.com/cutoff/audio-ui/issues/39).
+
+---
+
 ## Performance – microbenchmark harness with CodSpeed
 
 A `vitest bench`-based microbenchmark harness covers the runtime-critical interaction path. `pnpm bench` runs the suite locally with tinybench wall-clock numbers; `.github/workflows/codspeed.yml` runs the same suite under CodSpeed instrumentation (Valgrind/cachegrind) on every push to `main` and `develop`, publishing deterministic per-commit results to the CodSpeed dashboard. Authentication uses OIDC — no `CODSPEED_TOKEN` secret is needed for the public repo, only the CodSpeed GitHub App installation.

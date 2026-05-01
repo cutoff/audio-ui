@@ -18,6 +18,10 @@ export const CLASSNAMES = {
     highlight: "audioui-highlight",
     /** Icon wrapper class for HTML overlay - ensures SVG icons fill their container */
     iconWrapper: "audioui-icon-wrapper",
+    /** Light-mode raster asset; only applied when a dark sibling is also rendered */
+    imageLight: "audioui-image-light",
+    /** Dark-mode raster asset; toggled by the `.dark` class or `prefers-color-scheme: dark` */
+    imageDark: "audioui-image-dark",
 } as const;
 
 export type AudioUiClassName = (typeof CLASSNAMES)[keyof typeof CLASSNAMES];

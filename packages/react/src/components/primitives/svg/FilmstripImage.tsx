@@ -7,6 +7,7 @@
 "use client";
 
 import React, { CSSProperties } from "react";
+import { CLASSNAMES } from "@cutoff/audio-ui-core";
 
 export type FilmstripImageProps = {
     /** X coordinate of the top-left corner (default: 0) */
@@ -127,7 +128,7 @@ function FilmstripImage({
                     width={totalWidth}
                     height={totalHeight}
                     preserveAspectRatio="none"
-                    className="audioui-image-light"
+                    className={imageDarkHref ? CLASSNAMES.imageLight : undefined}
                     style={imageTransformStyle}
                 />
                 {imageDarkHref && (
@@ -136,7 +137,7 @@ function FilmstripImage({
                         width={totalWidth}
                         height={totalHeight}
                         preserveAspectRatio="none"
-                        className="audioui-image-dark"
+                        className={CLASSNAMES.imageDark}
                         style={imageTransformStyle}
                     />
                 )}
