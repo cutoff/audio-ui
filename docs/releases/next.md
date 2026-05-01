@@ -4,6 +4,18 @@ Notes for the upcoming release. Use this when updating the documentation site or
 
 ---
 
+## Testing – render-count regression tests
+
+The React package ships a new Vitest suite that guards the library's memoization guarantees for dense control scenes (mixer grids, channel strips, step-sequencer rows — the shapes real audio UIs hit first). Each scene is a small test fixture that exercises the `React.memo` boundary on `Knob`, `Slider`, and `Button` under four triggers — single-control value change, parent re-render with no prop changes, theme toggle (CSS variable on scene root), and container resize (inline width/height). Baselines live as inline constants in each `*.test.tsx` file.
+
+- **Informational by default.** When a measured count drifts from the committed baseline, the suite emits a `console.warn` line and the test still passes. This gives baselines a chance to bake before they start blocking merges.
+- **Strict mode on demand.** Setting `RENDER_COUNT_STRICT=1` flips every divergence into a hard `expect(...).toBe(...)` failure, with the id + trigger + expected/actual in the message. Ready to wire into CI once baselines prove stable across a few releases.
+- **No API or runtime impact.** Test fixtures live in `packages/react/test/render-count/` (outside `src/`), so neither the JS bundle nor the type declarations in `dist/` grow as a result. The library's public surface and consumer behavior are unchanged.
+
+This addresses issue [#35](https://github.com/cutoff/audio-ui/issues/35) — "knob re-renders on every parent update"-class regressions would previously have slipped through review silently.
+
+---
+
 ## CI – bundle-size gate
 
 A `size-limit` gate runs on every push and pull request, enforcing per-entry-point brotli-compressed budgets for the publishable packages (`@cutoff/audio-ui-core`, `@cutoff/audio-ui-react`). This is phase 1 of the pre-1.0 performance baseline (issues [#34](https://github.com/cutoff/audio-ui/issues/34), [#35](https://github.com/cutoff/audio-ui/issues/35), [#36](https://github.com/cutoff/audio-ui/issues/36)) and catches accidental bloat (e.g. a heavy utility library slipping in) before it ships.
