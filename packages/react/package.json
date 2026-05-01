@@ -37,12 +37,12 @@
     "scripts": {
         "clean": "rm -rf node_modules dist .turbo",
         "build": "pnpm exec vite build",
-        "typecheck": "tsc --noEmit",
+        "typecheck": "tsc --noEmit -p tsconfig.test.json",
         "test": "vitest run",
         "test:watch": "vitest",
         "test:coverage": "vitest run --coverage",
-        "lint": "eslint \"src/**/*.{ts,tsx}\"",
-        "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix || true",
+        "lint": "eslint src test",
+        "lint:fix": "eslint src test --fix || true",
         "lint:css": "stylelint \"src/**/*.css\"",
         "analyze": "pnpm build"
     },
