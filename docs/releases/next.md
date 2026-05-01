@@ -6,17 +6,13 @@ Notes for the upcoming release. Use this when updating the documentation site or
 
 ## Testing – render-count regression tests
 
-The React package ships a new Vitest suite that guards the library's memoization guarantees on two complementary layers.
+The React package ships a new Vitest suite that guards the library's memoization guarantees on two complementary layers. Memo behavior is contractual and deterministic, so divergence from baseline always fails the test — no informational warn-mode or staged rollout.
 
-**Scene-level tests.** Three small test fixtures (8-knob mixer grid, channel strip, 8-step sequencer row) exercise the `React.memo` boundary on `Knob`, `Slider`, and `Button` under four triggers — single-control value change, parent re-render with no prop changes, theme toggle (CSS variable on scene root), and container resize (inline width/height). Catches *composition* regressions: a scene-level inline callback that defeats memo, a non-stable list of options, and so on.
+**Static memo-coverage check.** A direct `$$typeof === Symbol.for("react.memo")` assertion verifies that every interactive component, every control primitive, and every exported view is `React.memo`-wrapped. Covers `Knob`, `Slider`, `Button`, `CycleButton`, `Keys`, the filmstrip and image generic controls, the three control primitives (`ContinuousControl`, `DiscreteControl`, `BooleanControl`), the exported default views (`KnobView`, `ButtonView`, `SliderView` + Vertical/Horizontal variants), and the internal raster views on the render-time path (`FilmstripView`, `ImageKnobView`, `ImageSwitchView`). Catches _leaf_ regressions — someone removes `React.memo` from a component's export — without depending on rendering or reconciliation behavior. Adding a new memoized component to the library requires one row in the table.
 
-**Per-component tests.** A parameterized suite covers every interactive component — `Knob`, `Slider`, `Button`, `CycleButton`, `Keys`, `FilmStripContinuousControl`, `FilmStripDiscreteControl`, `FilmStripBooleanControl`, `ImageKnob`, `ImageRotarySwitch`, `ImageSwitch` — plus the three control primitives `ContinuousControl`, `DiscreteControl`, `BooleanControl`. Two assertions per component: a parent re-render with shallow-equal props produces zero updates, and a value-prop change produces exactly one. Catches *leaf* regressions: `React.memo` accidentally removed, an internal hook subscription introduced that defeats bailout, etc. Adding a new interactive component to the library requires one row in the table.
+**Scene-level tests.** Three small test fixtures (8-knob mixer grid, channel strip, 8-step sequencer row) exercise four triggers — single-control value change, parent re-render with no prop changes, theme toggle (CSS variable on scene root), and container resize (inline width/height). Catches _composition_ regressions: a scene-level inline callback that defeats memo, a non-stable list of options, and so on. Baselines live as inline constants in each `*.test.tsx` file.
 
-Both layers share the same infrastructure:
-
-- **Informational by default.** When a measured count drifts from the committed baseline, the suite emits a `console.warn` line and the test still passes. This gives baselines a chance to bake before they start blocking merges.
-- **Strict mode on demand.** Setting `RENDER_COUNT_STRICT=1` flips every divergence into a hard `expect(...).toBe(...)` failure, with the id + trigger + expected/actual in the message. Ready to wire into CI once baselines prove stable across a few releases.
-- **No API or runtime impact.** Test fixtures live in `packages/react/test/render-count/` (outside `src/`), so neither the JS bundle nor the type declarations in `dist/` grow as a result. The library's public surface and consumer behavior are unchanged.
+Test fixtures live in `packages/react/test/render-count/` (outside `src/`), so neither the JS bundle nor the type declarations in `dist/` grow as a result. The library's public surface and consumer behavior are unchanged.
 
 This addresses issue [#35](https://github.com/cutoff/audio-ui/issues/35) — "knob re-renders on every parent update"-class regressions would previously have slipped through review silently.
 

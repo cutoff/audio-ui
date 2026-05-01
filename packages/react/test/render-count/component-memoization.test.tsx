@@ -4,24 +4,29 @@
  * See LICENSE.md for details.
  */
 
-"use client";
-
-// Per-component memoization regression tests.
+// Static memoization-coverage regression tests.
 //
-// Scope: every interactive control exported from the public API plus the
-// three control primitives. Each case asserts two properties of the
-// component's `React.memo` boundary in isolation (no scene composition):
-//   1. Parent re-render with shallow-equal props → 0 updates (memo bails out).
-//   2. Value prop change                          → 1 update  (memo invalidates).
+// Every interactive component, every control primitive, and every exported
+// view is required to be `React.memo`-wrapped. This file enforces that
+// requirement directly: it inspects each component's `$$typeof` tag and
+// verifies it equals `Symbol.for("react.memo")` — the runtime marker that
+// `React.memo(...)` stamps onto its wrapper.
 //
-// Adding a new interactive component to the library requires one row in
-// `cases` below. A failure here points directly at the component whose memo
-// boundary regressed, complementing the scene tests that catch composition
-// regressions one layer up.
+// Why static rather than behavioral: a behavioral test that wraps a leaf
+// component in another `React.memo` (the way `trackRenders` does for scene
+// tests) cannot observe the leaf's own memoization, because the outer
+// wrapper bails out first. The leaf's memo could be removed entirely and
+// the behavioral test would still pass. The `$$typeof` check inspects the
+// wrapping directly and catches "someone deleted React.memo from Knob"
+// without depending on rendering or reconciliation behavior.
+//
+// What this complements: scene-level tests in this directory verify the
+// orthogonal "scene-level prop bindings stay referentially stable" property.
+// Together, the two layers cover both leaf-level memo wrapping and
+// composition-level prop stability.
 
-import React from "react";
-import { describe, it } from "vitest";
-import { render } from "@testing-library/react";
+import { describe, it, expect } from "vitest";
+import type React from "react";
 
 import Knob from "../../src/components/defaults/controls/Knob";
 import Slider from "../../src/components/defaults/controls/Slider";
@@ -39,204 +44,57 @@ import DiscreteControl from "../../src/components/primitives/controls/DiscreteCo
 import BooleanControl from "../../src/components/primitives/controls/BooleanControl";
 import KnobView from "../../src/components/defaults/controls/KnobView";
 import ButtonView from "../../src/components/defaults/controls/ButtonView";
+import SliderView, {
+    VerticalSliderView,
+    HorizontalSliderView,
+} from "../../src/components/defaults/controls/SliderView";
+import FilmstripView from "../../src/components/generic/controls/FilmstripView";
+import ImageKnobView from "../../src/components/generic/controls/ImageKnobView";
+import ImageSwitchView from "../../src/components/generic/controls/ImageSwitchView";
 
-import { createRenderCounter, expectRenderCount, trackRenders } from "./helpers/renderCounter";
+const REACT_MEMO_TYPE = Symbol.for("react.memo");
 
-// Stable shared props. Memo's shallow compare requires reference equality on
-// any object/array/function prop, so these must be defined once at module
-// scope and reused across renders.
-
-const STABLE_OPTIONS = [
-    { value: 0, label: "A" },
-    { value: 1, label: "B" },
-    { value: 2, label: "C" },
-];
-const STABLE_NOTES_A: number[] = [];
-const STABLE_NOTES_B: number[] = [60];
-const STABLE_FILMSTRIP_PROPS = {
-    imageHref: "data:image/png;base64,iVBORw0KGgo=",
-    frameWidth: 64,
-    frameHeight: 64,
-    frameCount: 31,
-} as const;
-const STABLE_IMAGE_HREF = "data:image/png;base64,iVBORw0KGgo=";
-const STABLE_VIEW_PROPS = {} as const;
-
-interface Case {
-    name: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Component: React.ComponentType<any>;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    baseProps: Record<string, any>;
-    valueProp: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    from: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    to: any;
+function isMemoWrapped(component: unknown): boolean {
+    return (component as { $$typeof?: symbol })?.$$typeof === REACT_MEMO_TYPE;
 }
 
-const cases: Case[] = [
+// OptionView is intentionally excluded: it is a marker component (returns
+// `null`, never rendered directly) used by `DiscreteControl` to extract
+// option metadata from JSX. Memo wrapping does not apply.
+
+const cases: Array<[string, React.ComponentType<unknown>]> = [
     // Default controls
-    {
-        name: "Knob",
-        Component: Knob,
-        baseProps: { min: 0, max: 1, label: "K" },
-        valueProp: "value",
-        from: 0.5,
-        to: 0.7,
-    },
-    {
-        name: "Slider",
-        Component: Slider,
-        baseProps: { min: 0, max: 1, label: "S" },
-        valueProp: "value",
-        from: 0.5,
-        to: 0.7,
-    },
-    {
-        name: "Button",
-        Component: Button,
-        baseProps: { label: "B", latch: true },
-        valueProp: "value",
-        from: false,
-        to: true,
-    },
-    {
-        name: "CycleButton",
-        Component: CycleButton,
-        baseProps: { options: STABLE_OPTIONS, label: "C" },
-        valueProp: "value",
-        from: 0,
-        to: 1,
-    },
+    ["Knob", Knob as unknown as React.ComponentType<unknown>],
+    ["Slider", Slider as unknown as React.ComponentType<unknown>],
+    ["Button", Button as unknown as React.ComponentType<unknown>],
+    ["CycleButton", CycleButton as unknown as React.ComponentType<unknown>],
     // Devices
-    {
-        name: "Keys",
-        Component: Keys,
-        baseProps: { nbKeys: 12 },
-        valueProp: "notesOn",
-        from: STABLE_NOTES_A,
-        to: STABLE_NOTES_B,
-    },
+    ["Keys", Keys as unknown as React.ComponentType<unknown>],
     // Generic / raster controls
-    {
-        name: "FilmStripContinuousControl",
-        Component: FilmStripContinuousControl,
-        baseProps: { ...STABLE_FILMSTRIP_PROPS, min: 0, max: 1, label: "FC" },
-        valueProp: "value",
-        from: 0.5,
-        to: 0.7,
-    },
-    {
-        name: "FilmStripDiscreteControl",
-        Component: FilmStripDiscreteControl,
-        baseProps: { ...STABLE_FILMSTRIP_PROPS, options: STABLE_OPTIONS, label: "FD" },
-        valueProp: "value",
-        from: 0,
-        to: 1,
-    },
-    {
-        name: "FilmStripBooleanControl",
-        Component: FilmStripBooleanControl,
-        baseProps: { ...STABLE_FILMSTRIP_PROPS, label: "FB", latch: true },
-        valueProp: "value",
-        from: false,
-        to: true,
-    },
-    {
-        name: "ImageKnob",
-        Component: ImageKnob,
-        baseProps: { imageHref: STABLE_IMAGE_HREF, min: 0, max: 1, label: "IK" },
-        valueProp: "value",
-        from: 0.5,
-        to: 0.7,
-    },
-    {
-        name: "ImageRotarySwitch",
-        Component: ImageRotarySwitch,
-        baseProps: { imageHref: STABLE_IMAGE_HREF, options: STABLE_OPTIONS, label: "IRS" },
-        valueProp: "value",
-        from: 0,
-        to: 1,
-    },
-    {
-        name: "ImageSwitch",
-        Component: ImageSwitch,
-        baseProps: {
-            imageHrefFalse: STABLE_IMAGE_HREF,
-            imageHrefTrue: STABLE_IMAGE_HREF,
-            frameWidth: 64,
-            frameHeight: 64,
-            label: "IS",
-            latch: true,
-        },
-        valueProp: "value",
-        from: false,
-        to: true,
-    },
-    // Primitives — paired with their canonical default views (stable references).
-    {
-        name: "ContinuousControl",
-        Component: ContinuousControl,
-        baseProps: { min: 0, max: 1, view: KnobView, viewProps: STABLE_VIEW_PROPS, label: "CC" },
-        valueProp: "value",
-        from: 0.5,
-        to: 0.7,
-    },
-    {
-        name: "DiscreteControl",
-        Component: DiscreteControl,
-        baseProps: {
-            options: STABLE_OPTIONS,
-            view: KnobView,
-            viewProps: STABLE_VIEW_PROPS,
-            label: "DC",
-        },
-        valueProp: "value",
-        from: 0,
-        to: 1,
-    },
-    {
-        name: "BooleanControl",
-        Component: BooleanControl,
-        baseProps: {
-            view: ButtonView,
-            viewProps: STABLE_VIEW_PROPS,
-            label: "BC",
-            latch: true,
-        },
-        valueProp: "value",
-        from: false,
-        to: true,
-    },
+    ["FilmStripContinuousControl", FilmStripContinuousControl as unknown as React.ComponentType<unknown>],
+    ["FilmStripDiscreteControl", FilmStripDiscreteControl as unknown as React.ComponentType<unknown>],
+    ["FilmStripBooleanControl", FilmStripBooleanControl as unknown as React.ComponentType<unknown>],
+    ["ImageKnob", ImageKnob as unknown as React.ComponentType<unknown>],
+    ["ImageRotarySwitch", ImageRotarySwitch as unknown as React.ComponentType<unknown>],
+    ["ImageSwitch", ImageSwitch as unknown as React.ComponentType<unknown>],
+    // Control primitives
+    ["ContinuousControl", ContinuousControl as unknown as React.ComponentType<unknown>],
+    ["DiscreteControl", DiscreteControl as unknown as React.ComponentType<unknown>],
+    ["BooleanControl", BooleanControl as unknown as React.ComponentType<unknown>],
+    // Default views (exported)
+    ["KnobView", KnobView as unknown as React.ComponentType<unknown>],
+    ["ButtonView", ButtonView as unknown as React.ComponentType<unknown>],
+    ["SliderView", SliderView as unknown as React.ComponentType<unknown>],
+    ["VerticalSliderView", VerticalSliderView as unknown as React.ComponentType<unknown>],
+    ["HorizontalSliderView", HorizontalSliderView as unknown as React.ComponentType<unknown>],
+    // Generic / raster views (internal but on the render-time path)
+    ["FilmstripView", FilmstripView as unknown as React.ComponentType<unknown>],
+    ["ImageKnobView", ImageKnobView as unknown as React.ComponentType<unknown>],
+    ["ImageSwitchView", ImageSwitchView as unknown as React.ComponentType<unknown>],
 ];
 
-describe.each(cases)("$name memoization", ({ Component, baseProps, valueProp, from, to }) => {
-    const Tracked = trackRenders(Component);
-
-    it("bails out on parent re-render with stable props", () => {
-        const { record, getCounts, reset } = createRenderCounter();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const props: any = { trackId: "leaf", record, ...baseProps, [valueProp]: from };
-        const { rerender } = render(<Tracked {...props} />);
-        reset();
-
-        rerender(<Tracked {...props} />);
-
-        expectRenderCount("leaf", getCounts()["leaf"]?.update ?? 0, 0, "parent re-render");
-    });
-
-    it("re-renders when the value prop changes", () => {
-        const { record, getCounts, reset } = createRenderCounter();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const propsA: any = { trackId: "leaf", record, ...baseProps, [valueProp]: from };
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const propsB: any = { trackId: "leaf", record, ...baseProps, [valueProp]: to };
-        const { rerender } = render(<Tracked {...propsA} />);
-        reset();
-
-        rerender(<Tracked {...propsB} />);
-
-        expectRenderCount("leaf", getCounts()["leaf"]?.update ?? 0, 1, "value prop change");
+describe("React.memo coverage", () => {
+    it.each(cases)("%s is wrapped in React.memo", (_name, Component) => {
+        expect(isMemoWrapped(Component)).toBe(true);
     });
 });
