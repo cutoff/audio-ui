@@ -26,6 +26,52 @@ export type DisplayMode = "scaleToFit" | "fill";
 export type LabelMode = "none" | "hidden" | "visible";
 export type LabelPosition = "above" | "below";
 
+/**
+ * Result of {@link computeAdaptiveBoxLayout}: the derived numbers that drive
+ * the AdaptiveBox grid layout. Pure outputs — no React, no DOM, no styles.
+ */
+export interface AdaptiveBoxLayout {
+    /** `viewBoxHeight + labelHeightUnits` when label space is reserved, else `viewBoxHeight`. */
+    combinedHeightUnits: number;
+    /** `true` when the layout reserves a row for the label (i.e. `labelMode !== "none"`). */
+    showLabelSpace: boolean;
+    /** `grid-template-rows` value: either `"1fr"` or `"<a>% <b>%"` with rows ordered by label position. */
+    gridTemplateRows: string;
+    /** Grid row assignment for the main content cell (`"1 / 2"` or `"2 / 3"` when label is above). */
+    mainContentGridRow: string;
+}
+
+/**
+ * Pure layout math for AdaptiveBox. Extracted so it can be exercised by unit
+ * tests and microbenchmarks without paying React render cost.
+ *
+ * Given the viewBox dimensions and label configuration, returns the four
+ * derived values the component plugs into its grid styles.
+ */
+export function computeAdaptiveBoxLayout(params: {
+    viewBoxHeight: number;
+    labelHeightUnits: number;
+    labelMode: LabelMode;
+    effectiveLabelPosition: LabelPosition;
+}): AdaptiveBoxLayout {
+    const { viewBoxHeight, labelHeightUnits, labelMode, effectiveLabelPosition } = params;
+    const showLabelSpace = labelMode !== "none";
+    const combinedHeightUnits = showLabelSpace ? viewBoxHeight + labelHeightUnits : viewBoxHeight;
+    const mainContentGridRow = showLabelSpace && effectiveLabelPosition === "above" ? "2 / 3" : "1 / 2";
+
+    let gridTemplateRows = "1fr";
+    if (showLabelSpace) {
+        const svgPercent = (viewBoxHeight / combinedHeightUnits) * 100;
+        const labelPercent = (labelHeightUnits / combinedHeightUnits) * 100;
+        gridTemplateRows =
+            effectiveLabelPosition === "above"
+                ? `${labelPercent}% ${svgPercent}%`
+                : `${svgPercent}% ${labelPercent}%`;
+    }
+
+    return { combinedHeightUnits, showLabelSpace, gridTemplateRows, mainContentGridRow };
+}
+
 // Context to coordinate between root and subcomponents
 interface BoxContextValue {
     // Minimal config exposed to children to avoid unnecessary re-renders
@@ -167,11 +213,14 @@ export function AdaptiveBox({
     const effectiveLabelPosition: LabelPosition = labelInfo?.position ?? "below";
     const isFill = displayMode === "fill";
 
-    // Compute grid row for main content (used by Svg, HtmlOverlay, Canvas, GL)
-    // Only labelMode matters for reserving space - not whether labelInfo has been registered yet
-    // This prevents layout shift during initial render when Label component registers via useLayoutEffect
-    const showLabelSpace = labelMode !== "none";
-    const mainContentGridRow = showLabelSpace && effectiveLabelPosition === "above" ? "2 / 3" : "1 / 2";
+    // Pure layout math — see computeAdaptiveBoxLayout. Reserving label space depends on labelMode
+    // (not labelInfo) so initial render matches post-registration layout and avoids shift.
+    const { combinedHeightUnits, gridTemplateRows, mainContentGridRow } = computeAdaptiveBoxLayout({
+        viewBoxHeight,
+        labelHeightUnits: labelHeightUnitsEffective,
+        labelMode,
+        effectiveLabelPosition,
+    });
 
     const ctxValue = useMemo<BoxContextValue>(
         () => ({
@@ -202,20 +251,6 @@ export function AdaptiveBox({
             registerLabel,
         ]
     );
-    const L = labelHeightUnitsEffective;
-    const combinedHeightUnits = showLabelSpace ? viewBoxHeight + L : viewBoxHeight;
-
-    // Grid template rows for SVG + (optional) label
-    let gridTemplateRows = "1fr";
-    if (showLabelSpace) {
-        const svgPercent = (viewBoxHeight / combinedHeightUnits) * 100;
-        const labelPercent = (L / combinedHeightUnits) * 100;
-        if (effectiveLabelPosition === "above") {
-            gridTemplateRows = `${labelPercent}% ${svgPercent}%`;
-        } else {
-            gridTemplateRows = `${svgPercent}% ${labelPercent}%`;
-        }
-    }
 
     return (
         <BoxContext.Provider value={ctxValue}>

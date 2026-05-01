@@ -38,18 +38,20 @@
     },
     "scripts": {
         "build": "pnpm exec vite build",
-        "typecheck": "tsc --noEmit",
+        "typecheck": "tsc --noEmit -p tsconfig.bench.json",
         "test": "vitest run",
         "test:watch": "vitest",
         "test:coverage": "vitest run --coverage",
-        "lint": "eslint \"src/**/*.ts\"",
-        "lint:fix": "eslint \"src/**/*.ts\" --fix || true",
+        "bench": "vitest bench --run",
+        "lint": "eslint src bench",
+        "lint:fix": "eslint src bench --fix || true",
         "clean": "rm -rf node_modules dist .turbo"
     },
     "dependencies": {
         "fast-deep-equal": "^3.1.3"
     },
     "devDependencies": {
+        "@codspeed/vitest-plugin": "^5.4.0",
         "jsdom": "^24.1.3",
         "typescript": "^5.9.3",
         "vite": "^6.4.2",

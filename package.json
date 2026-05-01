@@ -25,6 +25,7 @@
         "lint:fix": "turbo lint:fix --continue",
         "size": "size-limit",
         "size:why": "size-limit --why",
+        "bench": "turbo bench",
         "check": "pnpm install && turbo run typecheck build lint test",
         "clean": "(pnpm exec turbo clean || true) && rm -rf node_modules .turbo",
         "clean-build": "pnpm clean && pnpm i && pnpm build",

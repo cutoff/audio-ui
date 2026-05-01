@@ -4,6 +4,24 @@ Notes for the upcoming release. Use this when updating the documentation site or
 
 ---
 
+## Performance – microbenchmark harness with CodSpeed
+
+A `vitest bench`-based microbenchmark harness covers the runtime-critical interaction path. `pnpm bench` runs the suite locally with tinybench wall-clock numbers; `.github/workflows/codspeed.yml` runs the same suite under CodSpeed instrumentation (Valgrind/cachegrind) on every push to `main` and `develop`, publishing deterministic per-commit results to the CodSpeed dashboard. Authentication uses OIDC — no `CODSPEED_TOKEN` secret is needed for the public repo, only the CodSpeed GitHub App installation.
+
+**Coverage** — the four interaction controllers (`ContinuousInteractionController`, `BooleanInteractionController`, `DiscreteInteractionController`, `NoteInteractionController`), the size utilities (`getSizeClassForComponent`, `getSizeStyleForComponent`), and the AdaptiveBox layout math (`computeAdaptiveBoxLayout`).
+
+**AdaptiveBox refactor** — the inline `gridTemplateRows`/`combinedHeightUnits` math becomes a pure helper `computeAdaptiveBoxLayout()` co-located in `packages/react/src/components/primitives/AdaptiveBox.tsx`. Lossless extraction (same inputs, same outputs); the helper gains a unit test and is the bench target so AdaptiveBox layout cost can be measured without React render overhead.
+
+**Layout** — bench files live in `packages/<pkg>/bench/` (outside `src/` so they stay out of `dist/`). `*.bench.ts` extension distinguishes them from `*.test.ts`. Vitest discovers them via `benchmark.include` in each package's `vitest.config.ts`. The CodSpeed plugin is wired into the same vitest configs and acts as a no-op locally — `pnpm bench` runs as plain tinybench when not invoked under the CodSpeed action.
+
+**Review command integration** — the **Review** procedure in `agents/coding-agent-commands-1.0.md` gains a performance regression check step. Coding agents executing Review consult the CodSpeed dashboard for the touched code paths and flag instruction-count regressions > 2%. The Compare Any Runs feature supports diffing arbitrary commit pairs without requiring a PR; flamegraphs attribute deltas to specific functions, supporting both regression triage and optimization work.
+
+**Out of scope for this iteration** — threshold-based hard gates / merge blocking. Numbers are informational while runner variance is observed; thresholds graduate later once a few weeks of data exist. The CodSpeed instrumentation mode is hardware-agnostic (deterministic instruction count) so a self-hosted runner is not required.
+
+This addresses issue [#36](https://github.com/cutoff/audio-ui/issues/36).
+
+---
+
 ## Testing – render-count regression tests
 
 The React package ships a new Vitest suite that guards the library's memoization guarantees on two complementary layers. Memo behavior is contractual and deterministic, so divergence from baseline always fails the test — no informational warn-mode or staged rollout.
