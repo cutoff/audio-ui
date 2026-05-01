@@ -1,6 +1,7 @@
 # AudioUI by Cutoff
 
 [![CI](https://github.com/cutoff/audio-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/cutoff/audio-ui/actions/workflows/ci.yml)
+[![CodSpeed](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://codspeed.io/cutoff/audio-ui?utm_source=badge)
 [![npm version](https://img.shields.io/npm/v/@cutoff/audio-ui-react.svg)](https://www.npmjs.com/package/@cutoff/audio-ui-react)
 [![License](https://img.shields.io/badge/License-GPL--3.0%20%7C%20Commercial-blue)](https://github.com/cutoff/audio-ui#licensing)
 
