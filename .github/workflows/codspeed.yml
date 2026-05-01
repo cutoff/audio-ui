@@ -38,13 +38,14 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
-            # Build core so packages/react bench files importing transitively
-            # via the workspace resolve to compiled output.
-            - name: Build
-              run: pnpm build
-
+            # Invoke vitest directly per-package (sequentially) so CodSpeed's
+            # instrumentation hooks attach correctly to each subprocess.
+            # Going through `pnpm bench` → turbo → vitest breaks the env
+            # propagation the plugin relies on, and the run lands empty.
             - name: Run benchmarks (CodSpeed)
               uses: CodSpeedHQ/action@v4
               with:
-                  run: pnpm bench
                   mode: instrumentation
+                  run: |
+                      pnpm --filter @cutoff/audio-ui-core exec vitest bench --run
+                      pnpm --filter @cutoff/audio-ui-react exec vitest bench --run
