@@ -59,7 +59,7 @@
         }
     },
     "dependencies": {
-        "turbo": "^2.7.6"
+        "turbo": "^2.9.14"
     },
     "devDependencies": {
         "@eslint/compat": "^1.4.1",
@@ -72,6 +72,6 @@
         "eslint-plugin-react-hooks": "^5.2.0",
         "prettier": "^3.8.1",
         "tsx": "^4.21.0",
-        "vitest": "^3.2.4"
+        "vitest": "^3.2.6"
     }
 }
