@@ -53,13 +53,19 @@
             "yaml": "^2.8.3",
             "brace-expansion@^1.0.0": "1.1.13",
             "brace-expansion@^2.0.0": "2.0.3",
+            "brace-expansion@^5.0.0": "^5.0.6",
+            "ws@^8.0.0": "^8.21.0",
             "picomatch@^2.0.0": "2.3.2",
             "picomatch@^4.0.0": "4.0.4",
-            "defu": "^6.1.5"
+            "defu": "^6.1.5",
+            "postcss": "^8.5.10",
+            "fast-uri": "^3.1.2",
+            "js-yaml": "^4.2.0",
+            "form-data": "^4.0.6"
         }
     },
     "dependencies": {
-        "turbo": "^2.7.6"
+        "turbo": "^2.9.14"
     },
     "devDependencies": {
         "@eslint/compat": "^1.4.1",
@@ -72,6 +78,6 @@
         "eslint-plugin-react-hooks": "^5.2.0",
         "prettier": "^3.8.1",
         "tsx": "^4.21.0",
-        "vitest": "^3.2.4"
+        "vitest": "^3.2.6"
     }
 }
