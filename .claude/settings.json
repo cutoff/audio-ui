@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "extraKnownMarketplaces": {
+    "renauddenis": {
+      "source": {
+        "source": "github",
+        "repo": "RenaudDenis/claude-plugins"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "forge@renauddenis": true
+  }
+}
