@@ -4,6 +4,31 @@ Notes for the upcoming release. Use this when updating the documentation site or
 
 ---
 
+## New features – waveform icons and interaction hooks exported
+
+`@cutoff/audio-ui-react` exports two more groups:
+
+- **Waveform icons**: `SineWaveIcon`, `TriangleWaveIcon`, `SquareWaveIcon`, `SawWaveIcon`. They draw in `currentColor`, so they follow the text color in light and dark modes, and are typically used as `OptionView` content in a `CycleButton` or as a Knob `iconCap`. The playground imports them from the library.
+
+  ```tsx
+  import { CycleButton, OptionView, SineWaveIcon, SawWaveIcon } from "@cutoff/audio-ui-react";
+
+  <CycleButton value={waveform} onValueChange={setWaveform} label="Wave">
+    <OptionView value="sine">
+      <SineWaveIcon />
+    </OptionView>
+    <OptionView value="saw">
+      <SawWaveIcon />
+    </OptionView>
+  </CycleButton>;
+  ```
+
+- **Interaction hooks for custom components**: `useContinuousInteraction`, `useDiscreteInteraction`, `useBooleanInteraction`, with their types (`UseContinuousInteractionProps`, `ContinuousInteractionHandlers`, `UseDiscreteInteractionProps`, `UseDiscreteInteractionResult`, `UseBooleanInteractionProps`, `UseBooleanInteractionResult`). Like `useNoteInteraction`, they are the React layer over the core interaction controllers and the public way to give a custom control the library's drag, wheel, keyboard and pointer behavior.
+
+No breaking change.
+
+---
+
 ## Fixes – raster components visible without dark variant
 
 Raster controls now correctly render in dark mode (and on dark-OS systems) when no dark asset is supplied, matching the documented behavior "if a dark prop is omitted, the light asset is used in both themes".

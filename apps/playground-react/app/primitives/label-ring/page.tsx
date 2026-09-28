@@ -6,10 +6,9 @@
 
 "use client";
 
-import { LabelRing } from "@cutoff/audio-ui-react";
+import { LabelRing, SineWaveIcon, TriangleWaveIcon, SquareWaveIcon, SawWaveIcon } from "@cutoff/audio-ui-react";
 import { ArrowUp, Check, ChevronUp, Minus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import { SineWaveIcon, TriangleWaveIcon, SquareWaveIcon, SawWaveIcon } from "../../../components/wave-icons";
 
 const ICONS = [
     <Plus key="1" size={12} strokeWidth={2.5} />,

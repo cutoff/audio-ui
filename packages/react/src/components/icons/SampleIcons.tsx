@@ -5,12 +5,25 @@
  */
 
 /**
- * Waveform icon components for the playground app.
- * These use currentColor to inherit text color and work in both light and dark modes.
+ * Waveform icons (sine, triangle, square, sawtooth) for synthesizer-style controls, typically as `OptionView`
+ * content of a `CycleButton` or as the `iconCap` content of a `Knob`.
+ * They draw in `currentColor`, so they follow the surrounding text color in light and dark modes.
+ *
+ * @example
+ * <CycleButton value={waveform} onValueChange={setWaveform} label="Wave">
+ *     <OptionView value="sine"><SineWaveIcon /></OptionView>
+ *     <OptionView value="saw"><SawWaveIcon /></OptionView>
+ * </CycleButton>
  */
 
-import { SVGProps } from "react";
+import type { SVGProps } from "react";
 
+/**
+ * Sine waveform icon.
+ *
+ * @param props - Standard SVG props, spread onto the root `<svg>` (`className`, `style`, `width`, …).
+ * @returns An SVG element drawn in `currentColor`.
+ */
 export function SineWaveIcon(props: SVGProps<SVGSVGElement>) {
     return (
         <svg
@@ -38,6 +51,12 @@ export function SineWaveIcon(props: SVGProps<SVGSVGElement>) {
     );
 }
 
+/**
+ * Triangle waveform icon.
+ *
+ * @param props - Standard SVG props, spread onto the root `<svg>` (`className`, `style`, `width`, …).
+ * @returns An SVG element drawn in `currentColor`.
+ */
 export function TriangleWaveIcon(props: SVGProps<SVGSVGElement>) {
     return (
         <svg
@@ -65,6 +84,12 @@ export function TriangleWaveIcon(props: SVGProps<SVGSVGElement>) {
     );
 }
 
+/**
+ * Square waveform icon.
+ *
+ * @param props - Standard SVG props, spread onto the root `<svg>` (`className`, `style`, `width`, …).
+ * @returns An SVG element drawn in `currentColor`.
+ */
 export function SquareWaveIcon(props: SVGProps<SVGSVGElement>) {
     return (
         <svg
@@ -93,6 +118,12 @@ export function SquareWaveIcon(props: SVGProps<SVGSVGElement>) {
     );
 }
 
+/**
+ * Sawtooth waveform icon.
+ *
+ * @param props - Standard SVG props, spread onto the root `<svg>` (`className`, `style`, `width`, …).
+ * @returns An SVG element drawn in `currentColor`.
+ */
 export function SawWaveIcon(props: SVGProps<SVGSVGElement>) {
     return (
         <svg

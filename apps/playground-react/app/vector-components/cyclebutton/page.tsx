@@ -7,13 +7,21 @@
 "use client";
 
 import { useState } from "react";
-import { CycleButton, CycleButtonProps, OptionView, AudioControlEvent } from "@cutoff/audio-ui-react";
+import {
+    CycleButton,
+    CycleButtonProps,
+    OptionView,
+    AudioControlEvent,
+    SawWaveIcon,
+    SineWaveIcon,
+    SquareWaveIcon,
+    TriangleWaveIcon,
+} from "@cutoff/audio-ui-react";
 
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ColorPickerField } from "@/components/ColorPickerField";
-import { SawWaveIcon, SineWaveIcon, SquareWaveIcon, TriangleWaveIcon } from "@/components/wave-icons";
 
 const sampleOptions = [
     <OptionView key={0} value={0} label="Sine">

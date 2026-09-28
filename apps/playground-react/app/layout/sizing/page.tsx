@@ -6,8 +6,19 @@
 
 "use client";
 
-import { Button, Knob, CycleButton, Slider, Keys, OptionView, SizeType } from "@cutoff/audio-ui-react";
-import { SawWaveIcon, SineWaveIcon, SquareWaveIcon, TriangleWaveIcon } from "@/components/wave-icons";
+import {
+    Button,
+    Knob,
+    CycleButton,
+    Slider,
+    Keys,
+    OptionView,
+    SizeType,
+    SawWaveIcon,
+    SineWaveIcon,
+    SquareWaveIcon,
+    TriangleWaveIcon,
+} from "@cutoff/audio-ui-react";
 
 const sizeTypes: SizeType[] = ["xsmall", "small", "normal", "large", "xlarge"];
 

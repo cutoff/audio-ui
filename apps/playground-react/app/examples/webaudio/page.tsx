@@ -17,9 +17,12 @@ import {
     frequencyFormatter,
     percentageFormatter,
     ContinuousParameter,
+    SineWaveIcon,
+    SawWaveIcon,
+    SquareWaveIcon,
+    TriangleWaveIcon,
 } from "@cutoff/audio-ui-react";
 import { Volume2 } from "lucide-react";
-import { SineWaveIcon, SawWaveIcon, SquareWaveIcon, TriangleWaveIcon } from "@/components/wave-icons";
 import { SynthEngine, SynthParams, WaveformType } from "./synth-engine";
 import { useMidi } from "@/hooks/use-midi";
 

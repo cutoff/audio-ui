@@ -14,6 +14,10 @@ import {
     KnobVariant,
     AudioControlEvent,
     ValueLabelMode,
+    SawWaveIcon,
+    SineWaveIcon,
+    SquareWaveIcon,
+    TriangleWaveIcon,
 } from "@cutoff/audio-ui-react";
 
 import ControlSkeletonPage from "@/components/ControlSkeletonPage";
@@ -22,7 +26,6 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ColorPickerField } from "@/components/ColorPickerField";
-import { SawWaveIcon, SineWaveIcon, SquareWaveIcon, TriangleWaveIcon } from "@/components/wave-icons";
 
 // MIDI bipolar formatter for demo purposes
 const midiBipolarFormatter = (value: number, parameterDef: AudioParameter): string | undefined => {

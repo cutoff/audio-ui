@@ -30,8 +30,11 @@ import {
     LinearStrip,
     ValueStrip,
     LinearCursor,
+    TriangleWaveIcon,
+    SineWaveIcon,
+    SquareWaveIcon,
+    SawWaveIcon,
 } from "@cutoff/audio-ui-react";
-import { TriangleWaveIcon, SineWaveIcon, SquareWaveIcon, SawWaveIcon } from "@/components/wave-icons";
 
 const layoutPrimitives = [
     {

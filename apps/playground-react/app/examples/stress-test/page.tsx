@@ -7,11 +7,20 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { Button, Knob, Slider as AudioSlider, Keys, KnobVariant } from "@cutoff/audio-ui-react";
+import {
+    Button,
+    Knob,
+    Slider as AudioSlider,
+    Keys,
+    KnobVariant,
+    SawWaveIcon,
+    SineWaveIcon,
+    SquareWaveIcon,
+    TriangleWaveIcon,
+} from "@cutoff/audio-ui-react";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { SawWaveIcon, SineWaveIcon, SquareWaveIcon, TriangleWaveIcon } from "@/components/wave-icons";
 
 // Modulation functions - these simulate different LFO waveforms
 const modulators = {

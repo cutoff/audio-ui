@@ -61,6 +61,8 @@ export {
 } from "./components/defaults/controls/SliderView";
 
 export { default as Keys } from "./components/defaults/devices/Keys";
+// Export icons
+export { SineWaveIcon, TriangleWaveIcon, SquareWaveIcon, SawWaveIcon } from "./components/icons/SampleIcons";
 export { default as AdaptiveBox } from "./components/primitives/AdaptiveBox";
 export type {
     AdaptiveBoxSvgProps,
@@ -161,3 +163,6 @@ export * from "./hooks/useDiscreteParameterResolution";
 export * from "./hooks/useContinuousParameterResolution";
 export * from "./hooks/useBooleanParameterResolution";
 export * from "./hooks/useNoteInteraction";
+export * from "./hooks/useContinuousInteraction";
+export * from "./hooks/useDiscreteInteraction";
+export * from "./hooks/useBooleanInteraction";

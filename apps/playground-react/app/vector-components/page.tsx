@@ -10,8 +10,17 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { Knob, Slider, CycleButton, Button as AudioButton, Keys, OptionView } from "@cutoff/audio-ui-react";
-import { SineWaveIcon, TriangleWaveIcon, SquareWaveIcon } from "@/components/wave-icons";
+import {
+    Knob,
+    Slider,
+    CycleButton,
+    Button as AudioButton,
+    Keys,
+    OptionView,
+    SineWaveIcon,
+    TriangleWaveIcon,
+    SquareWaveIcon,
+} from "@cutoff/audio-ui-react";
 
 // No-op handler for read-only previews
 const noOpHandler = () => {};

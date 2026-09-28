@@ -299,7 +299,7 @@ For composing custom linear controls (sliders, faders, pitch/mod wheels). Primit
 - **Library CSS Support**: The library's CSS automatically applies `fill: currentColor` to inline SVGs within knob content, ensuring proper color inheritance.
 - **Third-Party Icon Libraries**: Icon libraries like `react-icons` work seamlessly as they render inline SVGs that inherit `currentColor`.
 - **Avoid `<img>` Tags for Themed Icons**: External SVG files loaded via `<img>` tags cannot be themed with CSS. Use inline SVG components instead.
-- **Example Pattern**: See `apps/playground-react/components/wave-icons.tsx` for reference implementation of themed icon components.
+- **Example Pattern**: See `packages/react/src/components/icons/SampleIcons.tsx` (the exported waveform icons) for the reference implementation of themed icon components.
 
 ## ESLint/Prettier
 
