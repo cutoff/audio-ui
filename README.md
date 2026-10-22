@@ -126,7 +126,7 @@ This monorepo uses `pnpm` workspaces. The primary packages are:
 - `@cutoff/audio-ui-core`: The framework-agnostic core logic.
 - `playground-react`: The Next.js playground application.
 
-The library packages build with **Vite 6** and **Vitest 3** (dev tooling only; published packages ship `dist/`). The root `package.json` may list **`pnpm.overrides`** to align transitive dependencies with security-patched versions when needed.
+The library packages build with **Vite 6** and **Vitest 4** (dev tooling only; published packages ship `dist/`). The root `package.json` may list **`pnpm.overrides`** to align transitive dependencies with security-patched versions when needed.
 
 To start the development server, run:
 
