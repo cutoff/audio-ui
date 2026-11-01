@@ -9,9 +9,6 @@
 **IMPORTANT: Documentation File Structure**
 
 - This file (AGENTS.md) is the primary documentation file for LLMs.
-- CLAUDE.md and GEMINI.md are symbolic links to this file.
-- Always edit AGENTS.md directly. Never attempt to modify CLAUDE.md or GEMINI.md as they are just symbolic links.
-- Any changes made to AGENTS.md will automatically be reflected in CLAUDE.md and GEMINI.md.
 
 **CRITICAL: No Backward Compatibility Required**
 
@@ -335,7 +332,6 @@ Audio/MIDI runtime is performance-critical. The Performance Mandate (see Quick R
 
 ### File Management
 
-- **Only modify AGENTS.md directly** - symbolic links (CLAUDE.md, GEMINI.md) should not be edited
 - **Update AGENTS.md to reflect current project state after each interaction** - ensure documentation stays synchronized with code changes
 - **Update README.md continuously:** The root `README.md` is the public face of the project. It must be updated to reflect any changes to the build process, package names, or getting-started instructions that occur during a session.
 
