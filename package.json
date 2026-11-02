@@ -40,11 +40,12 @@
     "pnpm": {
         "overrides": {
             "rollup": "^4.59.0",
-            "eslint>minimatch": "3.1.4",
-            "eslint-plugin-react>minimatch": "3.1.4",
+            "eslint>minimatch": "11.0.4",
+            "eslint-plugin-react>minimatch": "11.0.4",
             "@eslint/eslintrc>minimatch": "3.1.4",
-            "@typescript-eslint/typescript-estree>minimatch": "9.0.7",
-            "@vue/language-core>minimatch": "9.0.7",
+            "@typescript-eslint/typescript-estree>minimatch": "11.0.4",
+            "@vue/language-core>minimatch": "11.0.4",
+            "@eslint/config-array>minimatch": "11.0.4",
             "flat-cache>flatted": "^3.4.2",
             "lodash": "^4.18.0",
             "lodash-es": "^4.18.0",
