@@ -21,7 +21,9 @@ env:
 jobs:
     benchmarks:
         name: Benchmarks (instrumentation)
-        runs-on: ubuntu-latest
+        # Pinned: CodSpeed's runner (v4.19.1) answers "Unsupported system" on ubuntu-26.04, which ubuntu-latest
+        # became in November 2026. Move to ubuntu-latest again once CodSpeed supports it.
+        runs-on: ubuntu-24.04
         steps:
             - name: Checkout
               uses: actions/checkout@v4
