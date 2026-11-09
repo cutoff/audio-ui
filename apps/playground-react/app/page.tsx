@@ -4,8 +4,6 @@
  * See LICENSE.md for details.
  */
 
-"use client";
-
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,6 +24,9 @@ import {
     Sidebar,
     MousePointer2,
 } from "lucide-react";
+import { pageMetadata } from "@/lib/page-metadata";
+
+export const metadata = pageMetadata("/");
 
 const sections = [
     {

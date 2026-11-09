@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { pageMetadata } from "@/lib/page-metadata";
+
+export const metadata = pageMetadata("/dashboard");
 
 export default function Page() {
     return (
