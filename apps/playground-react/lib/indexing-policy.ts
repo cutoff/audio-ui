@@ -10,34 +10,25 @@
  * Drives `/robots.txt`, root `metadata.robots`, and `/sitemap.xml` contents (empty sitemap when
  * `false`) so they never contradict.
  *
- * **Vercel:** `VERCEL_ENV` is `production` only on the production deployment. Preview
- * deployments use `preview` even though `NODE_ENV` is `production`, so do not rely on
- * `NODE_ENV` alone for this policy.
- *
- * **Self-hosted / non-Vercel (Cloudflare Workers):** set `AUDIOUI_PLAYGROUND_ALLOW_INDEXING=true` in the
- * production build when `VERCEL_ENV` is not available. The site is a static export, so the policy is
- * fixed at build time; the variable is declared in the root `turbo.json` build task so turbo passes it on.
+ * Opt-in through `AUDIOUI_PLAYGROUND_ALLOW_INDEXING` (`true` or `1`), set as a build variable on the production
+ * Worker only (`audioui-playground`); staging, preview versions and local builds leave it unset. The site is a
+ * static export, so the policy is fixed at build time; the variable is declared in the root `turbo.json` build
+ * task so turbo passes it on. Do not rely on `NODE_ENV`: every build, staging included, is a production build.
  *
  * @returns {boolean} `true` when `robots.txt` allows crawling, root HTML `robots` allows
  *   index/follow, and the sitemap lists URLs; `false` otherwise (disallow, noindex, empty
- *   sitemap), except when opt-in env is set on non-Vercel production hosts.
+ *   sitemap).
  *
  * @example
  * ```ts
- * // Vercel production (set by platform)
- * process.env.VERCEL_ENV = "production";
- * isPublicIndexingAllowed(); // true
- *
- * // Preview or local: disallow unless opt-in
- * delete process.env.VERCEL_ENV;
  * process.env.AUDIOUI_PLAYGROUND_ALLOW_INDEXING = "true";
  * isPublicIndexingAllowed(); // true
+ *
+ * delete process.env.AUDIOUI_PLAYGROUND_ALLOW_INDEXING;
+ * isPublicIndexingAllowed(); // false
  * ```
  */
 export function isPublicIndexingAllowed(): boolean {
-    if (process.env.VERCEL_ENV === "production") {
-        return true;
-    }
     const optIn = process.env.AUDIOUI_PLAYGROUND_ALLOW_INDEXING;
     return optIn === "true" || optIn === "1";
 }

@@ -11,7 +11,7 @@
 | Category     | Details                                                                                                                                                                                          |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Scripts      | `pnpm dev`, `pnpm build`, `pnpm typecheck`, `pnpm lint`                                                                                                                                          |
-| Env Vars     | Optional `AUDIOUI_PLAYGROUND_ALLOW_INDEXING` (`true` / `1`), **build time**, set for the production build when not on Vercel; `VERCEL_ENV` read for Vercel (see `lib/indexing-policy.ts`)        |
+| Env Vars     | Optional `AUDIOUI_PLAYGROUND_ALLOW_INDEXING` (`true` / `1`), **build time**, set on the production Worker only (see `lib/indexing-policy.ts`)                                                    |
 | Routing      | Next.js app router; pages in app/[route]/page.tsx; categories: examples, vector-components, raster-components, primitives, layout                                                                |
 | Theming      | next-themes for theme switching; theme controls in header (ThemeSettingsButton, ThemeModeToggle); responsive sheet for customization                                                             |
 | Integrations | Import library components for showcases; Radix via shadcn; forms, routing                                                                                                                        |
