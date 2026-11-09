@@ -24,7 +24,7 @@
 - `app/robots.txt/route.ts`: Static `robots.txt` (static export) (allow vs disallow matches indexing policy; `Sitemap:` line when indexing allowed)
 - `app/sitemap.ts`: `/sitemap.xml` via Next convention; URL list when `isPublicIndexingAllowed()`, else empty
 - `lib/indexing-policy.ts`: `isPublicIndexingAllowed()` — single source of truth for SEO crawling/indexing policy
-- `lib/playground-sitemap-paths.ts`: `PLAYGROUND_ORIGIN`, `PLAYGROUND_PAGES` (every static page route, no trailing slash, with its own title and description) and `PLAYGROUND_SITEMAP_PATHS` (its keys)
+- `lib/playground-sitemap-paths.ts`: `PLAYGROUND_ORIGIN`, `PLAYGROUND_PAGES` (every static page route, no trailing slash, with its own title and description; `noindex: true` keeps a page out of the sitemap and the index, e.g. the `/dashboard` placeholder) and `PLAYGROUND_SITEMAP_PATHS` (its keys, minus `noindex` pages)
 - `lib/page-metadata.ts`: `pageMetadata(path)`: a page's title, description, self-referencing canonical, Open Graph and Twitter fields. A Server Component page exports `metadata = pageMetadata(path)` itself; a Client Component page gets a pass-through `layout.tsx` beside it that exports it
 - `app/page.tsx`: Home page (simplified entry: hero with external links, Getting Started card with theme/navigation tips, Explore Components card grid linking to vector-components, raster-components, primitives, layout, examples)
 - `app/[route]/page.tsx`: Demo pages (e.g., app/vector-components/button/page.tsx for Button demo)

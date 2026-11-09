@@ -5,7 +5,13 @@
  */
 
 import type { Metadata } from "next";
-import { PLAYGROUND_ORIGIN, PLAYGROUND_PAGES, type PlaygroundPath } from "@/lib/playground-sitemap-paths";
+import { isPublicIndexingAllowed } from "@/lib/indexing-policy";
+import {
+    PLAYGROUND_ORIGIN,
+    PLAYGROUND_PAGES,
+    type PlaygroundPageInfo,
+    type PlaygroundPath,
+} from "@/lib/playground-sitemap-paths";
 
 /** Site name: Open Graph `siteName` and the suffix of every page title but the home page's. */
 export const PLAYGROUND_SITE_NAME = "AudioUI Playground";
@@ -42,6 +48,9 @@ export const PLAYGROUND_TWITTER = {
  * rather than merge, and the title is absolute because a parent's `title.template` does not reach past an
  * intermediate segment that sets a plain title.
  *
+ * A page marked `noindex` gets no canonical URL and, when indexing is allowed, `noindex, follow`; otherwise it
+ * keeps the root layout's `noindex, nofollow`.
+ *
  * @param path - Pathname of the page, a key of {@link PLAYGROUND_PAGES}
  * @returns {Metadata} The page's metadata
  *
@@ -53,15 +62,20 @@ export const PLAYGROUND_TWITTER = {
  * ```
  */
 export function pageMetadata(path: PlaygroundPath): Metadata {
-    const { title, description } = PLAYGROUND_PAGES[path];
+    const { title, description, noindex }: PlaygroundPageInfo = PLAYGROUND_PAGES[path];
     const fullTitle = path === "/" ? title : `${title} | ${PLAYGROUND_SITE_NAME}`;
     const url = `${PLAYGROUND_ORIGIN}${path}`;
-
-    return {
+    const common: Metadata = {
         title: { absolute: fullTitle },
         description,
-        alternates: { canonical: url },
         openGraph: { ...PLAYGROUND_OPEN_GRAPH, url, title: fullTitle, description },
         twitter: { ...PLAYGROUND_TWITTER, title: fullTitle, description },
     };
+
+    if (noindex) {
+        return isPublicIndexingAllowed()
+            ? { ...common, robots: { index: false, follow: true, googleBot: { index: false, follow: true } } }
+            : common;
+    }
+    return { ...common, alternates: { canonical: url } };
 }

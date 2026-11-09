@@ -18,6 +18,11 @@ export type PlaygroundPageInfo = {
     title: string;
     /** Meta description, about 120 to 160 characters, specific to the page. */
     description: string;
+    /**
+     * Keeps the page out of search engines: left out of the sitemap, `noindex, follow` and no canonical URL in
+     * production. For pages with nothing to offer a visitor arriving from a search (placeholders, test frames).
+     */
+    noindex?: true;
 };
 
 /**
@@ -25,9 +30,9 @@ export type PlaygroundPageInfo = {
  * own title and description. Pathnames carry no trailing slash: Workers static assets serve
  * `/vector-components/knob` and redirect `/vector-components/knob/` to it.
  *
- * Source of the sitemap ({@link PLAYGROUND_SITEMAP_PATHS}) and of each page's metadata (`pageMetadata` in
- * `lib/page-metadata.ts`: title, description, self-referencing canonical, Open Graph, Twitter). Keep in sync
- * when adding routes; update sidebar navigation where applicable.
+ * Source of the sitemap ({@link PLAYGROUND_SITEMAP_PATHS}, every page not marked `noindex`) and of each page's
+ * metadata (`pageMetadata` in `lib/page-metadata.ts`: title, description, self-referencing canonical, Open Graph,
+ * Twitter). Keep in sync when adding routes; update sidebar navigation where applicable.
  */
 export const PLAYGROUND_PAGES = {
     "/": {
@@ -39,6 +44,7 @@ export const PLAYGROUND_PAGES = {
         title: "Dashboard",
         description:
             "Dashboard layout of the AudioUI playground: the sidebar shell with placeholder panels, used to test the app frame around the component demos.",
+        noindex: true,
     },
     "/examples/control-surface": {
         title: "Control Surface Example",
@@ -196,7 +202,9 @@ export const PLAYGROUND_PAGES = {
 export type PlaygroundPath = keyof typeof PLAYGROUND_PAGES;
 
 /**
- * Pathnames for every static App Router page, in {@link PLAYGROUND_PAGES} order.
- * Used only when {@link isPublicIndexingAllowed} is true.
+ * Pathnames of the pages listed in the sitemap: every page of {@link PLAYGROUND_PAGES} not marked `noindex`, in
+ * its order. Used only when {@link isPublicIndexingAllowed} is true.
  */
-export const PLAYGROUND_SITEMAP_PATHS = Object.keys(PLAYGROUND_PAGES) as readonly PlaygroundPath[];
+export const PLAYGROUND_SITEMAP_PATHS: readonly PlaygroundPath[] = (
+    Object.keys(PLAYGROUND_PAGES) as PlaygroundPath[]
+).filter((path) => !(PLAYGROUND_PAGES[path] as PlaygroundPageInfo).noindex);
