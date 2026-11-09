@@ -46,6 +46,7 @@
             "@typescript-eslint/typescript-estree>minimatch": "11.0.4",
             "@vue/language-core>minimatch": "11.0.4",
             "@eslint/config-array>minimatch": "11.0.4",
+            "@microsoft/api-extractor>minimatch": "11.0.4",
             "flat-cache>flatted": "^3.4.2",
             "lodash": "^4.18.0",
             "lodash-es": "^4.18.0",

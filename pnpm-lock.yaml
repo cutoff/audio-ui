@@ -12,6 +12,7 @@ overrides:
   '@typescript-eslint/typescript-estree>minimatch': 11.0.4
   '@vue/language-core>minimatch': 11.0.4
   '@eslint/config-array>minimatch': 11.0.4
+  '@microsoft/api-extractor>minimatch': 11.0.4
   flat-cache>flatted: ^3.4.2
   lodash: ^4.18.0
   lodash-es: ^4.18.0
@@ -3917,10 +3918,6 @@ packages:
     resolution: {integrity: sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==}
     engines: {node: '>= 0.6'}
 
-  minimatch@10.2.3:
-    resolution: {integrity: sha512-Rwi3pnapEqirPSbWbrZaa6N3nmqq4Xer/2XooiOKyV3q12ML06f7MOuc5DVH8ONZIFhwIYQ3yzPH4nt7iWHaTg==}
-    engines: {node: 18 || 20 || >=22}
-
   minimatch@11.0.4:
     resolution: {integrity: sha512-/UJ1dEoVQTjPNDh6SGlUo+ueLMmoHTas4q+8yaAR/5t6nLAIiBDJtoYUh20IYleix7ehiQkgczb84PE3uzHkxg==}
     engines: {node: 20 || >=22}
@@ -5531,7 +5528,7 @@ snapshots:
       '@rushstack/ts-command-line': 5.3.4(@types/node@20.19.30)
       diff: 8.0.4
       lodash: 4.18.1
-      minimatch: 10.2.3
+      minimatch: 11.0.4
       resolve: 1.22.11
       semver: 7.5.4
       source-map: 0.6.1
@@ -8666,10 +8663,6 @@ snapshots:
   mime-types@2.1.35:
     dependencies:
       mime-db: 1.52.0
-
-  minimatch@10.2.3:
-    dependencies:
-      brace-expansion: 5.0.12
 
   minimatch@11.0.4:
     dependencies:
