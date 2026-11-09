@@ -1,0 +1,11 @@
+{
+    // Static assets only: the playground is exported as static files (next.config `output: "export"`), no Worker code
+    "name": "playground-preview",
+    "account_id": "36e41494c68b7bef0cf31f50d9af6263",
+    "compatibility_date": "2026-10-01",
+    "assets": {
+        "directory": "./out",
+        "html_handling": "auto-trailing-slash",
+        "not_found_handling": "404-page"
+    }
+}

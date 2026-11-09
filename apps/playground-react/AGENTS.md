@@ -11,7 +11,7 @@
 | Category     | Details                                                                                                                                                |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Scripts      | `pnpm dev`, `pnpm build`, `pnpm typecheck`, `pnpm lint`                                                                                                |
-| Env Vars     | Optional `AUDIOUI_PLAYGROUND_ALLOW_INDEXING` (`true` / `1`) when not on Vercel production; `VERCEL_ENV` read for Vercel (see `lib/indexing-policy.ts`) |
+| Env Vars     | Optional `AUDIOUI_PLAYGROUND_ALLOW_INDEXING` (`true` / `1`), **build time**, set for the production build when not on Vercel; `VERCEL_ENV` read for Vercel (see `lib/indexing-policy.ts`) |
 | Routing      | Next.js app router; pages in app/[route]/page.tsx; categories: examples, vector-components, raster-components, primitives, layout                      |
 | Theming      | next-themes for theme switching; theme controls in header (ThemeSettingsButton, ThemeModeToggle); responsive sheet for customization                   |
 | Integrations | Import library components for showcases; Radix via shadcn; forms, routing                                                                              |
@@ -19,8 +19,9 @@
 
 ## Key File Structure
 
+- **Static export** (`next.config.ts` `output: "export"` → `out/`): no server code, deployed as Cloudflare Workers static assets (`wrangler.jsonc`); route handlers and metadata routes must be `force-static`.
 - `app/layout.tsx`: Root layout with header containing theme controls; `generateMetadata` sets `robots` from `isPublicIndexingAllowed()` (aligned with `app/robots.txt/route.ts`)
-- `app/robots.txt/route.ts`: Dynamic `robots.txt` (allow vs disallow matches indexing policy; `Sitemap:` line when indexing allowed)
+- `app/robots.txt/route.ts`: Static `robots.txt` (static export) (allow vs disallow matches indexing policy; `Sitemap:` line when indexing allowed)
 - `app/sitemap.ts`: `/sitemap.xml` via Next convention; URL list when `isPublicIndexingAllowed()`, else empty
 - `lib/indexing-policy.ts`: `isPublicIndexingAllowed()` — single source of truth for SEO crawling/indexing policy
 - `lib/playground-sitemap-paths.ts`: `PLAYGROUND_ORIGIN` and `PLAYGROUND_SITEMAP_PATHS` (all static page routes)

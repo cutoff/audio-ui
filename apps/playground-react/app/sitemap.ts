@@ -8,6 +8,8 @@ import type { MetadataRoute } from "next";
 import { isPublicIndexingAllowed } from "@/lib/indexing-policy";
 import { PLAYGROUND_ORIGIN, PLAYGROUND_SITEMAP_PATHS } from "@/lib/playground-sitemap-paths";
 
+export const dynamic = "force-static";
+
 /**
  * Next.js App Router sitemap served at `/sitemap.xml`.
  *
