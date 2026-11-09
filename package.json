@@ -71,7 +71,7 @@
             "@size-limit/esbuild>esbuild": "^0.28.1",
             "nanoid@^3.0.0": "^3.3.20",
             "source-map-js": "^1.2.2",
-            "postcss-selector-parser": "^7.1.7",
+            "postcss-selector-parser": "7.1.7",
             "colord": "^2.10.0",
             "@humanfs/node": "^0.16.8",
             "sharp": "^0.35.5"
