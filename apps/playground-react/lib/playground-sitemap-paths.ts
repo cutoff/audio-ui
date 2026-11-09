@@ -65,6 +65,11 @@ export const PLAYGROUND_PAGES = {
         description:
             "A configurable grid of AudioUI knobs, sliders, buttons and keyboards animated by automatic LFO modulation, to measure rendering performance.",
     },
+    "/examples/value-channels": {
+        title: "Value Channels",
+        description:
+            "Bind AudioUI controls through real values, normalized 0..1 or MIDI 0..127: a synth control, a DAW automation lane and a hardware CC mapping side by side.",
+    },
     "/examples/webaudio": {
         title: "WebAudio Synthesizer Example",
         description:
