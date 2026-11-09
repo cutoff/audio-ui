@@ -8,6 +8,9 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Film, Grid3x3, ToggleLeft, RotateCw, Settings, Power } from "lucide-react";
+import { pageMetadata } from "@/lib/page-metadata";
+
+export const metadata = pageMetadata("/raster-components");
 
 const components = [
     {

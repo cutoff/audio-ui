@@ -20,11 +20,12 @@
 ## Key File Structure
 
 - **Static export** (`next.config.ts` `output: "export"` → `out/`): no server code, deployed as Cloudflare Workers static assets (`wrangler.jsonc`); route handlers and metadata routes must be `force-static`.
-- `app/layout.tsx`: Root layout with header containing theme controls; `generateMetadata` sets `robots` from `isPublicIndexingAllowed()` (aligned with `app/robots.txt/route.ts`)
+- `app/layout.tsx`: Root layout with header containing theme controls; `generateMetadata` sets `robots` from `isPublicIndexingAllowed()` (aligned with `app/robots.txt/route.ts`) and site-wide defaults, no canonical URL
 - `app/robots.txt/route.ts`: Static `robots.txt` (static export) (allow vs disallow matches indexing policy; `Sitemap:` line when indexing allowed)
 - `app/sitemap.ts`: `/sitemap.xml` via Next convention; URL list when `isPublicIndexingAllowed()`, else empty
 - `lib/indexing-policy.ts`: `isPublicIndexingAllowed()` — single source of truth for SEO crawling/indexing policy
-- `lib/playground-sitemap-paths.ts`: `PLAYGROUND_ORIGIN` and `PLAYGROUND_SITEMAP_PATHS` (all static page routes)
+- `lib/playground-sitemap-paths.ts`: `PLAYGROUND_ORIGIN`, `PLAYGROUND_PAGES` (every static page route, no trailing slash, with its own title and description) and `PLAYGROUND_SITEMAP_PATHS` (its keys)
+- `lib/page-metadata.ts`: `pageMetadata(path)`: a page's title, description, self-referencing canonical, Open Graph and Twitter fields. A Server Component page exports `metadata = pageMetadata(path)` itself; a Client Component page gets a pass-through `layout.tsx` beside it that exports it
 - `app/page.tsx`: Home page (simplified entry: hero with external links, Getting Started card with theme/navigation tips, Explore Components card grid linking to vector-components, raster-components, primitives, layout, examples)
 - `app/[route]/page.tsx`: Demo pages (e.g., app/vector-components/button/page.tsx for Button demo)
 - `app/layout/sizing/page.tsx`: Centralized sizing system showcase (all components, all sizes)
@@ -32,7 +33,7 @@
 - `components/ui/`: **shadcn components ONLY** - do not add custom components here; **NEVER modify shadcn components** - they are third-party stabilized code; work around type issues with type assertions/ts-expect-error if needed
 - `components/`: Custom playground components (e.g., ColorPickerField, ComponentSkeletonPage, ControlSkeletonPage, theme-settings-button, theme-settings-panel, theme-mode-toggle)
 - `components/examples/`: Custom library component examples (see `components/examples/README.md` for creation guide)
-- `lib/`: Utils (`cn` for clsx, `indexing-policy` / `playground-sitemap-paths` for SEO)
+- `lib/`: Utils (`cn` for clsx, `indexing-policy` / `playground-sitemap-paths` / `page-metadata` for SEO)
 - `hooks/`: Custom hooks (e.g., use-mobile)
 - `types/`: TypeScript types
 - `public/`: Static assets
@@ -55,7 +56,7 @@ Vercel answered 308.
 
 ## Workflow Patterns (Bullets)
 
-- Add new playground page: Create app/[route]/[component]/page.tsx; import from @cutoff/audio-ui-react; add examples with props; use shadcn for UI; append the route path to `PLAYGROUND_SITEMAP_PATHS` in `lib/playground-sitemap-paths.ts`
+- Add new playground page: Create app/[route]/[component]/page.tsx; import from @cutoff/audio-ui-react; add examples with props; use shadcn for UI; add the route path with a title and description of its own to `PLAYGROUND_PAGES` in `lib/playground-sitemap-paths.ts`, and export `metadata = pageMetadata("<path>")` from the page (Server Component) or from a pass-through `layout.tsx` beside it (Client Component)
 - Component demo placement: Library built-in controls (Knob, Slider, Button, CycleButton, Keys) go under `app/vector-components/`; image/filmstrip controls (ImageKnob, FilmStrip\*, etc.) go under `app/raster-components/`. Sync sidebar (app-sidebar.tsx) and breadcrumb (breadcrumb-nav.tsx) when adding entries.
 - Control demo pages: Use `ControlSkeletonPage` component; examples use `size="normal"`; no individual Size showcases (centralized in `/layout/sizing`)
 - Sizing showcase: Centralized at `/layout/sizing`; showcases all components (Button, Knob, CycleButton, Slider, Keys) with all sizes (xsmall through xlarge)

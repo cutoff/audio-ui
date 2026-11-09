@@ -7,6 +7,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import { isPublicIndexingAllowed } from "@/lib/indexing-policy";
+import { PLAYGROUND_OPEN_GRAPH, PLAYGROUND_SITE_NAME, PLAYGROUND_TWITTER } from "@/lib/page-metadata";
 import { PLAYGROUND_ORIGIN } from "@/lib/playground-sitemap-paths";
 import "./globals.css";
 import { Providers } from "@/app/providers";
@@ -36,6 +37,11 @@ const interFont = Inter({
     weight: ["700"],
 });
 
+/**
+ * Site-wide metadata: `metadataBase`, indexing policy (`robots`), icons and the defaults that the 404 page shows.
+ * Each page sets its own title, description, canonical URL, Open Graph and Twitter fields (`pageMetadata` in
+ * `lib/page-metadata.ts`), so nothing here points at one page.
+ */
 export function generateMetadata(): Metadata {
     const allowIndexing = isPublicIndexingAllowed();
 
@@ -43,7 +49,7 @@ export function generateMetadata(): Metadata {
         metadataBase: new URL(PLAYGROUND_ORIGIN),
         title: {
             default: "AudioUI Playground - Interactive Component Showcase",
-            template: "%s | AudioUI Playground",
+            template: `%s | ${PLAYGROUND_SITE_NAME}`,
         },
         description:
             "Interactive playground for AudioUI by Cutoff. Explore and test React components designed for audio and MIDI applications, including knobs, sliders, buttons, piano keyboards, and more.",
@@ -73,20 +79,16 @@ export function generateMetadata(): Metadata {
             telephone: false,
         },
         openGraph: {
-            type: "website",
-            locale: "en_US",
-            url: PLAYGROUND_ORIGIN,
-            siteName: "AudioUI Playground",
+            ...PLAYGROUND_OPEN_GRAPH,
             title: "AudioUI Playground - Interactive Component Showcase",
             description:
                 "Explore and test React components designed for audio and MIDI applications. Interactive playground for knobs, sliders, buttons, piano keyboards, and more.",
         },
         twitter: {
-            card: "summary_large_image",
+            ...PLAYGROUND_TWITTER,
             title: "AudioUI Playground - Interactive Component Showcase",
             description:
                 "Explore and test React components designed for audio and MIDI applications. Interactive playground for knobs, sliders, buttons, piano keyboards, and more.",
-            creator: "@CutoffDev",
         },
         robots: allowIndexing
             ? {
@@ -106,9 +108,6 @@ export function generateMetadata(): Metadata {
                       noimageindex: true,
                   },
               },
-        alternates: {
-            canonical: PLAYGROUND_ORIGIN,
-        },
         verification: {
             // Add verification codes here when available
             // google: "your-google-verification-code",
