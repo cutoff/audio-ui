@@ -1,3 +1,5 @@
+AudioUI by Cutoff
+
 Copyright (c) 2026 Tylium SRL
 
 This program is free software: you can redistribute it and/or modify
@@ -11,13 +13,15 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 ---
 
 # GNU GENERAL PUBLIC LICENSE
 
 Version 3, 29 June 2007
 
-Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+Copyright (C) 2007 Free Software Foundation, Inc.
+<https://fsf.org/>
 
 Everyone is permitted to copy and distribute verbatim copies of this
 license document, but changing it is not allowed.
@@ -496,7 +500,7 @@ this License.
 
 Each contributor grants you a non-exclusive, worldwide, royalty-free
 patent license under the contributor's essential patent claims, to
-make, use, sell, offer to sell, import and otherwise run, modify and
+make, use, sell, offer for sale, import and otherwise run, modify and
 propagate the contents of its contributor version.
 
 In the following three paragraphs, a "patent license" is any express
