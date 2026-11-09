@@ -32,7 +32,7 @@ overrides:
   form-data: ^4.0.6
   nanoid@^3.0.0: ^3.3.20
   source-map-js: ^1.2.2
-  postcss-selector-parser: ^7.1.7
+  postcss-selector-parser: 7.1.7
   colord: ^2.10.0
   '@humanfs/node': ^0.16.8
   sharp: ^0.35.5
@@ -461,7 +461,7 @@ packages:
     resolution: {integrity: sha512-PCqQV3c4CoVm3kdPhyeZ07VmBRdH2EpMFA/pd9OASpOEC3aXNGoqPDAZ80D0cLpMBxnmk0+yNhGsEx31hq7Gtw==}
     engines: {node: '>=18'}
     peerDependencies:
-      postcss-selector-parser: ^7.1.7
+      postcss-selector-parser: 7.1.7
 
   '@date-fns/tz@1.4.1':
     resolution: {integrity: sha512-P5LUNhtbj6YfI3iJjw5EL9eUAG6OitD0W3fWQcpQjDRc/QIsL0tRNuO1PcDvPccWL1fSTXXdE1ds+l95DV/OFA==}
