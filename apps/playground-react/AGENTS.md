@@ -8,19 +8,20 @@
 
 ## Quick Setup Summary (Load This First)
 
-| Category     | Details                                                                                                                                                |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Scripts      | `pnpm dev`, `pnpm build`, `pnpm typecheck`, `pnpm lint`                                                                                                |
-| Env Vars     | Optional `AUDIOUI_PLAYGROUND_ALLOW_INDEXING` (`true` / `1`) when not on Vercel production; `VERCEL_ENV` read for Vercel (see `lib/indexing-policy.ts`) |
-| Routing      | Next.js app router; pages in app/[route]/page.tsx; categories: examples, vector-components, raster-components, primitives, layout                      |
-| Theming      | next-themes for theme switching; theme controls in header (ThemeSettingsButton, ThemeModeToggle); responsive sheet for customization                   |
-| Integrations | Import library components for showcases; Radix via shadcn; forms, routing                                                                              |
+| Category     | Details                                                                                                                                                                                          |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Scripts      | `pnpm dev`, `pnpm build`, `pnpm typecheck`, `pnpm lint`                                                                                                                                          |
+| Env Vars     | Optional `AUDIOUI_PLAYGROUND_ALLOW_INDEXING` (`true` / `1`), **build time**, set for the production build when not on Vercel; `VERCEL_ENV` read for Vercel (see `lib/indexing-policy.ts`)        |
+| Routing      | Next.js app router; pages in app/[route]/page.tsx; categories: examples, vector-components, raster-components, primitives, layout                                                                |
+| Theming      | next-themes for theme switching; theme controls in header (ThemeSettingsButton, ThemeModeToggle); responsive sheet for customization                                                             |
+| Integrations | Import library components for showcases; Radix via shadcn; forms, routing                                                                                                                        |
 | Dependencies | Most direct deps use semver carets; `next` and `eslint-config-next` track the active Next 15 line. `components/ui/shadcn-io/color-picker/` imports `radix-ui` with a caret range (not `latest`). |
 
 ## Key File Structure
 
+- **Static export** (`next.config.ts` `output: "export"` → `out/`): no server code, deployed as Cloudflare Workers static assets (`wrangler.jsonc`); route handlers and metadata routes must be `force-static`.
 - `app/layout.tsx`: Root layout with header containing theme controls; `generateMetadata` sets `robots` from `isPublicIndexingAllowed()` (aligned with `app/robots.txt/route.ts`)
-- `app/robots.txt/route.ts`: Dynamic `robots.txt` (allow vs disallow matches indexing policy; `Sitemap:` line when indexing allowed)
+- `app/robots.txt/route.ts`: Static `robots.txt` (static export) (allow vs disallow matches indexing policy; `Sitemap:` line when indexing allowed)
 - `app/sitemap.ts`: `/sitemap.xml` via Next convention; URL list when `isPublicIndexingAllowed()`, else empty
 - `lib/indexing-policy.ts`: `isPublicIndexingAllowed()` — single source of truth for SEO crawling/indexing policy
 - `lib/playground-sitemap-paths.ts`: `PLAYGROUND_ORIGIN` and `PLAYGROUND_SITEMAP_PATHS` (all static page routes)
@@ -35,6 +36,22 @@
 - `hooks/`: Custom hooks (e.g., use-mobile)
 - `types/`: TypeScript types
 - `public/`: Static assets
+
+## Deployment (Cloudflare Workers, static assets)
+
+|                | Production                               | Staging                                                       |
+| -------------- | ---------------------------------------- | ------------------------------------------------------------- |
+| Worker         | `audioui-playground`                     | `audioui-playground-staging` (`--env staging`)                |
+| Domain         | `playground.cutoff.dev`                  | `playground.staging.cutoff.dev`, behind Cloudflare Access     |
+| Built from     | `main`                                   | `develop`; other branches get a preview version (preview URL) |
+| Build variable | `AUDIOUI_PLAYGROUND_ALLOW_INDEXING=true` | none (crawling disallowed, `noindex`)                         |
+
+Workers Builds (per Worker: Settings → Builds), repository `cutoff/audio-ui`, root directory `apps/playground-react`:
+build command `pnpm exec turbo run build --filter=@cutoff/audio-ui-react-playground-app` (builds the library packages
+first; Turbopack ignores the webpack alias); deploy command `npx wrangler deploy` (production) or
+`npx wrangler deploy --env staging`; non-production branches on staging only, `npx wrangler versions upload --env
+staging`. No secrets, no runtime variables. Trailing-slash redirects answer 307 (Workers static assets), where
+Vercel answered 308.
 
 ## Workflow Patterns (Bullets)
 

@@ -7,6 +7,8 @@
 import { isPublicIndexingAllowed } from "@/lib/indexing-policy";
 import { PLAYGROUND_ORIGIN } from "@/lib/playground-sitemap-paths";
 
+export const dynamic = "force-static";
+
 /**
  * Route handler for `/robots.txt`.
  *

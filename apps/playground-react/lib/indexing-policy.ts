@@ -14,8 +14,9 @@
  * deployments use `preview` even though `NODE_ENV` is `production`, so do not rely on
  * `NODE_ENV` alone for this policy.
  *
- * **Self-hosted / non-Vercel:** set `AUDIOUI_PLAYGROUND_ALLOW_INDEXING=true` on the
- * production host when `VERCEL_ENV` is not available.
+ * **Self-hosted / non-Vercel (Cloudflare Workers):** set `AUDIOUI_PLAYGROUND_ALLOW_INDEXING=true` in the
+ * production build when `VERCEL_ENV` is not available. The site is a static export, so the policy is
+ * fixed at build time; the variable is declared in the root `turbo.json` build task so turbo passes it on.
  *
  * @returns {boolean} `true` when `robots.txt` allows crawling, root HTML `robots` allows
  *   index/follow, and the sitemap lists URLs; `false` otherwise (disallow, noindex, empty

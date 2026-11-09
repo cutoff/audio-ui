@@ -7,6 +7,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+    // Fully prerendered: exported as static files (served as Cloudflare Workers static assets)
+    output: "export",
     transpilePackages: ["@cutoff/audio-ui-react", "@cutoff/audio-ui-core"],
     eslint: {
         ignoreDuringBuilds: true, // Ignore ESLint errors during production builds

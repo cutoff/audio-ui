@@ -7,6 +7,8 @@
 
 AudioUI is a professional, open-source React component library for building high-performance user interfaces for audio and MIDI applications. It provides a meticulously crafted set of components designed to meet the demanding needs of music software, digital audio workstations (DAWs), audio plugins with a web UI, and other audio-centric web applications.
 
+AudioUI is a Tylium product. [Tylium SRL](https://tylium.io) leads the project and publishes its releases; contributions are welcome.
+
 <a href="https://playground.cutoff.dev" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Playground-Try%20It%20Live-blue?style=for-the-badge" alt="Playground" /></a>
 
 ## Design Philosophy
@@ -127,7 +129,7 @@ This monorepo uses `pnpm` workspaces. The primary packages are:
 - `@cutoff/audio-ui-core`: The framework-agnostic core logic.
 - `playground-react`: The Next.js playground application.
 
-The library packages build with **Vite 6** and **Vitest 3** (dev tooling only; published packages ship `dist/`). The root `package.json` may list **`pnpm.overrides`** to align transitive dependencies with security-patched versions when needed.
+The library packages build with **Vite 6** and **Vitest 4** (dev tooling only; published packages ship `dist/`). The root `package.json` may list **`pnpm.overrides`** to align transitive dependencies with security-patched versions when needed.
 
 To start the development server, run:
 

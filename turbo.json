@@ -4,7 +4,8 @@
     "tasks": {
         "build": {
             "dependsOn": ["^build"],
-            "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+            "env": ["AUDIOUI_PLAYGROUND_ALLOW_INDEXING"],
+            "outputs": [".next/**", "!.next/cache/**", "dist/**", "out/**"]
         },
         "lint": {
             "dependsOn": ["^build"],
