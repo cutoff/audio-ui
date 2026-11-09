@@ -1,11 +1,19 @@
 {
-    // Static assets only: the playground is exported as static files (next.config `output: "export"`), no Worker code
-    "name": "playground-preview",
+    // Static assets only: the playground is exported as static files (next.config `output: "export"`), no Worker code.
+    // Production: Worker `audioui-playground` (playground.cutoff.dev), built from `main` with
+    // AUDIOUI_PLAYGROUND_ALLOW_INDEXING=true. Staging: `--env staging`, Worker `audioui-playground-staging`
+    // (playground.staging.cutoff.dev), built from `develop` without it. Build settings: AGENTS.md § Deployment.
+    "name": "audioui-playground",
     "account_id": "36e41494c68b7bef0cf31f50d9af6263",
     "compatibility_date": "2026-10-01",
-    "assets": {
-        "directory": "./out",
-        "html_handling": "auto-trailing-slash",
-        "not_found_handling": "404-page"
-    }
+    "assets": { "directory": "./out", "html_handling": "auto-trailing-slash", "not_found_handling": "404-page" },
+    // workers.dev stays on until the custom domain serves production, then goes off.
+    "workers_dev": true,
+    "preview_urls": false,
+    "env": {
+        "staging": {
+            "name": "audioui-playground-staging",
+            "preview_urls": true,
+        },
+    },
 }
